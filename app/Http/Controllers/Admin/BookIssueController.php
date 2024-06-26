@@ -467,7 +467,7 @@ class BookIssueController extends Controller
     {
         // dd($request);
         $books = BookDataModal::where('book_code', $request)->first();
-        dd($books);
+        // dd($books);
         if ($books != null) {
             // $data = BookIssueModel::with('books:id,name,image', 'bookData:id,book_code,status', 'users:id,name')->where('id', $id)->select('user_name_id', 'book_id', 'book_data_id', 'issued_date', 'due_date', 'fine', 'return_date', 'status')->first();
             $check = BookIssueModel::where('book_data_id', $books->id)

@@ -154,8 +154,8 @@
 
                 @can('user_management_access')
                     <li
-                        class="nav-item has-treeview {{ request()->is('admin/Staff_status*') ? 'menu-open' : '' }} {{ request()->is('admin/inactive_staff*') ? 'menu-open' : '' }} {{ request()->is('admin/teaching-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/non-teaching-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/rd-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/staff-edge*') ? 'menu-open' : '' }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/Staff_status*') ? 'active' : '' }} {{ request()->is('admin/inactive_staff*') ? 'active' : '' }} {{ request()->is('admin/teaching-staffs*') ? 'active' : '' }} {{ request()->is('admin/non-teaching-staffs*') ? 'active' : '' }} {{ request()->is('admin/rd-staffs*') ? 'active' : '' }} {{ request()->is('admin/staff-edge*') ? 'active' : '' }}"
+                        class="nav-item has-treeview {{ request()->is('admin/staff_details*') ? 'menu-open' : '' }} {{ request()->is('admin/Staff_status*') ? 'menu-open' : '' }} {{ request()->is('admin/inactive_staff*') ? 'menu-open' : '' }} {{ request()->is('admin/teaching-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/non-teaching-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/rd-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/staff-edge*') ? 'menu-open' : '' }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/staff_details*') ? 'active' : '' }} {{ request()->is('admin/Staff_status*') ? 'active' : '' }} {{ request()->is('admin/inactive_staff*') ? 'active' : '' }} {{ request()->is('admin/teaching-staffs*') ? 'active' : '' }} {{ request()->is('admin/non-teaching-staffs*') ? 'active' : '' }} {{ request()->is('admin/rd-staffs*') ? 'active' : '' }} {{ request()->is('admin/staff-edge*') ? 'active' : '' }}"
                             href="#">
                             <i class="fas nav-icon fas fa-user-tie">
 
@@ -216,6 +216,18 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('staff_details_download_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.Staff_details_get') }}"
+                                        class="nav-link {{ request()->is('admin/staff_details/*') || request()->is('admin/staff_details') ? 'active' : '' }}">
+                                        <i class="fas nav-icon fa-chalkboard-teacher">
+                                        </i>
+                                        <p>
+                                            Staff Details Download
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
                             @can('inactive_staff_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.inactive_staff.index') }}"
@@ -249,8 +261,8 @@
 
                 @can('user_management_access')
                     <li
-                        class="nav-item has-treeview {{ request()->is('admin/grade-book/*') || request()->is('admin/student-mandatory-details/*') || request()->is('admin/Attendence-Details*') || request()->is('admin/Batch-Wise-Strenth*') ? 'menu-open' : '' }}  {{ request()->is('admin/Batch-Wise-Strenth*') ? 'menu-open' : '' }} {{ request()->is('admin/student-mandatory-details*') ? 'menu-open' : '' }} {{ request()->is('admin/grade-book*') ? 'menu-open' : '' }} {{ request()->is('admin/student-edge*') ? 'menu-open' : '' }} {{ request()->is('admin/grade-book*') ? 'menu-open' : '' }} {{ request()->is('admin/certificate-provision*') ? 'menu-open' : '' }} {{ request()->is('admin/students*') ? 'menu-open' : '' }} {{ request()->is('admin/student-image*') ? 'menu-open' : '' }} {{ request()->is('admin/staff_details*') ? 'menu-open' : '' }} {{ request()->is('admin/removed-students*') ? 'menu-open' : '' }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/grade-book/*') || request()->is('admin/student-mandatory-details/*') || request()->is('admin/Attendence-Details*') || request()->is('admin/Batch-Wise-Strenth*') ? 'active' : '' }}  {{ request()->is('admin/Batch-Wise-Strenth*') ? 'active' : '' }} {{ request()->is('admin/student-mandatory-details*') ? 'active' : '' }} {{ request()->is('admin/grade-book*') ? 'active' : '' }} {{ request()->is('admin/student-edge*') ? 'active' : '' }} {{ request()->is('admin/grade-book*') ? 'active' : '' }} {{ request()->is('admin/certificate-provision*') ? 'active' : '' }} {{ request()->is('admin/students*') ? 'active' : '' }} {{ request()->is('admin/student-image*') ? 'active' : '' }} {{ request()->is('admin/staff_details*') ? 'active' : '' }} {{ request()->is('admin/removed-students*') ? 'active' : '' }}"
+                        class="nav-item has-treeview {{ request()->is('admin/grade-book/*') || request()->is('admin/student-mandatory-details/*') || request()->is('admin/Attendence-Details*') || request()->is('admin/Batch-Wise-Strenth*') ? 'menu-open' : '' }}  {{ request()->is('admin/Batch-Wise-Strenth*') ? 'menu-open' : '' }} {{ request()->is('admin/student-mandatory-details*') ? 'menu-open' : '' }} {{ request()->is('admin/grade-book*') ? 'menu-open' : '' }} {{ request()->is('admin/student-edge*') ? 'menu-open' : '' }} {{ request()->is('admin/grade-book*') ? 'menu-open' : '' }} {{ request()->is('admin/certificate-provision*') ? 'menu-open' : '' }} {{ request()->is('admin/students*') ? 'menu-open' : '' }} {{ request()->is('admin/student-image*') ? 'menu-open' : '' }} {{ request()->is('admin/removed-students*') ? 'menu-open' : '' }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/grade-book/*') || request()->is('admin/student-mandatory-details/*') || request()->is('admin/Attendence-Details*') || request()->is('admin/Batch-Wise-Strenth*') ? 'active' : '' }}  {{ request()->is('admin/Batch-Wise-Strenth*') ? 'active' : '' }} {{ request()->is('admin/student-mandatory-details*') ? 'active' : '' }} {{ request()->is('admin/grade-book*') ? 'active' : '' }} {{ request()->is('admin/student-edge*') ? 'active' : '' }} {{ request()->is('admin/grade-book*') ? 'active' : '' }} {{ request()->is('admin/certificate-provision*') ? 'active' : '' }} {{ request()->is('admin/students*') ? 'active' : '' }} {{ request()->is('admin/student-image*') ? 'active' : '' }}  {{ request()->is('admin/removed-students*') ? 'active' : '' }}"
                             href="#">
                             <i class="fas nav-icon fas fa-user-graduate">
                             </i>
@@ -285,18 +297,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('staff_details_download_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.Staff_details_get') }}"
-                                        class="nav-link {{ request()->is('admin/staff_details/*') || request()->is('admin/staff_details') ? 'active' : '' }}">
-                                        <i class="fas nav-icon fa-chalkboard-teacher">
-                                        </i>
-                                        <p>
-                                            Staff Details Download
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
+
                             @can('student_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.removed-students.index') }}"
@@ -326,7 +327,7 @@
 
                             @can('student_reports_access')
                                 <li
-                                    class="nav-item has-treeview {{ request()->is('admin/grade-book/*') || request()->is('admin/student-mandatory-details/*') || request()->is('admin/Attendence-Details*') || request()->is('admin/Batch-Wise-Strenth*') ? 'menu-open' : '' }}">
+                                    class="nav-item has-treeview  {{ request()->is('admin/grade-book/*') || request()->is('admin/student-mandatory-details/*') || request()->is('admin/Attendence-Details*') || request()->is('admin/Batch-Wise-Strenth*') ? 'menu-open' : '' }}">
                                     <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/grade-book/*') || request()->is('admin/student-mandatory-details/*') || request()->is('admin/Attendence-Details*') || request()->is('admin/Batch-Wise-Strenth*') ? 'active' : '' }}"
                                         href="#">
                                         <i class="fa nav-icon fas fa-clipboard-list">
@@ -404,8 +405,8 @@
 
                 @can('user_management_access')
                     <li
-                        class="nav-item has-treeview {{ request()->is('admin/subjectRegistration*') ? 'menu-open' : '' }} {{ request()->is('admin/subject-registration*') ? 'menu-open' : '' }} {{ request()->is('admin/subjects*') ? 'menu-open' : '' }} {{ request()->is('admin/audit-logs*') ? 'menu-open' : '' }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/subjectRegistration*') ? 'active' : '' }} {{ request()->is('admin/subject-registration*') ? 'active' : '' }} {{ request()->is('admin/subjects*') ? 'active' : '' }} {{ request()->is('admin/audit-logs*') ? 'active' : '' }}"
+                        class="nav-item has-treeview {{ request()->is('admin/subjectRegistration*') || request()->is('admin/subject-registration*') || request()->is('admin/degree-wise-subject-registration*') || request()->is('admin/subject-wise-subject-registration*') ? 'menu-open' : '' }} {{ request()->is('admin/subject_types*') ? 'menu-open' : '' }} {{ request()->is('admin/subject_category*') ? 'menu-open' : '' }} {{ request()->is('admin/subject-allotment*') ? 'menu-open' : '' }} {{ request()->is('admin/subjectRegistration*') ? 'menu-open' : '' }} {{ request()->is('admin/subject-registration*') ? 'menu-open' : '' }} {{ request()->is('admin/subjects*') ? 'menu-open' : '' }} {{ request()->is('admin/audit-logs*') ? 'menu-open' : '' }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/subjectRegistration*') || request()->is('admin/subject-registration*') || request()->is('admin/degree-wise-subject-registration*') || request()->is('admin/subject-wise-subject-registration*') ? 'active' : '' }} {{ request()->is('admin/subject_types*') ? 'active' : '' }} {{ request()->is('admin/subject_category*') ? 'active' : '' }} {{ request()->is('admin/subject-allotment*') ? 'active' : '' }} {{ request()->is('admin/subjectRegistration*') ? 'active' : '' }} {{ request()->is('admin/subject-registration*') ? 'active' : '' }} {{ request()->is('admin/subjects*') ? 'active' : '' }} {{ request()->is('admin/audit-logs*') ? 'active' : '' }}"
                             href="#">
                             <i class="fas nav-icon fas fa-scroll">
                             </i>
@@ -415,6 +416,45 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview" style="background-color: rgba(128, 128, 128, 0.473); colour:#ffffff">
+                            @can('subject_category_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.subject_category.index') }}"
+                                        class="nav-link {{ request()->is('admin/subject_category') || request()->is('admin/subject_category/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-book-open">
+
+                                        </i>
+                                        <p>
+                                            Subject Category
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('subject_type_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.subject_types.index') }}"
+                                        class="nav-link {{ request()->is('admin/subject_types') || request()->is('admin/subject_types/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-address-book">
+
+                                        </i>
+                                        <p>
+                                            Subject Types
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('subject_allotment_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.subject-allotment.index') }}"
+                                        class="nav-link {{ request()->is('admin/subject-allotment') || request()->is('admin/subject-allotment*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-clipboard">
+
+                                        </i>
+                                        <p>
+                                            Subject Allotment
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
                             @can('subject_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.subjects.index') }}"
@@ -1611,7 +1651,7 @@
                 @endcan
                 @can('master_tool_access')
                     <li class="nav-item">
-                        <a href="{{ route('admin.year.index') }}"
+                        <a href="{{ route('admin.tools-degree-types.index') }}"
                             class="nav-link {{ request()->is('admin/master-tools') ||
                             request()->is('admin/master-tools/*') ||
                             request()->is('admin/tools*') ||
@@ -1630,7 +1670,6 @@
                             request()->is('admin/education-boards*') ||
                             request()->is('admin/education-types*') ||
                             request()->is('admin/scholarships*') ||
-                            request()->is('admin/subjects*') ||
                             request()->is('admin/mediumof-studieds*') ||
                             request()->is('admin/teaching-types*') ||
                             request()->is('admin/examstaffs*') ||

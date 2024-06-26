@@ -766,8 +766,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('removed-students/index', 'StudentController@removedStudents')->name('removed-students.index');
 
     // Education Type
+    Route::get('education-types', 'EducationTypeController@index')->name('education-types.index');
+    Route::post('education-types/view', 'EducationTypeController@view')->name('education-types.view');
+    Route::post('education-types/edit', 'EducationTypeController@edit')->name('education-types.edit');
+    Route::post('education-types/store', 'EducationTypeController@store')->name('education-types.store');
+    Route::post('education-types/delete', 'EducationTypeController@destroy')->name('education-types.delete');
     Route::delete('education-types/destroy', 'EducationTypeController@massDestroy')->name('education-types.massDestroy');
-    Route::resource('education-types', 'EducationTypeController');
+
 
     //  Lab
     Route::delete('tool-lab/destroy', 'LabController@massDestroy')->name('tool-lab.massDestroy');
@@ -841,15 +846,30 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('fee/stu_index', 'FeePaymentController@StudentIndex')->name('fee.stu_index');
 
     // Subject
-    Route::post('subject-masters/parse-csv-import', 'SubjectController@parseCsvImport')->name('subject-masters.parseCsvImport');
+    // Route::post('subject-masters/parse-csv-import', 'SubjectController@parseCsvImport')->name('subject-masters.parseCsvImport');
+    // Route::post('subject-masters/process-csv-import', 'SubjectController@processCsvImport')->name('subject-masters.processCsvImport');
+    // Route::delete('subjects/destroy', 'SubjectController@massDestroy')->name('subjects.massDestroy');
+    // Route::get('subjects', 'SubjectController@index')->name('subjects.index');
+    // Route::get('subjects/store', 'SubjectController@store')->name('subjects.store');
+    // Route::get('subjects/view', 'SubjectController@view')->name('subjects.view');
+    // Route::delete('subjects/delete', 'SubjectController@delete')->name('subjects.delete');
+    // Route::get('subjects/edit', 'SubjectController@edit')->name('subjects.edit');
+    
     Route::post('subject-masters/process-csv-import', 'SubjectController@processCsvImport')->name('subject-masters.processCsvImport');
-    Route::delete('subjects/destroy', 'SubjectController@massDestroy')->name('subjects.massDestroy');
+    Route::post('subject-masters/parse-csv-import', 'SubjectController@parseCsvImport')->name('subject-masters.parseCsvImport');
+    Route::get('subjects', 'SubjectController@index')->name('subjects.index');
+    Route::post('subjects/view', 'SubjectController@view')->name('subjects.view');
+    Route::get('subjects/create', 'SubjectController@create')->name('subjects.create');
+    Route::post('subjects/edit', 'SubjectController@edit')->name('subjects.edit');
+    Route::post('subjects/store', 'SubjectController@store')->name('subjects.store');
+    Route::post('subjects/delete', 'SubjectController@destroy')->name('subjects.delete');
     Route::post('subjects/search', 'SubjectController@search')->name('subjects.search');
-    Route::get('subjects/show', 'SubjectController@show')->name('subjects.show');
-    Route::post('subjects/get_sub_categories', 'SubjectController@get_sub_categories')->name('subjects.get_sub_categories');
     Route::post('subjects/get_course', 'SubjectController@get_course')->name('subjects.get_course');
+    Route::delete('subjects/destroy', 'SubjectController@massDestroy')->name('subjects.massDestroy');
     Route::post('subjects/statusUpdate', 'SubjectController@statusUpdate')->name('subjects.statusUpdate');
-    Route::resource('subjects', 'SubjectController');
+    Route::post('subjects/get_sub_categories', 'SubjectController@get_sub_categories')->name('subjects.get_sub_categories');
+
+    // Route::resource('subjects', 'SubjectController');
 
     // Honors Degree
     Route::get('honor-subjects', 'SubjectController@honorsSubject')->name('honor-subjects.index');
@@ -900,8 +920,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('subject-allotment/delete', 'SubjectAllotmentController@destroy')->name('subject-allotment.delete');
 
     // Mediumof Studied
+    Route::get('mediumof-studieds', 'MediumofStudiedController@index')->name('mediumof-studieds.index');
+    Route::post('mediumof-studieds/view', 'MediumofStudiedController@view')->name('mediumof-studieds.view');
+    Route::post('mediumof-studieds/edit', 'MediumofStudiedController@edit')->name('mediumof-studieds.edit');
+    Route::post('mediumof-studieds/store', 'MediumofStudiedController@store')->name('mediumof-studieds.store');
+    Route::post('mediumof-studieds/delete', 'MediumofStudiedController@destroy')->name('mediumof-studieds.delete');
     Route::delete('mediumof-studieds/destroy', 'MediumofStudiedController@massDestroy')->name('mediumof-studieds.massDestroy');
-    Route::resource('mediumof-studieds', 'MediumofStudiedController');
+
 
     // Address
     Route::delete('addresses/destroy', 'AddressController@massDestroy')->name('addresses.massDestroy');
@@ -997,8 +1022,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('examstaffs', 'ExamstaffController');
 
     // Event
+    Route::get('events/index', 'EventController@index')->name('events.index');
+    Route::post('events/view', 'EventController@view')->name('events.view');
+    Route::get('events/create', 'EventController@create')->name('events.create');
+    Route::post('events/edit', 'EventController@edit')->name('events.edit');
+    Route::post('events/store', 'EventController@store')->name('events.store');
+    Route::post('events/delete', 'EventController@destroy')->name('events.delete');
     Route::delete('events/destroy', 'EventController@massDestroy')->name('events.massDestroy');
-    Route::resource('events', 'EventController');
 
     // Event Organized
     Route::resource('event-organized', 'EventOrganizedController');
@@ -1319,10 +1349,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('test-answers', 'TestAnswersController');
 
     // Leave Type
+    Route::get('leave-types', 'LeaveTypeController@index')->name('leave-types.index');
+    Route::post('leave-types/view', 'LeaveTypeController@view')->name('leave-types.view');
+    Route::post('leave-types/edit', 'LeaveTypeController@edit')->name('leave-types.edit');
+    Route::post('leave-types/store', 'LeaveTypeController@store')->name('leave-types.store');
+    Route::post('leave-types/delete', 'LeaveTypeController@destroy')->name('leave-types.delete');
     Route::delete('leave-types/destroy', 'LeaveTypeController@massDestroy')->name('leave-types.massDestroy');
-    Route::post('leave-types/parse-csv-import', 'LeaveTypeController@parseCsvImport')->name('leave-types.parseCsvImport');
-    Route::post('leave-types/process-csv-import', 'LeaveTypeController@processCsvImport')->name('leave-types.processCsvImport');
-    Route::resource('leave-types', 'LeaveTypeController');
 
     // Staff Daily Attendance
     Route::get('staff-daily-attendance/index', 'StaffAttendanceRegisterController@attendanceIndex')->name('staff-daily-attendance.index');
@@ -1414,13 +1446,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Route::get('exam-attendance2', 'Students_attendence_edit_request@index')->name('exam_Attendance2.index');
 
     // Class Rooms
-    Route::delete('class-rooms/destroy', 'ClassRoomsController@massDestroy')->name('class-rooms.massDestroy');
-    Route::post('class-rooms/parse-csv-import', 'ClassRoomsController@parseCsvImport')->name('class-rooms.parseCsvImport');
-    Route::post('class-rooms/process-csv-import', 'ClassRoomsController@processCsvImport')->name('class-rooms.processCsvImport');
-    Route::resource('class-rooms', 'ClassRoomsController');
-    Route::post('get-block/index', 'ClassRoomsController@get_block')->name('get-block.index');
-    Route::post('check-class-dept/index', 'ClassRoomsController@class_dept')->name('check-class-dept.index');
-    Route::post('check-class-dept/check-staff', 'ClassRoomsController@checkStaff')->name('check-class-dept.check-staff');
+    // Route::delete('class-rooms/destroy', 'ClassRoomsController@massDestroy')->name('class-rooms.massDestroy');
+    // Route::post('class-rooms/parse-csv-import', 'ClassRoomsController@parseCsvImport')->name('class-rooms.parseCsvImport');
+    // Route::post('class-rooms/process-csv-import', 'ClassRoomsController@processCsvImport')->name('class-rooms.processCsvImport');
+    // Route::resource('class-rooms', 'ClassRoomsController');
+    // Route::post('get-block/index', 'ClassRoomsController@get_block')->name('get-block.index');
+    // Route::post('check-class-dept/index', 'ClassRoomsController@class_dept')->name('check-class-dept.index');
+    // Route::post('check-class-dept/check-staff', 'ClassRoomsController@checkStaff')->name('check-class-dept.check-staff');
 
     // Class Batch
     Route::get('class-batch', 'ClassBatchController@index')->name('class-batch.index');
@@ -1691,30 +1723,31 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Grade Master
     Route::get('grade-master/index', 'GradeMasterController@index')->name('grade-master.index');
+    Route::post('grade-master/view', 'GradeMasterController@view')->name('grade-master.view');
     Route::get('grade-master/create', 'GradeMasterController@create')->name('grade-master.create');
-    Route::get('grade-master/show/{regulation_id}', 'GradeMasterController@show')->name('grade-master.show');
-    Route::get('grade-master/edit/{regulation_id}', 'GradeMasterController@edit')->name('grade-master.edit');
-    Route::post('grade-master/destroy', 'GradeMasterController@destroy')->name('grade-master.destroy');
-    Route::post('grade-master/checkRegulation', 'GradeMasterController@checkRegulation')->name('grade-master.checkRegulation');
+    Route::post('grade-master/edit', 'GradeMasterController@edit')->name('grade-master.edit');
     Route::post('grade-master/store', 'GradeMasterController@store')->name('grade-master.store');
-    Route::post('grade-master/update', 'GradeMasterController@update')->name('grade-master.update');
+    Route::post('grade-master/delete', 'GradeMasterController@destroy')->name('grade-master.delete');
+    Route::delete('grade-master/destroy', 'GradeMasterController@massDestroy')->name('grade-master.massDestroy');
 
     // Exam Fee Master
     Route::get('examfee-master/index', 'ExamFeeController@masterIndex')->name('examfee-master.index');
-    Route::get('examfee-master/create', 'ExamFeeController@masterCreate')->name('examfee-master.create');
-    Route::get('examfee-master/show/{regulation_id}', 'ExamFeeController@masterShow')->name('examfee-master.show');
-    Route::get('examfee-master/edit/{regulation_id}', 'ExamFeeController@masterEdit')->name('examfee-master.edit');
-    Route::post('examfee-master/destroy', 'ExamFeeController@masterDestroy')->name('examfee-master.destroy');
+    Route::get('examfee-master/create', 'ExamFeeController@create')->name('examfee-master.create');
+    Route::post('examfee-master/view', 'ExamFeeController@masterView')->name('examfee-master.view');
+    Route::post('examfee-master/edit', 'ExamFeeController@masterEdit')->name('examfee-master.edit');
     Route::post('examfee-master/checkRegulation', 'ExamFeeController@checkRegulation')->name('examfee-master.checkRegulation');
     Route::post('examfee-master/store', 'ExamFeeController@masterStore')->name('examfee-master.store');
     Route::post('examfee-master/update', 'ExamFeeController@masterUpdate')->name('examfee-master.update');
+    Route::post('examfee-master/destroy', 'ExamFeeController@masterDestroy')->name('examfee-master.delete');
+    Route::delete('examfee-master/destroy', 'ExamFeeController@massDestroy')->name('examfee-master.massDestroy');
 
     //  Credit Limit Master
     Route::get('credit-limit-master/index', 'CreditLimitController@index')->name('credit-limit-master.index');
-    Route::post('credit-limit-master/destroy', 'CreditLimitController@destroy')->name('credit-limit-master.destroy');
-    Route::post('credit-limit-master/checkRegulation', 'CreditLimitController@checkRegulation')->name('credit-limit-master.checkRegulation');
+    Route::post('credit-limit-master/view', 'CreditLimitController@view')->name('credit-limit-master.view');
+    Route::post('credit-limit-master/edit', 'CreditLimitController@edit')->name('credit-limit-master.edit');
     Route::post('credit-limit-master/store', 'CreditLimitController@store')->name('credit-limit-master.store');
-    Route::post('credit-limit-master/update', 'CreditLimitController@update')->name('credit-limit-master.update');
+    Route::post('credit-limit-master/delete', 'CreditLimitController@destroy')->name('credit-limit-master.delete');
+    Route::delete('credit-limit-master/destroy', 'CreditLimitController@massDestroy')->name('credit-limit-master.massDestroy');
 
     //Staff Details Download
     Route::get('staff_details', 'StaffDetailsDownloadController@index')->name('Staff_details_get');
@@ -1762,9 +1795,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Result Master
     Route::get('result-master/index', 'ResultMasterController@index')->name('result-master.index');
-    Route::post('result-master/store', 'ResultMasterController@store')->name('result-master.store');
+    Route::post('result-master/view', 'ResultMasterController@view')->name('result-master.view');
+    Route::get('result-master/create', 'ResultMasterController@create')->name('result-master.create');
     Route::post('result-master/edit', 'ResultMasterController@edit')->name('result-master.edit');
-    Route::post('result-master/destroy', 'ResultMasterController@destroy')->name('result-master.destroy');
+    Route::post('result-master/store', 'ResultMasterController@store')->name('result-master.store');
+    Route::post('result-master/delete', 'ResultMasterController@destroy')->name('result-master.delete');
+    Route::delete('result-master/destroy', 'ResultMasterController@massDestroy')->name('result-master.massDestroy');
+
 
     // Internal Weightage
     // Route::delete('internal-weightages/destroy', 'SemesterController@semTypeDelete')->name('semesters.destroy');
@@ -2328,8 +2365,16 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     Route::resource('od-masters', 'OdMasterController');
 
     // Class Rooms
+    Route::get('class-rooms', 'ClassRoomsController@index')->name('class-rooms.index');
+    Route::post('class-rooms/view', 'ClassRoomsController@view')->name('class-rooms.view');
+    Route::post('class-rooms/edit', 'ClassRoomsController@edit')->name('class-rooms.edit');
+    Route::post('class-rooms/store', 'ClassRoomsController@store')->name('class-rooms.store');
+    Route::post('class-rooms/delete', 'ClassRoomsController@destroy')->name('class-rooms.delete');
+    Route::post('class-rooms/change-status', 'ClassRoomsController@changeStatus')->name('class-rooms.change-status');
+    Route::post('class-rooms/getBatch', 'ClassRoomsController@getBatch')->name('class-rooms.getBatch');
     Route::delete('class-rooms/destroy', 'ClassRoomsController@massDestroy')->name('class-rooms.massDestroy');
-    Route::resource('class-rooms', 'ClassRoomsController');
+
+
 
     // Email Settings
     Route::delete('email-settings/destroy', 'EmailSettingsController@massDestroy')->name('email-settings.massDestroy');

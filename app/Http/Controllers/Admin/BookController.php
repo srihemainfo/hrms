@@ -399,7 +399,7 @@ class BookController extends Controller
         foreach ($books as $book) {
             $data = QrCode::size(300)
                 ->margin(4)
-                ->generate('https://svcet.kalvierp.com/admin/book-issue/get-book-info/' . $book->book_code);
+                ->generate('https://enggdemo.kalvierp.com/admin/book-issue/get-book-info/' . $book->book_code);
                 // ->generate('http://127.0.0.1:8001/admin/book-issue/get-book-info/' . $book->book_code);
             $qrcode[] = array('qrcode' => $data, 'book_code' => $book->book_code);
         }
