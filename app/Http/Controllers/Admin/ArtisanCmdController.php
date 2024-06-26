@@ -130,6 +130,10 @@ class ArtisanCmdController extends Controller
         //     }
         // }
 
+        // $user = DB::table('academic_details')
+        //     ->whereNotNull('register_number')
+        //     ->update(['register_number' => DB::raw('SUBSTRING(register_number, 5)')]);
+
         return back();
     }
 
