@@ -1756,6 +1756,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('exam-result-publish/parse-csv-import', 'ExamRegistrationController@parseCsvImport')->name('exam-result-publish.parseCsvImport');
     Route::post('exam-result-publishes/process-csv-import', 'ExamRegistrationController@processCsvImport')->name('exam-result-publishes.processCsvImport');
 
+    Route::get('rd-staffs/index', 'TeachingStaffController@rdStaffIndex')->name('rd-staffs.index');
+    Route::post('rd-staffs/store', 'TeachingStaffController@rdStaffStore')->name('rd-staffs.store');
+    Route::post('rd-staffs/remove', 'TeachingStaffController@rdStaffRemove')->name('rd-staffs.remove');
+    
     Route::resource('result-publish', 'ResultPublishController');
     Route::get('result-publish/download-excel/{ay}/{batch}/{course}/{regulation}/{sem}/{result_type}', 'ResultPublishController@downloadExcel')->name('result-publish.download-excel');
     Route::get('result-publish/download-pdf/{ay}/{batch}/{course}/{regulation}/{sem}/{result_type}', 'ResultPublishController@downloadPDF')->name('result-publish.download-pdf');
