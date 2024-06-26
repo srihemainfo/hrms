@@ -1,7 +1,7 @@
 <?php
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 // use App\Http\Controllers\Admin\GoogleDriveController;
 
@@ -54,11 +54,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::get('circle', 'ArtisanCmdController@circle');
 
-    // Api Staff Biometric 
-    Route::get('api-biometric', 'ArtisanCmdController@ApiBiometric');
     // Permissions
+    Route::get('permissions', 'PermissionsController@index')->name('permissions.index');
+    Route::post('permissions/view', 'PermissionsController@view')->name('permissions.view');
+    Route::post('permissions/edit', 'PermissionsController@edit')->name('permissions.edit');
+    Route::post('permissions/store', 'PermissionsController@store')->name('permissions.store');
+    Route::post('permissions/delete', 'PermissionsController@destroy')->name('permissions.delete');
     Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
-    Route::resource('permissions', 'PermissionsController');
 
     // Roles
     Route::delete('roles/destroy', 'RolesController@massDestroy')->name('roles.massDestroy');
@@ -74,7 +76,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('users/unblock', 'UsersController@unblock')->name('users.unblock');
     Route::get('users/block_list', 'UsersController@block_list')->name('users.block_list');
     Route::post('users/block_user', 'UsersController@block_user')->name('users.block_user');
-    Route::match(['get', 'post'], 'users/unblock_user', 'UsersController@unblock_user')->name('users.unblock_user');
+    Route::match (['get', 'post'], 'users/unblock_user', 'UsersController@unblock_user')->name('users.unblock_user');
     Route::post('users/fetch_role', 'UsersController@fetch_role')->name('users.fetch_role');
     Route::resource('users', 'UsersController');
 
@@ -87,8 +89,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('audit-logs', 'AuditLogsController', ['except' => ['create', 'store', 'edit', 'update', 'destroy']]);
 
     // Tools Degree Type
-    Route::delete('tools-degree-types/destroy', 'ToolsDegreeTypeController@massDestroy')->name('tools-degree-types.massDestroy');
-    Route::resource('tools-degree-types', 'ToolsDegreeTypeController');
+    // Route::delete('tools-degree-types/destroy', 'ToolsDegreeTypeController@massDestroy')->name('tools-degree-types.massDestroy');
+    // Route::resource('tools-degree-types', 'ToolsDegreeTypeController');
 
     Route::get('tools-degree-types', 'ToolsDegreeTypeController@index')->name('tools-degree-types.index');
     Route::post('tools-degree-types/view', 'ToolsDegreeTypeController@view')->name('tools-degree-types.view');
@@ -212,8 +214,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('subject-registration/getData', 'SubjectRegistrationController@getData')->name('subjectRegistration.getData');
     Route::post('subject-registration/getDatas', 'SubjectRegistrationController@getDatas')->name('subjectRegistration.getDatas');
     Route::post('subject-registration/parseCsvRemovalSubjectReg', 'SubjectRegistrationController@parseCsvRemovalSubjectReg')->name('subjectRegistration.parseCsvRemovalSubjectReg');
-    Route::post('subject-registration/parseCsvHonors', 'SubjectRegistrationController@parseCsvHonors')->name('subjectRegistration.parseCsvHonors');
-    Route::post('subject-registrations/csvImportHonors', 'SubjectRegistrationController@processCsvHonors')->name('subject-registrations.csvImportHonors');
     Route::post('subject-registration/remove-process-csv-import-sub', 'SubjectRegistrationController@removeProcessCsvImportSub')->name('subject-registrations.removeProcessCsvImportSub');
 
     // Academic Details
@@ -242,7 +242,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('phd-details/staff_update', 'PhdDetailController@staff_update')->name('phd-details.staff_update');
     Route::post('phd-details/staff_updater', 'PhdDetailController@staff_index')->name('phd-details.staff_updater');
 
-    // Employment Details
+    // Employement Details
     Route::get('employment-details/staff_index/{user_name_id}/{name}', 'EmploymentDetailsController@staff_index')->name('employment-details.staff_index');
     Route::post('employment-details/staff_update', 'EmploymentDetailsController@staff_update')->name('employment-details.staff_update');
     // Route::post('personal-details/index', 'PersonalDetailsController@index')->name('personal-details.index');
@@ -317,14 +317,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('education-boards/delete', 'EducationBoardController@destroy')->name('education-boards.delete');
     Route::delete('education-boards/destroy', 'EducationBoardController@massDestroy')->name('education-boards.massDestroy');
 
-    // Admission Mode
-    Route::get('admission-mode', 'AdmissionModeController@index')->name('admission-mode.index');
-    Route::post('admission-mode/view', 'AdmissionModeController@view')->name('admission-mode.view');
-    Route::post('admission-mode/edit', 'AdmissionModeController@edit')->name('admission-mode.edit');
-    Route::post('admission-mode/store', 'AdmissionModeController@store')->name('admission-mode.store');
-    Route::post('admission-mode/delete', 'AdmissionModeController@destroy')->name('admission-mode.delete');
-    Route::delete('admission-mode/destroy', 'AdmissionModeController@massDestroy')->name('admission-mode.massDestroy');
-
     // Subject Types
     Route::get('subject_types', 'SubjectTypeController@index')->name('subject_types.index');
     Route::post('subject_types/view', 'SubjectTypeController@view')->name('subject_types.view');
@@ -348,10 +340,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('subject-registrations/parse-csv-import', 'SubjectRegistrationController@parseCsvImport')->name('subject-registrations.parseCsvImport');
     Route::post('subject-registrations/process-csv-import', 'SubjectRegistrationController@processCsvImport')->name('subject-registrations.processCsvImport');
     Route::resource('subject-registrations', 'SubjectRegistrationController');
-    Route::get('degree-wise-subject-registration/index', 'SubjectRegistrationController@degreeWise')->name('degree-wise-subject-registration.index');
-    Route::post('degree-wise-subject-registration/search', 'SubjectRegistrationController@degreeWise_search')->name('degree-wise-subject-registration.search');
+    Route::get('class-wise-subject-registration/index', 'SubjectRegistrationController@classWise')->name('class-wise-subject-registration.index');
+    Route::post('class-wise-subject-registration/search', 'SubjectRegistrationController@classWise_search')->name('class-wise-subject-registration.search');
     Route::post('subject-registration/get_sections', 'SubjectRegistrationController@getSections')->name('subject-registration.get_sections');
-    Route::get('degree-wise-subject-registration/show/{enroll}', 'SubjectRegistrationController@degreeWise_show')->name('degree-wise-subject-registration.show');
+    Route::get('class-wise-subject-registration/show/{enroll}', 'SubjectRegistrationController@classWise_show')->name('class-wise-subject-registration.show');
     Route::get('subject-wise-subject-registration/show/{enroll}/{subject}', 'SubjectRegistrationController@subjectWise_show')->name('subject-wise-subject-registration.show');
     Route::get('subject-wise-subject-registration/index', 'SubjectRegistrationController@subjectWise')->name('subject-wise-subject-registration.index');
     Route::post('subject-wise-subject-registration/search', 'SubjectRegistrationController@subjectWise_search')->name('subject-wise-subject-registration.search');
@@ -362,7 +354,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('Exam-Cell-Coordinators/create/store', 'ExamCellCoordinatorsController@store')->name('exam_cell_coordinators.store');
     Route::delete('Exam-Cell-Coordinators/remove/{id}', 'ExamCellCoordinatorsController@remove')->name('exam_cell_coordinators.remove');
     Route::get('Exam-Cell-Coordinators/show/{id}', 'ExamCellCoordinatorsController@show')->name('exam_cell_coordinators.show');
-
+    /*
     //Lab mark
     Route::get('lab-mark/index', 'lab_markController@index')->name('lab_mark.index');
     Route::get('lab-mark/create', 'lab_markController@create')->name('lab_schedule.create');
@@ -380,6 +372,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('lab_Exam_Attendance/attendance', 'lab_markController@attendance')->name('lab_Exam_Attendance.attendance');
     Route::get('lab_Exam_Attendance/AttendanceEnter/{id}/{recordId}', 'lab_markController@attendanceEnter')->name('lab_exam_attendance.attendanceEnter');
     Route::post('lab_Exam_Attendance/Attendence_Store', 'lab_markController@attendencestore')->name('labExamAttendance.attendencestore');
+    Route::get('lab_Exam-Attendance/editattendance/{id}/{recordId}', 'lab_markController@editattendance')->name('lab_exam_attendance.editattendance');
     Route::get('lab_Exam-Attendance/editattendance/{id}/{recordId}', 'lab_markController@editattendance')->name('lab_exam_attendance.editattendance');
     Route::get('lab_Exam-Attendance/ViewAttendance/{id}/{recordId}', 'lab_markController@viewattendance')->name('lab_exam_attendance.viewattendance');
     Route::post('lab_Exam-Attendance/attendenceUpdate', 'lab_markController@attendenceUpdate')->name('lab_exam_attendance.attendenceUpdate');
@@ -425,7 +418,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('lab_Exam-StaffWise-report/pdf/{ay}/{year}/{sem}/{examname}/{course}/{section}', 'LabExamAttendanceSummaryController@staff_wisePDF')->name('lab_Exam_staff_wise_report.pdf');
     Route::get('lab_Result_Analysis_bar_chart', 'LabExamAttendanceSummaryController@chart')->name('lab_Result_Analysis_bar_chart.chart');
     Route::post('lab_Result_Analysis_bar_chart/Bar_chart', 'LabExamAttendanceSummaryController@showChart')->name('lab_Result_Analysis_bar_chart.showChart');
-
+     */
     // Route::resource('Exam-Cell-Coordinators', 'ExamCellCoordinatorsController');
 
     // Class Time Table
@@ -455,150 +448,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('Faculty-WorkLoad/Report', 'FacultyWorkLoadController@show')->name('Faculty-WorkLoad.show');
     Route::get('Faculty-WorkLoad/index/{user_name_id}', 'FacultyWorkLoadController@view')->name('Faculty-WorkLoad.view');
 
-    //Hostel Block
-    Route::get('hostel', 'HostelBlockController@index')->name('hostel.index');
-    Route::post('hostel/view', 'HostelBlockController@view')->name('hostel.view');
-    Route::post('hostel/edit', 'HostelBlockController@edit')->name('hostel.edit');
-    Route::post('hostel/store', 'HostelBlockController@store')->name('hostel.store');
-    Route::post('hostel/delete', 'HostelBlockController@destroy')->name('hostel.delete');
-    Route::delete('hostel/destroy', 'HostelBlockController@massDestroy')->name('hostel.massDestroy');
-
-    Route::get('hostelRoom', 'HostelBlockController@roomIndex')->name('hostelRoom.index');
-    Route::post('hostelRoom/view', 'HostelBlockController@roomView')->name('hostelRoom.view');
-    Route::post('hostelRoom/edit', 'HostelBlockController@roomEdit')->name('hostelRoom.edit');
-    Route::post('hostelRoom/store', 'HostelBlockController@roomStore')->name('hostelRoom.store');
-    Route::post('hostelRoom/delete', 'HostelBlockController@roomDestroy')->name('hostelRoom.delete');
-    Route::get('hostelRoom/staffIndex', 'HostelBlockController@roomStaffIndex')->name('hostelRoom.roomStaffIndex');
-    Route::delete('hostelRoom/destroy', 'HostelBlockController@roomMassDestroy')->name('hostelRoom.massDestroy');
-
-
-    Route::get('room-allot', 'RoomAllocationController@index')->name('room-allot.index');
-    Route::post('room-allot/view', 'RoomAllocationController@view')->name('room-allot.view');
-    Route::post('room-allot/edit', 'RoomAllocationController@edit')->name('room-allot.edit');
-    Route::post('room-allot/store', 'RoomAllocationController@store')->name('room-allot.store');
-    Route::get('room-allot/staffIndex', 'RoomAllocationController@staffIndex')->name('room-allot.staffIndex');
-    Route::post('room-allot/delete', 'RoomAllocationController@destroy')->name('room-allot.delete');
-    Route::delete('room-allot/destroy', 'RoomAllocationController@massDestroy')->name('room-allot.massDestroy');
-    Route::post('room-allot/checkRoom', 'RoomAllocationController@checkRoom')->name('room-allot.checkRoom');
-
-
-    Route::get('hostel-attendance', 'HostelAttendanceController@index')->name('hostel-attendance.index');
-    Route::post('hostel-attendance/view', 'HostelAttendanceController@view')->name('hostel-attendance.view');
-    Route::post('hostel-attendance/edit', 'HostelAttendanceController@edit')->name('hostel-attendance.edit');
-    Route::post('hostel-attendance/store', 'HostelAttendanceController@store')->name('hostel-attendance.store');
-    Route::post('hostel-attendance/delete', 'HostelAttendanceController@destroy')->name('hostel-attendance.delete');
-    Route::delete('hostel-attendance/destroy', 'HostelAttendanceController@massDestroy')->name('hostel-attendance.massDestroy');
-    Route::post('hostel-attendance/get-student', 'HostelAttendanceController@get_student')->name('hostel-attendance.get-student');
-    Route::post('hostel-attendance/view_attendance', 'HostelAttendanceController@view_attendance')->name('hostel-attendance.view_attendance');
-    Route::post('hostel-attendance/edit_attendance', 'HostelAttendanceController@edit_attendance')->name('hostel-attendance.edit_attendance');
-    Route::get('hostel-attendance-report/reportIndex', 'HostelAttendanceController@reportIndex')->name('hostel-attendance.reportIndex');
-    Route::post('hostel-attendance-report/get_report', 'HostelAttendanceController@get_report')->name('hostel-attendance.get_report');
-
-    Route::get('bus', 'BusController@index')->name('bus.index');
-    Route::post('bus/edit', 'BusController@edit')->name('bus.edit');
-    Route::post('bus/store', 'BusController@store')->name('bus.store');
-    Route::post('bus/view', 'BusController@view')->name('bus.view');
-    Route::post('bus/delete', 'BusController@destroy')->name('bus.delete');
-    Route::delete('bus/destroy', 'BusController@massDestroy')->name('bus.massDestroy');
-
-    Route::get('driver', 'DriverController@index')->name('driver.index');
-    Route::get('driver/create', 'DriverController@create')->name('driver.create');
-    Route::post('driver/store', 'DriverController@store')->name('driver.store');
-    Route::put('driver/update', 'DriverController@update')->name('driver.update');
-    Route::post('driver/delete', 'DriverController@destroy')->name('driver.destroy');
-    Route::delete('driver/destroy', 'DriverController@massDestroy')->name('driver.massDestroy');
-    Route::get('driver/Profile-edit/{id}', 'DriverController@edit')->name('driver.Profile-edit');
-    Route::get('driver/Profile-view/{id}', 'DriverController@show')->name('driver.Profile-view');
-    Route::get('driver/show/{id}', 'DriverController@show')->name('driver.show');
-    Route::get('driver/edit/{id}', 'DriverController@edit')->name('driver.edit');
-    Route::get('driver/staffIndex', 'DriverController@staffIndex')->name('driver.staffIndex');
-    // Route::resource('driver', 'DriverController');
-
-
-    Route::get('bus-route', 'BusRouteController@index')->name('bus-route.index');
-    Route::post('bus-route/edit', 'BusRouteController@edit')->name('bus-route.edit');
-    Route::post('bus-route/store', 'BusRouteController@store')->name('bus-route.store');
-    Route::post('bus-route/view', 'BusRouteController@show')->name('bus-route.view');
-    Route::post('bus-route/delete', 'BusRouteController@destroy')->name('bus-route.delete');
-    Route::delete('bus-route/destroy', 'BusRouteController@massDestroy')->name('bus-route.massDestroy');
-    // Route::post('bus/get-student', 'BusController@get_student')->name('bus.get-student');
-
-    // Bus Route Allocation
-    Route::get('route-allot', 'RouteAllocationController@index')->name('route-allot.index');
-    Route::post('route-allot/edit', 'RouteAllocationController@edit')->name('route-allot.edit');
-    Route::post('route-allot/store', 'RouteAllocationController@store')->name('route-allot.store');
-    Route::post('route-allot/view', 'RouteAllocationController@view')->name('route-allot.view');
-    Route::post('route-allot/delete', 'RouteAllocationController@destroy')->name('route-allot.delete');
-    Route::delete('route-allot/destroy', 'RouteAllocationController@massDestroy')->name('route-allot.massDestroy');
-
-    Route::get('bus-student', 'BusStudentController@index')->name('bus-student.index');
-    Route::post('bus-student/edit', 'BusStudentController@edit')->name('bus-student.edit');
-    Route::post('bus-student/store', 'BusStudentController@store')->name('bus-student.store');
-    Route::post('bus-student/view', 'BusStudentController@view')->name('bus-student.view');
-    Route::post('bus-student/delete', 'BusStudentController@destroy')->name('bus-student.delete');
-    Route::delete('bus-student/destroy', 'BusStudentController@massDestroy')->name('bus-student.massDestroy');
-    Route::post('bus-student/checkDesignation', 'BusStudentController@checkDesignation')->name('bus-student.checkDesignation');
-    Route::get('transport-report/index', 'BusStudentController@reportIndex')->name('transport-report.reportIndex');
-    Route::post('transport-report/report', 'BusStudentController@report')->name('transport-report.report');
-
-    // Library Rack
-    Route::get('rack', 'RackController@index')->name('rack.index');
-    Route::post('rack/edit', 'RackController@edit')->name('rack.edit');
-    Route::post('rack/store', 'RackController@store')->name('rack.store');
-    Route::post('rack/view', 'RackController@view')->name('rack.view');
-    Route::post('rack/delete', 'RackController@destroy')->name('rack.delete');
-    Route::delete('rack/destroy', 'RackController@massDestroy')->name('rack.massDestroy');
-
-    Route::get('genre', 'GenreController@index')->name('genre.index');
-    Route::post('genre/edit', 'GenreController@edit')->name('genre.edit');
-    Route::post('genre/store', 'GenreController@store')->name('genre.store');
-    Route::post('genre/view', 'GenreController@view')->name('genre.view');
-    Route::post('genre/delete', 'GenreController@destroy')->name('genre.delete');
-    Route::delete('genre/destroy', 'GenreController@massDestroy')->name('genre.massDestroy');
-
-    Route::get('book', 'BookController@index')->name('book.index');
-    Route::post('book/edit', 'BookController@edit')->name('book.edit');
-    Route::post('book/store', 'BookController@store')->name('book.store');
-    Route::post('book/view', 'BookController@view')->name('book.view');
-    Route::post('book/delete', 'BookController@destroy')->name('book.delete');
-    Route::delete('book/destroy', 'BookController@massDestroy')->name('book.massDestroy');
-    Route::get('book/downloadQr/{id}', 'BookController@downloadQr')->name('book.downloadQr');
-    Route::get('download-pdf/{filename}', 'BookController@downloadPdf');
-    Route::post('book/parse-csv-import', 'BookController@parseCsvImport')->name('book-models.parseCsvImport');
-    Route::post('book/process-csv-import', 'BookController@processCsvImport')->name('book-models.processCsvImport');
-
-    Route::get('book-allocate', 'BookAllocateController@index')->name('book-allocate.index');
-    Route::post('book-allocate/edit', 'BookAllocateController@edit')->name('book-allocate.edit');
-    Route::post('book-allocate/store', 'BookAllocateController@store')->name('book-allocate.store');
-    Route::post('book-allocate/view', 'BookAllocateController@view')->name('book-allocate.view');
-    Route::post('book-allocate/delete', 'BookAllocateController@destroy')->name('book-allocate.delete');
-    Route::delete('book-allocate/destroy', 'BookAllocateController@massDestroy')->name('book-allocate.massDestroy');
-    Route::post('book-allocate/fetchRow', 'BookAllocateController@fetchRow')->name('book-allocate.fetchRow');
-    Route::post('book-allocate/fetchBook', 'BookAllocateController@fetchBook')->name('book-allocate.fetchBook');
-    Route::post('book-allocate/fetchCount', 'BookAllocateController@fetchCount')->name('book-allocate.fetchCount');
-
-    //Book Issue
-    Route::get('book-issue', 'BookIssueController@index')->name('book-issue.index');
-    Route::post('book-issue/edit', 'BookIssueController@edit')->name('book-issue.edit');
-    Route::post('book-issue/store', 'BookIssueController@store')->name('book-issue.store');
-    Route::post('book-issue/view', 'BookIssueController@view')->name('book-issue.view');
-    Route::post('book-issue/delete', 'BookIssueController@destroy')->name('book-issue.delete');
-    Route::delete('book-issue/destroy', 'BookIssueController@massDestroy')->name('book-issue.massDestroy');
-    Route::post('book-issue/fetchBook', 'BookIssueController@fetchBook')->name('book-issue.fetchBook');
-    Route::post('book-issue/fetchBookNo', 'BookIssueController@fetchBookNo')->name('book-issue.fetchBookNo');
-    Route::post('book-issue/checkStudent', 'BookIssueController@checkStudent')->name('book-issue.checkStudent');
-    Route::get('book-issue/get_record/{id}', 'BookIssueController@get_record')->name('book-issue.get_record');
-    Route::get('book-issue/get-book-info/{id}', 'BookIssueController@get_book_info')->name('book.get_book_info');
-    Route::post('book-issue/updater', 'BookIssueController@updater')->name('book-issue.updater');
-    Route::post('book-issue/reservation', 'BookIssueController@reservation')->name('book-issue.reservation');
-    Route::get('reserve-report/report', 'BookIssueController@reserveReport')->name('reserve-report.reserveReport');
-    Route::get('memberWise-report/report', 'BookIssueController@memberWiseReport')->name('memberWise-report.memberWiseReport');
-    Route::get('departWise-report/report/{who}', 'BookIssueController@departWise')->name('departWise-report.departWiseReport');
-    Route::get('inventory-report/report', 'BookIssueController@inventory')->name('inventory-report.inventory');
-    Route::post('reserve-report/search', 'BookIssueController@search')->name('reserve-report.search');
-
-
-
     // Staff Subjects
     Route::get('staff-subjects/lesson-plan/download-pdf/{enroll}/{subject}/{status}', 'StaffSubjectsController@lessonPlanPdf')->name('staff-subjects.lesson-plan.download-pdf');
     Route::get('staff-subjects/lesson-plan', 'StaffSubjectsController@lesson_plan')->name('staff-subjects.lesson-plan');
@@ -612,8 +461,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('staff-subjects/lesson-plan/submit', 'StaffSubjectsController@lessonPlanSubmit')->name('staff-subjects.lesson-plan.submit');
     Route::post('staff-subjects/lesson-plan/save', 'StaffSubjectsController@lessonPlanSave')->name('staff-subjects.lesson-plan.save');
     Route::post('staff-subjects/lesson-plan/update', 'StaffSubjectsController@lessonPlanUpdate')->name('staff-subjects.lesson-plan.update');
-    Route::post('staff-subjects/get-past-records', 'StaffSubjectsController@getPastSubjectRecords')->name('staff-subjects.get-past-records');
-    Route::post('staff-subjects/lesson-plan/get-past-records', 'StaffSubjectsController@getPastLessonPlanRecords')->name('staff-subjects.lesson-plan.get-past-records');
+    Route::post('staff-subjects/get-past-records', 'StaffSubjectsController@getPastRecords')->name('staff-subjects.get-past-records');
 
     // Staff Lesson Plan HOD Access
     Route::get('staff-subjects/lesson-plan/hod-view/{enroll}/{subject}/{status}', 'StaffSubjectsController@lessonPlanHODView')->name('staff-subjects.lesson-plan.hod-view');
@@ -673,8 +521,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('student-period-attendance/taken_periods', 'StudentPeriodAttendanceController@takenPeriods')->name('student-period-attendance.taken_periods');
     Route::post('student-period-attendance/get_batch', 'StudentPeriodAttendanceController@getBatch')->name('student-period-attendance.get_batch');
     Route::post('student-period-attendance/check_period', 'StudentPeriodAttendanceController@checkPeriod')->name('student-period-attendance.check_period');
-    Route::post('student-period-attendance/get-period', 'StudentPeriodAttendanceController@getPeriod')->name('student-period-attendance.get_period');
-    Route::post('student-period-attendance/get-classes', 'StudentPeriodAttendanceController@getClasses')->name('student-period-attendance.get-classes');
+    Route::post('student-period-attendance/get_period', 'StudentPeriodAttendanceController@getPeriod')->name('student-period-attendance.get_period');
     Route::post('student-period-attendance/attendance_log', 'StudentPeriodAttendanceController@attendanceLog')->name('student-period-attendance.attendance_log');
     Route::post('student-period-attendance/get-past-records', 'StudentPeriodAttendanceController@getPastRecords')->name('student-period-attendance.get-past-records');
     Route::get('Student_period_Attendance_report/pdf/{Subject}/{Class}', 'StudentPeriodAttendanceController@Student_period_Attendance_report')->name('Student_period_Attendance_report');
@@ -695,17 +542,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Absentees Summary Report
     Route::get('absentees-summary-report/index', 'AttendanceReportController@absenteesReportIndex')->name('absentees-summary-report.index');
-    Route::get('absentees-summary-report/pdf/{department}/{course}/{ay}/{sem_type}/{date}', 'AttendanceReportController@absenteesReportPDF')->name('absentees-summary-report.pdf');
+    Route::get('absentees-summary-report/pdf/{course}/{ay}/{date}', 'AttendanceReportController@absenteesReportPDF')->name('absentees-summary-report.pdf');
     Route::post('absentees-summary-report/summary-report', 'AttendanceReportController@absenteesReport')->name('absentees-summary-report.summary-report');
 
     //ExamResult PDF ClassWise Report
-    Route::get('Exam-classWise-summary-report/pdf/{Ay}/{Ex}/{Sem}/{Course}/{Year}/{Sec}', 'CatExamAttendanceSummaryController@Exam_classWise_ReportPDF')->name('Ex_classWise-summary-report.pdf');
+    Route::get('Exam-classWise-summary-report/pdf/{Ay}/{Ex}/{Sem}/{Course}/{Year}/{Sec}', 'MidTermExamAttendanceSummaryController@Exam_classWise_ReportPDF')->name('Ex_classWise-summary-report.pdf');
 
     // Exam Create
     Route::get('Exam-time-table.index', 'ExamTimetableCreationController@index')->name('Exam-time-table.index');
     Route::get('Exam-Attendance/attendance', 'ExamTimetableCreationController@attendance')->name('Exam-Attendance.attendance');
     // Route::get('Exam-time-table.store', 'ExamTimetableCreationController@store')->name('Exam-time-table.store');
-    Route::get('examTimetable.create', 'ExamTimetableCreationController@create')->name('examTimetable.create');
+    Route::get('examTimetable/create', 'ExamTimetableCreationController@create')->name('examTimetable.create');
     Route::get('examTimetable/show/{id}', 'ExamTimetableCreationController@view')->name('examTimetable.show');
     Route::post('examTimetable.search', 'ExamTimetableCreationController@search')->name('examTimetable.search');
     Route::post('examTimetable.Subject_get', 'ExamTimetableCreationController@Subject_get')->name('examTimetable.Subject_get');
@@ -742,69 +589,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('student-mandatory-details/index', 'StudentDetailsController@index')->name('student-mandatory-details.index');
     Route::get('student-mandatory-details/generate/{batch}/{ay}/{course}/{semester}', 'StudentDetailsController@generate')->name('student-mandatory-details.generate');
 
-    // Edge
-    Route::get('staff-edge/index', 'EdgeController@staff')->name('staff-edge.index');
-    Route::get('staff-edge-hr', 'EdgeController@staff_hr')->name('staff-edge-hr');
-    Route::get('student-edge/index', 'EdgeController@student')->name('student-edge.index');
-    Route::post('staff-edge', 'EdgeController@staff_edge')->name('staff-edge');
-    Route::post('staff-edge/geter', 'EdgeController@staff_geter')->name('staff-edge.geter');
-    Route::post('student-edge', 'EdgeController@student_edge')->name('student-edge');
-    Route::post('student-edge/geter', 'EdgeController@student_geter')->name('student-edge.geter');
-    // Route::get('get-staff-edge/{staff}','EdgeController@checker')->name('get-staff-edge');
-
-    // Student
-    Route::delete('students/destroy', 'StudentController@massDestroy')->name('students.massDestroy');
-    Route::post('students/parse-csv-import', 'StudentController@parseCsvImport')->name('students.parseCsvImport');
-    Route::post('students/process-csv-import', 'StudentController@processCsvImport')->name('students.processCsvImport');
-    Route::get('students/{id}/Profile-view', 'StudentController@show')->name('students.Profile-view');
-    Route::get('students/{id}/Profile-edit', 'StudentController@first_edit')->name('students.Profile-edit');
-    Route::post('students/search', 'StudentController@search')->name('students.search');
-    Route::resource('students', 'StudentController');
-    Route::resource('students-edge', 'StudentController');
-
-    // Removed Student
-    Route::get('removed-students/index', 'StudentController@removedStudents')->name('removed-students.index');
-
-    // Education Type
-    Route::get('education-types', 'EducationTypeController@index')->name('education-types.index');
-    Route::post('education-types/view', 'EducationTypeController@view')->name('education-types.view');
-    Route::post('education-types/edit', 'EducationTypeController@edit')->name('education-types.edit');
-    Route::post('education-types/store', 'EducationTypeController@store')->name('education-types.store');
-    Route::post('education-types/delete', 'EducationTypeController@destroy')->name('education-types.delete');
-    Route::delete('education-types/destroy', 'EducationTypeController@massDestroy')->name('education-types.massDestroy');
-
-
-    //  Lab
-    Route::delete('tool-lab/destroy', 'LabController@massDestroy')->name('tool-lab.massDestroy');
-    Route::resource('tool-lab', 'LabController');
-
-    // Scholarship
-    Route::get('scholarships/index', 'ScholarshipController@index')->name('scholarships.index');
-    Route::post('scholarships/view', 'ScholarshipController@view')->name('scholarships.view');
-    Route::post('scholarships/edit', 'ScholarshipController@edit')->name('scholarships.edit');
-    Route::post('scholarships/store', 'ScholarshipController@store')->name('scholarships.store');
-    Route::post('scholarships/delete', 'ScholarshipController@destroy')->name('scholarships.delete');
-    Route::delete('scholarships/destroy', 'ScholarshipController@massDestroy')->name('scholarships.massDestroy');
-
-    // Fee Management
-
-    // Route::get('fee-structure/structureIndex', 'FeeController@structureIndex')->name('fee-structure.structureIndex');
-    // Route::get('fee-structure/create', 'FeeController@structureCreate')->name('fee-structure.create');
-    // Route::get('fee-structure/show/{id}', 'FeeController@structureShow')->name('fee-structure.show');
-    // Route::get('fee-structure/edit/{id}', 'FeeController@structureEdit')->name('fee-structure.edit');
-    // Route::post('fee-structure/check', 'FeeController@structureCheck')->name('fee-structure.check');
-    // Route::post('fee-structure/index', 'FeeController@index')->name('fee-structure.index');
-    // Route::post('fee-structure/search', 'FeeController@structureSearch')->name('fee-structure.search');
-    // Route::post('fee-structure/store', 'FeeController@structureStore')->name('fee-structure.store');
-    // Route::post('fee-structure/update', 'FeeController@structureUpdate')->name('fee-structure.update');
-    // Route::post('fee-structure/delete', 'FeeController@structureDelete')->name('fee-structure.delete');
-
+    // Fees Management
     Route::get('fee-structure', 'FeeStructureController@index')->name('fee-structure.index');
     Route::post('fee-structure/view', 'FeeStructureController@view')->name('fee-structure.view');
     Route::post('fee-structure/edit', 'FeeStructureController@edit')->name('fee-structure.edit');
     Route::post('fee-structure/store', 'FeeStructureController@store')->name('fee-structure.store');
     Route::post('fee-structure/delete', 'FeeStructureController@destroy')->name('fee-structure.delete');
     Route::post('fee-structure/generate-fee', 'FeeStructureController@generateFee')->name('fee-structure.generate-fee');
+    Route::post('fee-structure/get-fee', 'FeeStructureController@getFee')->name('fee-structure.getFee');
     Route::post('fee-structure/publish-fee', 'FeeStructureController@publishFee')->name('fee-structure.publish-fee');
     Route::delete('fee-structure/destroy', 'FeeStructureController@massDestroy')->name('fee-structure.massDestroy');
 
@@ -839,22 +631,109 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('fee-defaulters-report', 'FeeReportController@defaultersReport')->name('fee-defaulters-report.index');
     Route::post('fee-defaulters-report/get-data', 'FeeReportController@defaultersData')->name('fee-defaulters-report.get-data');
     Route::get('fee-scholarship-report', 'FeeReportController@scholarshipReport')->name('fee-scholarship-report.index');
-    Route::get('fee-category-report', 'FeeReportController@categoryReport')->name('fee-category-report.index');
-    Route::post('fee-category-report/get-data', 'FeeReportController@categoryRepData')->name('fee-category-report.get-data');
+    // Route::get('fee-category-report', 'FeeReportController@categoryReport')->name('fee-category-report.index');
+    // Route::post('fee-category-report/get-data', 'FeeReportController@categoryRepData')->name('fee-category-report.get-data');
 
     // Fee In Student Login
     Route::get('fee/stu_index', 'FeePaymentController@StudentIndex')->name('fee.stu_index');
 
+
+
+    // Edge
+    Route::get('staff-edge/index', 'EdgeController@staff')->name('staff-edge.index');
+    Route::get('staff-edge-hr', 'EdgeController@staff_hr')->name('staff-edge-hr');
+    Route::get('student-edge/index', 'EdgeController@student')->name('student-edge.index');
+    Route::post('staff-edge', 'EdgeController@staff_edge')->name('staff-edge');
+    Route::post('staff-edge/geter', 'EdgeController@staff_geter')->name('staff-edge.geter');
+    Route::post('student-edge', 'EdgeController@student_edge')->name('student-edge');
+    Route::post('student-edge/geter', 'EdgeController@student_geter')->name('student-edge.geter');
+    // Route::get('get-staff-edge/{staff}','EdgeController@checker')->name('get-staff-edge');
+
+    // Student
+    Route::delete('students/destroy', 'StudentController@massDestroy')->name('students.massDestroy');
+    Route::post('students/parse-csv-import', 'StudentController@parseCsvImport')->name('students.parseCsvImport');
+    Route::post('students/process-csv-import', 'StudentController@processCsvImport')->name('students.processCsvImport');
+    Route::get('students/{id}/Profile-view', 'StudentController@show')->name('students.Profile-view');
+    Route::get('students/{id}/Profile-edit', 'StudentController@first_edit')->name('students.Profile-edit');
+    Route::post('students/search', 'StudentController@search')->name('students.search');
+    Route::resource('students', 'StudentController');
+    Route::resource('students-edge', 'StudentController');
+
+    // Removed Student
+    Route::get('removed-students/index', 'StudentController@removedStudents')->name('removed-students.index');
+
+    // Education Type
+    Route::get('education-types', 'EducationTypeController@index')->name('education-types.index');
+    Route::post('education-types/view', 'EducationTypeController@view')->name('education-types.view');
+    Route::post('education-types/edit', 'EducationTypeController@edit')->name('education-types.edit');
+    Route::post('education-types/store', 'EducationTypeController@store')->name('education-types.store');
+    Route::post('education-types/delete', 'EducationTypeController@destroy')->name('education-types.delete');
+    Route::delete('education-types/destroy', 'EducationTypeController@massDestroy')->name('education-types.massDestroy');
+
+    //  Lab
+    Route::delete('tool-lab/destroy', 'LabController@massDestroy')->name('tool-lab.massDestroy');
+    Route::resource('tool-lab', 'LabController');
+
+    // Scholarship
+    Route::get('scholarships/index', 'ScholarshipController@index')->name('scholarships.index');
+    Route::post('scholarships/view', 'ScholarshipController@view')->name('scholarships.view');
+    Route::post('scholarships/edit', 'ScholarshipController@edit')->name('scholarships.edit');
+    Route::post('scholarships/store', 'ScholarshipController@store')->name('scholarships.store');
+    Route::post('scholarships/delete', 'ScholarshipController@destroy')->name('scholarships.delete');
+    Route::delete('scholarships/destroy', 'ScholarshipController@massDestroy')->name('scholarships.massDestroy');
+
+    // Admission Mode
+    Route::get('admission-mode', 'AdmissionModeController@index')->name('admission-mode.index');
+    Route::post('admission-mode/view', 'AdmissionModeController@view')->name('admission-mode.view');
+    Route::post('admission-mode/edit', 'AdmissionModeController@edit')->name('admission-mode.edit');
+    Route::post('admission-mode/store', 'AdmissionModeController@store')->name('admission-mode.store');
+    Route::post('admission-mode/delete', 'AdmissionModeController@destroy')->name('admission-mode.delete');
+    Route::delete('admission-mode/destroy', 'AdmissionModeController@massDestroy')->name('admission-mode.massDestroy');
+
+    // Fee Management
+    // Route::get('fee-structure/structureIndex', 'FeeController@structureIndex')->name('fee-structure.structureIndex');
+    // Route::get('fee-structure/create', 'FeeController@structureCreate')->name('fee-structure.create');
+    // Route::get('fee-structure/show/{id}', 'FeeController@structureShow')->name('fee-structure.show');
+    // Route::get('fee-structure/edit/{id}', 'FeeController@structureEdit')->name('fee-structure.edit');
+    // Route::post('fee-structure/check', 'FeeController@structureCheck')->name('fee-structure.check');
+    // Route::post('fee-structure/index', 'FeeController@index')->name('fee-structure.index');
+    // Route::post('fee-structure/search', 'FeeController@structureSearch')->name('fee-structure.search');
+    // Route::post('fee-structure/store', 'FeeController@structureStore')->name('fee-structure.store');
+    // Route::post('fee-structure/update', 'FeeController@structureUpdate')->name('fee-structure.update');
+    // Route::post('fee-structure/delete', 'FeeController@structureDelete')->name('fee-structure.delete');
+    // Route::get('fee-structure', 'FeesStructureController@index')->name('fee-structure.index');
+    // Route::post('fee-structure/view', 'FeesStructureController@view')->name('fee-structure.view');
+    // Route::post('fee-structure/edit', 'FeesStructureController@edit')->name('fee-structure.edit');
+    // Route::post('fee-structure/store', 'FeesStructureController@store')->name('fee-structure.store');
+    // Route::post('fee-structure/delete', 'FeesStructureController@destroy')->name('fee-structure.delete');
+    // Route::delete('fee-structure/destroy', 'FeesStructureController@massDestroy')->name('fee-structure.massDestroy');
+
+    // // Collect Fee
+    Route::get('collect-fee/collectIndex', 'FeeCollectController@collectIndex')->name('collect-fee.collectIndex');
+    Route::get('collect-fee/show/{id}', 'FeeCollectController@collectShow')->name('collect-fee.show');
+    Route::get('collect-fee/pdf/{id}', 'FeeCollectController@collectPDF')->name('collect-fee.pdf');
+    Route::post('collect-fee/collectShow', 'FeeCollectController@collectShow')->name('collect-fee.collectShow');
+    Route::post('collect-fee/getFee', 'FeeCollectController@getFee')->name('collect-fee.getFee');
+    Route::post('collect-fee/store', 'FeeCollectController@collectStore')->name('collect-fee.store');
+    Route::get('collect-fee/payment-history/{year}/{id}/{user_name_id}', 'FeeCollectController@paymentHistory')->name('collect-fee.payment-history');
+
+    // // Fee Reports
+    // Route::get('fee/year-wise-report', 'FeeReportController@yearWiseRep')->name('fee.year-wise-report');
+    // Route::post('fee/year-wise-report/data', 'FeeReportController@yearWiseRepData')->name('fee.year-wise-report.data');
+    // Route::get('fee/show/{id}', 'FeeCollectController@collectShow')->name('fee.collectShow');
+
+    // Fee In Student Login
+    Route::get('fee/stu_index', 'FeeCollectController@StudentIndex')->name('fee.stu_index');
+
+    //Route::delete('subjects/destroy', 'SubjectController@massDestroy')->name('subjects.massDestroy');
+    Route::post('subjects/search', 'SubjectController@search')->name('subjects.search');
+    Route::get('subjects/show', 'SubjectController@show')->name('subjects.show');
+    Route::post('subjects/get_sub_categories', 'SubjectController@get_sub_categories')->name('subjects.get_sub_categories');
+    Route::post('subjects/get_course', 'SubjectController@get_course')->name('subjects.get_course');
+    // Routesubjects/statusUpdate', 'SubjectController@statusUpdate')->name('subjects.statusUpdate');
+    // Route::resource('subjects', 'SubjectController');
+
     // Subject
-    // Route::post('subject-masters/parse-csv-import', 'SubjectController@parseCsvImport')->name('subject-masters.parseCsvImport');
-    // Route::post('subject-masters/process-csv-import', 'SubjectController@processCsvImport')->name('subject-masters.processCsvImport');
-    // Route::delete('subjects/destroy', 'SubjectController@massDestroy')->name('subjects.massDestroy');
-    // Route::get('subjects', 'SubjectController@index')->name('subjects.index');
-    // Route::get('subjects/store', 'SubjectController@store')->name('subjects.store');
-    // Route::get('subjects/view', 'SubjectController@view')->name('subjects.view');
-    // Route::delete('subjects/delete', 'SubjectController@delete')->name('subjects.delete');
-    // Route::get('subjects/edit', 'SubjectController@edit')->name('subjects.edit');
-    
     Route::post('subject-masters/process-csv-import', 'SubjectController@processCsvImport')->name('subject-masters.processCsvImport');
     Route::post('subject-masters/parse-csv-import', 'SubjectController@parseCsvImport')->name('subject-masters.parseCsvImport');
     Route::get('subjects', 'SubjectController@index')->name('subjects.index');
@@ -863,20 +742,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('subjects/edit', 'SubjectController@edit')->name('subjects.edit');
     Route::post('subjects/store', 'SubjectController@store')->name('subjects.store');
     Route::post('subjects/delete', 'SubjectController@destroy')->name('subjects.delete');
-    Route::post('subjects/search', 'SubjectController@search')->name('subjects.search');
-    Route::post('subjects/get_course', 'SubjectController@get_course')->name('subjects.get_course');
     Route::delete('subjects/destroy', 'SubjectController@massDestroy')->name('subjects.massDestroy');
-    Route::post('subjects/statusUpdate', 'SubjectController@statusUpdate')->name('subjects.statusUpdate');
-    Route::post('subjects/get_sub_categories', 'SubjectController@get_sub_categories')->name('subjects.get_sub_categories');
-
-    // Route::resource('subjects', 'SubjectController');
-
-    // Honors Degree
-    Route::get('honor-subjects', 'SubjectController@honorsSubject')->name('honor-subjects.index');
-    Route::get('honor-subjects-report', 'SubjectController@honorsSubjectReport')->name('honor-subjects-report.index');
-    Route::post('honor-subjects/search', 'SubjectController@honorSearch')->name('honor-subjects.search');
-    Route::post('honor-subjects-report/search', 'SubjectController@honorReportSearch')->name('honor-subjects-report.search');
-    Route::get('honor-subjects/show/{class}', 'SubjectController@honorStudentsList')->name('honor-subjects.show');
 
     //Exam attendance
     Route::get('Exam-Attendance/AttendanceEnter/{id}/{recordId}', 'ExamTimetableCreationController@attendanceEnter')->name('exam_attendance.attendanceEnter');
@@ -908,16 +774,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Subject Allotment
     Route::post('subject-allotments/parse-csv-import', 'SubjectAllotmentController@parseCsvImport')->name('subject-allotments.parseCsvImport');
     Route::post('subject-allotments/process-csv-import', 'SubjectAllotmentController@processCsvImport')->name('subject-allotments.processCsvImport');
-    Route::get('subject-allotment/{regulation}/{department}/{course}/{academic_year}/{semester}/{semester_type}', 'SubjectAllotmentController@show');
-    Route::get('subject-allotment/{regulation}/{department}/{course}/{academic_year}/{semester}/{semester_type}/edit', 'SubjectAllotmentController@edit');
+    Route::get('subject-allotment/{course}/{academic_year}/{semester}/', 'SubjectAllotmentController@show');
+    Route::get('subject-allotment/{course}/{academic_year}/{semester}/edit', 'SubjectAllotmentController@edit');
     Route::post('subject-allotment/updater', 'SubjectAllotmentController@updater')->name('subject-allotment.updater');
     Route::resource('subject-allotment', 'SubjectAllotmentController');
     Route::post('subject-allotment/check', 'SubjectAllotmentController@check')->name('subject-allotment.check');
-    Route::post('subject-allotment/get-subjects', 'SubjectAllotmentController@getSubjects')->name('subject-allotment.get-subjects');
-    Route::post('subject-allotment/get-honor-subjects', 'SubjectAllotmentController@getHonorSubjects')->name('subject-allotment.get-honor-subjects');
+    Route::post('subject-allotment/get_subjects', 'SubjectAllotmentController@get_subjects')->name('subject-allotment.get_subjects');
     Route::post('subject-allotment/save', 'SubjectAllotmentController@save')->name('subject-allotment.save');
     Route::post('subject-allotment/search', 'SubjectAllotmentController@search')->name('subject-allotment.search');
-    Route::post('subject-allotment/delete', 'SubjectAllotmentController@destroy')->name('subject-allotment.delete');
+    Route::get('subject-allotment/{course}/{academic_year}/{semester}/delete', 'SubjectAllotmentController@destroy')->name('subject-allotment.destroy');
 
     // Mediumof Studied
     Route::get('mediumof-studieds', 'MediumofStudiedController@index')->name('mediumof-studieds.index');
@@ -926,7 +791,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('mediumof-studieds/store', 'MediumofStudiedController@store')->name('mediumof-studieds.store');
     Route::post('mediumof-studieds/delete', 'MediumofStudiedController@destroy')->name('mediumof-studieds.delete');
     Route::delete('mediumof-studieds/destroy', 'MediumofStudiedController@massDestroy')->name('mediumof-studieds.massDestroy');
-
 
     // Address
     Route::delete('addresses/destroy', 'AddressController@massDestroy')->name('addresses.massDestroy');
@@ -985,6 +849,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('teaching-staff/{id}/Profile-view', 'TeachingStaffController@show')->name('teaching-staff.Profile-view');
     Route::get('teaching-staffs/view', 'TeachingStaffController@show')->name('teaching-staffs.view');
     Route::delete('teaching-staffs/destroy', 'TeachingStaffController@massDestroy')->name('teaching-staffs.massDestroy');
+    Route::delete('teaching-staffs/delete', 'TeachingStaffController@destroy')->name('teaching-staffs.delete');
     Route::post('teaching-staffs/parse-csv-import', 'TeachingStaffController@parseCsvImport')->name('teaching-staffs.parseCsvImport');
     Route::post('teaching-staffs/process-csv-import', 'TeachingStaffController@processCsvImport')->name('teaching-staffs.processCsvImport');
     Route::resource('teaching-staffs', 'TeachingStaffController');
@@ -1001,6 +866,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('non-teaching-staff/{id}/Profile-edit', 'NonTeachingStaffController@edit')->name('non-teaching-staffs.Profile-edit');
     Route::get('non-teaching-staff/{id}/Profile-view', 'NonTeachingStaffController@show')->name('non-teaching-staff.Profile-view');
     Route::delete('non-teaching-staffs/destroy', 'NonTeachingStaffController@massDestroy')->name('non-teaching-staffs.massDestroy');
+    Route::delete('non-teaching-staffs/delete', 'NonTeachingStaffController@destroy')->name('non-teaching-staffs.delete');
     Route::post('non-teaching-staffs/parse-csv-import', 'NonTeachingStaffController@parseCsvImport')->name('non-teaching-staffs.parseCsvImport');
     Route::post('non-teaching-staffs/process-csv-import', 'NonTeachingStaffController@processCsvImport')->name('non-teaching-staffs.processCsvImport');
     Route::resource('non-teaching-staffs', 'NonTeachingStaffController');
@@ -1008,18 +874,28 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('past_leave_apply_Non_Teaching_access', 'NonTeachingStaffController@past_leave_apply_Non_Teaching_access')->name('past_leave_apply_Non_Teaching_access');
     Route::post('Past_Leave_Non_Teaching_Access__check', 'NonTeachingStaffController@Past_Leave_Non_Teaching_Access__check')->name('Past_Leave_Non_Teaching_Access__check');
 
-    // R & D Staff
-    Route::get('rd-staffs/index', 'TeachingStaffController@rdStaffIndex')->name('rd-staffs.index');
-    Route::post('rd-staffs/store', 'TeachingStaffController@rdStaffStore')->name('rd-staffs.store');
-    Route::post('rd-staffs/remove', 'TeachingStaffController@rdStaffRemove')->name('rd-staffs.remove');
+    // External Staff
+    Route::get('external-staffs', 'ExternalStaffController@index')->name('external-staffs.index');
+    Route::get('external-staffs/create', 'ExternalStaffController@create')->name('external-staffs.create');
+    Route::get('external-staffs/show', 'ExternalStaffController@show')->name('external-staffs.show');
+    Route::get('external-staffs/edit/{id}', 'ExternalStaffController@edit')->name('external-staffs.edit');
+    Route::put('external-staffs/update', 'ExternalStaffController@update')->name('external-staffs.update');
+    Route::post('external-staffs/store', 'ExternalStaffController@store')->name('external-staffs.store');
+    Route::post('external-staffs/remove', 'ExternalStaffController@rdStaffRemove')->name('external-staffs.remove');
+    Route::delete('external-staffs/destroy/{id}', 'ExternalStaffController@destroy')->name('external-staffs.destroy');
+    Route::delete('external-staffs/massdestroy', 'ExternalStaffController@massDestroy')->name('external-staffs.massDestroy');
 
     // Teaching Type
     Route::delete('teaching-types/destroy', 'TeachingTypeController@massDestroy')->name('teaching-types.massDestroy');
     Route::resource('teaching-types', 'TeachingTypeController');
 
-    // Examstaff
-    Route::delete('examstaffs/destroy', 'ExamstaffController@massDestroy')->name('examstaffs.massDestroy');
-    Route::resource('examstaffs', 'ExamstaffController');
+    // Exam Type
+    Route::get('examtypes', 'ExamTypeController@index')->name('examtypes.index');
+    Route::post('examtypes/view', 'ExamTypeController@view')->name('examtypes.view');
+    Route::post('examtypes/edit', 'ExamTypeController@edit')->name('examtypes.edit');
+    Route::post('examtypes/store', 'ExamTypeController@store')->name('examtypes.store');
+    Route::post('examtypes/delete', 'ExamTypeController@destroy')->name('examtypes.delete');
+    Route::delete('examtypes/destroy', 'ExamTypeController@massDestroy')->name('examtypes.massDestroy');
 
     // Event
     Route::get('events/index', 'EventController@index')->name('events.index');
@@ -1349,6 +1225,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('test-answers', 'TestAnswersController');
 
     // Leave Type
+
     Route::get('leave-types', 'LeaveTypeController@index')->name('leave-types.index');
     Route::post('leave-types/view', 'LeaveTypeController@view')->name('leave-types.view');
     Route::post('leave-types/edit', 'LeaveTypeController@edit')->name('leave-types.edit');
@@ -1366,6 +1243,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('staff-biometrics/process-csv-import', 'StaffBiometricController@processCsvImport')->name('staff-biometrics.processCsvImport');
     Route::post('staff-biometrics/updater', 'StaffBiometricController@updater')->name('staff-biometrics.updater');
     Route::get('staff-biometrics/gen/{month}/{year}', 'StaffBiometricController@store')->name('staff-biometrics.gen');
+    Route::get('staff-biometrics/index_rep', 'StaffBiometricController@index')->name('staff-biometrics.index_rep');
     Route::resource('staff-biometrics', 'StaffBiometricController');
     Route::get('staff/balance', 'StaffBiometricController@balanceCl')->name('staff.balance');
 
@@ -1424,12 +1302,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('college-blocks/destroy', 'CollegeBlockController@massDestroy')->name('college-blocks.massDestroy');
     Route::resource('college-blocks', 'CollegeBlockController');
 
-    // Foundations
-    Route::delete('foundations/destroy', 'FoundationController@massDestroy')->name('foundations.massDestroy');
-    Route::post('foundations/parse-csv-import', 'FoundationController@parseCsvImport')->name('foundations.parseCsvImport');
-    Route::post('foundations/process-csv-import', 'FoundationController@processCsvImport')->name('foundations.processCsvImport');
-    Route::resource('foundations', 'FoundationController');
-
     // Leave Status
     Route::post('leave-statuses/parse-csv-import', 'LeaveStatusController@parseCsvImport')->name('leave-statuses.parseCsvImport');
     Route::post('leave-statuses/process-csv-import', 'LeaveStatusController@processCsvImport')->name('leave-statuses.processCsvImport');
@@ -1446,6 +1318,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Route::get('exam-attendance2', 'Students_attendence_edit_request@index')->name('exam_Attendance2.index');
 
     // Class Rooms
+
     // Route::delete('class-rooms/destroy', 'ClassRoomsController@massDestroy')->name('class-rooms.massDestroy');
     // Route::post('class-rooms/parse-csv-import', 'ClassRoomsController@parseCsvImport')->name('class-rooms.parseCsvImport');
     // Route::post('class-rooms/process-csv-import', 'ClassRoomsController@processCsvImport')->name('class-rooms.processCsvImport');
@@ -1454,15 +1327,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Route::post('check-class-dept/index', 'ClassRoomsController@class_dept')->name('check-class-dept.index');
     // Route::post('check-class-dept/check-staff', 'ClassRoomsController@checkStaff')->name('check-class-dept.check-staff');
 
-    // Class Batch
-    Route::get('class-batch', 'ClassBatchController@index')->name('class-batch.index');
-    Route::post('class-batch/view', 'ClassBatchController@view')->name('class-batch.view');
-    Route::post('class-batch/edit', 'ClassBatchController@edit')->name('class-batch.edit');
-    Route::post('class-batch/store', 'ClassBatchController@store')->name('class-batch.store');
-    Route::post('class-batch/delete', 'ClassBatchController@destroy')->name('class-batch.delete');
-    Route::post('class-batch/get-students', 'ClassBatchController@getStudents')->name('class-batch.get-students');
-    Route::post('class-batch/get-sections', 'ClassBatchController@getSections')->name('class-batch.get-sections');
-    Route::delete('class-batch/destroy', 'ClassBatchController@massDestroy')->name('class-batch.massDestroy');
+    Route::get('class-rooms', 'ClassRoomsController@index')->name('class-rooms.index');
+    Route::post('class-rooms/view', 'ClassRoomsController@view')->name('class-rooms.view');
+    Route::post('class-rooms/edit', 'ClassRoomsController@edit')->name('class-rooms.edit');
+    Route::post('class-rooms/store', 'ClassRoomsController@store')->name('class-rooms.store');
+    Route::post('class-rooms/delete', 'ClassRoomsController@destroy')->name('class-rooms.delete');
+    Route::post('class-rooms/change-status', 'ClassRoomsController@changeStatus')->name('class-rooms.change-status');
+    Route::delete('class-rooms/destroy', 'ClassRoomsController@massDestroy')->name('class-rooms.massDestroy');
 
     // Rooms
     Route::post('rooms/updater/{id}', 'RoomsController@updater')->name('rooms.updater');
@@ -1491,7 +1362,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('settings/destroy', 'SettingsController@massDestroy')->name('settings.massDestroy');
     Route::post('settings/parse-csv-import', 'SettingsController@parseCsvImport')->name('settings.parseCsvImport');
     Route::post('settings/process-csv-import', 'SettingsController@processCsvImport')->name('settings.processCsvImport');
-    Route::post('packup-db/generation', 'SettingsController@packUpDb')->name('packup-db.generation');
     Route::resource('settings', 'SettingsController');
 
     // Take Attentance Student
@@ -1569,17 +1439,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('student-att-modification/reject', 'Students_attendence_edit_request@reject')->name('student-att-modification.reject');
 
     // Student Certificate Apply
-    Route::get('student-apply-certificate/stu_index', 'CertificateController@stuIndex')->name('student-apply-certificate.stu_index');
+    Route::get('student-apply-certificate/stu_index', 'CertificateController@stu_index')->name('student-apply-certificate.stu_index');
     Route::get('student-apply-certificate/show/{id}', 'CertificateController@show')->name('student-apply-certificate.show');
     Route::get('student-apply-certificate/edit/{id}', 'CertificateController@edit')->name('student-apply-certificate.edit');
-    Route::get('student-apply-certificate/stu_create', 'CertificateController@stuCreate')->name('student-apply-certificate.stu_create');
+    Route::get('student-apply-certificate/stu_create', 'CertificateController@stu_create')->name('student-apply-certificate.stu_create');
     Route::post('student-apply-certificate/store', 'CertificateController@store')->name('student-apply-certificate.store');
     Route::post('student-apply-certificate/update', 'CertificateController@update')->name('student-apply-certificate.update');
-    Route::post('student-apply-certificate/get_details', 'CertificateController@getDetails')->name('student-apply-certificate.get_details');
+    Route::post('student-apply-certificate/get_details', 'CertificateController@get_details')->name('student-apply-certificate.get_details');
     Route::post('student-studentBonfideType', 'CertificateController@bonafideReson')->name('student_bonfide_reason.get');
 
     // Certificate Provision
-    Route::match(['get', 'post'], 'certificate-provision/index', 'CertificateController@index')->name('certificate-provision.index');
+    Route::match (['get', 'post'], 'certificate-provision/index', 'CertificateController@index')->name('certificate-provision.index');
     Route::get('certificate-provision/show/{id}', 'CertificateController@indexShow')->name('certificate-provision.show');
     Route::get('certificate-provision/edit/{id}', 'CertificateController@edit')->name('certificate-provision.edit');
     Route::get('certificate-provision/print/{id}', 'CertificateController@printCertificate')->name('certificate-provision.print');
@@ -1652,36 +1522,36 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('messenger/{topic}/reply', 'MessengerController@replyToTopic')->name('messenger.reply');
     Route::get('messenger/{topic}/reply', 'MessengerController@showReply')->name('messenger.showReply');
 
-    // Cat Exam_Attendance Summary
-    Route::get('Exam-Attendance-summary-report', 'CatExamAttendanceSummaryController@index')->name('Exam_attendance.summary.index');
-    Route::post('Exam_AttendanceSummary_course_get', 'CatExamAttendanceSummaryController@course_get')->name('Exam_AttendanceSummary.course_get');
-    Route::post('Exam_AttendanceSummary_Subject_get', 'CatExamAttendanceSummaryController@subject_get')->name('Exam_AttendanceSummary.Subject_get');
-    Route::post('Exam_AttendanceSummary_search', 'CatExamAttendanceSummaryController@search')->name('Exam_AttendanceSummary.search');
-    Route::delete('Exam_Attendance_massDestroy', 'CatExamAttendanceSummaryController@massDestroy')->name('Exam_AttendanceSummary.massDestroy');
-    Route::get('Exam_AttendanceSummary.edit/{id}', 'CatExamAttendanceSummaryController@edit')->name('Exam_AttendanceSummary.edit');
-    Route::get('Exam_AttendanceSummary.view/{id}', 'CatExamAttendanceSummaryController@show')->name('Exam_AttendanceSummary.view');
-    Route::DELETE('Exam_AttendanceSummary.destroy/{ExamTimetableCreation}', 'CatExamAttendanceSummaryController@destroy')->name('Exam_AttendanceSummary.destroy');
-    Route::post('Exam_Attendance_Summary_report', 'CatExamAttendanceSummaryController@absenteesReport')->name('Exam_AttendanceSummary.summary-report');
-    Route::post('Exam_AttendanceSummary_course_get/getDate', 'CatExamAttendanceSummaryController@getDate')->name('Exam_AttendanceSummary.getDate');
+    // 'Cat Exam_'Attendance Summary
+    Route::get('Exam-Attendance-summary-report', 'MidTermExamAttendanceSummaryController@index')->name('Exam_attendance.summary.index');
+    Route::post('Exam_AttendanceSummary_course_get', 'MidTermExamAttendanceSummaryController@course_get')->name('Exam_AttendanceSummary.course_get');
+    Route::post('Exam_AttendanceSummary_Subject_get', 'MidTermExamAttendanceSummaryController@subject_get')->name('Exam_AttendanceSummary.Subject_get');
+    Route::post('Exam_AttendanceSummary_search', 'MidTermExamAttendanceSummaryController@search')->name('Exam_AttendanceSummary.search');
+    Route::delete('Exam_Attendance_massDestroy', 'MidTermExamAttendanceSummaryController@massDestroy')->name('Exam_AttendanceSummary.massDestroy');
+    Route::get('Exam_AttendanceSummary.edit/{id}', 'MidTermExamAttendanceSummaryController@edit')->name('Exam_AttendanceSummary.edit');
+    Route::get('Exam_AttendanceSummary.view/{id}', 'MidTermExamAttendanceSummaryController@show')->name('Exam_AttendanceSummary.view');
+    Route::DELETE('Exam_AttendanceSummary.destroy/{ExamTimetableCreation}', 'MidTermExamAttendanceSummaryController@destroy')->name('Exam_AttendanceSummary.destroy');
+    Route::post('Exam_Attendance_Summary_report', 'MidTermExamAttendanceSummaryController@absenteesReport')->name('Exam_AttendanceSummary.summary-report');
+    Route::post('Exam_AttendanceSummary_course_get/getDate', 'MidTermExamAttendanceSummaryController@getDate')->name('Exam_AttendanceSummary.getDate');
 
     //Student CAT Mark Statement
-    Route::get('student-cat-mark/report', 'StudentCatMarkStatementController@index')->name('student-cat-mark.statement');
+    Route::get('student-mid-term-mark/report', 'StudentMidTermMarkStatementController@index')->name('student-mid-term-mark.statement');
 
     // Route::get('Exam-absentees-report/pdf/{id}', 'CatExamAttendanceSummaryController@absenteesReportPDF')->name('Exam-absentees-report.pdf');
-    Route::get('Exam-absentees-report/pdf/{id}/{academicYear_id}/{year}/{semester_id}/{date}/{department}/{course_id}/{exameName}', 'CatExamAttendanceSummaryController@absenteesReportPDF')->name('Exam-absentees-report.pdf');
+    Route::get('Exam-absentees-report/pdf/{id}/{academicYear_id}/{year}/{semester_id}/{date}/{course_id}/{exameName}', 'MidTermExamAttendanceSummaryController@absenteesReportPDF')->name('Exam-absentees-report.pdf');
     // Route::get('Exam-absentees-report/pdf/{ay}/{year}/{sem}/{examname}/{date}/{dept}/{course}', 'CatExamAttendanceSummaryController@absenteesReportPDF')->name('Exam-absentees-report.pdf');
     // Route::get('Exam-StaffWise-report/pdf/{id}/{academicYear_id}/{year}/{semester_id}/{date}/{department}/{course_id}', 'CatExamAttendanceSummaryController@staff_wisePDF')->name('Exam_subject_wise_report.pdf');
-    Route::get('Exam-StaffWise-report/pdf/{ay}/{year}/{sem}/{examname}/{course}/{section}', 'CatExamAttendanceSummaryController@staff_wisePDF')->name('Exam_staff_wise_report.pdf');
+    Route::get('Exam-StaffWise-report/pdf/{ay}/{year}/{sem}/{examname}/{course}/{section}', 'MidTermExamAttendanceSummaryController@staff_wisePDF')->name('Exam_staff_wise_report.pdf');
     //report exam
-    Route::get('Result_Analysis_Class_Wise', 'CatExamAttendanceSummaryController@Result_Analysis_Class_Wise')->name('Result_Analysis_Class_Wise.index');
-    Route::post('Result_Analysis_Class_Wise/get', 'CatExamAttendanceSummaryController@get')->name('Result_Analysis_Class_Wise.get');
-    Route::get('Result_Analysis_Staff_Wise', 'CatExamAttendanceSummaryController@Result_Analysis_Staff_Wise')->name('Result_Analysis_Staff_Wise.index');
-    Route::post('Result_Analysis_Staff_Wise/staff_wise', 'CatExamAttendanceSummaryController@staff_wise')->name('Result_Analysis_Staff_Wise.staff_wise');
-    Route::get('Result_Analysis_Abstract', 'CatExamAttendanceSummaryController@Abstract')->name('Result_Analysis_Abstract.Abstract');
-    Route::post('Result_Analysis_Abstract/Abstractget', 'CatExamAttendanceSummaryController@Abstractget')->name('Result_Analysis_Abstract.Abstractget');
+    Route::get('Result_Analysis_Class_Wise', 'MidTermExamAttendanceSummaryController@Result_Analysis_Class_Wise')->name('Result_Analysis_Class_Wise.index');
+    Route::post('Result_Analysis_Class_Wise/get', 'MidTermExamAttendanceSummaryController@get')->name('Result_Analysis_Class_Wise.get');
+    Route::get('Result_Analysis_Staff_Wise', 'MidTermExamAttendanceSummaryController@Result_Analysis_Staff_Wise')->name('Result_Analysis_Staff_Wise.index');
+    Route::post('Result_Analysis_Staff_Wise/staff_wise', 'MidTermExamAttendanceSummaryController@staff_wise')->name('Result_Analysis_Staff_Wise.staff_wise');
+    Route::get('Result_Analysis_Abstract', 'MidTermExamAttendanceSummaryController@Abstract')->name('Result_Analysis_Abstract.Abstract');
+    Route::post('Result_Analysis_Abstract/Abstractget', 'MidTermExamAttendanceSummaryController@Abstractget')->name('Result_Analysis_Abstract.Abstractget');
 
-    Route::get('Result_Analysis_bar_chart', 'CatExamAttendanceSummaryController@chart')->name('Result_Analysis_bar_chart.chart');
-    Route::post('Result_Analysis_bar_chart/Bar_chart', 'CatExamAttendanceSummaryController@showChart')->name('Result_Analysis_bar_chart.showChart');
+    Route::get('Result_Analysis_bar_chart', 'MidTermExamAttendanceSummaryController@chart')->name('Result_Analysis_bar_chart.chart');
+    Route::post('Result_Analysis_bar_chart/Bar_chart', 'MidTermExamAttendanceSummaryController@showChart')->name('Result_Analysis_bar_chart.showChart');
 
     Route::get('Exam-Attendance/ViewAttendance/pdf/{$class_id}/{$id}', 'ExamTimetableCreationController@ViewAttendancePdf')->name('Exam-Attendance-report.pdf');
     //Faculty Staff Timetable
@@ -1690,6 +1560,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('faculty_time_table/{staff_name}', 'FacultyTimeTableController@Facultytimetable')->name('faculty_time_table');
 
     // LabExamTitle
+    // Route::delete('labExamTitle/destroy', 'ToolsLabTitleController@massDestroy')->name('lab_title.massDestroy');
+    // Route::resource('lab_title', 'ToolsLabTitleController');
+
     Route::get('lab_title/index', 'ToolsLabTitleController@index')->name('lab_title.index');
     Route::post('lab_title/view', 'ToolsLabTitleController@view')->name('lab_title.view');
     Route::get('lab_title/create', 'ToolsLabTitleController@create')->name('lab_title.create');
@@ -1698,23 +1571,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('lab_title/delete', 'ToolsLabTitleController@destroy')->name('lab_title.delete');
     Route::delete('lab_title/destroy', 'ToolsLabTitleController@massDestroy')->name('lab_title.massDestroy');
 
-
-    // Practical Marks
-    Route::get('practical-marks/index', 'LabController@practicalIndex')->name('practical-marks.index');
-    Route::get('practical-marks/preview', 'LabController@preview')->name('practical-marks.preview');
-    Route::get('practical-marks/print', 'LabController@print')->name('practical-marks.print');
-    Route::post('practical-marks/printing-data', 'LabController@printingData')->name('practical-marks.printing-data');
-    Route::post('practical-marks/get-subjects', 'LabController@getSubjects')->name('practical-marks.get-subjects');
-    Route::post('practical-marks/get-students', 'LabController@getStudents')->name('practical-marks.get-students');
-    Route::post('practical-marks/store-students', 'LabController@storeStudents')->name('practical-marks.store-students');
-
-    Route::get('practical-mark-master/index', 'LabController@practicalMasterIndex')->name('practical-mark-master.index');
-    Route::get('practical-mark-master/excel/{batch}/{ay}/{course}/{semester}/{subject}/{subject_sem}/{exam_type}/{exam_month}/{exam_year}', 'LabController@downloadExcel')->name('practical-mark-master.excel');
-    Route::get('practical-mark-master/pdf/{batch}/{ay}/{course}/{semester}/{subject}/{subject_sem}/{exam_type}/{exam_month}/{exam_year}', 'LabController@downloadPdf')->name('practical-mark-master.pdf');
-    Route::get('practical-mark-master/edit/{batch}/{ay}/{course}/{semester}/{subject}/{subject_sem}/{exam_type}/{exam_month}/{exam_year}', 'LabController@masterEdit')->name('practical-mark-master.edit');
-    Route::post('practical-mark-master/get-data', 'LabController@getData')->name('practical-mark-master.get-data');
-    Route::post('practical-mark-master/update-students', 'LabController@updateStudents')->name('practical-mark-master.update-students');
-
     // Inactive Staff
     Route::resource('inactive_staff', 'InactiveStaffsListController');
     Route::delete('inactive_staff/destroy', 'InactiveStaffsListController@massDestroy')->name('inactive_staff.massDestroy');
@@ -1722,6 +1578,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('Staff_status', 'StaffStatusController');
 
     // Grade Master
+    // Route::post('grade-master/checkRegulation', 'GradeMasterController@checkRegulation')->name('grade-master.checkRegulation');
+    // Route::post('grade-master/update', 'GradeMasterController@update')->name('grade-master.update');
+
     Route::get('grade-master/index', 'GradeMasterController@index')->name('grade-master.index');
     Route::post('grade-master/view', 'GradeMasterController@view')->name('grade-master.view');
     Route::get('grade-master/create', 'GradeMasterController@create')->name('grade-master.create');
@@ -1754,15 +1613,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('staff_details', 'StaffDetailsDownloadController@personal_details')->name('Staff_details_personal');
 
     //Assignment menu
-    //Lab mark//
+
+    //Lab mark///////////////////////////////////////////////////////////////////////
+    ///////
     Route::get('assignment/schedule/index', 'AssignmentExamController@index')->name('assignment.index');
     Route::get('assignment/schedule/create', 'AssignmentExamController@create')->name('assignment_schedule.create');
     Route::post('assignment/schedule/store', 'AssignmentExamController@store')->name('assignment_schedule.store');
     Route::get('assignment/schedule/show/{id}', 'AssignmentExamController@view')->name('assignment.show');
     Route::get('assignment/schedule/view/{id}', 'AssignmentExamController@show')->name('assignment.view');
     Route::get('assignment/schedule/edit/{id}', 'AssignmentExamController@edit')->name('assignment.edit');
-    Route::DELETE('assignment.destroy/{ExamTimetableCreation}', 'AssignmentExamController@destroy')->name('assignment.destroy');
-    Route::post('assignment.update/{ExamTimetableCreation}', 'AssignmentExamController@update')->name('assignment_schedule_update');
+    Route::DELETE('assignment/destroy/{ExamTimetableCreation}', 'AssignmentExamController@destroy')->name('assignment.destroy');
+    Route::post('assignment/update/{ExamTimetableCreation}', 'AssignmentExamController@update')->name('assignment_schedule_update');
     Route::post('assignment/search', 'AssignmentExamController@search')->name('assignment_schedule.search');
     Route::post('assignment/examTimetable.Subject_get', 'AssignmentExamController@assignment_subject_get')->name('assignment_examTimetable.Subject_get');
     Route::post('assignment/examTimetable.Subject_get_edit', 'AssignmentExamController@assignment_subject_get_edit')->name('assignment_edit.Subject_get');
@@ -1770,12 +1631,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::get('assignment/Mark/index', 'AssignmentMarkMasterController@index')->name('assignment_Exam_Mark.index');
     Route::get('assignment/Mark/view/{id}/{recordId}', 'AssignmentMarkMasterController@markview')->name('assignment_Exam_Mark.markview');
-    Route::get('assignment/Mark/Enter/{id}/{recordId}', 'AssignmentMarkMasterController@MarkEnter')->name('assignment_Exam_Mark.markEnter');
+    Route::get('assignment/Mark/EnterIndex/{id}/{recordId}', 'AssignmentMarkMasterController@MarkEnterIndex')->name('assignment_Exam_Mark.markEnterIndex');
+    Route::post('assignment/Mark/Enter', 'AssignmentMarkMasterController@MarkEnter')->name('assignment_Exam_Mark.markEnter');
     Route::post('assignment/Mark/Store', 'AssignmentMarkMasterController@MarkStore')->name('assignment_Exam_Mark.markStore');
     Route::post('assignment/Mark/Status-Update', 'AssignmentMarkMasterController@verifiedStatus')->name('assignment_verifiedStatus');
     Route::get('assignment/Mark/Edit/{id}/{recordId}', 'AssignmentMarkMasterController@editMark')->name('assignment_Exam_Mark.editMark');
     Route::post('assignment/Mark/toggle_status', 'AssignmentMarkMasterController@toggle_status')->name('assignment_Exam-Mark.toggle_status');
     Route::post('assignment/Mark/find', 'AssignmentMarkMasterController@find')->name('assignment_Exam_Mark.find');
+
     Route::post('assignment_examTimetable.find', 'AssignmentExamController@find')->name('assignment_examTimetable.find');
 
     //assignment Mark Staff page
@@ -1802,17 +1665,27 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('result-master/delete', 'ResultMasterController@destroy')->name('result-master.delete');
     Route::delete('result-master/destroy', 'ResultMasterController@massDestroy')->name('result-master.massDestroy');
 
-
-    // Internal Weightage
+    // Internal Weightage Not in use
     // Route::delete('internal-weightages/destroy', 'SemesterController@semTypeDelete')->name('semesters.destroy');
+    // Route::get('internal-weightage/index', 'InternalMarksController@weightageIndex')->name('internal-weightage.index');
+    // Route::post('internal-weightage/subject-types', 'InternalMarksController@subjectTypes')->name('internal-weightage.subject-types');
+    // Route::get('internal-weightage/create', 'InternalMarksController@weightageCreate')->name('internal-weightage.create');
+    // Route::get('internal-weightage/fetch-cat', 'InternalMarksController@fetchCat')->name('internal-weightage.fetch_cat');
+    // Route::get('internal-weightage/store', 'InternalMarksController@store')->name('internal-weightage.store');
+    // Route::get('internal-weightage/show/{id}', 'InternalMarksController@view')->name('internal-weightage.show');
+    // Route::get('internal-weightage/edit/{id}', 'InternalMarksController@edit')->name('internal-weightage.edit');
+    // Route::delete('internal-weightage/destroy', 'InternalMarksController@destroy')->name('internal-weightage.destroy');
+
+    // In use
     Route::get('internal-weightage/index', 'InternalMarksController@weightageIndex')->name('internal-weightage.index');
-    Route::post('internal-weightage/subject-types', 'InternalMarksController@subjectTypes')->name('internal-weightage.subject-types');
-    Route::get('internal-weightage/create', 'InternalMarksController@weightageCreate')->name('internal-weightage.create');
-    Route::get('internal-weightage/fetch-cat', 'InternalMarksController@fetchCat')->name('internal-weightage.fetch_cat');
+    Route::post('internal-weightage/view', 'InternalMarksController@view')->name('internal-weightage.view');
+    Route::get('internal-weightage/create', 'InternalMarksController@create')->name('internal-weightage.create');
+    Route::post('internal-weightage/edit', 'InternalMarksController@edit')->name('internal-weightage.edit');
     Route::get('internal-weightage/store', 'InternalMarksController@store')->name('internal-weightage.store');
-    Route::get('internal-weightage/show/{id}', 'InternalMarksController@view')->name('internal-weightage.show');
-    Route::get('internal-weightage/edit/{id}', 'InternalMarksController@edit')->name('internal-weightage.edit');
-    Route::delete('internal-weightage/destroy', 'InternalMarksController@destroy')->name('internal-weightage.destroy');
+    Route::post('internal-weightage/delete', 'InternalMarksController@destroy')->name('internal-weightage.delete');
+    Route::delete('internal-weightage/destroy', 'InternalMarksController@massDestroy')->name('internal-weightage.massDestroy');
+    Route::post('internal-weightage/checkRegulation', 'InternalMarksController@checkRegulation')->name('internal-weightage.checkRegulation');
+    Route::get('internal-weightage/fetch-cat', 'InternalMarksController@fetchCat')->name('internal-weightage.fetch_cat');
 
     //Internal Mark generation
     Route::get('internal-mark-generation/index', 'InternalMarkGenerationController@index')->name('internalmark_generate');
@@ -1826,6 +1699,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     //Internal Mark report
     Route::get('internal-mark-report/index', 'InternalMarkGenerationController@reportIndex')->name('internalmark_report.index');
     Route::get('internal-mark-report/report', 'InternalMarkGenerationController@report')->name('internalmark_report.report');
+    
+    
+    //Attendance Mark 
+    
+    Route::get('attendance-mark', 'AttendanceMarkController@index')->name('attendance-mark.index');
+    Route::post('attendance-mark/get-student', 'AttendanceMarkController@getStudent')->name('attendance-mark.get-student');
+    Route::post('attendance-mark/store', 'AttendanceMarkController@store')->name('attendance-mark.store-attendance');
+    Route::get('attendance-mark/view/{id}', 'AttendanceMarkController@view')->name('attendance-mark.view-attendance-mark');
+    Route::get('attendance-mark/search', 'AttendanceMarkController@search')->name('attendance-mark.search');
+
 
     // Exam Enrollment
     Route::get('exam-enrollment/classwise-index', 'ExamEnrollmentController@ClassIndex')->name('exam-enrollment.classwise-index');
@@ -1835,10 +1718,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('exam-enrollment/get-subjects-classwise', 'ExamEnrollmentController@getSubjectClasswise')->name('exam-enrollment.get-subjects-classwise');
     Route::post('exam-enrollment/get-details-classwise', 'ExamEnrollmentController@getDetailsClasswise')->name('exam-enrollment.get-details-classwise');
     Route::post('exam-enrollment/get-details-studentwise', 'ExamEnrollmentController@getDetailsStudentwise')->name('exam-enrollment.get-details-studentwise');
-    Route::get('exam-enrollment/classwise-show-subjects/{regulation}/{ay}/{batch}/{course}/{semester}/{exam_month}/{exam_year}', 'ExamEnrollmentController@showSubjectClasswise')->name('exam-enrollment.classwise-show-subjects');
-    Route::get('exam-enrollment/view-enrolled-student/{user_name_id}/{regulation}/{ay}/{batch}/{course}/{semester}/{exam_month}/{exam_year}', 'ExamEnrollmentController@viewStudent')->name('exam-enrollment.view-enrolled-student');
+    Route::get('exam-enrollment/classwise-show-subjects/{ay}/{batch}/{course}/{semester}/{exam_month}/{exam_year}', 'ExamEnrollmentController@showSubjectClasswise')->name('exam-enrollment.classwise-show-subjects');
+    Route::get('exam-enrollment/view-enrolled-student/{user_name_id}/{ay}/{batch}/{course}/{semester}/{exam_month}/{exam_year}', 'ExamEnrollmentController@viewStudent')->name('exam-enrollment.view-enrolled-student');
     Route::post('exam-enrollment/view-enrolled-each-student', 'ExamEnrollmentController@viewEachStudent')->name('exam-enrollment.view-enrolled-each-student');
-    Route::get('exam-enrollment/edit-enrolled-student/{user_name_id}/{regulation}/{ay}/{batch}/{course}/{semester}/{exam_month}/{exam_year}/{enroll}', 'ExamEnrollmentController@editStudent')->name('exam-enrollment.edit-enrolled-student');
+    Route::get('exam-enrollment/edit-enrolled-student/{user_name_id}/{ay}/{batch}/{course}/{semester}/{exam_month}/{exam_year}/{enroll}', 'ExamEnrollmentController@editStudent')->name('exam-enrollment.edit-enrolled-student');
     Route::post('exam-enrollment/edit-enrolled-each-student', 'ExamEnrollmentController@editEachStudent')->name('exam-enrollment.edit-enrolled-each-student');
     Route::get('exam-enrollment/download-enrolled-student/{user_name_id}/{regulation}/{ay}/{batch}/{course}/{semester}/{exam_month}/{exam_year}', 'ExamEnrollmentController@downloadStudent')->name('exam-enrollment.download-enrolled-student');
     Route::post('exam-enrollment/enroll-classWise', 'ExamEnrollmentController@enrollClasswise')->name('exam-enrollment.enroll-classWise');
@@ -1852,7 +1735,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('exam-registrations/process-csv-import', 'ExamRegistrationController@processCsvImport')->name('exam-registrations.processCsvImport');
     Route::post('exam-registrations/remove-parse-csv-import', 'ExamRegistrationController@parseCsvRemovalExamReg')->name('exam-registrations.removeParseCsvImport');
     Route::post('exam-registrations/remove-process-csv-import', 'ExamRegistrationController@removeProcessCsvImport')->name('exam-registrations.removeProcessCsvImport');
-    Route::get('exam-registrations/download/{ay}/{batch}/{course}/{regulation}/{sem}/{exam_type}', 'ExamRegistrationController@download')->name('exam-registrations.download');
+    Route::get('exam-registrations/download/{ay}/{batch}/{course}/{sem}/{exam_type}', 'ExamRegistrationController@download')->name('exam-registrations.download');
     Route::get('exam-registration-preview', 'ExamRegistrationController@preview')->name('exam-registration-preview');
     Route::get('exam-registration-preview/pdf/{batch}/{ay}/{course}/{semester}/{user_name_id}/{enroll}', 'ExamRegistrationController@previewPdf')->name('exam-registration-preview.pdf');
     Route::get('exam-registration-hallticketPreview/pdf/{batch}/{ay}/{course}/{semester}/{user_name_id}/{enroll}', 'ExamRegistrationController@hallticketPreviewPdf')->name('exam-registration-hallticketPreview.pdf');
@@ -1873,56 +1756,78 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('exam-result-publish/parse-csv-import', 'ExamRegistrationController@parseCsvImport')->name('exam-result-publish.parseCsvImport');
     Route::post('exam-result-publishes/process-csv-import', 'ExamRegistrationController@processCsvImport')->name('exam-result-publishes.processCsvImport');
 
-    // Result Publish
     Route::resource('result-publish', 'ResultPublishController');
-    Route::get('result-publish/download-excel/{ay}/{batch}/{course}/{regulation}/{sem}/{result_type}/{publish}/{exam_month}/{exam_year}', 'ResultPublishController@downloadExcel')->name('result-publish.download-excel');
-    Route::get('result-publish/download-pdf/{ay}/{batch}/{course}/{regulation}/{sem}/{result_type}/{publish}/{exam_month}/{exam_year}', 'ResultPublishController@downloadPDF')->name('result-publish.download-pdf');
-    Route::get('result-publish/delete/{ay}/{batch}/{course}/{regulation}/{sem}/{result_type}/{publish}/{exam_month}/{exam_year}', 'ResultPublishController@deleteResult')->name('result-publish.delete-result');
+    Route::get('result-publish/download-excel/{ay}/{batch}/{course}/{regulation}/{sem}/{result_type}', 'ResultPublishController@downloadExcel')->name('result-publish.download-excel');
+    Route::get('result-publish/download-pdf/{ay}/{batch}/{course}/{regulation}/{sem}/{result_type}', 'ResultPublishController@downloadPDF')->name('result-publish.download-pdf');
+    Route::get('result-publish/delete/{ay}/{batch}/{course}/{regulation}/{sem}/{result_type}', 'ResultPublishController@deleteResult')->name('result-publish.delete-result');
     Route::post('result-publish/search', 'ResultPublishController@search')->name('result-publish.search');
     Route::post('result-publish/publish-action', 'ResultPublishController@publish')->name('result-publish.publish-action');
-    Route::post('result-publish/check-data', 'ResultPublishController@checkData')->name('result-publish.check-data');
-
-    // Grade Statements
-
-    // Grade Book
-    Route::get('grade-book-upload', 'GradeStatementsController@gradeBookIndex')->name('grade-book-upload.index');
-    Route::post('grade-book-upload/parse-csv-import', 'GradeStatementsController@parseCsvImport')->name('grade-book-upload.parseCsvImport');
-    Route::post('grade-books/process-csv-import', 'GradeStatementsController@processCsvImport')->name('grade-books.processCsvImport');
-
-    // Grade Sheet
-    Route::get('grade-sheet', 'GradeStatementsController@gradeSheetIndex')->name('grade-sheet.index');
-    Route::get('grade-sheet/pdf/{batch}/{ay}/{course}/{regulation}/{exam_date}', 'GradeStatementsController@gradeSheetPDF')->name('grade-sheet.pdf');
-    Route::post('grade-sheet/search', 'GradeStatementsController@searchGradeSheet')->name('grade-sheet.search');
-    Route::post('grade-sheet/generation', 'GradeStatementsController@sheetGeneration')->name('grade-sheet.generation');
-    Route::post('grade-sheet/check-generation', 'GradeStatementsController@checkSheetGeneration')->name('grade-sheet.check-generation');
-
-    // Consolidated Statement
-    Route::get('consolidated-statement', 'GradeStatementsController@statementIndex')->name('consolidated-statement.index');
-    Route::post('consolidated-statement/check-generation', 'GradeStatementsController@checkStatementGeneration')->name('consolidated-statement.check-generation');
-    Route::post('consolidated-statement/search', 'GradeStatementsController@searchStatement')->name('consolidated-statement.search');
-    Route::post('consolidated-statement/generation', 'GradeStatementsController@statementGeneration')->name('consolidated-statement.generation');
-    Route::get('consolidated-statement/pdf/{batch}/{course}/{regulation}', 'GradeStatementsController@statementPDF')->name('consolidated-statement.pdf');
-    Route::get('consolidated-statement/print', 'GradeStatementsController@statePrint')->name('consolidated-statement.print');
-
-    // Transcript
-    Route::get('transcript', 'GradeStatementsController@transcriptIndex')->name('transcript.index');
-    Route::post('transcript/check-generation', 'GradeStatementsController@checkScriptGeneration')->name('transcript.check-generation');
-    Route::post('transcript/search', 'GradeStatementsController@searchTranscript')->name('transcript.search');
-    Route::post('transcript/generation', 'GradeStatementsController@scriptGeneration')->name('transcript.generation');
-    // test
-    // Route::get('transcript/generation/{batch}/{course}/{regulation}', 'GradeStatementsController@testScriptGeneration')->name('transcript.generation');
-    Route::get('transcript/pdf/{batch}/{course}/{regulation}', 'GradeStatementsController@tranScriptPDF')->name('transcript.pdf');
-    Route::get('transcript/print', 'GradeStatementsController@scriptPrint')->name('transcript.print');
 
     Route::get('grade/student/mark/report', 'ResultPublishController@studentIndex')->name('student_grade_mark.statement');
     Route::post('grade/student/mark/get_marks', 'ResultPublishController@getGrade')->name('student_grade_mark.get_marks');
 
     Route::get('grade-book/index', 'ResultPublishController@gradeBookIndex')->name('grade-book.index');
     Route::post('grade-book/get-grades', 'ResultPublishController@getGradeBook')->name('grade-book.get-grades');
-    Route::get('grade-book/print-grades/{result_sem}/{user_name_id}', 'ResultPublishController@printGrades')->name('grade-book.print-grades');
 
     Route::get('exam-fee/index', 'ExamFeeController@index')->name('exam-fee.index');
     Route::get('exam-fee/generate/{ay}/{batch}/{course}/{semester}/{user_name_id}/{exam_month}/{exam_year}', 'ExamFeeController@generate')->name('exam-fee.generate');
+
+    // Library Rack
+    Route::get('rack', 'RackController@index')->name('rack.index');
+    Route::post('rack/edit', 'RackController@edit')->name('rack.edit');
+    Route::post('rack/store', 'RackController@store')->name('rack.store');
+    Route::post('rack/view', 'RackController@view')->name('rack.view');
+    Route::post('rack/delete', 'RackController@destroy')->name('rack.delete');
+    Route::delete('rack/destroy', 'RackController@massDestroy')->name('rack.massDestroy');
+
+
+    Route::get('genre', 'GenreController@index')->name('genre.index');
+    Route::post('genre/edit', 'GenreController@edit')->name('genre.edit');
+    Route::post('genre/store', 'GenreController@store')->name('genre.store');
+    Route::post('genre/view', 'GenreController@view')->name('genre.view');
+    Route::post('genre/delete', 'GenreController@destroy')->name('genre.delete');
+    Route::delete('genre/destroy', 'GenreController@massDestroy')->name('genre.massDestroy');
+
+    Route::get('book', 'BookController@index')->name('book.index');
+    Route::post('book/edit', 'BookController@edit')->name('book.edit');
+    Route::post('book/store', 'BookController@store')->name('book.store');
+    Route::post('book/view', 'BookController@view')->name('book.view');
+    Route::post('book/delete', 'BookController@destroy')->name('book.delete');
+    Route::delete('book/destroy', 'BookController@massDestroy')->name('book.massDestroy');
+    Route::get('book/downloadQr/{id}', 'BookController@downloadQr')->name('book.downloadQr');
+    Route::get('download-pdf/{filename}', 'BookController@downloadPdf');
+    Route::post('book/parse-csv-import', 'BookController@parseCsvImport')->name('book-models.parseCsvImport');
+    Route::post('book/process-csv-import', 'BookController@processCsvImport')->name('book-models.processCsvImport');
+
+    Route::get('book-allocate', 'BookAllocateController@index')->name('book-allocate.index');
+    Route::post('book-allocate/edit', 'BookAllocateController@edit')->name('book-allocate.edit');
+    Route::post('book-allocate/store', 'BookAllocateController@store')->name('book-allocate.store');
+    Route::post('book-allocate/view', 'BookAllocateController@view')->name('book-allocate.view');
+    Route::post('book-allocate/delete', 'BookAllocateController@destroy')->name('book-allocate.delete');
+    Route::delete('book-allocate/destroy', 'BookAllocateController@massDestroy')->name('book-allocate.massDestroy');
+    Route::post('book-allocate/fetchRow', 'BookAllocateController@fetchRow')->name('book-allocate.fetchRow');
+    Route::post('book-allocate/fetchBook', 'BookAllocateController@fetchBook')->name('book-allocate.fetchBook');
+    Route::post('book-allocate/fetchCount', 'BookAllocateController@fetchCount')->name('book-allocate.fetchCount');
+
+    //Book Issue
+    Route::get('book-issue', 'BookIssueController@index')->name('book-issue.index');
+    Route::post('book-issue/edit', 'BookIssueController@edit')->name('book-issue.edit');
+    Route::post('book-issue/store', 'BookIssueController@store')->name('book-issue.store');
+    Route::post('book-issue/view', 'BookIssueController@view')->name('book-issue.view');
+    Route::post('book-issue/delete', 'BookIssueController@destroy')->name('book-issue.delete');
+    Route::delete('book-issue/destroy', 'BookIssueController@massDestroy')->name('book-issue.massDestroy');
+    Route::post('book-issue/fetchBook', 'BookIssueController@fetchBook')->name('book-issue.fetchBook');
+    Route::post('book-issue/fetchBookNo', 'BookIssueController@fetchBookNo')->name('book-issue.fetchBookNo');
+    Route::post('book-issue/checkStudent', 'BookIssueController@checkStudent')->name('book-issue.checkStudent');
+    Route::get('book-issue/get_record/{id}', 'BookIssueController@get_record')->name('book-issue.get_record');
+    Route::get('book-issue/get-book-info/{data}', 'BookIssueController@get_book_info')->name('book.get_book_info');
+    Route::post('book-issue/updater', 'BookIssueController@updater')->name('book-issue.updater');
+    Route::post('book-issue/reservation', 'BookIssueController@reservation')->name('book-issue.reservation');
+    Route::get('reserve-report/report', 'BookIssueController@reserveReport')->name('reserve-report.reserveReport');
+    Route::get('memberWise-report/report', 'BookIssueController@memberWiseReport')->name('memberWise-report.memberWiseReport');
+    Route::get('departWise-report/report', 'BookIssueController@departWise')->name('departWise-report.departWiseReport');
+    Route::get('inventory-report/report', 'BookIssueController@inventory')->name('inventory-report.inventory');
+    Route::post('reserve-report/search', 'BookIssueController@search')->name('reserve-report.search');
 
 });
 
@@ -1935,507 +1840,4 @@ Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 
         Route::post('profile', 'ChangePasswordController@updateProfile')->name('password.updateProfile');
         Route::post('profile/destroy', 'ChangePasswordController@destroy')->name('password.destroyProfile');
     }
-});
-Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['auth']], function () {
-    Route::get('/home', 'HomeController@index')->name('home');
-
-    // Permissions
-    Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
-    Route::resource('permissions', 'PermissionsController');
-
-    // Roles
-    Route::delete('roles/destroy', 'RolesController@massDestroy')->name('roles.massDestroy');
-    Route::resource('roles', 'RolesController');
-
-    // Users
-    Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
-    Route::resource('users', 'UsersController');
-
-
-    Route::get('tools-degree-types', 'ToolsDegreeTypeController@index')->name('tools-degree-types.index');
-    Route::post('tools-degree-types/view', 'ToolsDegreeTypeController@view')->name('tools-degree-types.view');
-    Route::post('tools-degree-types/edit', 'ToolsDegreeTypeController@edit')->name('tools-degree-types.edit');
-    Route::post('tools-degree-types/store', 'ToolsDegreeTypeController@store')->name('tools-degree-types.store');
-    Route::post('tools-degree-types/delete', 'ToolsDegreeTypeController@destroy')->name('tools-degree-types.delete');
-    Route::delete('tools-degree-types/destroy', 'ToolsDegreeTypeController@massDestroy')->name('tools-degree-types.massDestroy');
-
-    // Year
-    Route::get('year', 'YearController@index')->name('year.index');
-    Route::post('year/view', 'YearController@view')->name('year.view');
-    Route::post('year/edit', 'YearController@edit')->name('year.edit');
-    Route::post('year/store', 'YearController@store')->name('year.store');
-    Route::post('year/delete', 'YearController@destroy')->name('year.delete');
-    Route::delete('year/destroy', 'YearController@massDestroy')->name('year.massDestroy');
-
-    // Academic Year
-    Route::get('academic-years', 'AcademicYearController@index')->name('academic-years.index');
-    Route::post('academic-years/view', 'AcademicYearController@view')->name('academic-years.view');
-    Route::post('academic-years/edit', 'AcademicYearController@edit')->name('academic-years.edit');
-    Route::post('academic-years/store', 'AcademicYearController@store')->name('academic-years.store');
-    Route::post('academic-years/delete', 'AcademicYearController@destroy')->name('academic-years.delete');
-    Route::post('academic-years/check', 'AcademicYearController@check')->name('academic-years.check');
-    Route::post('academic-years/change-status', 'AcademicYearController@changeStatus')->name('academic-years.change-status');
-    Route::delete('academic-years/destroy', 'AcademicYearController@massDestroy')->name('academic-years.massDestroy');
-
-    // Settings
-    // Route::get('admin/master_settings','HomeController@master_settings')->name('admin.master_settings');
-
-    // Batch
-    Route::get('batches', 'BatchController@index')->name('batches.index');
-    Route::post('batches/view', 'BatchController@view')->name('batches.view');
-    Route::post('batches/edit', 'BatchController@edit')->name('batches.edit');
-    Route::post('batches/store', 'BatchController@store')->name('batches.store');
-    Route::post('batches/delete', 'BatchController@destroy')->name('batches.delete');
-    Route::delete('batches/destroy', 'BatchController@massDestroy')->name('batches.massDestroy');
-
-    // Tools Mainscreen
-    // Route::delete('tools/destroy', 'ToolsController@massDestroy')->name('tools-courses.massDestroy');
-    Route::resource('tools', 'ToolsController');
-
-    // Tools Course
-    Route::get('tools-courses', 'ToolsCourseController@index')->name('tools-courses.index');
-    Route::post('tools-courses/view', 'ToolsCourseController@view')->name('tools-courses.view');
-    Route::post('tools-courses/edit', 'ToolsCourseController@edit')->name('tools-courses.edit');
-    Route::post('tools-courses/store', 'ToolsCourseController@store')->name('tools-courses.store');
-    Route::post('tools-courses/delete', 'ToolsCourseController@destroy')->name('tools-courses.delete');
-    Route::delete('tools-courses/destroy', 'ToolsCourseController@massDestroy')->name('tools-courses.massDestroy');
-
-    // Tools Department
-    // Route::delete('tools-departments/destroy', 'ToolsDepartmentController@massDestroy')->name('tools-departments.massDestroy');
-    // Route::resource('tools-departments', 'ToolsDepartmentController');
-
-    Route::get('tools-departments', 'ToolsDepartmentController@index')->name('tools-departments.index');
-    Route::post('tools-departments/view', 'ToolsDepartmentController@view')->name('tools-departments.view');
-    Route::post('tools-departments/edit', 'ToolsDepartmentController@edit')->name('tools-departments.edit');
-    Route::post('tools-departments/store', 'ToolsDepartmentController@store')->name('tools-departments.store');
-    Route::post('tools-departments/delete', 'ToolsDepartmentController@destroy')->name('tools-departments.delete');
-    Route::delete('tools-departments/destroy', 'ToolsDepartmentController@massDestroy')->name('tools-departments.massDestroy');
-
-    // Section
-    Route::get('sections', 'SectionController@index')->name('sections.index');
-    Route::post('sections/view', 'SectionController@view')->name('sections.view');
-    Route::post('sections/edit', 'SectionController@edit')->name('sections.edit');
-    Route::post('sections/store', 'SectionController@store')->name('sections.store');
-    Route::post('sections/delete', 'SectionController@destroy')->name('sections.delete');
-    Route::delete('sections/destroy', 'SectionController@massDestroy')->name('sections.massDestroy');
-
-    // Semester
-    Route::get('semesters', 'SemesterController@index')->name('semesters.index');
-    Route::post('semesters/view', 'SemesterController@view')->name('semesters.view');
-    Route::post('semesters/edit', 'SemesterController@edit')->name('semesters.edit');
-    Route::post('semesters/store', 'SemesterController@store')->name('semesters.store');
-    Route::post('semesters/delete', 'SemesterController@destroy')->name('semesters.delete');
-    Route::post('semesters/change-status', 'SemesterController@changeStatus')->name('semesters.change-status');
-    Route::delete('semesters/destroy', 'SemesterController@massDestroy')->name('semesters.massDestroy');
-
-    // Course Enroll Master
-    Route::post('course_enroll_masters/enroll_index', 'CourseEnrollMasterController@enroll_index')->name('course_enroll_masters.enroll_index');
-    Route::get('course-enroll-masters', 'CourseEnrollMasterController@index')->name('course-enroll-masters.index');
-    Route::post('course-enroll-masters/view', 'CourseEnrollMasterController@view')->name('course-enroll-masters.view');
-    Route::post('course-enroll-masters/edit', 'CourseEnrollMasterController@edit')->name('course-enroll-masters.edit');
-    Route::post('course-enroll-masters/store', 'CourseEnrollMasterController@store')->name('course-enroll-masters.store');
-    Route::post('course-enroll-masters/delete', 'CourseEnrollMasterController@destroy')->name('course-enroll-masters.delete');
-    Route::delete('course-enroll-masters/destroy', 'CourseEnrollMasterController@massDestroy')->name('course-enroll-masters.massDestroy');
-
-    // Toolssyllabus Year
-    Route::get('toolssyllabus-years', 'ToolssyllabusYearController@index')->name('toolssyllabus-years.index');
-    Route::post('toolssyllabus-years/view', 'ToolssyllabusYearController@view')->name('toolssyllabus-years.view');
-    Route::post('toolssyllabus-years/edit', 'ToolssyllabusYearController@edit')->name('toolssyllabus-years.edit');
-    Route::post('toolssyllabus-years/store', 'ToolssyllabusYearController@store')->name('toolssyllabus-years.store');
-    Route::post('toolssyllabus-years/delete', 'ToolssyllabusYearController@destroy')->name('toolssyllabus-years.delete');
-    Route::delete('toolssyllabus-years/destroy', 'ToolssyllabusYearController@massDestroy')->name('toolssyllabus-years.massDestroy');
-
-    // Personal Details
-    Route::delete('personal-details/destroy', 'PersonalDetailsController@massDestroy')->name('personal-details.massDestroy');
-    Route::resource('personal-details', 'PersonalDetailsController');
-
-    // Educational Details
-    Route::delete('educational-details/destroy', 'EducationalDetailsController@massDestroy')->name('educational-details.massDestroy');
-    Route::resource('educational-details', 'EducationalDetailsController');
-
-    // Nationality
-    Route::get('nationalities', 'NationalityController@index')->name('nationalities.index');
-    Route::post('nationalities/view', 'NationalityController@view')->name('nationalities.view');
-    Route::post('nationalities/edit', 'NationalityController@edit')->name('nationalities.edit');
-    Route::post('nationalities/store', 'NationalityController@store')->name('nationalities.store');
-    Route::post('nationalities/delete', 'NationalityController@destroy')->name('nationalities.delete');
-    Route::post('nationalities/check', 'NationalityController@check')->name('nationalities.check');
-    Route::post('nationalities/change-status', 'NationalityController@changeStatus')->name('nationalities.change-status');
-    Route::delete('nationalities/destroy', 'NationalityController@massDestroy')->name('nationalities.massDestroy');
-
-    //Payment Mode
-    Route::get('paymentMode', 'PaymentModeController@index')->name('paymentMode.index');
-    Route::post('paymentMode/view', 'PaymentModeController@view')->name('paymentMode.view');
-    Route::post('paymentMode/edit', 'PaymentModeController@edit')->name('paymentMode.edit');
-    Route::post('paymentMode/store', 'PaymentModeController@store')->name('paymentMode.store');
-    Route::post('paymentMode/delete', 'PaymentModeController@destroy')->name('paymentMode.delete');
-    Route::delete('paymentMode/destroy', 'PaymentModeController@massDestroy')->name('paymentMode.massDestroy');
-
-    // Religion
-    Route::get('religions', 'ReligionController@index')->name('religions.index');
-    Route::post('religions/view', 'ReligionController@view')->name('religions.view');
-    Route::post('religions/edit', 'ReligionController@edit')->name('religions.edit');
-    Route::post('religions/store', 'ReligionController@store')->name('religions.store');
-    Route::post('religions/delete', 'ReligionController@destroy')->name('religions.delete');
-    Route::delete('religions/destroy', 'ReligionController@massDestroy')->name('religions.massDestroy');
-
-    // Blood Group
-    Route::get('blood-groups', 'BloodGroupController@index')->name('blood-groups.index');
-    Route::post('blood-groups/view', 'BloodGroupController@view')->name('blood-groups.view');
-    Route::post('blood-groups/edit', 'BloodGroupController@edit')->name('blood-groups.edit');
-    Route::post('blood-groups/store', 'BloodGroupController@store')->name('blood-groups.store');
-    Route::post('blood-groups/delete', 'BloodGroupController@destroy')->name('blood-groups.delete');
-    Route::delete('blood-groups/destroy', 'BloodGroupController@massDestroy')->name('blood-groups.massDestroy');
-
-    // Community
-    Route::get('communities', 'CommunityController@index')->name('communities.index');
-    Route::post('communities/view', 'CommunityController@view')->name('communities.view');
-    Route::post('communities/edit', 'CommunityController@edit')->name('communities.edit');
-    Route::post('communities/store', 'CommunityController@store')->name('communities.store');
-    Route::post('communities/delete', 'CommunityController@destroy')->name('communities.delete');
-    Route::delete('communities/destroy', 'CommunityController@massDestroy')->name('communities.massDestroy');
-
-    // Mother Tongue
-    Route::get('mother-tongues', 'MotherTongueController@index')->name('mother-tongues.index');
-    Route::post('mother-tongues/view', 'MotherTongueController@view')->name('mother-tongues.view');
-    Route::post('mother-tongues/edit', 'MotherTongueController@edit')->name('mother-tongues.edit');
-    Route::post('mother-tongues/store', 'MotherTongueController@store')->name('mother-tongues.store');
-    Route::post('mother-tongues/delete', 'MotherTongueController@destroy')->name('mother-tongues.delete');
-    Route::delete('mother-tongues/destroy', 'MotherTongueController@massDestroy')->name('mother-tongues.massDestroy');
-
-    // Education Board
-    Route::get('education-boards', 'EducationBoardController@index')->name('education-boards.index');
-    Route::post('education-boards/view', 'EducationBoardController@view')->name('education-boards.view');
-    Route::post('education-boards/edit', 'EducationBoardController@edit')->name('education-boards.edit');
-    Route::post('education-boards/store', 'EducationBoardController@store')->name('education-boards.store');
-    Route::post('education-boards/delete', 'EducationBoardController@destroy')->name('education-boards.delete');
-    Route::delete('education-boards/destroy', 'EducationBoardController@massDestroy')->name('education-boards.massDestroy');
-
-    // Subject Types
-    Route::get('subject_types', 'SubjectTypeController@index')->name('subject_types.index');
-    Route::post('subject_types/view', 'SubjectTypeController@view')->name('subject_types.view');
-    Route::post('subject_types/edit', 'SubjectTypeController@edit')->name('subject_types.edit');
-    Route::post('subject_types/store', 'SubjectTypeController@store')->name('subject_types.store');
-    Route::post('subject_types/delete', 'SubjectTypeController@destroy')->name('subject_types.delete');
-    Route::post('subject_types/check', 'SubjectTypeController@check')->name('subject_types.check');
-    Route::delete('subject_types/destroy', 'SubjectTypeController@massDestroy')->name('subject_types.massDestroy');
-
-    // Subject Category
-    Route::get('subject_category', 'SubjectCategoryController@index')->name('subject_category.index');
-    Route::post('subject_category/view', 'SubjectCategoryController@view')->name('subject_category.view');
-    Route::post('subject_category/edit', 'SubjectCategoryController@edit')->name('subject_category.edit');
-    Route::post('subject_category/store', 'SubjectCategoryController@store')->name('subject_category.store');
-    Route::post('subject_category/delete', 'SubjectCategoryController@destroy')->name('subject_category.delete');
-    Route::post('subject_category/check', 'SubjectCategoryController@check')->name('subject_category.check');
-    Route::delete('subject_category/destroy', 'SubjectCategoryController@massDestroy')->name('subject_category.massDestroy');
-
-    // Address
-    Route::delete('addresses/destroy', 'AddressController@massDestroy')->name('addresses.massDestroy');
-    Route::resource('addresses', 'AddressController');
-
-    // Parent Details
-    Route::delete('parent-details/destroy', 'ParentDetailsController@massDestroy')->name('parent-details.massDestroy');
-    Route::resource('parent-details', 'ParentDetailsController');
-
-    // Bank Account Details
-    Route::delete('bank-account-details/destroy', 'BankAccountDetailsController@massDestroy')->name('bank-account-details.massDestroy');
-    Route::resource('bank-account-details', 'BankAccountDetailsController');
-
-    // Experience Details
-    Route::delete('experience-details/destroy', 'ExperienceDetailsController@massDestroy')->name('experience-details.massDestroy');
-    Route::resource('experience-details', 'ExperienceDetailsController');
-
-    // Teaching Staff
-    Route::delete('teaching-staffs/destroy', 'TeachingStaffController@massDestroy')->name('teaching-staffs.massDestroy');
-    Route::resource('teaching-staffs', 'TeachingStaffController');
-
-    // Non Teaching Staff
-    Route::delete('non-teaching-staffs/destroy', 'NonTeachingStaffController@massDestroy')->name('non-teaching-staffs.massDestroy');
-    Route::resource('non-teaching-staffs', 'NonTeachingStaffController');
-
-    // Teaching Type
-    Route::delete('teaching-types/destroy', 'TeachingTypeController@massDestroy')->name('teaching-types.massDestroy');
-    Route::resource('teaching-types', 'TeachingTypeController');
-
-    // Examstaff
-    Route::delete('examstaffs/destroy', 'ExamstaffController@massDestroy')->name('examstaffs.massDestroy');
-    Route::resource('examstaffs', 'ExamstaffController');
-
-    // Add Conference
-    Route::delete('add-conferences/destroy', 'AddConferenceController@massDestroy')->name('add-conferences.massDestroy');
-    Route::resource('add-conferences', 'AddConferenceController');
-
-    // Entrance Exams
-    Route::delete('entrance-exams/destroy', 'EntranceExamsController@massDestroy')->name('entrance-exams.massDestroy');
-    Route::resource('entrance-exams', 'EntranceExamsController');
-
-    // Guest Lecture
-    Route::delete('guest-lectures/destroy', 'GuestLectureController@massDestroy')->name('guest-lectures.massDestroy');
-    Route::resource('guest-lectures', 'GuestLectureController');
-
-    // Industrial Training
-    Route::delete('industrial-trainings/destroy', 'IndustrialTrainingController@massDestroy')->name('industrial-trainings.massDestroy');
-    Route::resource('industrial-trainings', 'IndustrialTrainingController');
-
-    // Intern
-    Route::delete('interns/destroy', 'InternController@massDestroy')->name('interns.massDestroy');
-    Route::resource('interns', 'InternController');
-
-    // Industrial Experience
-    Route::delete('industrial-experiences/destroy', 'IndustrialExperienceController@massDestroy')->name('industrial-experiences.massDestroy');
-    Route::resource('industrial-experiences', 'IndustrialExperienceController');
-
-    // Iv
-    Route::delete('ivs/destroy', 'IvController@massDestroy')->name('ivs.massDestroy');
-    Route::resource('ivs', 'IvController');
-
-    // Online Course
-    Route::delete('online-courses/destroy', 'OnlineCourseController@massDestroy')->name('online-courses.massDestroy');
-    Route::resource('online-courses', 'OnlineCourseController');
-
-    // Documents
-    Route::delete('documents/destroy', 'DocumentsController@massDestroy')->name('documents.massDestroy');
-    Route::post('documents/media', 'DocumentsController@storeMedia')->name('documents.storeMedia');
-    Route::post('documents/ckmedia', 'DocumentsController@storeCKEditorImages')->name('documents.storeCKEditorImages');
-    Route::resource('documents', 'DocumentsController');
-
-    // Seminar
-    Route::delete('seminars/destroy', 'SeminarController@massDestroy')->name('seminars.massDestroy');
-    Route::resource('seminars', 'SeminarController');
-
-    // Saboticals
-    Route::delete('saboticals/destroy', 'SaboticalsController@massDestroy')->name('saboticals.massDestroy');
-    Route::resource('saboticals', 'SaboticalsController');
-
-    // Sponser
-    Route::delete('sponsers/destroy', 'SponserController@massDestroy')->name('sponsers.massDestroy');
-    Route::resource('sponsers', 'SponserController');
-
-    // Sttp
-    Route::delete('sttps/destroy', 'SttpController@massDestroy')->name('sttps.massDestroy');
-    Route::resource('sttps', 'SttpController');
-
-    // Workshop
-    Route::delete('workshops/destroy', 'WorkshopController@massDestroy')->name('workshops.massDestroy');
-    Route::resource('workshops', 'WorkshopController');
-
-    // Patents
-    Route::delete('patents/destroy', 'PatentsController@massDestroy')->name('patents.massDestroy');
-    Route::resource('patents', 'PatentsController');
-
-    // Awards
-    Route::delete('awards/destroy', 'AwardsController@massDestroy')->name('awards.massDestroy');
-    Route::resource('awards', 'AwardsController');
-
-    // Asset Category
-    Route::delete('asset-categories/destroy', 'AssetCategoryController@massDestroy')->name('asset-categories.massDestroy');
-    Route::resource('asset-categories', 'AssetCategoryController');
-
-    // Asset Location
-    Route::delete('asset-locations/destroy', 'AssetLocationController@massDestroy')->name('asset-locations.massDestroy');
-    Route::resource('asset-locations', 'AssetLocationController');
-
-    // Asset Status
-    Route::delete('asset-statuses/destroy', 'AssetStatusController@massDestroy')->name('asset-statuses.massDestroy');
-    Route::resource('asset-statuses', 'AssetStatusController');
-
-    // Asset
-    Route::delete('assets/destroy', 'AssetController@massDestroy')->name('assets.massDestroy');
-    Route::post('assets/media', 'AssetController@storeMedia')->name('assets.storeMedia');
-    Route::post('assets/ckmedia', 'AssetController@storeCKEditorImages')->name('assets.storeCKEditorImages');
-    Route::resource('assets', 'AssetController');
-
-    // Assets History
-    Route::resource('assets-histories', 'AssetsHistoryController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
-
-    // User Alerts
-    Route::delete('user-alerts/destroy', 'UserAlertsController@massDestroy')->name('user-alerts.massDestroy');
-    Route::resource('user-alerts', 'UserAlertsController', ['except' => ['edit', 'update']]);
-
-    // Task Status
-    Route::delete('task-statuses/destroy', 'TaskStatusController@massDestroy')->name('task-statuses.massDestroy');
-    Route::resource('task-statuses', 'TaskStatusController');
-
-    // Task Tag
-    Route::delete('task-tags/destroy', 'TaskTagController@massDestroy')->name('task-tags.massDestroy');
-    Route::resource('task-tags', 'TaskTagController');
-
-    // Task
-    Route::delete('tasks/destroy', 'TaskController@massDestroy')->name('tasks.massDestroy');
-    Route::post('tasks/media', 'TaskController@storeMedia')->name('tasks.storeMedia');
-    Route::post('tasks/ckmedia', 'TaskController@storeCKEditorImages')->name('tasks.storeCKEditorImages');
-    Route::resource('tasks', 'TaskController');
-
-    // Tasks Calendar
-    // Route::resource('tasks-calendars', 'TasksCalendarController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
-
-    // Faq Category
-    Route::delete('faq-categories/destroy', 'FaqCategoryController@massDestroy')->name('faq-categories.massDestroy');
-    Route::resource('faq-categories', 'FaqCategoryController');
-
-    // Faq Question
-    Route::delete('faq-questions/destroy', 'FaqQuestionController@massDestroy')->name('faq-questions.massDestroy');
-    Route::resource('faq-questions', 'FaqQuestionController');
-
-    // Content Category
-    Route::delete('content-categories/destroy', 'ContentCategoryController@massDestroy')->name('content-categories.massDestroy');
-    Route::resource('content-categories', 'ContentCategoryController');
-
-    // Content Tag
-    Route::delete('content-tags/destroy', 'ContentTagController@massDestroy')->name('content-tags.massDestroy');
-    Route::resource('content-tags', 'ContentTagController');
-
-    // Content Page
-    Route::delete('content-pages/destroy', 'ContentPageController@massDestroy')->name('content-pages.massDestroy');
-    Route::post('content-pages/media', 'ContentPageController@storeMedia')->name('content-pages.storeMedia');
-    Route::post('content-pages/ckmedia', 'ContentPageController@storeCKEditorImages')->name('content-pages.storeCKEditorImages');
-    Route::resource('content-pages', 'ContentPageController');
-
-    // Expense Category
-    Route::delete('expense-categories/destroy', 'ExpenseCategoryController@massDestroy')->name('expense-categories.massDestroy');
-    Route::resource('expense-categories', 'ExpenseCategoryController');
-
-    // Income Category
-    Route::delete('income-categories/destroy', 'IncomeCategoryController@massDestroy')->name('income-categories.massDestroy');
-    Route::resource('income-categories', 'IncomeCategoryController');
-
-    // Expense
-    Route::delete('expenses/destroy', 'ExpenseController@massDestroy')->name('expenses.massDestroy');
-    Route::resource('expenses', 'ExpenseController');
-
-    // Income
-    Route::delete('incomes/destroy', 'IncomeController@massDestroy')->name('incomes.massDestroy');
-    Route::resource('incomes', 'IncomeController');
-
-    // Courses
-    Route::delete('courses/destroy', 'CoursesController@massDestroy')->name('courses.massDestroy');
-    Route::post('courses/media', 'CoursesController@storeMedia')->name('courses.storeMedia');
-    Route::post('courses/ckmedia', 'CoursesController@storeCKEditorImages')->name('courses.storeCKEditorImages');
-    Route::resource('courses', 'CoursesController');
-
-    // Lessons
-    Route::delete('lessons/destroy', 'LessonsController@massDestroy')->name('lessons.massDestroy');
-    Route::post('lessons/media', 'LessonsController@storeMedia')->name('lessons.storeMedia');
-    Route::post('lessons/ckmedia', 'LessonsController@storeCKEditorImages')->name('lessons.storeCKEditorImages');
-    Route::resource('lessons', 'LessonsController');
-
-    // Tests
-    Route::delete('tests/destroy', 'TestsController@massDestroy')->name('tests.massDestroy');
-    Route::resource('tests', 'TestsController');
-
-    // Questions
-    Route::delete('questions/destroy', 'QuestionsController@massDestroy')->name('questions.massDestroy');
-    Route::post('questions/media', 'QuestionsController@storeMedia')->name('questions.storeMedia');
-    Route::post('questions/ckmedia', 'QuestionsController@storeCKEditorImages')->name('questions.storeCKEditorImages');
-    Route::resource('questions', 'QuestionsController');
-
-    // Question Options
-    Route::delete('question-options/destroy', 'QuestionOptionsController@massDestroy')->name('question-options.massDestroy');
-    Route::resource('question-options', 'QuestionOptionsController');
-
-    // Test Results
-    Route::delete('test-results/destroy', 'TestResultsController@massDestroy')->name('test-results.massDestroy');
-    Route::resource('test-results', 'TestResultsController');
-
-    // Test Answers
-    Route::delete('test-answers/destroy', 'TestAnswersController@massDestroy')->name('test-answers.massDestroy');
-    Route::resource('test-answers', 'TestAnswersController');
-
-    // Leave Type
-    Route::delete('leave-types/destroy', 'LeaveTypeController@massDestroy')->name('leave-types.massDestroy');
-    Route::resource('leave-types', 'LeaveTypeController');
-
-    // Staff Biometrics
-    Route::delete('staff-biometrics/destroy', 'StaffBiometricController@massDestroy')->name('staff-biometrics.massDestroy');
-    Route::resource('staff-biometrics', 'StaffBiometricController');
-
-    // Leave Staff Allocation
-    Route::delete('leave-staff-allocations/destroy', 'LeaveStaffAllocationController@massDestroy')->name('leave-staff-allocations.massDestroy');
-    Route::resource('leave-staff-allocations', 'LeaveStaffAllocationController');
-
-    // College Block
-    Route::delete('college-blocks/destroy', 'CollegeBlockController@massDestroy')->name('college-blocks.massDestroy');
-    Route::resource('college-blocks', 'CollegeBlockController');
-
-    // Leave Status
-    Route::resource('leave-statuses', 'LeaveStatusController', ['except' => ['destroy']]);
-
-    // Od Master
-    Route::delete('od-masters/destroy', 'OdMasterController@massDestroy')->name('od-masters.massDestroy');
-    Route::resource('od-masters', 'OdMasterController');
-
-    // Class Rooms
-    Route::get('class-rooms', 'ClassRoomsController@index')->name('class-rooms.index');
-    Route::post('class-rooms/view', 'ClassRoomsController@view')->name('class-rooms.view');
-    Route::post('class-rooms/edit', 'ClassRoomsController@edit')->name('class-rooms.edit');
-    Route::post('class-rooms/store', 'ClassRoomsController@store')->name('class-rooms.store');
-    Route::post('class-rooms/delete', 'ClassRoomsController@destroy')->name('class-rooms.delete');
-    Route::post('class-rooms/change-status', 'ClassRoomsController@changeStatus')->name('class-rooms.change-status');
-    Route::post('class-rooms/getBatch', 'ClassRoomsController@getBatch')->name('class-rooms.getBatch');
-    Route::delete('class-rooms/destroy', 'ClassRoomsController@massDestroy')->name('class-rooms.massDestroy');
-
-
-
-    // Email Settings
-    Route::delete('email-settings/destroy', 'EmailSettingsController@massDestroy')->name('email-settings.massDestroy');
-    Route::resource('email-settings', 'EmailSettingsController');
-
-    // Sms Settings
-    Route::delete('sms-settings/destroy', 'SmsSettingsController@massDestroy')->name('sms-settings.massDestroy');
-    Route::resource('sms-settings', 'SmsSettingsController');
-
-    // Sms Templates
-    Route::delete('sms-templates/destroy', 'SmsTemplatesController@massDestroy')->name('sms-templates.massDestroy');
-    Route::resource('sms-templates', 'SmsTemplatesController');
-
-    // Settings
-    Route::delete('settings/destroy', 'SettingsController@massDestroy')->name('settings.massDestroy');
-    Route::resource('settings', 'SettingsController');
-
-    // Take Attentance Student
-    Route::delete('take-attentance-students/destroy', 'TakeAttentanceStudentController@massDestroy')->name('take-attentance-students.massDestroy');
-    Route::resource('take-attentance-students', 'TakeAttentanceStudentController');
-
-    // Email Templates
-    Route::delete('email-templates/destroy', 'EmailTemplatesController@massDestroy')->name('email-templates.massDestroy');
-    Route::resource('email-templates', 'EmailTemplatesController');
-
-    // Od Request
-    Route::delete('od-requests/destroy', 'OdRequestController@massDestroy')->name('od-requests.massDestroy');
-    Route::resource('od-requests', 'OdRequestController');
-
-    // Internship Request
-    Route::delete('internship-requests/destroy', 'InternshipRequestController@massDestroy')->name('internship-requests.massDestroy');
-    Route::resource('internship-requests', 'InternshipRequestController');
-
-    // College Calender
-    Route::delete('college-calenders/destroy', 'CollegeCalenderController@massDestroy')->name('college-calenders.massDestroy');
-    Route::resource('college-calenders', 'CollegeCalenderController');
-    Route::post('/update-day', 'CollegeCalenderController@update')->name('update-day');
-
-    // Hrm Request Permission
-    Route::delete('hrm-request-permissions/destroy', 'HrmRequestPermissionController@massDestroy')->name('hrm-request-permissions.massDestroy');
-    Route::resource('hrm-request-permissions', 'HrmRequestPermissionController');
-
-    // Hrm Request Leave
-    Route::delete('hrm-request-leaves/destroy', 'HrmRequestLeaveController@massDestroy')->name('hrm-request-leaves.massDestroy');
-    Route::resource('hrm-request-leaves', 'HrmRequestLeaveController');
-
-    // Payment Gateway
-    Route::delete('payment-gateways/destroy', 'PaymentGatewayController@massDestroy')->name('payment-gateways.massDestroy');
-    Route::resource('payment-gateways', 'PaymentGatewayController');
-
-    // Staff Transfer Info
-    Route::delete('staff-transfer-infos/destroy', 'StaffTransferInfoController@massDestroy')->name('staff-transfer-infos.massDestroy');
-    Route::resource('staff-transfer-infos', 'StaffTransferInfoController');
-
-    // Fundingdetalis
-    Route::delete('fundingdetalis/destroy', 'FundingdetalisController@massDestroy')->name('fundingdetalis.massDestroy');
-    Route::resource('fundingdetalis', 'FundingdetalisController');
-
-    Route::get('frontend/profile', 'ProfileController@index')->name('profile.index');
-    Route::post('frontend/profile', 'ProfileController@update')->name('profile.update');
-    Route::post('frontend/profile/destroy', 'ProfileController@destroy')->name('profile.destroy');
-    Route::post('frontend/profile/password', 'ProfileController@password')->name('profile.password');
-
 });
