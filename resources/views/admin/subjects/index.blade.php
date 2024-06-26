@@ -126,9 +126,9 @@
                             <label for="sub_type" class="required">Subject Type</label>
                             <select id="sub_type" name="sub_type" class="form-control select2">
                                 <option value="">Select Subject Type</option>
-                                @foreach ($sub_type as $key => $item)
+                                {{-- @foreach ($sub_type as $key => $item)
                                     <option value="{{ $key }}">{{ $item }}</option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
                             <span id="sub_type_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
@@ -137,9 +137,9 @@
                             <label for="sub_cat" class="required">Subject Category</label>
                             <select id="sub_cat" name="sub_cat" class="form-control select2">
                                 <option value="">Select Subject Category</option>
-                                @foreach ($sub_cat as $key => $item)
+                                {{-- @foreach ($sub_cat as $key => $item)
                                     <option value="{{ $key }}">{{ $item }}</option>
-                                @endforeach
+                                @endforeach --}}
                             </select>
                             <span id="sub_cat_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>

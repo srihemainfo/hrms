@@ -113,18 +113,23 @@ class ArtisanCmdController extends Controller
 
     public function circle()
     {
-        $user = DB::table('students')
-            ->whereNotNull('register_no')
-            ->update(['register_no' => DB::raw("CONCAT('', register_no)")]);
+        // $roles = DB::table('permission_role')->get();
 
-        $user = DB::table('teaching_staffs')
-            ->whereNotNull('register_no')
-            ->update(['register_no' => DB::raw("CONCAT('', register_no)")]);
-        $user = DB::table('users')
-            ->whereNotNull('register_no')
-            ->update(['register_no' => DB::raw('SUBSTRING(register_no, 5)')]);
+        // foreach ($roles as $role) {
+        //     $check = DB::table('permission_role')
+        //         ->where('role_id', $role->role_id)
+        //         ->where('permission_id', 820)
+        //         ->first();
+        //     // dd(!$check);
+        //     if (!$check) {
+        //         // Permission 820 is not assigned to this role, so insert it
+        //         DB::table('permission_role')->insert([
+        //             'role_id' => $role->role_id,
+        //             'permission_id' => 820,
+        //         ]);
+        //     }
+        // }
 
-        dd($user);
         return back();
     }
 

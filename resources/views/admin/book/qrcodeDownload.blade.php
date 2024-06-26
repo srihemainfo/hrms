@@ -81,7 +81,7 @@
     <div class="section">
         <div class="logo_section">
             <div class="logo_div">
-                <img src="{{ public_path('adminlogo/svcet_menu_logo.png') }}" alt="">
+                <img src="{{ public_path('adminlogo/school_menu_logo.png') }}" alt="">
             </div>
         </div>
         <div class="header">

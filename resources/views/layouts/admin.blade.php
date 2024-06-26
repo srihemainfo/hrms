@@ -9,6 +9,11 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Demo Collage Of Engineering & Technology</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('adminlogo/school_favicon.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
     {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" integrity="sha512-UJfAaOlIRtdR+0P6C3KUoTDAxVTuy3lnSXLyLKlHYJlcSU8Juge/mjeaxDNMlw9LgeIotgz5FP8eUQPhX1q10A==" crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" />
@@ -26,6 +31,11 @@
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
     {{-- <link href="{{ asset('css/materialize.css') }}" rel="stylesheet" /> --}}
     <script>
+        .poppins - light {
+            font - family: "Poppins", sans - serif;
+            font - weight: 300;
+            font - style: normal;
+        }
         // $(window).on("load", function() {
         //     // Disable right-click context menu
         //     document.addEventListener("contextmenu", (e) => e.preventDefault());
@@ -456,7 +466,6 @@
                         request()->is('admin/education-boards*') ||
                         request()->is('admin/education-types*') ||
                         request()->is('admin/scholarships*') ||
-                        request()->is('admin/subjects*') ||
                         request()->is('admin/mediumof-studieds*') ||
                         request()->is('admin/teaching-types*') ||
                         request()->is('admin/examstaffs*') ||
@@ -475,9 +484,6 @@
                         request()->is('admin/tool-lab/*') ||
                         request()->is('admin/rooms') ||
                         request()->is('admin/rooms/*') ||
-                        request()->is('admin/subject_types*') ||
-                        request()->is('admin/subject_category*') ||
-                        request()->is('admin/subject-allotment*') ||
                         request()->is('admin/events/*') ||
                         request()->is('admin/leave-types/*') ||
                         request()->is('admin/grade-master*') ||

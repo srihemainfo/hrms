@@ -93,21 +93,14 @@ class BusStudentController extends Controller
                 $student[] = $value;
             }
         }
-        $allStudent = DB::table('academic_years')
-            ->where('academic_years.status', '=', '1')
-            ->whereNull('academic_years.deleted_at')
-            ->leftJoin('course_enroll_masters', 'academic_years.id', '=', 'course_enroll_masters.academic_id')
-            ->whereNull('course_enroll_masters.deleted_at')
+        $allStudent = DB::table('course_enroll_masters')
             ->join('students', 'students.enroll_master_id', '=', 'course_enroll_masters.id')
             ->whereNull('students.deleted_at')
             ->select('students.name', 'students.user_name_id')
             ->get();
 
         // dd($student);
-        $student = DB::table('academic_years')
-            ->where('academic_years.status', '=', '1')
-            ->whereNull('academic_years.deleted_at')
-            ->leftJoin('course_enroll_masters', 'academic_years.id', '=', 'course_enroll_masters.academic_id')
+        $student = DB::table('course_enroll_masters')
             ->whereNull('course_enroll_masters.deleted_at')
             ->join('students', 'students.enroll_master_id', '=', 'course_enroll_masters.id')
             ->whereNotIn('students.user_name_id', $student)
@@ -365,11 +358,7 @@ class BusStudentController extends Controller
         }
 
         // dd($student);
-        $student = DB::table('academic_years')
-            ->where('academic_years.status', '=', '1')
-            ->whereNull('academic_years.deleted_at')
-            ->leftJoin('course_enroll_masters', 'academic_years.id', '=', 'course_enroll_masters.academic_id')
-            ->whereNull('course_enroll_masters.deleted_at')
+        $student = DB::table('course_enroll_masters')
             ->join('students', 'students.enroll_master_id', '=', 'course_enroll_masters.id')
             ->whereNotIn('students.user_name_id', $student)
             ->whereNull('students.deleted_at')

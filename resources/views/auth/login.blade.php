@@ -217,11 +217,10 @@
         <div class="col-left">
             <div class="login-text -MB2">
                 <a href="{{ route('admin.home') }}">
-                    <img src="{{ asset('adminlogo/school_favicon.png') }}" alt="" height="50%" width="100%">
+                    <img src="{{ asset('adminlogo/school_favicon.png') }}" alt="" height="65%" width="100%">
                 </a>
                 <p><br>
-                    College of Engineering and Technology
-                    . </p>
+                    College of Engineering and Technology.</p>
             </div>
         </div>
         <div class="col-right">
