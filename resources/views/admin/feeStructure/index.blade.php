@@ -53,13 +53,16 @@
                             ID
                         </th>
                         <th>
+                            Shift
+                        </th>
+                        <th>
                             Batch
                         </th>
                         <th>
                             Course
                         </th>
                         <th>
-                            AY
+                            Semester
                         </th>
                         <th>
                             Admission Mode
@@ -85,17 +88,53 @@
                 </div>
                 <div class="modal-body">
                     <div class="row gutters">
+                        @can('shift_alter_access')
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                            <label for="result" class="required">Shift</label>
+                            <input type="hidden" id="feeStructure_id" value="">
+                            <select class="form-control select2" style="text-transform:uppercase" id="shift"
+                                name="shift" value="">
+                                <option value="">Select Shift</option>
+                                @foreach ($shift as $id => $sht)
+                                    <option value="{{ $id }}">{{ $sht }}</option>
+                                @endforeach
+                            </select>
+                            <span id="shift_span" class="text-danger text-center"
+                                style="display:none;font-size:0.9rem;"></span>
+                        </div>
+                        @endcan
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="result" class="required">Course</label>
                             <input type="hidden" id="feeStructure_id" value="">
-                            <select class="form-control select2" style="text-transform:uppercase" id="course"
-                                name="course" value="">
+                            <select class="form-control select2" style="text-transform:uppercase" id="course" name="course" value="">
                                 <option value="">Select Course</option>
                                 @foreach ($course as $id => $d)
                                     <option value="{{ $id }}">{{ $d }}</option>
                                 @endforeach
                             </select>
                             <span id="course_span" class="text-danger text-center"
+                                style="display:none;font-size:0.9rem;"></span>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                            <label for="result" class="required">Applicable Batch</label>
+                            <select class="form-control select2" id="applied_batch" name="applied_batch">
+                                <option value="">Select Batch</option>
+                                @foreach ($batch as $id => $b)
+                                    <option value="{{ $id }}">{{ $b }}</option>
+                                @endforeach
+                            </select>
+                            <span id="applied_batch_span" class="text-danger text-center"
+                                style="display:none;font-size:0.9rem;"></span>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                            <label for="result" class="required">Applicable Semester</label>
+                            <select class="form-control select2" id="semester" name="semester">
+                                <option value="">Select Semester</option>
+                                @foreach ($semester as $id => $sem)
+                                    <option value="{{ $id }}">{{ $sem }}</option>
+                                @endforeach
+                            </select>
+                            <span id="semester_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
@@ -110,19 +149,7 @@
                             <span id="admission_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="result" class="required">Applicable Batch</label>
-                            <select class="form-control select2" id="applied_batch" name="applied_batch">
-                                <option value="">Select Batch</option>
-                                @foreach ($batch as $id => $b)
-                                    <option value="{{ $id }}">{{ $b }}</option>
-                                @endforeach
-                            </select>
-                            <span id="applied_batch_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div>
-
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group" id="applied_ay_div"
+                        {{-- <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group" id="applied_ay_div"
                             style="display:none;">
                             <label for="applied_ay" class="required">Applicable AY</label>
                             <select class="form-control select2" id="applied_ay" name="applied_ay">
@@ -133,7 +160,7 @@
                             </select>
                             <span id="applied_ay_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
-                        </div>
+                        </div> --}}
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group">
                             <table class="table table-bordered table-striped table-hover text-center">
                                 <thead>
@@ -144,8 +171,16 @@
                                 </thead>
                                 <tbody>
                                     <tr>
+                                        <td>Admission Fee</td>
+                                        <td><input type="number" id="admission_fee" class="amtInp" value=""></td>
+                                    </tr>
+                                    <tr>
                                         <td>Tuition Fee</td>
                                         <td><input type="number" id="tuition_fee" class="amtInp" value=""></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Special Fee</td>
+                                        <td><input type="number" id="special_fee" class="amtInp" value=""></td>
                                     </tr>
                                     <tr>
                                         <td>Hostel Fee</td>
@@ -166,7 +201,7 @@
                             onclick="saveFeeStructure()">Save</button>
                     </div>
                     <div id="loading_div">
-                        <span class="theLoader">Processing...</span>
+                        <span class="theLoader"></span>
                     </div>
                 </div>
             </div>
@@ -180,6 +215,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row gutters">
+                        
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="feeBatch" class="required">Batch</label>
                             <select class="form-control select2" id="feeBatch" name="feeBatch">
@@ -406,6 +442,10 @@
                         name: 'id'
                     },
                     {
+                        data: 'shift',
+                        name: 'shift'
+                    },
+                    {
                         data: 'batch',
                         name: 'batch'
                     },
@@ -414,8 +454,8 @@
                         name: 'course'
                     },
                     {
-                        data: 'ay',
-                        name: 'ay'
+                        data: 'semester',
+                        name: 'semester'
                     },
                     {
                         data: 'admission',
@@ -446,10 +486,14 @@
 
         function openModal() {
             $("#feeStructure_id").val('');
+            $("#admission_fee").val('');
             $("#tuition_fee").val('');
+            $("#special_fee").val('');
             $("#hostel_fee").val('');
             $("#other_fee").val('');
             $("#course").val('').select2()
+            $("#shift").val('').select2()
+            $("#semester").val('').select2()
             $("#admission").val('').select2()
             $("#applied_batch").val('').select2()
             $("#applied_ay_div").hide();
@@ -464,13 +508,25 @@
             $("#course_span").hide();
             $("#admission_span").hide();
             $("#course_span").hide();
+            $("#shift_span").hide();
+            $("#semester_span").hide();
+
             if ($("#course").val() == '') {
                 $("#course_span").html('Course Is Required').show();
             } else if ($("#admission").val() == '') {
                 $("#admission_span").html('Admission Mode Is Required').show();
-            } else if ($("#applied_batch").val() == '') {
+            }
+            else if ($("#shift").val() == '') {
+                $("#shift_span").html('Shift Is Required').show();
+            }
+
+            else if ($("#semester").val() == '') {
+                $("#semester_span").html('Semester Is Required').show();
+            }
+
+            else if ($("#applied_batch").val() == '') {
                 $("#applied_batch_span").html('Applicable Batch Is Required').show();
-            } else if ($("#tuition_fee").val() == '' || $("#hostel_fee").val() == '' || $("#other_fee").val() == '') {
+            } else if ($("#tuition_fee").val() == '' || $("#hostel_fee").val() == '' || $("#other_fee").val() == '' || $("#admission_fee").val()== '' || $("#special_fee").val()== '') {
                 Swal.fire('', 'Please Provide The Fee Details', 'warning');
             } else {
                 $("#save_div").hide();
@@ -487,8 +543,12 @@
                         'admission': $("#admission").val(),
                         'batch': $("#applied_batch").val(),
                         'tuition_fee': $("#tuition_fee").val(),
+                        'special_fee': $("#special_fee").val(),
+                        'admission_fee': $("#admission_fee").val(),
                         'hostel_fee': $("#hostel_fee").val(),
                         'other_fee': $("#other_fee").val(),
+                        'shift': $("#shift").val(),
+                        'semester': $("#semester").val(),
                     },
                     success: function(response) {
                         let status = response.status;
@@ -525,12 +585,16 @@
                         if (status == true) {
                             var data = response.data;
                             $("#feeStructure_id").val(data.fees_id);
+                            $("#shift").val(data.shi);
+                            $("#semester").val(data.sem);
                             $("#course").val(data.course)
                             $("#admission").val(data.admission)
                             $("#applied_ay_div").show();
                             $("#applied_batch").val(data.batch)
                             $("#applied_ay").val(data.ay)
                             $("#tuition_fee").val(data.tuition_fee)
+                            $("#special_fee").val(data.special_fee)
+                            $("#admission_fee").val(data.admission_fee)
                             $("#hostel_fee").val(data.hostel_fee)
                             $("#other_fee").val(data.other_fee)
                             $("#save_div").hide();
@@ -571,6 +635,8 @@
                             $("#applied_batch").val(data.batch)
                             $("#applied_ay").val(data.ay)
                             $("#tuition_fee").val(data.tuition_fee)
+                            $("#special_fee").val(data.special_fee)
+                            $("#admission_fee").val(data.admission_fee)
                             $("#hostel_fee").val(data.hostel_fee)
                             $("#other_fee").val(data.other_fee)
                             $("select").prop('disabled', true).select2()

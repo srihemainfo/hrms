@@ -60,6 +60,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="row gutters">
+                        
+
+                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                            <label for="shift" class="required">Shift</label>
+                            <select name="shift" id="shift" class="form-control select2">
+                                <option value="">Select Shift</option>
+                                @foreach ($shift as $id => $sht)
+                                    <option value="{{ $id }}">{{ $sht }}</option>
+                                @endforeach
+                            </select>
+                            <span id="shift_span" class="text-danger text-center"
+                                style="display:none;font-size:0.9rem;"></span>
+                        </div>
+
+
 
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="dept" class="required">Department</label>
@@ -253,24 +268,39 @@
                 $("#dept_span").hide();
                 $("#degree_span").hide();
                 $("#short_form_span").hide();
+                $("#shift_span").hide();
             } else if ($("#degree").val() == '') {
                 $("#degree_span").html(`Degree Type Is Required.`);
                 $("#degree_span").show();
                 $("#dept_span").hide();
                 $("#course_span").hide();
                 $("#short_form_span").hide();
-            } else if ($("#dept").val() == '') {
+                $("#shift_span").hide();
+            } 
+
+            else if ($("#shift").val() == '') {
+                $("#shift_span").html(`Shift Type Is Required.`);
+                $("#shift_span").show();
+                $("#dept_span").hide();
+                $("#course_span").hide();
+                $("#short_form_span").hide();
+                $("#degree_span").hide();
+            }
+
+            else if ($("#dept").val() == '') {
                 $("#dept_span").html(`Department Is Required.`);
                 $("#dept_span").show();
                 $("#degree_span").hide();
                 $("#short_form_span").hide();
                 $("#course_span").hide();
+                $("#shift_span").hide();
             } else if ($("#short_form").val() == '') {
                 $("#short_form_span").html(`Short Form Is Required.`);
                 $("#short_form_span").show();
                 $("#course_span").hide();
                 $("#dept_span").hide();
                 $("#degree_span").hide();
+                $("#shift_span").hide();
             } else {
                 $("#save_div").hide();
                 $("#course_span").hide();
@@ -278,11 +308,13 @@
                 $("#dept_span").hide();
                 $("#degree_span").hide();
                 $("#loading_div").show();
+                $("#shift_span").hide();
                 let id = $("#course_id").val();
                 let course = $("#course").val();
                 let dept = $("#dept").val();
                 let degree = $("#degree").val();
                 let short_form = $("#short_form").val();
+                let shift = $("#shift").val();
                 $.ajax({
                     url: "{{ route('admin.tools-courses.store') }}",
                     method: 'POST',
@@ -294,7 +326,8 @@
                         'course': course,
                         'short_form': short_form,
                         'degree': degree,
-                        'dept': dept
+                        'dept': dept,
+                        'shift':shift
                     },
                     success: function(response) {
                         let status = response.status;
@@ -345,6 +378,7 @@
                             var data = response.data;
                             $("#course_id").val(data.id);
                             $("#course").val(data.name);
+                            $("#shift").val(data.shift_id).select2();
                             $("#short_form").val(data.short_form);
                             $("#dept").val(data.department_id).select2();
                             $("#degree").val(data.degree_type_id).select2();
@@ -398,6 +432,7 @@
                             $("#course").val(data.name);
                             $("#short_form").val(data.short_form);
                             $("#dept").val(data.department_id).select2();
+                            $("#shift").val(data.shift_id).select2();
                             $("#degree").val(data.degree_type_id).select2();
                             $("#save_btn").html(`Update`);
                             $("#save_div").show();

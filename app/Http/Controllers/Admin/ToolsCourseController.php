@@ -7,6 +7,7 @@ use App\Http\Requests\MassDestroyToolsCourseRequest;
 use App\Models\ToolsCourse;
 use App\Models\ToolsDegreeType;
 use App\Models\ToolsDepartment;
+use App\Models\ShiftModel;
 use Carbon\Carbon;
 use FontLib\Table\Type\name;
 use Gate;
@@ -58,7 +59,7 @@ class ToolsCourseController extends Controller
                 return $row->degree ? $row->degree->name : 'UG';
             });
             $table->editColumn('shift', function ($row) {
-                return $row->shift ? $row->shift->name : '';
+                return $row->shift ? $row->shift->Name : '';
             });
             $table->editColumn('department', function ($row) {
                 return $row->department ? $row->department->name : '';
@@ -73,8 +74,9 @@ class ToolsCourseController extends Controller
         }
         $degree = ToolsDegreeType::pluck('name', 'id');
         $dept = ToolsDepartment::pluck('name', 'id');
+        $shift = ShiftModel::pluck('Name', 'id');
 
-        return view('admin.toolsCourses.index', compact('degree', 'dept'));
+        return view('admin.toolsCourses.index', compact('degree', 'dept','shift'));
     }
 
     public function store(Request $request)
@@ -91,6 +93,8 @@ class ToolsCourseController extends Controller
                         'short_form' => strtoupper($request->short_form),
                         'degree_type_id' => $request->degree,
                         'department_id' => $request->dept,
+                        'shift_id'=>$request->shift,
+                        
                     ]);
                 }
                 return response()->json(['status' => true, 'data' => 'Course Created']);
@@ -103,7 +107,9 @@ class ToolsCourseController extends Controller
                         'name' => strtoupper($request->course),
                         'short_form' => strtoupper($request->short_form),
                         'degree_type_id' => $request->degree,
-                        'department_id' => $request->dept
+                        'department_id' => $request->dept,
+                        'shift_id'=>$request->shift,
+
                     ]);
                 }
                 return response()->json(['status' => true, 'data' => 'Course Updated']);
@@ -116,7 +122,7 @@ class ToolsCourseController extends Controller
     public function view(Request $request)
     {
         if (isset($request->id)) {
-            $data = ToolsCourse::where(['id' => $request->id])->select('id', 'name', 'short_form', 'degree_type_id', 'department_id')->first();
+            $data = ToolsCourse::where(['id' => $request->id])->select('id','name', 'shift_id', 'short_form', 'degree_type_id', 'department_id')->first();
             return response()->json(['status' => true, 'data' => $data]);
         } else {
             return response()->json(['status' => false, 'data' => 'Required Details Not Found']);
@@ -126,7 +132,7 @@ class ToolsCourseController extends Controller
     public function edit(Request $request)
     {
         if (isset($request->id)) {
-            $data = ToolsCourse::where(['id' => $request->id])->select('id', 'name', 'short_form', 'degree_type_id', 'department_id')->first();
+            $data = ToolsCourse::where(['id' => $request->id])->select('id', 'name','shift_id', 'short_form', 'degree_type_id', 'department_id')->first();
             return response()->json(['status' => true, 'data' => $data]);
         } else {
             return response()->json(['status' => false, 'data' => 'Required Details Not Found']);

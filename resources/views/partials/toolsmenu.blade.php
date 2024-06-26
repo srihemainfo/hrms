@@ -30,6 +30,8 @@
     </div>
 </div>
 <ul class="nav nav-pills nav-sidebar flex-column tools-menu" id="list-1">
+    
+
 
 
     @can('tools_degree_type_access')
