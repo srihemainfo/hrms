@@ -1729,7 +1729,7 @@
                                 <li class="nav-item">
                                     <a href="{{ route('admin.hostel.index') }}"
                                         class="nav-link {{ request()->is('admin/hostel') || request()->is('admin/hostel/*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-unlock-alt">
+                                        <i class="fa-fw nav-icon fas fa-h-square">
 
                                         </i>
                                         <p>
@@ -1738,11 +1738,23 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('hostel_warden_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.hostel-warden.index') }}"
+                                        class="nav-link {{ request()->is('admin/hostel-warden') || request()->is('admin/hostel-warden/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-unlock-alt">
+                                        </i>
+                                        <p>
+                                            Hostel Warden
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
                             @can('hostel_room_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.hostelRoom.index') }}"
                                         class="nav-link {{ request()->is('admin/hostelRoom') || request()->is('admin/hostelRoom/*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-briefcase">
+                                        <i class="fa-fw nav-icon fas fa-door-open">
 
                                         </i>
                                         <p>

@@ -5,7 +5,7 @@
         $key = 'layouts.studentHome';
     } elseif ($type_id == 1 || $type_id == 3) {
         $key = 'layouts.teachingStaffHome';
-    } elseif ($type_id == 2 || $type_id == 4 || $type_id == 5 || ($type_id == 6 && $role_id == 9)) {
+    } elseif ($type_id == 2 || $type_id == 4 || $type_id == 5 || $role_id == 60) {
         $key = 'layouts.non_techStaffHome';
     } else {
         $key = 'layouts.admin';
@@ -43,22 +43,27 @@
 
                     @foreach ($hostel as $id => $h)
                         {{-- {{dd(auth()->user()->id != 1 && (auth()->user()->roles[0]->id == 9 && auth()->user()->hostel_id == 1))}} --}}
-                        @if (auth()->user()->id != 1 && (auth()->user()->roles[0]->id == 9 && auth()->user()->hostel_id == $id))
+                        @if (auth()->user()->id != 1 && (auth()->user()->roles[0]->id == 60 && $check->hostel_id == $id))
+                            {{-- {{dd($check->hostel_id == $id, $id, auth()->user()->roles[0]->id == 60)}} --}}
+                            {{-- @if($id != 1)
+                                {{dd($id)}}
+                            @endif --}}
                             <tr>
                                 <td>{{ $id }}</td>
                                 <td>{{ $h }}</td>
                                 <td>
                                     <button class="btn btn-xs btn-outline-success" onclick="attend({{ $id }})"
                                         data-hostel_id="{{ $id }}">Take Attendance</button>
-                                    @if (in_array($id, $attend))
-                                        <button class="btn btn-xs btn-outline-secondary"
-                                            onclick="attendView({{ $id }})">View Attendance</button>
-                                        <button class="btn btn-xs btn-outline-primary"
-                                            onclick="attendEdit({{ $id }})">Edit Attendance</button>
-                                    @endif
+                                    {{-- @if (in_array($id, $attend)) --}}
+                                    <button class="btn btn-xs btn-outline-secondary"
+                                        onclick="attendView({{ $id }})">View Attendance</button>
+                                    <button class="btn btn-xs btn-outline-primary"
+                                        onclick="attendEdit({{ $id }})">Edit Attendance</button>
+                                    {{-- @endif --}}
                                 </td>
                             </tr>
-                        @elseif (auth()->user()->id == 1)
+                        @elseif (auth()->user()->id == 1 && auth()->user()->id != 60)
+                            {{-- {{ dd('hii') }} --}}
                             <tr>
                                 <td>{{ $id }}</td>
                                 <td>{{ $h }}</td>

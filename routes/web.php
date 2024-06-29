@@ -463,6 +463,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('hostel/delete', 'HostelBlockController@destroy')->name('hostel.delete');
     Route::delete('hostel/destroy', 'HostelBlockController@massDestroy')->name('hostel.massDestroy');
 
+    // Hotsel Warden
+    Route::get('hostel-warden', 'HostelWardenController@index')->name('hostel-warden.index');
+    Route::post('hostel-warden/view', 'HostelWardenController@view')->name('hostel-warden.view');
+    Route::post('hostel-warden/edit', 'HostelWardenController@edit')->name('hostel-warden.edit');
+    Route::post('hostel-warden/store', 'HostelWardenController@store')->name('hostel-warden.store');
+    Route::post('hostel-warden/delete', 'HostelWardenController@destroy')->name('hostel-warden.delete');
+    Route::delete('hostel-warden/destroy', 'HostelWardenController@massDestroy')->name('hostel-warden.massDestroy');
+
     Route::get('hostelRoom', 'HostelBlockController@roomIndex')->name('hostelRoom.index');
     Route::post('hostelRoom/view', 'HostelBlockController@roomView')->name('hostelRoom.view');
     Route::post('hostelRoom/edit', 'HostelBlockController@roomEdit')->name('hostelRoom.edit');
@@ -493,6 +501,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('hostel-attendance/edit_attendance', 'HostelAttendanceController@edit_attendance')->name('hostel-attendance.edit_attendance');
     Route::get('hostel-attendance-report/reportIndex', 'HostelAttendanceController@reportIndex')->name('hostel-attendance.reportIndex');
     Route::post('hostel-attendance-report/get_report', 'HostelAttendanceController@get_report')->name('hostel-attendance.get_report');
+
+    //Hostel students
+    Route::get('hostel-students', 'HostelStudentController@index')->name('hostel-students.index');
+    Route::post('hostel-students/getRoom', 'HostelStudentController@getRoom')->name('hostel-students.getRoom');
+    Route::post('hostel-students/search', 'HostelStudentController@search')->name('hostel-students.search');
+    Route::get('hostel-students/take-attendance', 'HostelStudentController@takeAttendance')->name('hostel-students.take-attendance');
+    // Route::post('hostel-students/edit', 'HostelStudentController@edit')->name('hostel-students.edit');
+    // Route::get('hostel-students/staffIndex', 'HostelStudentController@staffIndex')->name('hostel-students.staffIndex');
+    // Route::post('hostel-students/delete', 'HostelStudentController@destroy')->name('hostel-students.delete');
 
     Route::get('bus', 'BusController@index')->name('bus.index');
     Route::post('bus/edit', 'BusController@edit')->name('bus.edit');

@@ -5,7 +5,7 @@
         $key = 'layouts.studentHome';
     } elseif ($type_id == 1 || $type_id == 3) {
         $key = 'layouts.teachingStaffHome';
-    } elseif ($type_id == 2 || $type_id == 4 || $type_id == 5 || ($type_id == 6 && $role_id == 9)) {
+    } elseif ($type_id == 2 || $type_id == 4 || $type_id == 5 || ($role_id == 60)) {
         $key = 'layouts.non_techStaffHome';
     } else {
         $key = 'layouts.admin';
@@ -148,7 +148,13 @@
                                     row.append(`<td>${value.room_no}</td>`)
                                     row.append(
                                         `<td>${value.name+'('+value.register_no+')'}</td>`)
-                                    row.append(`<td>${value.attendance}</td>`)
+                                    if (value.attendance == 'Absent') {
+                                        row.append(
+                                            `<td style="background-color:red; color: white;">${value.attendance}</td>`
+                                        )
+                                    } else {
+                                        row.append(`<td>${value.attendance}</td>`)
+                                    }
                                     body.append(row)
                                 })
                             } else {

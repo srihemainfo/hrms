@@ -106,10 +106,10 @@ class RoomAllocationController extends Controller
             return $table->make(true);
         }
 
-        $student = DB::table('academic_years')
-            ->where('academic_years.status', '=', '1')
-            ->whereNull('academic_years.deleted_at')
-            ->leftJoin('course_enroll_masters', 'academic_years.id', '=', 'course_enroll_masters.academic_id')
+        $student = DB::table('course_enroll_masters')
+            // ->where('academic_years.status', '=', '1')
+            // ->whereNull('academic_years.deleted_at')
+            // ->leftJoin('course_enroll_masters', 'academic_years.id', '=', 'course_enroll_masters.academic_id')
             ->whereNull('course_enroll_masters.deleted_at')
             ->join('students', 'students.enroll_master_id', '=', 'course_enroll_masters.id')
             ->whereNull('students.deleted_at')
@@ -231,10 +231,10 @@ class RoomAllocationController extends Controller
                     $user_name_id[] = $value->user_name_id;
                 }
 
-                $student = DB::table('academic_years')
-                    ->where('academic_years.status', '=', '1')
-                    ->whereNull('academic_years.deleted_at')
-                    ->leftJoin('course_enroll_masters', 'academic_years.id', '=', 'course_enroll_masters.academic_id')
+                $student = DB::table('course_enroll_masters')
+                    // ->where('academic_years.status', '=', '1')
+                    // ->whereNull('academic_years.deleted_at')
+                    // ->leftJoin('course_enroll_masters', 'academic_years.id', '=', 'course_enroll_masters.academic_id')
                     ->whereNull('course_enroll_masters.deleted_at')
                     ->join('students', 'students.enroll_master_id', '=', 'course_enroll_masters.id')
                     ->whereNull('students.deleted_at')
@@ -262,10 +262,10 @@ class RoomAllocationController extends Controller
                     $user_name_id[] = $value->user_name_id;
                 }
 
-                $student = DB::table('academic_years')
-                    ->where('academic_years.status', '=', '1')
-                    ->whereNull('academic_years.deleted_at')
-                    ->leftJoin('course_enroll_masters', 'academic_years.id', '=', 'course_enroll_masters.academic_id')
+                $student = DB::table('course_enroll_masters')
+                    // ->where('academic_years.status', '=', '1')
+                    // ->whereNull('academic_years.deleted_at')
+                    // ->leftJoin('course_enroll_masters', 'academic_years.id', '=', 'course_enroll_masters.academic_id')
                     ->whereNull('course_enroll_masters.deleted_at')
                     ->join('students', 'students.enroll_master_id', '=', 'course_enroll_masters.id')
                     ->whereNull('students.deleted_at')

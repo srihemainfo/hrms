@@ -3,6 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\ApiBiometricModel;
+use App\Models\NonTeachingStaff;
+use App\Models\PersonalDetail;
+use App\Models\Student;
+use App\Models\SubjectRegistration;
+use App\Models\TeachingStaff;
+use App\Models\User;
 
 session()->start();
 use \Carbon\Carbon;
@@ -133,6 +139,62 @@ class ArtisanCmdController extends Controller
         // $user = DB::table('academic_details')
         //     ->whereNotNull('register_number')
         //     ->update(['register_number' => DB::raw('SUBSTRING(register_number, 5)')]);
+
+
+        // $users = User::whereNotNull('employID')->select('id')->get();
+        // dd($users[0]->id);
+        // $i=0;
+        // foreach ($users as $key => $user) {
+        //     $str = 'Staff' . $key + 1;
+        // dd($str);
+
+        //     $u = User::where('id', $user->id)->update([
+        //         'name' => $str
+        //     ]);
+
+        //     $stu = TeachingStaff::where('user_name_id', $user->id)->update([
+        //         'name' => $str
+        //     ]);
+
+        //     $stu = NonTeachingStaff::where('user_name_id', $user->id)->update([
+        //         'name' => $str
+        //     ]);
+
+        //     $personal = PersonalDetail::where('user_name_id', $user->id)->update([
+        //         'name' => $str
+        //     ]);
+
+        // }
+
+        // $get_data = Student::select('roll_no', 'user_name_id')->get();
+        // foreach ($get_data as $data) {
+        //     $check = User::where('id', $data->user_name_id)->update([
+        //         'roll_no' => $data->roll_no
+        //     ]);
+
+        //     $check = SubjectRegistration::where('user_name_id', $data->user_name_id)->update([
+        //         'roll_no' => $data->roll_no
+        //     ]);
+        // }
+
+        // $user = User::whereNotNull('email')->get();
+        // foreach ($user as $u) {
+        //     $email = explode('@', $u->email);
+        //     $addon = $email[0] . '@shi.edu.in';
+        //     $u->email = $addon;
+        //     $u->save();
+        //     // dd($u);
+        //     $student = Student::where('user_name_id', $u->id)->update([
+        //         'student_email_id' => $addon
+
+        //     ]);
+
+        //     $personal = PersonalDetail::where('user_name_id', $u->id)->update([
+        //         'email' => $addon
+
+        //     ]);
+        // }
+
 
         return back();
     }

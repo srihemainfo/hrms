@@ -467,6 +467,7 @@ class StudentPeriodAttendanceController extends Controller
                                 $allocated_students = [];
                             }
                             $get_students = Student::where('enroll_master_id', $data[3]['value'])->orderBy('register_no', 'asc')->get();
+                            // dd($get_students);
                             $checkSubjectRegArray = [];
                             $checkSubjectReg = SubjectRegistration::where(['enroll_master' => $data[3]['value'], 'subject_id' => $data[1]['value']])->select('user_name_id')->get();
                             if (count($checkSubjectReg) > 0) {
@@ -1934,6 +1935,7 @@ class StudentPeriodAttendanceController extends Controller
         $user_name_id = auth()->user()->id;
         $subjects = [];
         $timetable = ClassTimeTableTwo::where(['class_name' => $request->class, 'status' => 1])->groupby('class_name', 'subject')->select('class_name', 'subject')->get();
+        // dd($timetable);
         if (count($timetable) > 0) {
             foreach ($timetable as $data) {
                 if (!in_array($data->subject, $subjects)) {
@@ -1995,16 +1997,17 @@ class StudentPeriodAttendanceController extends Controller
             $ayc_day = $date . ' 00:00:00';
             $day = strtoupper($get_day->format('l'));
             // dd($day);
-
             $get_ay = AcademicYear::where(['name' => $ay])->first();
             $get_course = ToolsCourse::where(['name' => $course])->first();
             $get_section = Section::where(['section' => $section, 'course_id' => $get_course->id])->first();
             $order_of_day = $day;
+            // dd($ay, $course, $section, $day,  $ayc_day);
 
             if ($batch != '') {
                 $get_calendar = AyCalendar::where(['batch' => $batch, 'academic_year' => $get_ay->name, 'date' => $ayc_day])->first();
                 if ($get_calendar != '') {
                     $dayorder = $get_calendar->dayorder;
+                    // dd($get_calendar);
                     if ($dayorder == 20) {
                         $order = 'MONDAY';
                     } else if ($dayorder == 7) {
@@ -2037,6 +2040,7 @@ class StudentPeriodAttendanceController extends Controller
                         } else if ($dayorder == 6) {
                             $order = 'Unit Test';
                         }
+                        // dd($order);
                         return response()->json(['status' => $order]);
                     }
                 } else {

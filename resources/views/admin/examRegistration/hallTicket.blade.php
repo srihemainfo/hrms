@@ -111,7 +111,7 @@
                 <table style="width:100%;border:1px solid black;border-collapse:collapse;font-size:0.9rem;">
                     <tr>
                         <td style="width:20%;border-right:1px solid black;">
-                            <img src="{{ asset('adminlogo/logoForPdf.png') }}" style="width:100%;height:90px;"
+                            <img src="{{ asset('adminlogo/school_menu_logo.png') }}" style="width:100%;height:90px;"
                                 alt="Institute Logo">
                         </td>
                         <td class="text-center" style="width:60%;border-right:1px solid black;font-size:0.8rem;">
@@ -236,7 +236,7 @@
                 </table>
             </div>
         </div>
-        <img src="{{ asset('adminlogo/logoForPdf.png') }}"
+        <img src="{{ asset('adminlogo/school_menu_logo.png') }}"
             style="margin-left: 35%;width: 30%;height: 130px;position: absolute;top: 45%;z-index: 0;opacity:0.2;"
             alt="Institute Logo">
     </div>
@@ -397,7 +397,7 @@
                                 $("#degree_div").html(firstData.courses.name);
                                 if (firstData.profile != null) {
                                     let imgSrc = firstData.profile.filePath;
-                                    let img = 'https://rituat.kalvierp.com/' + imgSrc;
+                                    let img = 'https://enggdemo.kalvierp.com/' + imgSrc;
                                     $("#student_img").attr('src', img);
 
                                 }
@@ -497,9 +497,10 @@
                 $("#register_no_div").html(firstData.student.register_no);
                 $("#degree_div").html(firstData.courses.name);
                 $("#student_img").attr('src', '');
+                
                 if (firstData.profile != null) {
                     let imgSrc = firstData.profile.filePath;
-                    let img = 'https://rituat.kalvierp.com/' + imgSrc;
+                    let img = 'https://enggdemo.kalvierp.com/' + imgSrc;
                     $("#student_img").attr('src', img);
                 }
                 let dob = inputDate.toLocaleDateString('en-GB');

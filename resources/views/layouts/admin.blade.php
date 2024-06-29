@@ -31,11 +31,6 @@
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
     {{-- <link href="{{ asset('css/materialize.css') }}" rel="stylesheet" /> --}}
     <script>
-        .poppins - light {
-            font - family: "Poppins", sans - serif;
-            font - weight: 300;
-            font - style: normal;
-        }
         // $(window).on("load", function() {
         //     // Disable right-click context menu
         //     document.addEventListener("contextmenu", (e) => e.preventDefault());

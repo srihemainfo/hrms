@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HostelAttendance;
 use App\Models\HostelBlock;
 use App\Models\HostelRoom;
+use App\Models\HostelWardenModel;
 use App\Models\RoomAllocationModel;
 use App\Models\Student;
 use DateTime;
@@ -28,7 +29,10 @@ class HostelAttendanceController extends Controller
         foreach ($check as $c) {
             $attend[] = $c;
         }
-        return view('admin.hostelAttendance.index', compact('hostel', 'attend'));
+
+        $id = auth()->user()->id;
+        $check = HostelWardenModel::where('warden_id', $id)->first();
+        return view('admin.hostelAttendance.index', compact('hostel', 'attend', 'check'));
     }
 
     public function get_student(Request $request)

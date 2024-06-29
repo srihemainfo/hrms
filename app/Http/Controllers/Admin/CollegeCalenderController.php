@@ -186,10 +186,13 @@ class CollegeCalenderController extends Controller
             return back()->withErrors($validator)->withInput();
         } else {
             $record = DB::table('college_calenders_preview')
+                ->whereNull('college_calenders_preview.deleted_at')
                 ->where('academic_year', $academic_year)
                 ->where('semester_type', $semester_type)
                 ->where('batch', $batch)
                 ->first();
+            // $record->delete();
+            // dd($record);
             if (!$record) {
 
                 foreach ($dateRange as $date) {
@@ -200,11 +203,26 @@ class CollegeCalenderController extends Controller
                         $isHoliday = 1;
                     }
 
+                    if ($day == 'Monday') {
+                        $isHoliday = 20;
+                    }
+                    if ($day == 'Tuesday') {
+                        $isHoliday = 7;
+                    }
+                    if ($day == 'Wednesday') {
+                        $isHoliday = 8;
+                    }
+                    if ($day == 'Thursday') {
+                        $isHoliday = 9;
+                    }
+                    if ($day == 'Friday') {
+                        $isHoliday = 10;
+                    }
                     if ($request->input('saturday') == 1 && $day == 'Saturday') {
                         $isHoliday = 2;
                     }
-                    if ($request->input('monday') == 1 && $day == 'Monday') {
-                        $isHoliday = 3;
+                    if ($request->input('saturday') != 1 && $day == 'Saturday') {
+                        $isHoliday = 11;
                     }
 
                     DB::table('college_calenders_preview')->insert([
@@ -286,11 +304,11 @@ class CollegeCalenderController extends Controller
         $startDate = $dateFrom->toDateString();
         $endDate = $dateTo->toDateString();
         $ToDelete =
-        DB::table('college_calenders_preview')->whereBetween('start_date', [$from_date, $to_date])
-            ->where('academic_year', $academic_year)
-            ->where('semester_type', $semester_type)
-            ->where('batch', $batch)
-            ->delete();
+            DB::table('college_calenders_preview')->whereBetween('start_date', [$from_date, $to_date])
+                ->where('academic_year', $academic_year)
+                ->where('semester_type', $semester_type)
+                ->where('batch', $batch)
+                ->delete();
 
         $collegeCalender->delete();
 

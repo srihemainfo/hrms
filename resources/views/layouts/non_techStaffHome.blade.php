@@ -348,7 +348,7 @@
                                 </a>
                             </li>
                         @endcan
-                        @can('hostel_attendance_access')
+                        {{-- @can('hostel_attendance_access')
                             <li class="nav-item">
                                 <a href="{{ route('admin.hostel-attendance.index') }}"
                                     class="nav-link {{ request()->is('admin/hostel-attendance') || request()->is('admin/hostel-attendance/*') ? 'active' : '' }}">
@@ -360,20 +360,8 @@
                                     </p>
                                 </a>
                             </li>
-                        @endcan
-                        @can('hostel_report_access')
-                            <li class="nav-item">
-                                <a href="{{ route('admin.hostel-attendance.reportIndex') }}"
-                                    class="nav-link {{ request()->is('admin/hostel-attendance-report') || request()->is('admin/hostel-attendance-report/*') ? 'active' : '' }}">
-                                    <i class="fa-fw nav-icon fas fa-file-alt">
+                        @endcan --}}
 
-                                    </i>
-                                    <p>
-                                        Attendance Report
-                                    </p>
-                                </a>
-                            </li>
-                        @endcan
 
 
                         @can('library_management_access')
@@ -438,8 +426,6 @@
                                         </li>
                                     @endcan
                                 </ul>
-
-
                             </li>
                         @endcan
 
@@ -542,11 +528,78 @@
 
                                     </i>
                                     <p>
-                                        My Bus Details
+                                        My Hostel Details
                                     </p>
                                 </a>
                             </li>
                         @endcan
+
+                        @can('my_hostel_access')
+                            <li
+                                class="nav-item has-treeview {{ request()->is('admin/hostel-attendance*') || request()->is('admin/hostel-attendance-report') || request()->is('admin/hostel-students*') || request()->is('admin/genre*') || request()->is('admin/book') || request()->is('admin/book-allocate*') ? 'menu-open' : '' }}">
+                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/hostel-attendance*') || request()->is('admin/hostel-attendance-report') || request()->is('admin/hostel-students*') || request()->is('admin/genre*') || request()->is('admin/book') || request()->is('admin/book-allocate*') ? 'active' : '' }}"
+                                    href="#">
+                                    <i class="fa nav-icon fas far fa-address-card"></i>
+                                    <p>
+                                        My Hostel Details
+                                        <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview" style="">
+                                    @can('my_hostel_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.hostel-students.index') }}"
+                                                class="nav-link {{ request()->is('admin/hostel-students') || request()->is('admin/hostel-students/*') != request()->is('admin/hostel-students/take-attendance*') ? 'active' : '' }}">
+                                                <i class="fa-fw nav-icon fas fa-swatchbook">
+                                                </i>
+                                                <p>
+                                                    Hostel Students
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                    @can('my_hostel_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.hostel-attendance.index') }}"
+                                                class="nav-link {{ request()->is('admin/hostel-attendance') || request()->is('admin/hostel-attendance/*') ? 'active' : '' }}">
+                                                <i class="fa-fw nav-icon fas fa-holly-berry">
+                                                </i>
+                                                <p>
+                                                    Take Attendance
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                    @can('hostel_report_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.hostel-attendance.reportIndex') }}"
+                                                class="nav-link {{ request()->is('admin/hostel-attendance-report') || request()->is('admin/hostel-attendance-report/*') ? 'active' : '' }}">
+                                                <i class="fa-fw nav-icon fas fa-file-alt">
+
+                                                </i>
+                                                <p>
+                                                    Attendance Report
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                    @can('book_allote_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.book-allocate.index') }}"
+                                                class="nav-link {{ request()->is('admin/book-allocate') || request()->is('admin/book-allocate/*') ? 'active' : '' }}">
+                                                <i class="fa-fw nav-icon fas fa-layer-group">
+                                                </i>
+                                                <p>
+                                                    Books Allocation
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                </ul>
+                            </li>
+                        @endcan
+
+
                         @can('add_leave_access')
                             <li class="nav-item">
                                 <a href="{{ route('admin.staff-request-leaves.staff_index') }}"
