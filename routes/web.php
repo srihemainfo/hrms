@@ -105,6 +105,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('year/delete', 'YearController@destroy')->name('year.delete');
     Route::delete('year/destroy', 'YearController@massDestroy')->name('year.massDestroy');
 
+
+        // FeeComponents
+        Route::get('fee-components', 'feeComponentsController@index')->name('fee-components.index');
+        Route::post('fee-components/view', 'feeComponentsController@view')->name('fee-components.view');
+        Route::post('fee-components/edit', 'feeComponentsController@edit')->name('fee-components.edit');
+        Route::post('fee-components/store', 'feeComponentsController@store')->name('fee-components.store');
+        
+        Route::post('fee-components/delete', 'feeComponentsController@destroy')->name('fee-components.delete');
+        Route::delete('fee-components/destroy', 'feeComponentsController@massDestroy')->name('fee-components.massDestroy');
+
     // Academic Year
     Route::get('academic-years', 'AcademicYearController@index')->name('academic-years.index');
     Route::post('academic-years/view', 'AcademicYearController@view')->name('academic-years.view');
@@ -268,6 +278,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('nationalities/check', 'NationalityController@check')->name('nationalities.check');
     Route::post('nationalities/change-status', 'NationalityController@changeStatus')->name('nationalities.change-status');
     Route::delete('nationalities/destroy', 'NationalityController@massDestroy')->name('nationalities.massDestroy');
+
+    //Fee Components
 
     //Payment Mode
     Route::get('paymentMode', 'PaymentModeController@index')->name('paymentMode.index');
@@ -800,6 +812,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Route::post('fee-structure/delete', 'FeeController@structureDelete')->name('fee-structure.delete');
 
     Route::get('fee-structure', 'FeeStructureController@index')->name('fee-structure.index');
+    Route::post('fee-structure/get-course', 'FeeStructureController@getCourse')->name('fee-structure.get-course');
     Route::post('fee-structure/view', 'FeeStructureController@view')->name('fee-structure.view');
     Route::post('fee-structure/edit', 'FeeStructureController@edit')->name('fee-structure.edit');
     Route::post('fee-structure/store', 'FeeStructureController@store')->name('fee-structure.store');
@@ -807,6 +820,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('fee-structure/generate-fee', 'FeeStructureController@generateFee')->name('fee-structure.generate-fee');
     Route::post('fee-structure/publish-fee', 'FeeStructureController@publishFee')->name('fee-structure.publish-fee');
     Route::delete('fee-structure/destroy', 'FeeStructureController@massDestroy')->name('fee-structure.massDestroy');
+    Route::post('fee-components/getfeecomponents', 'FeeStructureController@getfeecomponents')->name('fee-structure.getfeecomponents');
+
+    //Fee Collection
+    Route::get('fee-collection', 'FeeCollectionController@index')->name('fee-collection.index');
+    Route::post('student_rollnumber', 'FeeCollectionController@fetch_detils')->name('student-rollnumber.geter');
+    Route::post('student_alldetails', 'FeeCollectionController@getStudentData')->name('student-details.alldetails');
+
+    
 
     // Fee Data Import
     Route::get('fee-data-import', 'FeeDataController@index')->name('fee-data-import.index');
@@ -833,6 +854,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('fee/year-wise-report', 'FeeReportController@yearWiseRep')->name('fee.year-wise-report');
     Route::post('fee/year-wise-report/data', 'FeeReportController@yearWiseRepData')->name('fee.year-wise-report.data');
     Route::get('fee/show/{id}', 'FeePaymentController@collectShow')->name('fee.collectShow');
+
+  
+
 
     Route::get('fee-summary-report', 'FeeReportController@summaryReport')->name('fee-summary-report.index');
     Route::post('fee-summary-report/get-data', 'FeeReportController@summaryData')->name('fee-summary-report.get-data');
