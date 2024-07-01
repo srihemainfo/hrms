@@ -1324,6 +1324,13 @@
                                     <p>Fee Details</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.fee-collection.index') }}"
+                                    class="nav-link {{ request()->is('admin/fee-collection*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-receipt"></i>
+                                    <p>Fee Collection</p>
+                                </a>
+                            </li>
                             {{-- <li class="nav-item">
                                 <a href="{{ route('admin.fee.year-wise-report') }}"
                                     class="nav-link {{ request()->is('admin/fee/*') ? 'active' : '' }}">
@@ -1695,6 +1702,7 @@
                             request()->is('admin/internal-weightage/*') ||
                             request()->is('admin/paymentMode') ||
                             request()->is('admin/paymentMode/*') ||
+                            request()->is('admin/fee-components*') ||
                             request()->is('admin/events*') ||
                             request()->is('admin/events/*') ||
                             request()->is('admin/leave-types*') ||

@@ -30,7 +30,7 @@
     </div>
 </div>
 <ul class="nav nav-pills nav-sidebar flex-column tools-menu" id="list-1">
-    
+
 
 
 
@@ -56,6 +56,17 @@
                 </i>
                 <p>
                     {{ trans('cruds.year.title') }}
+                </p>
+            </a>
+        </li>
+    @endcan
+    @can('year_access')
+        <li class="nav-item">
+            <a href="{{ route('admin.fee-components.index') }}"
+                class="nav-link {{ request()->is('admin/fee-components') || request()->is('admin/fee-components/*') ? 'active' : '' }}">
+                <i class="fa-fw nav-icon fas fa-dollar-sign"></i>
+                <p>
+                    {{ trans('Fee Components') }}
                 </p>
             </a>
         </li>

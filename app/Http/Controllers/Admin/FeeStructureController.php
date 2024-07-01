@@ -8,12 +8,13 @@ use App\Models\AcademicDetail;
 use App\Models\AcademicFee;
 use App\Models\AcademicYear;
 use App\Models\AdmissionMode;
-use App\Models\ShiftModel;
 use App\Models\Batch;
-use App\Models\Semester;
 use App\Models\CourseEnrollMaster;
+use App\Models\FeeComponents;
 use App\Models\FeeStructure;
 use App\Models\Scholarship;
+use App\Models\Semester;
+use App\Models\ShiftModel;
 use App\Models\ToolsCourse;
 use App\Models\ToolsDegreeType;
 use Carbon\Carbon;
@@ -36,8 +37,8 @@ class FeeStructureController extends Controller
                 ->leftJoin('batches', 'batches.id', '=', 'fee_structure.batch_id')
                 ->leftJoin('tools_courses', 'tools_courses.id', '=', 'fee_structure.course_id')
                 ->leftJoin('academic_years', 'academic_years.id', '=', 'fee_structure.academic_year_id')
-                ->leftJoin('admission_mode', 'admission_mode.id', '=', 'fee_structure.admission_id')
-                ->select('shift.Name as shi','semesters.semester as sem','fee_structure.id', 'users.name as user', 'academic_years.name as ay', 'tools_courses.short_form as course', 'batches.name as batch', 'admission_mode.name as admission', 'fee_structure.status')->get();
+                // ->leftJoin('admission_mode', 'admission_mode.id', '=', 'fee_structure.admission_id')
+                ->select('shift.Name as shi', 'semesters.semester as sem', 'fee_structure.id', 'users.name as user', 'academic_years.name as ay', 'tools_courses.short_form as course', 'batches.name as batch',  'fee_structure.status')->get();
 
             $table = DataTables::of($query);
 
@@ -80,9 +81,9 @@ class FeeStructureController extends Controller
             $table->editColumn('semester', function ($row) {
                 return $row->sem ? $row->sem : '';
             });
-            $table->editColumn('admission', function ($row) {
-                return $row->admission ? $row->admission : '';
-            });
+            // $table->editColumn('admission', function ($row) {
+            //     return $row->admission ? $row->admission : '';
+            // });
 
             $table->editColumn('user', function ($row) {
                 return $row->user ? $row->user : '';
@@ -98,33 +99,33 @@ class FeeStructureController extends Controller
         $scholarship = Scholarship::pluck('name', 'id');
         $ay = AcademicYear::pluck('name', 'id');
         $batch = Batch::pluck('name', 'id');
-        $shift = ShiftModel::pluck('name','id');
-        $semester = Semester::pluck('semester','id');
-        return view('admin.feeStructure.index', compact('scholarship', 'admission', 'course', 'degreeType', 'ay', 'batch','shift','semester'));
+        $shift = ShiftModel::pluck('name', 'id');
+        $semester = Semester::pluck('semester', 'id');
+        return view('admin.feeStructure.index', compact('scholarship', 'admission', 'course', 'degreeType', 'ay', 'batch', 'shift', 'semester'));
     }
     public function store(Request $request)
     {
-        
-        if (isset($request->tuition_fee) && isset($request->hostel_fee) && isset($request->other_fee) && isset($request->admission_fee) && isset($request->special_fee)) {
+        // dd($request);
+
+        if (isset($request->componentsJson)) {
             if ($request->id == '') {
                 $check = FeeStructure::where(['admission_id' => $request->admission, 'batch_id' => $request->batch, 'course_id' => $request->course])->count();
                 if ($check > 0) {
                     return response()->json(['status' => false, 'data' => 'Fees Structure Already Exist']);
-                } 
-                else 
-                {
+                } else {
                     $store = FeeStructure::create([
-                        'admission_id' => $request->admission,
+                        // 'admission_id' => $request->admission,
                         'batch_id' => $request->batch,
                         'course_id' => $request->course,
                         // 'academic_year_id' => $request->ay,
-                        'admission_fee' => $request->admission_fee,
-                        'tuition_fee' => $request->tuition_fee,
-                        'special_fee'=> $request->special_fee,
-                        'hostel_fee' => $request->hostel_fee,
-                        'other_fee' => $request->other_fee,
-                        'shift_id'=>$request->shift,
-                        'semester_id'=>$request->semester,
+                        // 'admission_fee' => $request->admission_fee,
+                        // 'tuition_fee' => $request->tuition_fee,
+                        // 'special_fee' => $request->special_fee,
+                        // 'hostel_fee' => $request->hostel_fee,
+                        // 'other_fee' => $request->other_fee,
+                        'fee_component'=>$request->componentsJson,
+                        'shift_id' => $request->shift,
+                        'semester_id' => $request->semester,
                         'created_by' => auth()->id(),
                     ]);
                 }
@@ -153,22 +154,22 @@ class FeeStructureController extends Controller
                 ->leftJoin('users', 'users.id', '=', 'fee_structure.created_by')
                 ->leftJoin('semesters', 'semesters.id', '=', 'fee_structure.semester_id')
                 ->leftJoin('shift', 'shift.id', '=', 'fee_structure.shift_id')
-                // ->leftJoin('academic_years', 'academic_years.id', '=', 'fee_structure.academic_year_id')
+            // ->leftJoin('academic_years', 'academic_years.id', '=', 'fee_structure.academic_year_id')
                 ->leftJoin('tools_courses', 'tools_courses.id', '=', 'fee_structure.course_id')
                 ->leftJoin('batches', 'batches.id', '=', 'fee_structure.batch_id')
-                ->leftJoin('admission_mode', 'admission_mode.id', '=', 'fee_structure.admission_id')
+                // ->leftJoin('admission_mode', 'admission_mode.id', '=', 'fee_structure.admission_id')
                 ->select(
                     'fee_structure.id as fees_id',
                     'users.id as user',
                     // 'academic_years.id as ay',
                     'tools_courses.id as course',
                     'batches.id as batch',
-                    'admission_mode.id as admission',
-                    'fee_structure.tuition_fee',
-                    'fee_structure.special_fee',
-                    'fee_structure.admission_fee',
-                    'fee_structure.hostel_fee',
-                    'fee_structure.other_fee',
+                    // 'admission_mode.id as admission',
+                    // 'fee_structure.tuition_fee',
+                    // 'fee_structure.special_fee',
+                    // 'fee_structure.admission_fee',
+                    // 'fee_structure.hostel_fee',
+                    // 'fee_structure.other_fee',
                     'shift.id as shi',
                     'semesters.id as sem'
 
@@ -189,14 +190,14 @@ class FeeStructureController extends Controller
                 ->leftJoin('academic_years', 'academic_years.id', '=', 'fee_structure.academic_year_id')
                 ->leftJoin('tools_courses', 'tools_courses.id', '=', 'fee_structure.course_id')
                 ->leftJoin('batches', 'batches.id', '=', 'fee_structure.batch_id')
-                ->leftJoin('admission_mode', 'admission_mode.id', '=', 'fee_structure.admission_id')
+                // ->leftJoin('admission_mode', 'admission_mode.id', '=', 'fee_structure.admission_id')
                 ->select(
                     'fee_structure.id as fees_id',
                     'users.id as user',
                     'academic_years.id as ay',
                     'tools_courses.id as course',
                     'batches.id as batch',
-                    'admission_mode.id as admission',
+                    // 'admission_mode.id as admission',
                     'fee_structure.admission_fee',
                     'fee_structure.tuition_fee',
                     'fee_structure.special_fee',
@@ -236,7 +237,7 @@ class FeeStructureController extends Controller
         if (isset($request->batch) && isset($request->ay)) {
             $getCount = AcademicFee::where(['batch' => $request->batch, 'ay' => $request->ay])->count();
             if ($getCount <= 0) {
-                $getData = FeeStructure::with('courses', 'admissions')->where(['batch_id' => $request->batch, 'academic_year_id' => $request->ay])->select('admission_id', 'course_id', 'tuition_fee','special_fee','admission_fee', 'hostel_fee', 'other_fee', 'id')->get();
+                $getData = FeeStructure::with('courses', 'admissions')->where(['batch_id' => $request->batch, 'academic_year_id' => $request->ay])->select('admission_id', 'course_id', 'tuition_fee', 'special_fee', 'admission_fee', 'hostel_fee', 'other_fee', 'id')->get();
                 if (count($getData) > 0) {
                     $theAy = AcademicYear::where(['id' => $request->ay])->value('name');
                     $theBatch = Batch::where(['id' => $request->batch])->value('name');
@@ -262,7 +263,7 @@ class FeeStructureController extends Controller
                                             'course' => $data->course_id,
                                             'enroll_master_id' => $students->enroll_master_number_id,
                                             'tuition_fee' => $data->tuition_fee,
-                                            'special_fee'=>$data->special_fee,
+                                            'special_fee' => $data->special_fee,
                                             'admission_fee' => $data->admission_fee,
                                             'hostel_fee' => $students->hosteler == '1' ? $data->hostel_fee : 0,
                                             'other_fee' => $data->other_fee,
@@ -310,4 +311,45 @@ class FeeStructureController extends Controller
             return response()->json(['status' => false, 'data' => 'Fees Not Published']);
         }
     }
+
+    public function getfeecomponents(Request $request)
+    {
+        $courseVal = $request->courseVal;
+        $batchVal = $request->batchVal;
+        $semesterVal = $request->semesterVal;
+
+        $feeComponents = FeeComponents::where('batch_id', $batchVal)
+            ->where('course_id', $courseVal)
+            ->where('semester_id', $semesterVal)
+            ->pluck('name', 'id');
+
+        if ($feeComponents->isNotEmpty()) {
+            return response()->json(['status' => true, 'data' => $feeComponents]);
+        } else {
+            return response()->json(['status' => false, 'data' => 'Fees Components was not Created..']);
+        }
+    }
+
+
+    public function getCourse(Request $request)
+    {
+
+        // dd($request);
+
+        $shiftSelect = $request->shiftSelect;
+        $fetchCourses = ToolsCourse::where('shift_id', $shiftSelect)
+        ->pluck('short_form','id');
+        if($fetchCourses)
+        {
+            return response()->json(['status' => true, 'data' => $fetchCourses]);
+        }
+        else
+        {
+            return response()->json(['status' => false, 'data' => 'Not able to Fetch Courses']);
+        }
+        
+
+
+    }
+
 }

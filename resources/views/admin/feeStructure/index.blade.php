@@ -64,9 +64,9 @@
                         <th>
                             Semester
                         </th>
-                        <th>
+                        {{-- <th>
                             Admission Mode
-                        </th>
+                        </th> --}}
                         <th>
                             Created By
                         </th>
@@ -89,24 +89,25 @@
                 <div class="modal-body">
                     <div class="row gutters">
                         @can('shift_alter_access')
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="result" class="required">Shift</label>
-                            <input type="hidden" id="feeStructure_id" value="">
-                            <select class="form-control select2" style="text-transform:uppercase" id="shift"
-                                name="shift" value="">
-                                <option value="">Select Shift</option>
-                                @foreach ($shift as $id => $sht)
-                                    <option value="{{ $id }}">{{ $sht }}</option>
-                                @endforeach
-                            </select>
-                            <span id="shift_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div>
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="result" class="required">Shift</label>
+                                <input type="hidden" id="feeStructure_id" value="">
+                                <select class="form-control select2" style="text-transform:uppercase" id="shift"
+                                    name="shift" value="" onchange="printSelectedShift()">
+                                    <option value="">Select Shift</option>
+                                    @foreach ($shift as $id => $sht)
+                                        <option value="{{ $id }}">{{ $sht }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="shift_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
                         @endcan
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="result" class="required">Course</label>
                             <input type="hidden" id="feeStructure_id" value="">
-                            <select class="form-control select2" style="text-transform:uppercase" id="course" name="course" value="">
+                            <select class="form-control select2" style="text-transform:uppercase" id="course"
+                                name="course" value="">
                                 <option value="">Select Course</option>
                                 @foreach ($course as $id => $d)
                                     <option value="{{ $id }}">{{ $d }}</option>
@@ -137,7 +138,7 @@
                             <span id="semester_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                        {{-- <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="result" class="required">Admission Mode</label>
                             <select class="form-control select2" style="text-transform:uppercase" id="admission"
                                 name="admission" value="">
@@ -148,7 +149,7 @@
                             </select>
                             <span id="admission_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
-                        </div>
+                        </div> --}}
                         {{-- <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group" id="applied_ay_div"
                             style="display:none;">
                             <label for="applied_ay" class="required">Applicable AY</label>
@@ -162,37 +163,20 @@
                                 style="display:none;font-size:0.9rem;"></span>
                         </div> --}}
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group">
-                            <table class="table table-bordered table-striped table-hover text-center">
+                            <table class="table table-bordered table-striped table-hover text-center"
+                                id="fee_componentstable">
                                 <thead>
                                     <tr>
                                         <th>Fees Component</th>
                                         <th>Fees Amount</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Admission Fee</td>
-                                        <td><input type="number" id="admission_fee" class="amtInp" value=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tuition Fee</td>
-                                        <td><input type="number" id="tuition_fee" class="amtInp" value=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Special Fee</td>
-                                        <td><input type="number" id="special_fee" class="amtInp" value=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Hostel Fee</td>
-                                        <td><input type="number" id="hostel_fee" class="amtInp" value=""></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Other Fee</td>
-                                        <td><input type="number" id="other_fee" class="amtInp" value=""></td>
-                                    </tr>
+                                <tbody id="feeComponentsTable">
+
                                 </tbody>
                             </table>
                         </div>
+                        <div class="secondLoader"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -215,7 +199,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row gutters">
-                        
+
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="feeBatch" class="required">Batch</label>
                             <select class="form-control select2" id="feeBatch" name="feeBatch">
@@ -457,10 +441,10 @@
                         data: 'semester',
                         name: 'semester'
                     },
-                    {
-                        data: 'admission',
-                        name: 'admission'
-                    },
+                    // {
+                    //     data: 'admission',
+                    //     name: 'admission'
+                    // },
                     {
                         data: 'user',
                         name: 'user'
@@ -484,6 +468,11 @@
 
         };
 
+        let courseVal = '';
+        let batchVal = '';
+        let semesterVal = '';
+        let tbody = $('#fee_componentstable tbody');
+
         function openModal() {
             $("#feeStructure_id").val('');
             $("#admission_fee").val('');
@@ -502,33 +491,181 @@
             $("#save_btn").html(`Save`);
             $("#save_div").show();
             $("#feeStructureModel").modal();
+
+            tbody.empty();
+            courseVal = '';
+            batchVal = '';
+            semesterVal = '';
+
+
+        }
+
+
+
+        $("#course").on('change', function() {
+            courseVal = $("#course option:selected").val();
+            checkValues();
+        });
+
+        $("#applied_batch").on('change', function() {
+            batchVal = $("#applied_batch option:selected").val();
+            checkValues();
+        });
+
+        $("#semester").on('change', function() {
+            semesterVal = $("#semester option:selected").val();
+            checkValues();
+        });
+
+        function checkValues() {
+            if (courseVal != '' && batchVal != '' && semesterVal != '') {
+                $('.secondLoader').show()
+                $.ajax({
+                    url: "{{ route('admin.fee-structure.getfeecomponents') }}",
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'courseVal': courseVal,
+                        'batchVal': batchVal,
+                        'semesterVal': semesterVal
+                    },
+                    success: function(response) {
+                        let status = response.status;
+                        if (status == true) {
+                            let feeComponents_name = response.data;
+                            tbody.empty();
+                            $.each(feeComponents_name, function(index, component) {
+                                if (component == '') {
+                                    Swal.fire('', 'Fees Components was not Created..', 'error');
+                                    $('.secondLoader').hide()
+                                } else {
+                                    // console.log(index);
+                                    tbody.append(
+                                        `<tr data-component-id="${index}"><td>${component}</td><td><input type="number" class="form-control" name="fee_component_${index}" /></td></tr>`
+                                    );
+                                    $('.secondLoader').hide()
+                                }
+                            });
+                        } else {
+                            Swal.fire('', response.data, 'error');
+                            $('.secondLoader').hide()
+                            tbody.empty();
+                        }
+                    },
+
+                    error: function(jqXHR, textStatus, errorThrown) {
+
+                        if (jqXHR.status == 422) {
+                            var errors = jqXHR.responseJSON.errors;
+                            var errorMessage = errors[Object.keys(errors)[0]][0];
+                            Swal.fire('', errorMessage, "error");
+                        } else {
+                            Swal.fire('', 'Request Failed: ' + jqXHR.status,
+                                "error");
+                        }
+                    }
+                })
+
+            }
+        }
+
+        function printSelectedShift() {
+            var shiftSelect = $("#shift option:selected").val();
+            $('.secondLoader').show()
+            $.ajax({
+
+                url: "{{ route('admin.fee-structure.get-course') }}",
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'shiftSelect': shiftSelect
+                },
+                success: function(response) {
+                    let status = response.status;
+                    if (status == true) {
+                        if (response.data.length === 0) 
+                        {
+                            $('.secondLoader').hide()
+                            Swal.fire('', 'Courses Not Found..!', 'error');
+                        } else {
+                            $('.secondLoader').hide()
+                            console.log(response);
+                        }
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+
+                    if (jqXHR.status == 422) {
+                        var errors = jqXHR.responseJSON.errors;
+                        var errorMessage = errors[Object.keys(errors)[0]][0];
+                        $('.secondLoader').hide()
+                        Swal.fire('', errorMessage, "error");
+                    } else {
+                        $('.secondLoader').hide()
+                        Swal.fire('', 'Request Failed: ' + jqXHR.status, "error");
+                    }
+                }
+
+
+            })
+
         }
 
         function saveFeeStructure() {
+
+            let tbody = $('#feeComponentsTable');
+            let components = [];
+
+            tbody.find('tr').each(function(index, row) {
+                let componentName = $(row).find('td:first').text();
+                let componentAmount = $(row).find('input').val();
+                // console.log(componentAmount);
+                let componentId = $(row).data('component-id');
+
+                let component = {
+                    id: componentId,
+                    name: componentName,
+                    amount: componentAmount
+                };
+
+                components.push(component);
+            });
+
+            let componentsJson = JSON.stringify(components);
+            console.log(componentsJson);
+
+
+
+
+
             $("#course_span").hide();
-            $("#admission_span").hide();
+            // $("#admission_span").hide();
             $("#course_span").hide();
             $("#shift_span").hide();
             $("#semester_span").hide();
 
             if ($("#course").val() == '') {
                 $("#course_span").html('Course Is Required').show();
-            } else if ($("#admission").val() == '') {
-                $("#admission_span").html('Admission Mode Is Required').show();
             }
+            // else if ($("#admission").val() == '') {
+            //     $("#admission_span").html('Admission Mode Is Required').show();
+            // } 
             else if ($("#shift").val() == '') {
                 $("#shift_span").html('Shift Is Required').show();
-            }
-
-            else if ($("#semester").val() == '') {
+            } else if ($("#semester").val() == '') {
                 $("#semester_span").html('Semester Is Required').show();
-            }
-
-            else if ($("#applied_batch").val() == '') {
+            } else if ($("#applied_batch").val() == '') {
                 $("#applied_batch_span").html('Applicable Batch Is Required').show();
-            } else if ($("#tuition_fee").val() == '' || $("#hostel_fee").val() == '' || $("#other_fee").val() == '' || $("#admission_fee").val()== '' || $("#special_fee").val()== '') {
-                Swal.fire('', 'Please Provide The Fee Details', 'warning');
-            } else {
+            }
+            // else if ($("#tuition_fee").val() == '' || $("#hostel_fee").val() == '' || $("#other_fee").val() == '' || $(
+            //         "#admission_fee").val() == '' || $("#special_fee").val() == '') {
+            //     Swal.fire('', 'Please Provide The Fee Details', 'warning');
+            // } 
+            else {
                 $("#save_div").hide();
                 $("#loading_div").show();
                 $.ajax({
@@ -540,15 +677,16 @@
                     data: {
                         'id': $("#feeStructure_id").val(),
                         'course': $("#course").val(),
-                        'admission': $("#admission").val(),
+                        // 'admission': $("#admission").val(),
                         'batch': $("#applied_batch").val(),
-                        'tuition_fee': $("#tuition_fee").val(),
-                        'special_fee': $("#special_fee").val(),
-                        'admission_fee': $("#admission_fee").val(),
-                        'hostel_fee': $("#hostel_fee").val(),
-                        'other_fee': $("#other_fee").val(),
+                        // 'tuition_fee': $("#tuition_fee").val(),
+                        // 'special_fee': $("#special_fee").val(),
+                        // 'admission_fee': $("#admission_fee").val(),
+                        // 'hostel_fee': $("#hostel_fee").val(),
+                        // 'other_fee': $("#other_fee").val(),
                         'shift': $("#shift").val(),
                         'semester': $("#semester").val(),
+                        'componentsJson': componentsJson
                     },
                     success: function(response) {
                         let status = response.status;
