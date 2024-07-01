@@ -60,21 +60,19 @@
                 </div>
                 <div class="modal-body">
                     <div class="row gutters">
-                        
-
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="shift" class="required">Shift</label>
-                            <select name="shift" id="shift" class="form-control select2">
-                                <option value="">Select Shift</option>
-                                @foreach ($shift as $id => $sht)
-                                    <option value="{{ $id }}">{{ $sht }}</option>
-                                @endforeach
-                            </select>
-                            <span id="shift_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div>
-
-
+                        @if (count($shift) > 0)
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="shift" class="required">Shift</label>
+                                <select name="shift" id="shift" class="form-control select2">
+                                    <option value="">Select Shift</option>
+                                    @foreach ($shift as $id => $sht)
+                                        <option value="{{ $id }}">{{ $sht }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="shift_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
+                        @endif
 
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="dept" class="required">Department</label>
@@ -87,18 +85,19 @@
                             <span id="dept_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
-
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="degree" class="required">Degree Type</label>
-                            <select name="degree" id="degree" class="form-control select2">
-                                <option value="">Select Degree Type</option>
-                                @foreach ($degree as $id => $d)
-                                    <option value="{{ $id }}">{{ $d }}</option>
-                                @endforeach
-                            </select>
-                            <span id="degree_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div>
+                        @if (count($degree) > 0)
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="degree" class="required">Degree Type</label>
+                                <select name="degree" id="degree" class="form-control select2">
+                                    <option value="">Select Degree Type</option>
+                                    @foreach ($degree as $id => $d)
+                                        <option value="{{ $id }}">{{ $d }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="degree_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
+                        @endif
 
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="course" class="required">Course Name</label>
@@ -112,7 +111,7 @@
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="short_form" class="required">Course In Short Form</label>
                             <input type="text" class="form-control" style="text-transform:uppercase" id="short_form"
-                                name="short_form" value="">
+                                name="short_form" value="" placeholder="Example: B.E CSE-S1/ B.E CSE">
                             <span id="short_form_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
@@ -276,18 +275,14 @@
                 $("#course_span").hide();
                 $("#short_form_span").hide();
                 $("#shift_span").hide();
-            } 
-
-            else if ($("#shift").val() == '') {
+            } else if ($("#shift").val() == '') {
                 $("#shift_span").html(`Shift Type Is Required.`);
                 $("#shift_span").show();
                 $("#dept_span").hide();
                 $("#course_span").hide();
                 $("#short_form_span").hide();
                 $("#degree_span").hide();
-            }
-
-            else if ($("#dept").val() == '') {
+            } else if ($("#dept").val() == '') {
                 $("#dept_span").html(`Department Is Required.`);
                 $("#dept_span").show();
                 $("#degree_span").hide();
@@ -312,9 +307,9 @@
                 let id = $("#course_id").val();
                 let course = $("#course").val();
                 let dept = $("#dept").val();
-                let degree = $("#degree").val();
+                let degree = $("#degree").val()??null;
                 let short_form = $("#short_form").val();
-                let shift = $("#shift").val();
+                let shift = $("#shift").val()??null;
                 $.ajax({
                     url: "{{ route('admin.tools-courses.store') }}",
                     method: 'POST',
@@ -327,7 +322,7 @@
                         'short_form': short_form,
                         'degree': degree,
                         'dept': dept,
-                        'shift':shift
+                        'shift': shift
                     },
                     success: function(response) {
                         let status = response.status;
@@ -494,7 +489,8 @@
                             error: function(jqXHR, textStatus, errorThrown) {
                                 if (jqXHR.status) {
                                     if (jqXHR.status == 500) {
-                                        Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
+                                        Swal.fire('', 'Request Timeout / Internal Server Error',
+                                            'error');
                                     } else {
                                         Swal.fire('', jqXHR.status, 'error');
                                     }

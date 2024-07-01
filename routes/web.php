@@ -106,14 +106,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('year/destroy', 'YearController@massDestroy')->name('year.massDestroy');
 
 
-        // FeeComponents
-        Route::get('fee-components', 'feeComponentsController@index')->name('fee-components.index');
-        Route::post('fee-components/view', 'feeComponentsController@view')->name('fee-components.view');
-        Route::post('fee-components/edit', 'feeComponentsController@edit')->name('fee-components.edit');
-        Route::post('fee-components/store', 'feeComponentsController@store')->name('fee-components.store');
-        
-        Route::post('fee-components/delete', 'feeComponentsController@destroy')->name('fee-components.delete');
-        Route::delete('fee-components/destroy', 'feeComponentsController@massDestroy')->name('fee-components.massDestroy');
+    // FeeComponents
+    Route::get('fee-components', 'feeComponentsController@index')->name('fee-components.index');
+    Route::post('fee-components/view', 'feeComponentsController@view')->name('fee-components.view');
+    Route::post('fee-components/edit', 'feeComponentsController@edit')->name('fee-components.edit');
+    Route::post('fee-components/store', 'feeComponentsController@store')->name('fee-components.store');
+    
+    Route::post('fee-components/delete', 'feeComponentsController@destroy')->name('fee-components.delete');
+    Route::delete('fee-components/destroy', 'feeComponentsController@massDestroy')->name('fee-components.massDestroy');
 
     // Academic Year
     Route::get('academic-years', 'AcademicYearController@index')->name('academic-years.index');
@@ -844,7 +844,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('student_rollnumber', 'FeeCollectionController@fetch_detils')->name('student-rollnumber.geter');
     Route::post('student_alldetails', 'FeeCollectionController@getStudentData')->name('student-details.alldetails');
 
-    
+
 
     // Fee Data Import
     Route::get('fee-data-import', 'FeeDataController@index')->name('fee-data-import.index');
@@ -872,7 +872,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('fee/year-wise-report/data', 'FeeReportController@yearWiseRepData')->name('fee.year-wise-report.data');
     Route::get('fee/show/{id}', 'FeePaymentController@collectShow')->name('fee.collectShow');
 
-  
+
 
 
     Route::get('fee-summary-report', 'FeeReportController@summaryReport')->name('fee-summary-report.index');
@@ -895,15 +895,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // Route::get('subjects/view', 'SubjectController@view')->name('subjects.view');
     // Route::delete('subjects/delete', 'SubjectController@delete')->name('subjects.delete');
     // Route::get('subjects/edit', 'SubjectController@edit')->name('subjects.edit');
-    
+
     Route::post('subject-masters/process-csv-import', 'SubjectController@processCsvImport')->name('subject-masters.processCsvImport');
     Route::post('subject-masters/parse-csv-import', 'SubjectController@parseCsvImport')->name('subject-masters.parseCsvImport');
     Route::get('subjects', 'SubjectController@index')->name('subjects.index');
     Route::post('subjects/view', 'SubjectController@view')->name('subjects.view');
+    Route::post('subjects/show', 'SubjectController@show')->name('subjects.show');
     Route::get('subjects/create', 'SubjectController@create')->name('subjects.create');
     Route::post('subjects/edit', 'SubjectController@edit')->name('subjects.edit');
     Route::post('subjects/store', 'SubjectController@store')->name('subjects.store');
     Route::post('subjects/delete', 'SubjectController@destroy')->name('subjects.delete');
+    Route::post('subjects/destroy', 'SubjectController@destroy')->name('subjects.destroy');
     Route::post('subjects/search', 'SubjectController@search')->name('subjects.search');
     Route::post('subjects/get_course', 'SubjectController@get_course')->name('subjects.get_course');
     Route::delete('subjects/destroy', 'SubjectController@massDestroy')->name('subjects.massDestroy');
@@ -954,7 +956,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('subject-allotment/updater', 'SubjectAllotmentController@updater')->name('subject-allotment.updater');
     Route::resource('subject-allotment', 'SubjectAllotmentController');
     Route::post('subject-allotment/check', 'SubjectAllotmentController@check')->name('subject-allotment.check');
-    Route::post('subject-allotment/get-subjects', 'SubjectAllotmentController@getSubjects')->name('subject-allotment.get-subjects');
+    // Route::post('subject-allotment/get-subjects', 'SubjectAllotmentController@getSubjects')->name('subject-allotment.get-subjects');
+    Route::post('subject-allotment/get_subjects', 'SubjectAllotmentController@get_subjects')->name('subject-allotment.get_subjects');
     Route::post('subject-allotment/get-honor-subjects', 'SubjectAllotmentController@getHonorSubjects')->name('subject-allotment.get-honor-subjects');
     Route::post('subject-allotment/save', 'SubjectAllotmentController@save')->name('subject-allotment.save');
     Route::post('subject-allotment/search', 'SubjectAllotmentController@search')->name('subject-allotment.search');
@@ -1966,6 +1969,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('exam-fee/index', 'ExamFeeController@index')->name('exam-fee.index');
     Route::get('exam-fee/generate/{ay}/{batch}/{course}/{semester}/{user_name_id}/{exam_month}/{exam_year}', 'ExamFeeController@generate')->name('exam-fee.generate');
 
+    Route::get('erp-setting', 'ErpSettingController@index')->name('erp-setting.index');
+    Route::post('erp-setting/edit', 'ErpSettingController@edit')->name('erp-setting.edit');
+    Route::post('erp-setting/store', 'ErpSettingController@store')->name('erp-setting.store');
+    Route::post('erp-setting/view', 'ErpSettingController@view')->name('erp-setting.view');
+    Route::post('erp-setting/delete', 'ErpSettingController@destroy')->name('erp-setting.delete');
+    Route::delete('erp-setting/destroy', 'ErpSettingController@massDestroy')->name('erp-setting.massDestroy');
+
 });
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
@@ -2479,5 +2489,13 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     Route::post('frontend/profile', 'ProfileController@update')->name('profile.update');
     Route::post('frontend/profile/destroy', 'ProfileController@destroy')->name('profile.destroy');
     Route::post('frontend/profile/password', 'ProfileController@password')->name('profile.password');
+
+    Route::get('erp-setting', 'ErpSettingController@index')->name('erp-setting.index');
+    Route::post('erp-setting/edit', 'ErpSettingController@edit')->name('erp-setting.edit');
+    Route::post('erp-setting/store', 'ErpSettingController@store')->name('erp-setting.store');
+    Route::post('erp-setting/view', 'ErpSettingController@view')->name('erp-setting.view');
+    Route::post('erp-setting/delete', 'ErpSettingController@destroy')->name('erp-setting.delete');
+    Route::delete('erp-setting/destroy', 'ErpSettingController@massDestroy')->name('erp-setting.massDestroy');
+
 
 });

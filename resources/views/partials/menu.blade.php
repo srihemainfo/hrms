@@ -2470,6 +2470,17 @@
                         </p>
                     </a>
                 </li>
+                {{-- <li class="nav-item">
+                    <a href="{{ route('admin.erp-setting.index') }}"
+                        class="nav-link {{ request()->is('admin/erp-setting') || request()->is('admin/erp-setting/*') ? 'active' : '' }}">
+                        <i class="fas fa-fw fa-calendar nav-icon">
+
+                        </i>
+                        <p>
+                            ERP Settings
+                        </p>
+                    </a>
+                </li> --}}
                 @php($unread = \App\Models\QaTopic::unreadCount())
                 <li class="nav-item">
                     <a href="{{ route('admin.messenger.index') }}"

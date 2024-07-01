@@ -23,6 +23,7 @@ class ToolsCourse extends Model
     protected $fillable = [
         'department_id',
         'degree_type_id',
+        'shift_id',
         'name',
         'short_form',
         'created_at',

@@ -126,9 +126,9 @@
                             <label for="sub_type" class="required">Subject Type</label>
                             <select id="sub_type" name="sub_type" class="form-control select2">
                                 <option value="">Select Subject Type</option>
-                                {{-- @foreach ($sub_type as $key => $item)
+                                @foreach ($sub_type as $key => $item)
                                     <option value="{{ $key }}">{{ $item }}</option>
-                                @endforeach --}}
+                                @endforeach
                             </select>
                             <span id="sub_type_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
@@ -137,9 +137,9 @@
                             <label for="sub_cat" class="required">Subject Category</label>
                             <select id="sub_cat" name="sub_cat" class="form-control select2">
                                 <option value="">Select Subject Category</option>
-                                {{-- @foreach ($sub_cat as $key => $item)
+                                @foreach ($sub_cat as $key => $item)
                                     <option value="{{ $key }}">{{ $item }}</option>
-                                @endforeach --}}
+                                @endforeach
                             </select>
                             <span id="sub_cat_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
@@ -332,15 +332,15 @@
             $("#subject").val('');
             $("#subject_code").val('');
             $("#credit").val('');
-            $("#dept").val('');
+            $("#dept").val($("#target option:first").val());
             $("#dept").select2();
-            $("#course").val('');
+            $("#course").val($("#target option:first").val());
             $("#course").select2();
-            $("#sem").val('');
+            $("#sem").val($("#target option:first").val());
             $("#sem").select2();
-            $("#sub_type").val('');
+            $("#sub_type").val($("#target option:first").val());
             $("#sub_type").select2();
-            $("#sub_cat").val('');
+            $("#sub_cat").val($("#target option:first").val());
             $("#sub_cat").select2();
             $("#lecture").val('');
             $("#tutorial").val('');
@@ -424,10 +424,14 @@
                             $('#sem').append(`<option value="${i}">${i}</option>`)
                         }
                     }
+                    console.log($('#course option:selected').data('degree'));
+                    // dd()
                     resolve();
                 } else {
                     reject(new Error(error));
                 }
+
+                console.log($('#course option:selected').data('degree'));
             });
 
         }
@@ -821,6 +825,7 @@
                         let status = response.status;
                         if (status == true) {
                             var data = response.data;
+                            console.log(data);
                             var regulation = data.regulation != 0 ? data.regulation : '';
                             $("#regulation").val(data.regulation_id);
                             $("#regulation").select2();
@@ -834,11 +839,13 @@
                             deptChange().then(() => {
                                 $("#course").val(data.course_id);
                                 $("#course").select2();
+                                // courseChange()
+                                courseChange().then(() => {
+                                    $("#sem").val(data.semester_id);
+                                    $("#sem").select2();
+                                });
                             });
-                            courseChange().then(() => {
-                                $("#sem").val(data.semester_id);
-                                $("#sem").select2();
-                            });
+
 
                             $("#sub_type").val(data.subject_type_id);
                             $("#sub_type").select2();
@@ -908,11 +915,12 @@
                             deptChange().then(() => {
                                 $("#course").val(data.course_id);
                                 $("#course").select2();
+                                courseChange().then(() => {
+                                    $("#sem").val(data.semester_id);
+                                    $("#sem").select2();
+                                });
                             });
-                            courseChange().then(() => {
-                                $("#sem").val(data.semester_id);
-                                $("#sem").select2();
-                            });
+
 
                             $("#sub_type").val(data.subject_type_id);
                             $("#sub_type").select2();
@@ -982,7 +990,8 @@
                             error: function(jqXHR, textStatus, errorThrown) {
                                 if (jqXHR.status) {
                                     if (jqXHR.status == 500) {
-                                        Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
+                                        Swal.fire('', 'Request Timeout / Internal Server Error',
+                                            'error');
                                     } else {
                                         Swal.fire('', jqXHR.status, 'error');
                                     }

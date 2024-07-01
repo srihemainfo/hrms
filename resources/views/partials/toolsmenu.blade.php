@@ -200,7 +200,7 @@
             </a>
         </li>
     @endcan
-    @can('subject_category_access')
+    {{-- @can('subject_category_access')
         <li class="nav-item">
             <a href="{{ route('admin.subject_category.index') }}"
                 class="nav-link {{ request()->is('admin/subject_category') || request()->is('admin/subject_category/*') ? 'active' : '' }}">
@@ -251,7 +251,7 @@
                 </p>
             </a>
         </li>
-    @endcan
+    @endcan --}}
     @can('class_room_access')
         <li class="nav-item">
             <a href="{{ route('admin.class-rooms.index') }}"
