@@ -52,7 +52,7 @@
     <div class="card" id="report" style="display:none;">
         <div class="card-header">
             <div class="header_div">
-                <div style="text-align:center;font-size:1.5rem;color:#007bff;">Demo Collage Of Engineering & Technology
+                <div style="text-align:center;font-size:1.5rem;color:#007bff;">Demo College Of Engineering & Technology
                 </div>
                 <div style="text-align:center;font-size:1.2rem;color:rgb(85, 85, 85);" id="month_label"></div>
                 <div style="text-align:center;font-size:1rem;display:flex;justify-content:space-around;"
@@ -142,7 +142,7 @@
                                     text: 'Print',
                                     customize: function(win) {
                                         // $(win.document.body).prepend(
-                                        //     '<h1 style="text-align:center;">Demo Collage Of Engineering & Technology</h1></br><h2 style="text-align:center;">Staff Attendance Register For <span style=\"color:black;\">' +
+                                        //     '<h1 style="text-align:center;">Demo College Of Engineering & Technology</h1></br><h2 style="text-align:center;">Staff Attendance Register For <span style=\"color:black;\">' +
                                         //     monthName +
                                         //     '</span> Month</h2>'
                                         // );

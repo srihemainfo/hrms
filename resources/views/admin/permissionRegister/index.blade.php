@@ -65,7 +65,7 @@
     <div class="card" id="report" style="display:none;">
         <div class="card-header">
             <div class="header_div">
-                <div style="text-align:center;font-size:1.5rem;color:#007bff;">Demo Collage Of Engineering & Technology
+                <div style="text-align:center;font-size:1.5rem;color:#007bff;">Demo College Of Engineering & Technology
                 </div>
                 <div style="text-align:center;font-size:1.2rem;color:rgb(85, 85, 85);"> Permission Register (<span
                         id="from"></span> to <span id="to"></span> )</div>

@@ -179,7 +179,7 @@
                             text: 'Print',
                             customize: function(win) {
                                 $(win.document.body).prepend(
-                                    '<h1 style="text-align:center;">Demo Collage Of Engineering & Technology</h1></br><h2 style="text-align:center;">Staff Leave Report</h2>'
+                                    '<h1 style="text-align:center;">Demo College Of Engineering & Technology</h1></br><h2 style="text-align:center;">Staff Leave Report</h2>'
                                 );
                             },
                             exportOptions: {

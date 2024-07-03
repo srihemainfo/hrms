@@ -47,7 +47,7 @@
                                         style="width:100%;height:80px;" alt="Institute Logo">
                                 </td>
                                 <td style="width:60%;border-right:1px solid black;font-size:0.7rem;text-align:center;">
-                                    <div> <b style="font-size:0.9rem;"> Demo Collage Of Engineering & Technology </b></div>
+                                    <div> <b style="font-size:0.9rem;"> Demo College Of Engineering & Technology </b></div>
                                     <div> <b> (An AUTONOMOUS Institution, Affiliated to ANNA UNIVERSITY, Chennai.) </b>
                                     </div>
                                     <div> <b> KUTHAMBAKKAM, CHENNAI – 600124. </b></div>
@@ -263,7 +263,7 @@
                 <div style="padding-bottom:8px;">1. Admission to the Examination is provisional.</div>
                 <div style="padding-bottom:8px;">2. The Hall Ticket is issued subject to the candidate satisfying the
                     Attendance and other requirements as
-                    per Rules, Regulations and Instructions by the Demo Collage Of Engineering & Technology from time to
+                    per Rules, Regulations and Instructions by the Demo College Of Engineering & Technology from time to
                     time. If
                     later, it is found that the candidate fails to comply with the above requirements, the examinations
                     written by the candidate will be treated as cancelled.</div>

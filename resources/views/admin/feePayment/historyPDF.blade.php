@@ -21,7 +21,7 @@
                     <img src="{{ public_path('adminlogo/school_menu_logo.png') }}" style="width:50%;" alt="RIT LOGO">
                 </td>
                 <td style="width:98%;margin-left:-10px;">
-                    <div style="width:100%;color:#007bff;font-weight:bold;">Demo Collage Of Engineering & Technology</div>
+                    <div style="width:100%;color:#007bff;font-weight:bold;">Demo College Of Engineering & Technology</div>
                 </td>
             </tr> --}}
                 <tr>

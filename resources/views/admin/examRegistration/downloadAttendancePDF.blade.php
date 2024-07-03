@@ -58,7 +58,7 @@
                                             alt="Image Description" style="margin-top:-5px;width:100%;"></td>
                                     <td style="width:80%;font-size:0.8rem;">
                                         <div style="text-align:center;">
-                                            <div style="font-size:0.9rem;"><b>Demo Collage Of Engineering & Technology -
+                                            <div style="font-size:0.9rem;"><b>Demo College Of Engineering & Technology -
                                                     2117</b></div>
                                             <div class="">(An Autonomous Insitution and Affliated to ANNA
                                                 UNIVERSITY - Chennai)

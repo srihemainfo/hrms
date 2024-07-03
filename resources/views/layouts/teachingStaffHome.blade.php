@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> --}}
-    <title>Demo Collage Of Engineering & Technology</title>
+    <title>Demo College Of Engineering & Technology</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('adminlogo/school_favicon.png') }}">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />

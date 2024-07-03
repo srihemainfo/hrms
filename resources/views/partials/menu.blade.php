@@ -442,19 +442,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('subject_allotment_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.subject-allotment.index') }}"
-                                        class="nav-link {{ request()->is('admin/subject-allotment') || request()->is('admin/subject-allotment*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-clipboard">
-
-                                        </i>
-                                        <p>
-                                            Subject Allotment
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan
+                           
                             @can('subject_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.subjects.index') }}"
@@ -468,6 +456,20 @@
                                     </a>
                                 </li>
                             @endcan
+
+                            @can('subject_allotment_access')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.subject-allotment.index') }}"
+                                    class="nav-link {{ request()->is('admin/subject-allotment') || request()->is('admin/subject-allotment*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-clipboard">
+
+                                    </i>
+                                    <p>
+                                        Subject Allotment
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
                             @can('subject_registration_access')
 
                                 <li

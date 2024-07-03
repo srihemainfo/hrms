@@ -115,7 +115,7 @@
                                 alt="Institute Logo">
                         </td>
                         <td class="text-center" style="width:60%;border-right:1px solid black;font-size:0.8rem;">
-                            <div> <b style="font-size:1rem;"> Demo Collage Of Engineering & Technology </b></div>
+                            <div> <b style="font-size:1rem;"> Demo College Of Engineering & Technology </b></div>
                             <div> <b> (An AUTONOMOUS Institution, Affiliated to ANNA UNIVERSITY, Chennai.) </b></div>
                             <div> <b> KUTHAMBAKKAM, CHENNAI – 600124. </b></div>
                             <div> <b id="exam_month_div"> </b></div>
@@ -157,7 +157,7 @@
                             </div>
                             <div class="row m-auto">
                                 <div class="col-3" style="border-right:1px solid black;">Examination Centre</div>
-                                <div class="col-9"><b>2117 : Demo Collage Of Engineering & Technology</b></div>
+                                <div class="col-9"><b>2117 : Demo College Of Engineering & Technology</b></div>
                             </div>
                         </td>
                     </tr>

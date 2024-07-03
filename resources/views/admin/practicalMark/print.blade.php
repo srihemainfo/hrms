@@ -52,7 +52,7 @@
                     </td>
                     <td>
                         <div style="padding-left:50px;">
-                            <b>Demo Collage Of Engineering & Technology</b>
+                            <b>Demo College Of Engineering & Technology</b>
                         </div>
                         <div>(An Autonomous Insitution and Affliated to Anna University, Chennai)
                         </div>

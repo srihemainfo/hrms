@@ -15,7 +15,7 @@
             <div class="col-md-10 border">
                 <div class="text-center lh-1 mb-2 border-bottom font pb-2">
                     {{-- <img src="{{ asset('adminlogo/images.jpg') }}" alt="Admin Logo"> --}}
-                    <h1 class="fw-bold pb-2">Demo Collage Of Engineering & Technology</h1>
+                    <h1 class="fw-bold pb-2">Demo College Of Engineering & Technology</h1>
                     <span class="fw-normal ">Kuthambakkam, Post, Chembarambakkam, Tamil Nadu 600124</span><br> <span
                         class="fw-normal ">Payment slip for the month of
                         <b>{{ ' ' . $results->month . ' ' . $results->year }}</b></span>

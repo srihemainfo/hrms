@@ -42,7 +42,7 @@
         <thead>
             <tr>
                 <td style='border:none;'>
-                    <h6>Demo Collage Of Engineering & Technology</h6>
+                    <h6>Demo College Of Engineering & Technology</h6>
                     <p>(An Autonomous Institution)</p>
                     <h6>OFFICE OF THE CONTROLLER OF EXAMINATIONS</h6>
                     <h6>{{ strtoupper($data[0]['result_type']) }} Results of

@@ -10,7 +10,7 @@
 
 
     <div style="text-align:center;">
-        <h3>Demo Collage Of Engineering & Technology</h3>
+        <h3>Demo College Of Engineering & Technology</h3>
         <h4>DEPARTMENT OF </h4>
         <h5>ABSENTEES SUMMARY</h5>
     </div>

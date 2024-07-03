@@ -25,7 +25,7 @@
                             style="position:absolute;width:200px;left:30px;top:30px;">
 
                         <div class="text-center">
-                            <b>Demo Collage Of Engineering & Technology</b>
+                            <b>Demo College Of Engineering & Technology</b>
                         </div>
                         <div class="text-center">(An Autonomous Insitution and Affliated to Anna University, Chennai)</div>
                         <div class="text-center">Kuthambakkam - 600124</div>

@@ -72,7 +72,7 @@
         @foreach ($data as $results)
             <div class="container">
                 <div class="header_div">
-                    <p>Demo Collage Of Engineering & Technology</p>
+                    <p>Demo College Of Engineering & Technology</p>
                     <p style="margin-top:-30px;">Kodambakkam Post, Cheambarambakkam, Tamil Nadu 600 124</p>
                     <p style="margin-top:-15px;font-weight:bold;"> Payment Slip for the month of <span>{{ $results->month }}  {{ $results->year }}</span>
                     </p>

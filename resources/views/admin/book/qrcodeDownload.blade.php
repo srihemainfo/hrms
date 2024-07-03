@@ -85,7 +85,7 @@
             </div>
         </div>
         <div class="header">
-            <span class="collage-title">DEMO COLLAGE OF ENGINNERING AND TECHNOLOGY</span>
+            <span class="collage-title">Demo College OF ENGINNERING AND TECHNOLOGY</span>
             <h5 style="padding-left: 30%; font-weight: normal; padding-top: 20px">BOOK QR CODES</h5>
         </div>
     </div>
