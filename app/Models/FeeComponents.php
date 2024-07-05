@@ -19,9 +19,9 @@ class FeeComponents extends Model
 
     protected $fillable = [
         'name',
-        'course_id',
-        'batch_id',
-        'semester_id',
+        // 'course_id',
+        // 'batch_id',
+        // 'semester_id',
         'created_at',
         'updated_at',
         'deleted_at',

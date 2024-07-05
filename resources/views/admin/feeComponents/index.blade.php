@@ -31,7 +31,7 @@
                         <th>
                             {{ trans('cruds.nationality.fields.id') }}
                         </th>
-                        <th>
+                        {{-- <th>
                             Batch
                         </th>
                         <th>
@@ -39,7 +39,7 @@
                         </th>
                         <th>
                             Semester
-                        </th>
+                        </th> --}}
                         <th>
                             {{ trans('cruds.nationality.fields.name') }}
                         </th>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row gutters">
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                        {{-- <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="result" class="required">Batch</label>
                             <select class="form-control select2" id="applied_batch" name="applied_batch">
                                 <option value="">Select Batch</option>
@@ -96,9 +96,9 @@
                             </select>
                             <span id="semester_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
-                        </div>
+                        </div> --}}
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="result" class="required">Fees Components</label>
+                            <label for="result" class="required">Fee Component</label>
                             <input type="hidden" name="fee_components_id" id="fee_components_id" value="">
                             <input type="text" class="form-control" id="fee_components" name="fee_components"
                                 value="">
@@ -192,18 +192,18 @@
                         data: 'id',
                         name: 'id'
                     },
-                    {
-                        data: 'batch',
-                        name: 'batch'
-                    },
-                    {
-                        data: 'course',
-                        name: 'course'
-                    },
-                    {
-                        data: 'semester',
-                        name: 'semester'
-                    },
+                    // {
+                    //     data: 'batch',
+                    //     name: 'batch'
+                    // },
+                    // {
+                    //     data: 'course',
+                    //     name: 'course'
+                    // },
+                    // {
+                    //     data: 'semester',
+                    //     name: 'semester'
+                    // },
                     {
                         data: 'name',
                         name: 'name'
@@ -229,10 +229,10 @@
 
         function openModal() {
             $("#fee_components").val('')
-            $("#applied_batch").val('').select2()
-            $("#course").val('').select2()
+            // $("#applied_batch").val('').select2()
+            // $("#course").val('').select2()
             $("#fee_components_id").val('')
-            $("#semester").val('').select2()
+            // $("#semester").val('').select2()
             $("#fee_components_span").hide();
             $("#loading_div").hide();
             $("#save_btn").html(`Save`);
@@ -242,23 +242,23 @@
 
         function saveFeecomponents() {
             $("#loading_div").hide();
-            $("#applied_batch_span").hide();
-            $("#course_span").hide();
-            $("#semester_span").hide();
+            // $("#applied_batch_span").hide();
+            // $("#course_span").hide();
+            // $("#semester_span").hide();
 
-            if($("#applied_batch").val()== '')
-            {
-                $("#applied_batch_span").html('Batch Is Required').show();
-            }
-            else if($("#course").val()== '')
-            {
-               $("#course_span").html('Course Is Required').show();
-            }
-            else if($("#semester").val()=='')
-            {
-                $("#semester_span").html('Semester Is Required').show();
-            }
-            else if ($("#fee_components").val() == '') {
+            // if($("#applied_batch").val()== '')
+            // {
+            //     $("#applied_batch_span").html('Batch Is Required').show();
+            // }
+            // else if($("#course").val()== '')
+            // {
+            //    $("#course_span").html('Course Is Required').show();
+            // }
+            // else if($("#semester").val()=='')
+            // {
+            //     $("#semester_span").html('Semester Is Required').show();
+            // }
+            if ($("#fee_components").val() == '') {
                 $("#fee_components_span").html(`Fees Components Is Required.`);
                 $("#fee_components_span").show();
             } else if (!isNaN($("#fee_components").val())) {
@@ -267,16 +267,16 @@
             } else {
                 $("#save_div").hide();
                 $("#fee_components_span").hide();
-                $("#applied_batch_span").hide();
-                $("#semester_span").hide();
-                $("#course_span").hide();
+                // $("#applied_batch_span").hide();
+                // $("#semester_span").hide();
+                // $("#course_span").hide();
                 $("#loading_div").show();
 
-                let course = $("#course").val();
+                // let course = $("#course").val();
                 let fee_components = $("#fee_components").val();
                 let id = $("#fee_components_id").val();
-                let applied_batch = $("#applied_batch").val();
-                let semester = $("#semester").val();
+                // let applied_batch = $("#applied_batch").val();
+                // let semester = $("#semester").val();
                 $.ajax({
                     url: '{{ route('admin.fee-components.store') }}',
                     method: 'POST',
@@ -286,9 +286,9 @@
                     data: {
                         'fee_components': fee_components,
                         'id': id,
-                        'course': course,
-                        'applied_batch' : applied_batch,
-                        'semester' : semester
+                        // 'course': course,
+                        // 'applied_batch' : applied_batch,
+                        // 'semester' : semester
                     },
                     success: function(response) {
                         let status = response.status;
@@ -341,9 +341,9 @@
                             
                             $("#fee_components").val(data.name);
                             $("#fee_components_id").val(data.id);
-                            $("#course").val(data.course_id).select2();
-                            $("#applied_batch").val(data.batch_id).select2();;
-                            $("#semester").val(data.semester_id).select2();;
+                            // $("#course").val(data.course_id).select2();
+                            // $("#applied_batch").val(data.batch_id).select2();
+                            // $("#semester").val(data.semester_id).select2();
                             $("#save_div").hide();
                             $("#fee_components_span").hide();
                             $("#loading_div").hide();

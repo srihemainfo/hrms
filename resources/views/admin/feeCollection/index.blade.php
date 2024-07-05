@@ -3,30 +3,145 @@
     <div class="loading" id='loading' style='display:none'>Loading&#8230;</div>
     <div class="row">
         <div class="form-group col-xl-5 col-lg-5 col-md-5 col-sm-5 col-12">
-            <link href="{{ asset('css/materialize.css') }}" rel="stylesheet" />
-            <div class="card">
-                <div class="row">
-                    <div class="col-11">
-                        <div class="input-field" style="padding-left: 0.50rem;">
-                            <input type="text" name="name" id="autocomplete-input"
-                                style="margin:0;padding-left:0.50rem;" placeholder="Enter Student Rollnumber"
-                                class="autocomplete" autocomplete="off" onchange="run(this)">
-                        </div>
-
-                    </div>
+            <div class="row">
+                <div class="col-10">
+                    <select name="reg_no" id="reg_no" class="form-control select2" style="font-size: 18px;"
+                        onchange="getdetails()">
+                        <option value="">Select Student</option>
+                        @foreach ($students as $student)
+                            <option value="{{ $student->register_no }}">{{ $student->name }} ({{ $student->register_no }})
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>
     </div>
     <div class="card">
-        <div class="card-header">
-            <div id="info"></div>
+        <div class="card-header text-center">
+            Student Details
+        </div>
+        <div class="card-body">
             <div class="row">
-                <div class="col-md-6 col-12 form-group">
-                    <div><b>Name</b> : <span id="student_name"></span></div>
+                <div class="col-md-1">
+                    <p>Name</p>
                 </div>
-                <div class="col-md-6 col-12 form-group">
-                    <div><b>Roll Number</b> : <span id="roll_number"></span></div>
+                <div class="col-md-1">
+                    <p>:</p>
+                </div>
+                <div class="col-md-2">
+                    <p id="name" style="font-weight: bold;"></p>
+                </div>
+                <div class="col-md-1">
+                    <p>Batch</p>
+                </div>
+                <div class="col-md-1">
+                    <p>:</p>
+                </div>
+                <div class="col-md-2">
+                    <p id="batch" style="font-weight: bold;"></p>
+                </div>
+                <div class="col-md-1">
+                    <p>Course</p>
+                </div>
+                <div class="col-md-1">
+                    <p>:</p>
+                </div>
+                <div class="col-md-2">
+                    <p id="course" style="font-weight: bold;"></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1">
+                    <p>Semester</p>
+                </div>
+                <div class="col-md-1">
+                    <p>:</p>
+                </div>
+                <div class="col-md-2">
+                    <p id="semester" style="font-weight: bold;"></p>
+                </div>
+                <div class="col-md-1">
+                    <p>Section</p>
+                </div>
+                <div class="col-md-1">
+                    <p>:</p>
+                </div>
+                <div class="col-md-2">
+                    <p id="section" style="font-weight: bold;"></p>
+                </div>
+                <div class="col-md-1">
+                    <p>Phone No</p>
+                </div>
+                <div class="col-md-1">
+                    <p>:</p>
+                </div>
+                <div class="col-md-2">
+                    <p id="phone_no" style="font-weight: bold;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header text-center">
+            Fees Details
+        </div>
+        <div class="card-body">
+            <table class="table table-striped" id="feeDetailsTable">
+                <thead>
+                    <tr>
+                        <th>Semester</th>
+                        <th>Amount</th>
+                        <th>Paid</th>
+                        <th>Pending</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header text-center">
+            Payment History
+        </div>
+        <div class="card-body">
+            <table class="table table-striped" id="feeHistoryDetails">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Name</th>
+                        <th>Receipt No</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Receipt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text center" id="myModalLabel">Fees Payment</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div><input type="number" placeholder="Enter Amount" id="paid_amount" class="form-control"></div>
+                    <span id="paid_amount_error" style="color: red;"></span>
+                    <div class="mt-2"><input type="text" placeholder="Enter Remark" id="remark"
+                            class="form-control"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="pay_now">Pay Now</button>
                 </div>
             </div>
         </div>
@@ -36,95 +151,73 @@
 
 @section('scripts')
     @parent
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
-        integrity="sha512-NiWqa2rceHnN3Z5j6mSAvbwwg3tiwVNxiAQaaSMSXnRRDh5C2mk/+sKQRw8qjV1vN4nf8iK2a0b048PnHbyx+Q=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        const student = [];
+        $(document).on('click', '#payButton', function() {
+            $('#myModal').modal('show');
+        });
 
-        window.onload = function() {
+        $("#pay_now").click(function() {
+            let pay_now = $("#paid_amount").val();
+            if (pay_now == '') {
+                $("#paid_amount_error").text("Please Enter Amount");
+                return false;
+            } else {
+                $("#paid_amount_error").text("");
+                return true;
+            }
+
+        })
+
+        function getdetails() {
             $('#loading').show();
+            let reg_no = $("#reg_no").val();
+
             $.ajax({
                 url: '{{ route('admin.student-rollnumber.geter') }}',
                 type: 'POST',
                 data: {
-                    'data': 'geter'
+                    'reg_no': reg_no
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function(data) {
-
-                    let details = data.student;
-                    let student = {};
-                    for (let i = 0; i < details.length; i++) {
-                        student[details[i]] = null;
-                    }
-                    $('input.autocomplete').autocomplete({
-                        data: student,
-                    });
+                success: function(response) {
                     $('#loading').hide();
+                    console.log(response);
+                    let status = response.status;
 
+                    if (status) {
+                        $("#name").text(response.name);
+                        $("#course").text(response.short_form);
+                        $("#batch").text(response.batch);
+                        $("#semester").text(response.semester);
+                        $("#current_semester").text(response.semester);
+                        $("#section").text(response.section);
+                        $("#phone_no").text(response.phone_no);
+
+                        let feeDetails = response.fee_details;
+                        $('#feeDetailsTable tbody').empty();
+
+                        $.each(feeDetails, function(semester_id, amount) {
+                            let row = `<tr>
+                        <td>${semester_id}</td>
+                        <td>${amount}.00</td>
+                        <td><!-- Paid amount --></td>
+                        <td><!-- Pending amount --></td>
+                        <td><!-- Status --></td>
+                        <td><button id="payButton" data-semester-id="${semester_id}" class="btn btn-success btn-sm">Pay</button></td>
+                    </tr>`;
+                            $('#feeDetailsTable tbody').append(row);
+                        });
+                    } else {
+                        Swal.fire('', response.data, 'error');
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status) {
-                        if (jqXHR.status == 500) {
-                            Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
-                        } else {
-                            Swal.fire('', jqXHR.status, 'error');
-                        }
-                    } else if (textStatus) {
-                        Swal.fire('', textStatus, 'error');
-                    } else {
-                        Swal.fire('', 'Request Failed With Status: ' + jqXHR.statusText, "error");
-                    }
+                    $('#loading').hide();
+                    let errorMessage = textStatus || errorThrown || 'Request Failed';
+                    Swal.fire('', errorMessage, 'error');
                 }
-
-            })
-
-        }
-
-
-        function run(element) {
-            $("#info").html(`Loading......`);
-            let roll_no = $(element).val();
-            let roll_no_length =  roll_no.length;
-
-            $.ajax({
-                url: '{{ route('admin.student-details.alldetails') }}',
-                type: 'POST',
-                data: {
-                    'roll_no': roll_no
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(data) {
-                    if(data.status)
-                    {
-                        $('#student_name').text(data.name);
-                        $('#roll_number').text(data.roll_no);
-                        $("#info").hide();
-                    }
-                    else{
-                        $('#student_name').text('');
-                        $('#roll_number').text('');
-                        $("#info").show();
-                        $("#info").html(`No data found`);
-                    }
-
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status == 404) {
-                        Swal.fire('', 'Student not found', 'error');
-                    } else {
-                        Swal.fire('', 'Request Failed With Status: ' + jqXHR.statusText, 'error');
-                    }
-                    $("#info").show();
-                    $("#info").html(`No data found`);
-                }
-
-
             });
         }
     </script>
