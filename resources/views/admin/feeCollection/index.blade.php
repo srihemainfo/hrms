@@ -1,10 +1,27 @@
 @extends('layouts.admin')
 @section('content')
+    <style>
+        .fully-paid {
+            color: green;
+        }
+
+        .pending {
+            color: red;
+        }
+
+        #payment_history {
+            margin-left: 600%;
+        }
+
+        #loading {
+            z-index: 999;
+        }
+    </style>
     <div class="loading" id='loading' style='display:none'>Loading&#8230;</div>
     <div class="row">
         <div class="form-group col-xl-5 col-lg-5 col-md-5 col-sm-5 col-12">
             <div class="row">
-                <div class="col-10">
+                <div class="col-md-9">
                     <select name="reg_no" id="reg_no" class="form-control select2" style="font-size: 18px;"
                         onchange="getdetails()">
                         <option value="">Select Student</option>
@@ -14,9 +31,47 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="col-md-3">
+                    <button class="btn btn-warning" id="payment_history" data-toggle="modal"
+                        data-target="#paymentHistoryModal">Payment History</button>
+                </div>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="paymentHistoryModal" tabindex="-1" role="dialog"
+        aria-labelledby="paymentHistoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentHistoryModalLabel">Payment History</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped table-bordered" id="fee_history_table">
+                        <thead>
+                            <tr class="text-center">
+                                <th scope="col">S.No</th>
+                                <th scope="col">Receipt No</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Semester</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Status</th>
+                                <th scope="col" style="display: none;">Transaction Id</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card">
         <div class="card-header text-center">
             Student Details
@@ -84,46 +139,27 @@
     </div>
     <div class="card">
         <div class="card-header text-center">
-            Fees Details
+            Fee Details
         </div>
         <div class="card-body">
-            <table class="table table-striped" id="feeDetailsTable">
+            <table class="table table-striped table-bordered" id="feeDetailsTable">
                 <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th>Semester</th>
-                        <th>Amount</th>
+                        <th>Total Amount</th>
                         <th>Paid</th>
                         <th>Pending</th>
                         <th>Status</th>
+                        <th style="display: none;">Id</th>
                         <th>Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="text-center">
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="card">
-        <div class="card-header text-center">
-            Payment History
-        </div>
-        <div class="card-body">
-            <table class="table table-striped" id="feeHistoryDetails">
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Name</th>
-                        <th>Receipt No</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        <th>Receipt</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-        </div>
-    </div>
+
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -134,14 +170,25 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div><input type="number" placeholder="Enter Amount" id="paid_amount" class="form-control"></div>
+                    <div>
+                        <input type="hidden" id="student_id">
+                        <input type="hidden" id="student_name">
+                        <input type="hidden" id="total_amountsss">
+                        <input type="hidden" id="register_no">
+                        <input type="hidden" id="semester_idss">
+                        <input type="hidden" id="stu_fees_id">
+                    </div>
+                    <div>
+                        <input type="number" placeholder="Enter Amount" id="paid_amount" class="form-control">
+                    </div>
                     <span id="paid_amount_error" style="color: red;"></span>
-                    <div class="mt-2"><input type="text" placeholder="Enter Remark" id="remark"
-                            class="form-control"></div>
+                    <div class="mt-2">
+                        <input type="text" placeholder="Enter Remark" id="remark_details" class="form-control">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" id="pay_now">Pay Now</button>
+                    <button type="button" class="btn btn-success" id="pay_now" onclick="pay_now()">Pay Now</button>
                 </div>
             </div>
         </div>
@@ -152,25 +199,35 @@
 @section('scripts')
     @parent
     <script>
+        var feeDetails = [];
+
         $(document).on('click', '#payButton', function() {
             $('#myModal').modal('show');
+            
+            
+
+            var row = $(this).closest('tr');
+            var semester_idss = row.find('td:nth-child(1)').text().trim();
+            var total_amount = row.find('td:nth-child(2)').text().trim();
+            var fees_id = row.find('td:nth-child(6)').text().trim();
+
+            $('#total_amountsss').val(total_amount);
+            $('#semester_idss').val(semester_idss);
+            $('#stu_fees_id').val(fees_id);
+
+            $("#paid_amount").val('');
+            $("#remark_details").val('')
+
+
         });
 
-        $("#pay_now").click(function() {
-            let pay_now = $("#paid_amount").val();
-            if (pay_now == '') {
-                $("#paid_amount_error").text("Please Enter Amount");
-                return false;
-            } else {
-                $("#paid_amount_error").text("");
-                return true;
-            }
+        $('#payment_history').hide();
 
-        })
+        var reg_no = '';
 
         function getdetails() {
             $('#loading').show();
-            let reg_no = $("#reg_no").val();
+            var reg_no = $("#reg_no").val();
 
             $.ajax({
                 url: '{{ route('admin.student-rollnumber.geter') }}',
@@ -182,35 +239,159 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
-                    $('#loading').hide();
-                    console.log(response);
                     let status = response.status;
-
                     if (status) {
+                        $("#student_id").val(response.student_id);
+                        $("#student_name").val(response.name);
+                        $("#register_no").val(response.register_no);
                         $("#name").text(response.name);
                         $("#course").text(response.short_form);
                         $("#batch").text(response.batch);
                         $("#semester").text(response.semester);
-                        $("#current_semester").text(response.semester);
                         $("#section").text(response.section);
                         $("#phone_no").text(response.phone_no);
 
-                        let feeDetails = response.fee_details;
-                        $('#feeDetailsTable tbody').empty();
+                        feeDetails = response.fee_details;
 
-                        $.each(feeDetails, function(semester_id, amount) {
+                        $('#feeDetailsTable tbody').empty();
+                        if (feeDetails == '') {
+                            $('#payment_history').hide();
+                            let message =
+                                '<tr><td colspan="6" style="text-align: center; font-size: 20px; color:red;">Fee Not Found..!</td></tr>';
+                            $('#feeDetailsTable tbody').html(message);
+                        }
+
+                        $.each(feeDetails, function(semester_id, details) {
+                            var amountssss = details.amount;
+                            var id = details.id;
+
                             let row = `<tr>
                         <td>${semester_id}</td>
-                        <td>${amount}.00</td>
-                        <td><!-- Paid amount --></td>
+                        <td>${amountssss}</td>
+                        <td></td>
                         <td><!-- Pending amount --></td>
                         <td><!-- Status --></td>
-                        <td><button id="payButton" data-semester-id="${semester_id}" class="btn btn-success btn-sm">Pay</button></td>
+                        <td style="display: none;">${id}</td>
+                     
+                        <td>
+                            <button class="newViewBtn" title="Pay" id="payButton">
+                                <i class="fas fa-rupee-sign" style="font-size:22px;"></i>
+                            </button>
+                        </td>
                     </tr>`;
                             $('#feeDetailsTable tbody').append(row);
+                            $('#payment_history').show();
                         });
                     } else {
                         Swal.fire('', response.data, 'error');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    let errorMessage = textStatus || errorThrown || 'Request Failed';
+                    Swal.fire('', errorMessage, 'error');
+                }
+            });
+
+            $.ajax({
+                url: '{{ route('admin.fee_history') }}',
+                type: 'POST',
+                data: {
+                    'reg_no': reg_no
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $('#loading').hide();
+                    let status = response.status;
+                    if (status) {
+
+                        $("#fee_history_table tbody").empty();
+
+                        // To keep track of which semesters have been updated
+                        let updatedSemesters = [];
+
+                        $.each(response.data, function(index, fee) {
+
+
+                            let tablerow = `<tr>
+                        <td scope="row">${index + 1}</td>
+                        <td scope="row">${fee.receipt_no}</td>
+                        <td scope="row">${fee.student_name}</td>
+                        <td scope="row">${fee.paid_date}</td>
+                        <td scope="row">${fee.semester}</td>
+                        <td scope="row">${fee.paid_amount}</td>
+                        <td scope="row">${fee.status}</td>
+                        <td scope="row" style="display:none;">${fee.transaction_id}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-xs btn-outline-secondary" title="View Receipt" id="view_receipt" onclick="view_receipt(this)">View</button>
+                            <button class="btn btn-danger btn-xs btn-outline-danger" title="Delete Payment" id="delete_payment" onclick="delete_payment(this)">Delete</button>
+                        </td>
+                        </tr>`;
+                            $('#fee_history_table tbody').append(tablerow);
+
+                            var fee_status = fee.status;
+                           
+                            if (fee_status == 'deleted') {
+                                $("#fee_history_table tbody tr").each(function() {
+                                    var status11 = $(this).find('td:nth-child(7)').text()
+                                        .trim();
+                                    if (status11 == 'deleted') {
+
+                                        $(this).css({
+                                            "background-color": "#e95959",
+                                            "color": "white"
+                                        });
+                                        $(this).find("#delete_payment, #view_receipt").hide();
+                                        // $(this).find('td:nth-child(9)').text('Deleted By Admin');
+                                    } else {
+                                        $(this).find("#delete_payment, #view_receipt").show();
+                                    }
+                                });
+                            }
+
+                            $(`#feeDetailsTable tbody tr`).each(function() {
+                                var semesterssId = $(this).find('td:first').text().trim();
+
+                                var $tdThird = $(this).find('td:nth-child(3)');
+                                if (semesterssId == fee.semester) {
+                                    var totals = parseInt(fee.total_paid_amount);
+                                    $tdThird.text(totals);
+                                    updatedSemesters.push(semesterssId);
+                                }
+
+                                var currentAmount1 = parseInt($(this).find('td:nth-child(2)')
+                                    .text().trim());
+                                var paid_amount1 = parseInt($tdThird.text().trim());
+                                var pendingAmount1 = currentAmount1 - paid_amount1;
+                                $(this).find('td:nth-child(4)').text(pendingAmount1);
+                            });
+                        });
+
+                        // Set 3rd child to zero if not updated
+                        $(`#feeDetailsTable tbody tr`).each(function() {
+                            var semesterssId = $(this).find('td:first').text().trim();
+                            if (!updatedSemesters.includes(semesterssId)) {
+                                $(this).find('td:nth-child(3)').text(0);
+                                var currentAmount1 = parseInt($(this).find('td:nth-child(2)').text()
+                                    .trim());
+                                $(this).find('td:nth-child(4)').text(currentAmount1);
+                            }
+                        });
+
+                        $(`#feeDetailsTable tbody tr`).each(function() {
+
+                            var statusUpdate = $(this).find('td:nth-child(4)').text().trim();
+                            if (statusUpdate == 0 || statusUpdate < 0) {
+                                $(this).find('td:nth-child(5)').text('Fully Paid').addClass(
+                                    'fully-paid');
+                                $(this).find('button#payButton').prop('disabled', true);
+                            } else {
+                                $(this).find('td:nth-child(5)').text('Pending').addClass('pending');
+
+                            }
+
+                        })
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -219,6 +400,122 @@
                     Swal.fire('', errorMessage, 'error');
                 }
             });
+        }
+
+        function pay_now() {
+            $('#loading').show();
+            var paid_amount = $("#paid_amount").val();
+            var remark_details = $("#remark_details").val();
+            var student_id = $("#student_id").val();
+            var student_name = $("#student_name").val();
+            var tot_amount = $("#total_amountsss").val();
+            var register_number = $("#register_no").val();
+            var sem = $("#semester_idss").val();
+            var fee_idis = $('#stu_fees_id').val();
+
+            $.ajax({
+
+                url: '{{ route('admin.fee_payment') }}',
+                type: 'POST',
+                data: {
+
+                    'paid_amount': paid_amount,
+                    'remark_details': remark_details,
+                    'student_id': student_id,
+                    'student_name': student_name,
+                    'tot_amount': tot_amount,
+                    'register_number': register_number,
+                    'sem': sem,
+                    'fee_idis': fee_idis
+
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    $('#loading').hide();
+                    let status = response.status;
+                    if (status == true) {
+                        Swal.fire('', response.data, 'success');
+                        $('#myModal').modal('hide');
+                        location.reload();
+                    } else {
+                        Swal.fire('', response.data, 'error');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $('#loading').hide();
+
+                    if (jqXHR.status == 422) {
+                        var errors = jqXHR.responseJSON.errors;
+                        var errorMessage = errors[Object.keys(errors)[0]][0];
+                        Swal.fire('', errorMessage, "error");
+                    } else {
+                        Swal.fire('', 'Request failed with status: ' + jqXHR.status,
+                            "error");
+                    }
+                }
+            })
+        }
+
+        function delete_payment(button) {
+
+            var row = $(button).closest('tr');
+            var transaction_Id = row.find('td:nth-child(8)').text().trim();
+            Swal.fire({
+                title: "Are You Sure?",
+                text: "Do You Really Want To Delete this Payment.!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "No",
+                reverseButtons: true
+            }).then(function(result) {
+                if (result.value) {
+
+                    $.ajax({
+                        url: '{{ route('admin.fee_delete') }}',
+                        type: 'POST',
+                        data: {
+                            'transaction_Id': transaction_Id,
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                          
+
+                            let status = response.status;
+                            if (status == true) {
+                                Swal.fire('', response.data, 'success');
+                                location.reload();
+                            } else {
+                                Swal.fire('', response.data, 'error');
+                            }
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+
+
+                            if (jqXHR.status == 422) {
+                                var errors = jqXHR.responseJSON.errors;
+                                var errorMessage = errors[Object.keys(errors)[0]][0];
+                                Swal.fire('', errorMessage, "error");
+                            } else {
+                                Swal.fire('', 'Request failed with status: ' + jqXHR.status,
+                                    "error");
+                            }
+                        }
+
+                    })
+
+                }
+            })
+
+        }
+
+        function view_receipt()
+        {
+
         }
     </script>
 @endsection

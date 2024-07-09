@@ -842,6 +842,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     //Fee Collection
     Route::get('fee-collection', 'FeeCollectionController@index')->name('fee-collection.index');
     Route::post('student_rollnumber', 'FeeCollectionController@fetch_detils')->name('student-rollnumber.geter');
+    Route::post('fee_payment', 'FeeCollectionController@fee_payment')->name('fee_payment');
+    Route::post('fee_history', 'FeeCollectionController@fee_history')->name('fee_history');
+    Route::post('fee_delete', 'FeeCollectionController@fee_delete')->name('fee_delete');
+    Route::post('fee_receipt', 'FeeCollectionController@view_receipt')->name('view_receipt');
+
     Route::post('student_alldetails', 'FeeCollectionController@getStudentData')->name('student-details.alldetails');
 
 

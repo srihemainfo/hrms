@@ -193,7 +193,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\framework/cache/data',
+        'path' => 'E:\\EngineeringDemo\\storage\\framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -363,10 +363,10 @@
     'convert_entities' => true,
     'options' => 
     array (
-      'font_dir' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\fonts',
-      'font_cache' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\fonts',
-      'temp_dir' => 'C:\\Users\\Admin\\AppData\\Local\\Temp',
-      'chroot' => 'C:\\Work\\Projects\\EngineeringDemo',
+      'font_dir' => 'E:\\EngineeringDemo\\storage\\fonts',
+      'font_cache' => 'E:\\EngineeringDemo\\storage\\fonts',
+      'temp_dir' => 'C:\\Users\\Gowtham\\AppData\\Local\\Temp',
+      'chroot' => 'E:\\EngineeringDemo',
       'allowed_protocols' => 
       array (
         'file://' => 
@@ -411,12 +411,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\app',
+        'root' => 'E:\\EngineeringDemo\\storage\\app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\app/public',
+        'root' => 'E:\\EngineeringDemo\\storage\\app/public',
         'url' => 'http://localhost/storage',
         'visibility' => 'public',
       ),
@@ -434,7 +434,7 @@
     ),
     'links' => 
     array (
-      'C:\\Work\\Projects\\EngineeringDemo\\public\\storage' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\app/public',
+      'E:\\EngineeringDemo\\public\\storage' => 'E:\\EngineeringDemo\\storage\\app/public',
     ),
   ),
   'hashing' => 
@@ -469,13 +469,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\logs/laravel.log',
+        'path' => 'E:\\EngineeringDemo\\storage\\logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\logs/laravel.log',
+        'path' => 'E:\\EngineeringDemo\\storage\\logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -527,7 +527,7 @@
       ),
       'emergency' => 
       array (
-        'path' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\logs/laravel.log',
+        'path' => 'E:\\EngineeringDemo\\storage\\logs/laravel.log',
       ),
     ),
   ),
@@ -592,7 +592,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => 'C:\\Work\\Projects\\EngineeringDemo\\resources\\views/vendor/mail',
+        0 => 'E:\\EngineeringDemo\\resources\\views/vendor/mail',
       ),
     ),
   ),
@@ -708,7 +708,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\framework/sessions',
+    'files' => 'E:\\EngineeringDemo\\storage\\framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -728,9 +728,9 @@
   array (
     'paths' => 
     array (
-      0 => 'C:\\Work\\Projects\\EngineeringDemo\\resources\\views',
+      0 => 'E:\\EngineeringDemo\\resources\\views',
     ),
-    'compiled' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\framework\\views',
+    'compiled' => 'E:\\EngineeringDemo\\storage\\framework\\views',
   ),
   'image' => 
   array (
@@ -809,7 +809,7 @@
     array (
     ),
     'enable_runnable_solutions' => NULL,
-    'remote_sites_path' => 'C:\\Work\\Projects\\EngineeringDemo',
+    'remote_sites_path' => 'E:\\EngineeringDemo',
     'local_sites_path' => '',
     'housekeeping_endpoint_prefix' => '_ignition',
     'settings_file_path' => '',

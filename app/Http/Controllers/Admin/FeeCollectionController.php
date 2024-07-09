@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CourseEnrollMaster;
+use App\Models\FeeCollection;
 use App\Models\FeeStructure;
 use App\Models\Student;
 use App\Models\ToolsCourse;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class FeeCollectionController extends Controller
 {
@@ -22,6 +25,8 @@ class FeeCollectionController extends Controller
         $student = Student::where('register_no', $reg_no)->first();
 
         if ($student) {
+            $register_no = $student->register_no;
+            $student_id = $student->id;
             $name = $student->name;
             $course = $student->admitted_course;
             $batch = $student->student_batch;
@@ -51,7 +56,10 @@ class FeeCollectionController extends Controller
 
                     foreach ($fee_component_array as $component) {
                         if (isset($component['name']) && $component['name'] === 'Total') {
-                            $total_amounts[$feeStructure->semester_id] = $component['amount'];
+                            $total_amounts[$feeStructure->semester_id] = [
+                                'id' => $feeStructure->id,
+                                'amount' => $component['amount'],
+                            ];
                         }
                     }
                 }
@@ -66,10 +74,105 @@ class FeeCollectionController extends Controller
                 'section' => $section,
                 'phone_no' => $phone_no,
                 'fee_details' => $total_amounts,
+                'register_no' => $register_no,
+                'student_id' => $student_id,
+
             ]);
         } else {
             return response()->json(['status' => false, 'data' => 'Please Enter Correct Number']);
         }
+    }
+
+    public function fee_payment(Request $request)
+    {
+        // dd($request);
+        if (isset($request->paid_amount)) {
+
+            $lastReceipt = FeeCollection::orderBy('id', 'desc')->first();
+            $nextReceiptNumber = $lastReceipt ? $lastReceipt->receipt_no + 1 : 100001;
+
+            $transactionId = Str::random(6) . $nextReceiptNumber . Str::random(6);
+
+            $store = FeeCollection::create([
+                'paid_amount' => $request->paid_amount,
+                'paid_date' => Carbon::now(),
+                'student_name' => $request->student_name,
+                'student_id' => $request->student_id,
+                'total_amount' => $request->tot_amount,
+                'status' => 'Paid',
+                'payment_type' => 'Offline',
+                'remarks' => $request->remark_details,
+                'register_no' => $request->register_number,
+                'semester' => $request->sem,
+                'receipt_no' => $nextReceiptNumber,
+                'transaction_id' => $transactionId,
+                'fees_id' => $request->fee_idis,
+            ]);
+            return response()->json(['status' => true, 'data' => 'Payment Successful']);
+        } else {
+            return response()->json(['status' => false, 'data' => 'Payment Failed']);
+        }
+    }
+
+    public function fee_history(Request $request)
+    {
+
+        $reg_no = $request->input('reg_no');
+        $fee_history = FeeCollection::where('register_no', $reg_no)->get();
+
+        $response_data = [];
+
+        foreach ($fee_history as $fee) {
+
+            $paid_amount = FeeCollection::where('student_id', $fee->student_id)
+                ->where('fees_id', $fee->fees_id)
+                ->where('semester', $fee->semester)
+                ->where('total_amount', $fee->total_amount)
+                ->where('student_name', $fee->student_name)
+                ->where('status', 'Paid')
+                ->sum('paid_amount');
+
+            $response_data[] = [
+                'register_no' => $reg_no,
+                'receipt_no' => $fee->receipt_no,
+                'student_name' => $fee->student_name,
+                'paid_date' => Carbon::parse($fee->paid_date)->format('d-m-Y'),
+                'semester' => $fee->semester,
+                'paid_amount' => $fee->paid_amount,
+                'status' => $fee->status,
+                'fees_id' => $fee->fees_id,
+                'student_id' => $fee->student_id,
+                'transaction_id' => $fee->transaction_id,
+                'total_paid_amount' => $paid_amount,
+
+            ];
+        }
+        return response()->json(['status' => true, 'data' => $response_data]);
+
+    }
+
+    public function fee_delete(Request $request)
+    {
+        // dd($request);
+        $transaction_Id = $request->transaction_Id;
+        $status_update = FeeCollection::where('transaction_id', $transaction_Id)->first();
+        
+        if($status_update)
+        {
+            $status_update->status = 'deleted';
+            $status_update->deleted_by = auth()->id();
+            $status_update->save();
+
+            $user_name = $status_update->User->name;
+
+
+            return response()->json(['status' => true, 'data' => 'Deleted Successfully..!', 'deleted_by' => $user_name]);
+        }
+        else
+        {
+            return response()->json(['status' => false, 'message' => 'Data Not Fount']);
+        }
+        
     }
 
 }

@@ -109,9 +109,9 @@
                             <select class="form-control select2" style="text-transform:uppercase" id="course"
                                 name="course" value="">
                                 <option value="">Select Course</option>
-                                {{-- @foreach ($course as $id => $d)
+                                @foreach ($course as $id => $d)
                                     <option value="{{ $id }}">{{ $d }}</option>
-                                @endforeach --}}
+                                @endforeach
                             </select>
                             <span id="course_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
@@ -520,11 +520,6 @@
             $("#feeStructure_id").val('');
             $('#totalAmount').hide();
             $('#total_text').hide();
-            // $("#admission_fee").val('');
-            // $("#tuition_fee").val('');
-            // $("#special_fee").val('');
-            // $("#hostel_fee").val('');
-            // $("#other_fee").val('');
             $("#course").val('').select2()
             $("#fee_components").val('').select2()
             $("#shift").val('').select2()
@@ -537,6 +532,8 @@
             $("#save_btn").html(`Save`);
             $("#save_div").show();
             $("#feeStructureModel").modal();
+            let tableFooter = $('#table_footer');
+            let addfee_Amount = $('#addfee_Amount');
             addfee_Amount.show();
             tableFooter.show();
 
@@ -549,6 +546,7 @@
         }
 
         function addFees() {
+
             $('#totalAmount').show();
             $('#total_text').show();
             var feeComponentId = $('#fee_components').val();
@@ -833,6 +831,7 @@
                         let status = response.status;
                         if (status == true) {
                             Swal.fire('', response.data, 'success');
+                            $("#feeComponentsTable").empty();
                         } else {
                             Swal.fire('', response.data, 'error');
                         }
@@ -875,7 +874,7 @@
                             addfee_Amount.hide();
                             tableFooter.hide();
                             tableBody.empty();
-                            
+
                             $.each(feeComponentsAppend, function(index, item) {
                                 let row = `<tr>
                             <td>${item.name}</td>
@@ -928,8 +927,12 @@
                         if (status == true) {
                             var data = response.data;
                             let tableBody = $('#feeComponentsTable');
+                            let tableFooter = $('#table_footer');
+                            let addfee_Amount = $('#addfee_Amount');
+                            addfee_Amount.hide();
+                            tableFooter.hide();
                             tableBody.empty();
-                            
+
                             let feeComponentsAppend = JSON.parse(data.fee_component);
 
                             $.each(feeComponentsAppend, function(index, item) {

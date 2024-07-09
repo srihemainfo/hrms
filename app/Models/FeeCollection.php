@@ -14,37 +14,25 @@ class FeeCollection extends Model
     public $table = 'fee_collection';
 
     protected $fillable = [
-        'user_name_id',
-        'enroll_master',
-        'year',
-        'fee_id',
-        'date',
-        'payment_mode',
-        'total_fee',
-        'total_paid',
-        'last_paid',
-        'total_paying',
-        'total_balance',
-        'tuition_last_paid',
-        'tuition_paid',
-        'tuition_paying',
-        'tuition_balance',
-        'hostel_last_paid',
-        'hostel_paid',
-        'hostel_paying',
-        'hostel_balance',
-        'other_last_paid',
-        'other_paid',
-        'other_paying',
-        'other_balance',
-        'sponser_amt',
-        'fg_deduction',
-        'hosteler',
+        'register_no',
+        'student_name',
+        'student_id',
+        'receipt_no',
+        'semester',
+        'total_amount',
+        'paid_amount',
+        'paid_date',
+        'settlement_date',
+        'fees_id',
+        'transaction_id',
+        'payment_type',
         'status',
-        'created_by',
+        'remarks',
+        'cron',
         'created_at',
         'updated_at',
         'deleted_at',
+
     ];
 
     public function EnrollMaster()
@@ -53,12 +41,20 @@ class FeeCollection extends Model
     }
     public function Student()
     {
-        return $this->belongsTo(Student::class,'user_name_id','user_name_id');
+        return $this->belongsTo(Student::class, 'user_name_id', 'user_name_id');
     }
-    public function Fee(){
+    public function Fee()
+    {
         return $this->belongsTo(FeeStructure::class, 'fee_id');
     }
-    public function AY(){
-        return $this->belongsTo(AcademicDetail::class,'user_name_id','user_name_id');
+    public function AY()
+    {
+        return $this->belongsTo(AcademicDetail::class, 'user_name_id', 'user_name_id');
     }
+
+    public function User()
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
+    }
+
 }
