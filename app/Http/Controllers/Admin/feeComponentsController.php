@@ -17,15 +17,15 @@ class feeComponentsController extends Controller
     {
         if ($request->ajax()) {
             $query = FeeComponents::query()
-                ->leftJoin('batches', 'batches.id', '=', 'fee_components.batch_id')
-                ->leftJoin('semesters', 'semesters.id', '=', 'fee_components.semester_id')
-                ->leftJoin('tools_courses', 'tools_courses.id', '=', 'fee_components.course_id')
+                // ->leftJoin('batches', 'batches.id', '=', 'fee_components.batch_id')
+                // ->leftJoin('semesters', 'semesters.id', '=', 'fee_components.semester_id')
+                // ->leftJoin('tools_courses', 'tools_courses.id', '=', 'fee_components.course_id')
                 ->whereNull('fee_components.deleted_at')
                 ->select([
                     'fee_components.*',
-                    'batches.name as batch',
-                    'tools_courses.short_form as course',
-                    'semesters.semester as sem',
+                    // 'batches.name as batch',
+                    // 'tools_courses.short_form as course',
+                    // 'semesters.semester as sem',
                 ]);
 
             $table = Datatables::of($query);
@@ -58,17 +58,17 @@ class feeComponentsController extends Controller
                 return $row->id ? $row->id : '';
             });
 
-            $table->editColumn('batch', function ($row) {
-                return $row->batch ? $row->batch : '';
-            });
+            // $table->editColumn('batch', function ($row) {
+            //     return $row->batch ? $row->batch : '';
+            // });
 
-            $table->editColumn('course', function ($row) {
-                return $row->course ? $row->course : '';
-            });
+            // $table->editColumn('course', function ($row) {
+            //     return $row->course ? $row->course : '';
+            // });
 
-            $table->editColumn('semester', function ($row) {
-                return $row->sem ? $row->sem : '';
-            });
+            // $table->editColumn('semester', function ($row) {
+            //     return $row->sem ? $row->sem : '';
+            // });
 
             $table->editColumn('name', function ($row) {
                 return $row->name ? $row->name : '';
@@ -77,11 +77,11 @@ class feeComponentsController extends Controller
             return $table->make(true);
         }
 
-        $course = ToolsCourse::pluck('short_form', 'id');
-        $batch = Batch::pluck('name', 'id');
-        $semester = Semester::pluck('semester', 'id');
+        // $course = ToolsCourse::pluck('short_form', 'id');
+        // $batch = Batch::pluck('name', 'id');
+        // $semester = Semester::pluck('semester', 'id');
 
-        return view('admin.feeComponents.index', compact('course', 'batch', 'semester'));
+        return view('admin.feeComponents.index');
     }
 
     public function store(Request $request)
@@ -89,20 +89,27 @@ class feeComponentsController extends Controller
 
         if (isset($request->fee_components)) {
             if ($request->id == '') {
-                $store = FeeComponents::create([
-                    'name' => $request->fee_components,
-                    'course_id' => $request->course,
-                    'batch_id' => $request->applied_batch,
-                    'semester_id' => $request->semester,
-
-                ]);
+                $check = FeeComponents::where(['name'=>$request->fee_components])->count();
+                if($check > 0)
+                {
+                    return response()->json(['status' => false, 'data' => 'Fees Components Already Exist']);
+                }
+                else
+                {
+                    $store = FeeComponents::create([
+                        'name' => $request->fee_components,
+                        // 'course_id' => $request->course,
+                        // 'batch_id' => $request->applied_batch,
+                        // 'semester_id' => $request->semester,
+                    ]);
+                }
                 return response()->json(['status' => true, 'data' => 'Fee Components Created']);
             } else {
                 $update = FeeComponents::where(['id' => $request->id])->update([
                     'name' => $request->fee_components,
-                    'course_id' => $request->course,
-                    'batch_id' => $request->applied_batch,
-                    'semester_id' => $request->semester,
+                    // 'course_id' => $request->course,
+                    // 'batch_id' => $request->applied_batch,
+                    // 'semester_id' => $request->semester,
                 ]);
                 return response()->json(['status' => true, 'data' => 'Fee Components Updated']);
             }
@@ -129,7 +136,8 @@ class feeComponentsController extends Controller
             $delete = FeeComponents::where(['id' => $request->id])->update([
                 'deleted_at' => Carbon::now(),
             ]);
-            return response()->json(['status' => 'success', 'data' => 'Fees Components Deleted Successfully']);
+            return response()->json(['status' => 'success', 'data' => 'Fee Components Deleted Successfully']);
+
         } else {
             return response()->json(['status' => 'error', 'data' => 'Technical Error']);
         }
