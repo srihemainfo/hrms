@@ -12,6 +12,7 @@ use App\Models\ExperienceDetail;
 use App\Models\NonTeachingStaff;
 use App\Models\PersonalDetail;
 use App\Models\Role;
+use App\Models\ShiftModel;
 use App\Models\Student;
 use App\Models\TeachingStaff;
 use App\Models\TeachingType;
@@ -110,8 +111,9 @@ class UsersController extends Controller
         $working_as = Role::pluck('title', 'id');
         $department = ToolsDepartment::pluck('name', 'id');
         $TeachingType = TeachingType::pluck('name', 'id');
+        $shift = ShiftModel::pluck('Name', 'id');
 
-        return view('admin.users.create', compact('roles', 'enroll_masters', 'working_as', 'department', 'TeachingType'));
+        return view('admin.users.create', compact('shift','roles', 'enroll_masters', 'working_as', 'department', 'TeachingType'));
     }
 
     public function store(Request $request)
@@ -170,6 +172,7 @@ class UsersController extends Controller
                     $staffCreate->StaffCode = $request->StaffCode;
                     $staffCreate->Designation = $request->Designation;
                     $staffCreate->Dept = $request->Dept;
+                    $staffCreate->shift_id = $request->shift;
                     $staffCreate->casual_leave = $casual_leave;
                     $staffCreate->personal_permission = $personal_permission;
                     $staffCreate->EmailIDOffical = $request->email;
@@ -245,6 +248,7 @@ class UsersController extends Controller
                     $student->student_email_id = $request->email;
                     $student->student_phone_no = $request->phone;
                     $student->register_no = $request->register_no;
+                    $student->shift_id = $request->shift;
                     $student->roll_no = $request->rollNumber;
                     $student->enroll_master_id = $request->enroll_master_id;
                     $student->user_name_id = $user->id;
@@ -303,7 +307,7 @@ class UsersController extends Controller
 
         if ($request->role_type == 1 || $request->role_type == 3) {
             $teach = TeachingStaff::where('user_name_id', $user->id)->get();
-            if (count($teach) <= 0) {
+            if (count($teach) <= 0) {         
 
                 $nonTeach = NonTeachingStaff::where('user_name_id', $user->id)->get();
 
@@ -332,6 +336,7 @@ class UsersController extends Controller
                     'Designation' => $designation,
                     'EmailIDOffical' => $request->input('email'),
                     'role_type' => $request->role_type,
+                    // 'shift_id' => $request->shift,
                 ]);
             }
         } elseif ($request->role_type == 2 || $request->role_type == 4 || $request->role_type == 5) {
@@ -375,6 +380,7 @@ class UsersController extends Controller
         if ($role->id == 11) {
             Student::where('user_name_id', $user->id)->update([
                 'student_email_id' => $request->input('email'),
+                // 'shift_id' => $request->input('shift'),
                 'updated_at' => Carbon::now(),
             ]);
         }

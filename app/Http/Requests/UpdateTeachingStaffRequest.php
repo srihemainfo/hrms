@@ -23,6 +23,9 @@ class UpdateTeachingStaffRequest extends FormRequest
                 'max:191',
                 'nullable',
             ],
+            'shift' => [
+                'nullable',
+            ],
             'StaffCode' => [
                 'string',
                 'min:1',

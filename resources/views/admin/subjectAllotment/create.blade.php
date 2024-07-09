@@ -120,7 +120,7 @@
                     </div>
                 </div>
             </form>
-            {{-- <form action="" id="professional_form" class="common" style="display: none">
+            <form action="" id="professional_form" class="common" style="display: none">
                 <div class="card">
                     <div class="card-header">
                         <div style="display:flex;justify-content:space-between">
@@ -224,7 +224,7 @@
                         </div>
                     </div>
                 </div>
-            </form> --}}
+            </form>
 
             <form action="" id="pg_professional_form" class="mba" style="display: none">
                 <div class="card">
@@ -681,17 +681,12 @@
         function save() {
 
             let array_len = subject_array.length;
-            console.log('array_len:' + array_len);
             let got_subject = $("#subject").val();
-            console.log('got_subject:' + got_subject);
-
             let new_subject = '';
-            // let selector = $("#decider").val() + '_limit';
+            let selector = $("#decider").val() + '_limit';
             let parent_table = $("#decider").val() + '-table';
             var added_subjects = $("#" + parent_table).children().length;
-            console.log('parent_table:' + parent_table);
-            console.log('added_subjects:' + added_subjects);
-            console.log($("#" + parent_table).children().length);
+            // console.log($("#" + parent_table).children().length);
             if (got_subject != '') {
                 for (let a = 0; a < array_len; a++) {
                     if (got_subject == subject_array[a].id) {
@@ -710,8 +705,9 @@
                 let option = `<option value="${added_subjects + 1}">${added_subjects + 1}</option>`;
 
                 $("#" + parent_table).append(new_datas);
-                console.log(new_datas);
-                // $("#" + selector).append(option);
+                console.log(selector);
+                console.log(option);
+                $("#" + selector).append(option);
             }
             $('#exampleModal').modal("hide");
         }
@@ -735,10 +731,10 @@
             } else {
                 console.log($('#department_id').val());
                 form_1 = $("#regular_form").serializeArray();
-                // form_2 = $("#professional_form").serializeArray();
-                // form_3 = $("#open_elec_form").serializeArray();
-                // form_4 = $("#others_form").serializeArray();
-                // form_5 = '';
+                form_2 = $("#professional_form").serializeArray();
+                form_3 = $("#open_elec_form").serializeArray();
+                form_4 = $("#others_form").serializeArray();
+                form_5 = '';
             }
 
             let reg = $("#regulation_id").val();

@@ -36,6 +36,23 @@
                     @endif
 
                 </div>
+                @if ($shift)
+                    <div class="form-group">
+                        <label class="" for="shift">{{ 'Shift' }}</label>
+                        <select class="form-control select2 {{ $errors->has('shift') ? 'is-invalid' : '' }} "
+                            name="shift" id="shift">
+                            <option value="">Select Shift</option>
+                            @foreach ($shift as $id => $entry)
+                                <option value="{{ $id }}" {{ old('shift') == $id ? 'selected' : '' }}>
+                                    {{ $entry }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('shift'))
+                            <span class="text-danger">{{ $errors->first('shift') }}</span>
+                        @endif
+                    </div>
+                @endif
                 <div class="form-group">
                     <label class="required" for="roll_no">{{ 'Roll Number ' }}</label>
                     <input class="form-control {{ $errors->has('roll_no') ? 'is-invalid' : '' }}" type="number"

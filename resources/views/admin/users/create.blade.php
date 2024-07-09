@@ -87,6 +87,26 @@
                         <span class="text-danger">{{ $errors->first('Dept') }}</span>
                     @endif
                 </div>
+                @if ($shift)
+                    <div class="form-group shift" style="display: none">
+                        <label class="" for="shift">{{ 'Shift' }}</label>
+                        {{-- <input class="form-control" type="text" id="shift" name="shift" value=""> --}}
+                        <select class="form-control select2 {{ $errors->has('shift') ? 'is-invalid' : '' }} " name="shift"
+                            id="shift">
+                            <option value="">Select Shift</option>
+                            @foreach ($shift as $id => $entry)
+                                <option value="{{ $id }}" {{ old('shift') == $id ? 'selected' : '' }}>
+                                    {{ $entry }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @if ($errors->has('shift'))
+                            <span class="text-danger">{{ $errors->first('shift') }}</span>
+                        @endif
+                    </div>
+                @endif
+
+
                 <div class="form-group staff" style="display: none">
                     <label class="" for="Designation">{{ 'Designation' }}</label>
                     <input class="form-control" type="text" id="Designation" name="Designation" value="">
@@ -210,6 +230,7 @@
 
                 $("#Designation").val(role);
                 $(".staff").show();
+                $(".shift").show();
                 $(".dept").show();
                 $(".doj").show();
                 let dept = $('#Dept')
@@ -231,6 +252,7 @@
                     $("#Designation").val(role);
                     $(".staff").show();
                     $(".dept").show();
+                    $(".shift").hide();
                     $(".doj").show();
                     let dept1 = $('#Dept')
                     dept1.empty()
@@ -251,6 +273,7 @@
                     $(".staff").show();
                     $(".dept").show();
                     $(".doj").show();
+                    $(".shift").hide();
                     let dept2 = $('#Dept')
                     dept2.empty()
                     $(depart).each(function(index, data) {
@@ -269,6 +292,7 @@
                     if (roleValue == 60) {
                         $("#Designation").val(role);
                         $(".staff").show();
+                        $(".shift").hide();
                         $(".dept").hide();
                         $(".doj").show();
                         // let dept3 = $('#Dept')
@@ -286,6 +310,7 @@
                     } else {
                         $("#Designation").val(role);
                         $(".staff").show();
+                        $(".shift").hide();
                         $(".dept").show();
                         $(".doj").show();
                         let dept3 = $('#Dept')
@@ -308,11 +333,13 @@
                     $('.main').hide();
                     $(".dept").hide();
                     $(".doj").hide();
+                    $(".shift").show();
                     $('.phone').show();
                     $('#namefull').hide();
                     $('.studentDiv').show();
                 } else {
                     $('#namefull').show();
+                    $(".shift").hide();
                     $('.main').show();
                     $(".staff").hide();
                     $('.phone').hide();
@@ -407,6 +434,7 @@
             let enroll_master_id = $('#enroll_master_id').val()
             let rollNumber = $('#rollNumber').val()
             let phone = $('#phone').val()
+            let shift = $('#shift').val()
 
             var data = ''
             if (role_type != '' && role != '') {
@@ -417,6 +445,7 @@
                         'firstname': firstname,
                         'last_name': last_name,
                         'Dept': Dept,
+                        'shift': shift,
                         'doj': doj,
                         'Designation': Designation,
                         'StaffCode': StaffCode,
@@ -432,6 +461,7 @@
                         data = {
                             'name': name,
                             'email': email,
+                            'shift': shift,
                             'register_no': register_no,
                             'enroll_master_id': enroll_master_id,
                             'rollNumber': rollNumber,

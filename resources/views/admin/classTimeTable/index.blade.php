@@ -111,6 +111,7 @@
                     <tr>
                         <th>S.No</th>
                         <th>Class Name</th>
+                        <th>Shift</th>
                         <th>Created By</th>
                         <th>With Effect From</th>
                         <th>Version</th>
@@ -141,6 +142,10 @@
                                             {{ $entry }}
                                         @endif
                                     @endforeach
+                                </td>
+                                <td>
+                                    {{ $data[0]->shift ? $data[0]->shift->Name : '' }}
+                                    
                                 </td>
                                 <td>
                                     @if ($user)
@@ -573,18 +578,20 @@
                         allFilled = false;
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status) {
-                        if (jqXHR.status == 500) {
-                            Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
+                        if (jqXHR.status) {
+                            if (jqXHR.status == 500) {
+                                Swal.fire('', 'Request Timeout / Internal Server Error',
+                                    'error');
+                            } else {
+                                Swal.fire('', jqXHR.status, 'error');
+                            }
+                        } else if (textStatus) {
+                            Swal.fire('', textStatus, 'error');
                         } else {
-                            Swal.fire('', jqXHR.status, 'error');
+                            Swal.fire('', 'Request Failed With Status: ' + jqXHR.statusText,
+                                "error");
                         }
-                    } else if (textStatus) {
-                        Swal.fire('', textStatus, 'error');
-                    } else {
-                        Swal.fire('', 'Request Failed With Status: ' + jqXHR.statusText, "error");
                     }
-                }
                 });
             });
         });

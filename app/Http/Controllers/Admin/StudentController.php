@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\ShiftModel;
 use Gate;
 use App\Models\Iv;
 use Carbon\Carbon;
@@ -75,7 +76,7 @@ class StudentController extends Controller
                                 if ($department->id != 5) {
                                     $courses = ToolsCourse::where('department_id', $department->id)->get();
                                     if ($courses->isNotEmpty()) {
-                                        $query = Student::with(['enroll_master'])
+                                        $query = Student::with(['enroll_master', 'shift'])
                                             ->whereIn('admitted_course', $courses->pluck('name'))
                                             ->get();
                                         if ($query->isEmpty()) {
@@ -121,10 +122,11 @@ class StudentController extends Controller
                             session()->flash('error', 'User department not found.');
                         }
                     } else {
-                        $query = Student::with(['enroll_master'])->get();
+                        $query = Student::with(['enroll_master', 'shift'])->get();
                     }
                 }
             }
+            // dd($query);
 
             $table = DataTables::of($query);
 
@@ -156,6 +158,9 @@ class StudentController extends Controller
 
             $table->editColumn('register_no', function ($row) {
                 return $row->register_no ?? '';
+            });
+            $table->editColumn('shift', function ($row) {
+                return $row->shift ? $row->shift->Name : '';
             });
 
             $table->addColumn('Course', function ($row) {
@@ -322,8 +327,9 @@ class StudentController extends Controller
         abort_if(Gate::denies('student_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $enroll_masters = CourseEnrollMaster::pluck('enroll_master_number', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $shift = ShiftModel::pluck('Name', 'id');
 
-        return view('admin.students.create', compact('enroll_masters'));
+        return view('admin.students.create', compact('enroll_masters', 'shift'));
     }
 
     public function store(StoreStudentRequest $request)
@@ -335,6 +341,7 @@ class StudentController extends Controller
             'phone' => ['required', 'digits:10'],
             'register_no' => 'required',
             'roll_no' => 'required',
+            'shift' => 'nullable',
         ]);
 
         if ($validator->fails()) {
@@ -379,6 +386,7 @@ class StudentController extends Controller
         $studentcreate->register_no = $request->input('register_no');
         $studentcreate->roll_no = $request->input('roll_no');
         $studentcreate->enroll_master_id = $enroll;
+        $studentcreate->shift_id = $request->input('shift');
         $studentcreate->user_name_id = $user->id;
         $studentcreate->save();
 
@@ -391,6 +399,7 @@ class StudentController extends Controller
 
         $academic_details = new AcademicDetail();
         $academic_details->user_name_id = $user->id;
+        $academic_details->shift_id = $request->input('shift');
         $academic_details->register_number = $request->input('register_no');
         $academic_details->roll_no = $request->input('roll_no');
         $academic_details->save();
@@ -622,7 +631,7 @@ class StudentController extends Controller
                 $address_list = $address_details;
             }
             $admitted_courses = ToolsCourse::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-            $academic_details = AcademicDetail::with(['enroll_master_number','scholarDetail'])->where(['user_name_id' => $user_name_id])->get();
+            $academic_details = AcademicDetail::with(['enroll_master_number', 'scholarDetail', 'shift'])->where(['user_name_id' => $user_name_id])->get();
 
             if ($academic_details->count() <= 0) {
                 $academic_list = [];

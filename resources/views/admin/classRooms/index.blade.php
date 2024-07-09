@@ -111,7 +111,7 @@
                                 id="sem" required>
                                 <option value="">Select Sem</option>
                                 @foreach ($Semester as $id => $sem)
-                                    <option value="{{ $sem }}" {{ old('id') == $id ? 'selected' : '' }}>
+                                    <option value="{{ $id }}" {{ old('id') == $id ? 'selected' : '' }}>
                                         {{ $sem }}</option>
                                 @endforeach
                             </select>

@@ -467,7 +467,7 @@
                         </div>
                     </div>
                 </form>
-                {{-- <form action="" id="professional_form" class="common">
+                <form action="" id="professional_form" class="common">
                     <div class="card">
                         <div class="card-header">
                             <div style="display:flex;justify-content:space-between">
@@ -664,7 +664,7 @@
                             </div>
                         </div>
                     </div>
-                </form> --}}
+                </form>
             @endif
 
             <div style="text-align:right;">

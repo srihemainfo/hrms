@@ -24,6 +24,7 @@ class TeachingStaff extends Model
     protected $fillable = [
         'name',
         'last_name',
+        'shift_id',
         'subject_id',
         'enroll_master_id',
         'working_as_id',
@@ -86,6 +87,10 @@ class TeachingStaff extends Model
     public function subject()
     {
         return $this->belongsTo(Subject::class, 'subject_id');
+    }
+    public function shift()
+    {
+        return $this->belongsTo(ShiftModel::class, 'shift_id');
     }
 
     public function enroll_master()

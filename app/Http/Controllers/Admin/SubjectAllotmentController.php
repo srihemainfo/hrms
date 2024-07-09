@@ -216,6 +216,8 @@ class SubjectAllotmentController extends Controller
                 }
             }
             return response()->json(['status' => true]);
+        } else {
+            return response()->json(['status' => true, 'data' => 'Required Data is Empty.']);
         }
         // return redirect()->route('admin.subjects.index');
     }
@@ -463,7 +465,7 @@ class SubjectAllotmentController extends Controller
                     $update->delete();
                 }
             }
-            return response()->json(['status' => true, 'data'=> 'Subject Allotement Updated.']);
+            return response()->json(['status' => true, 'data' => 'Subject Allotement Updated.']);
         }
         // return redirect()->route('admin.subjects.index');
     }

@@ -11,6 +11,8 @@ use App\Models\CollegeCalender;
 use App\Models\CourseEnrollMaster;
 use App\Models\NonTeachingStaff;
 use App\Models\Section;
+use App\Models\Semester;
+use App\Models\ShiftModel;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Models\SubjectAllotment;
@@ -27,7 +29,7 @@ use Illuminate\Support\Facades\Session;
 class ClassTimeTableController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $user_id = auth()->user()->id;
 
@@ -67,18 +69,18 @@ class ClassTimeTableController extends Controller
         if (!empty($toolsDept)) {
             if ($toolsDept->id != 5) {
                 $get_course = ToolsCourse::where(['department_id' => $toolsDept->id])->pluck('short_form', 'name');
-                $semester = [3, 4, 5, 6, 7, 8];
+                $semester = Semester::skip(2)->pluck('id', 'id')->toArray();
                 $who = 'HOD';
 
             } else {
                 $get_course = ToolsCourse::pluck('short_form', 'name');
                 $who = 'SHOD';
-                $semester = [1, 2];
+                $semester = Semester::take(2)->pluck('id', 'id')->toArray();
             }
         } else {
             $get_course = ToolsCourse::pluck('short_form', 'name');
             $who = 'ADMIN';
-            $semester = [1, 2, 3, 4, 5, 6, 7, 8];
+            $semester = Semester::pluck('id', 'id')->toArray();
         }
         $theEnrolls = [];
         if (count($get_course) > 0) {
@@ -136,8 +138,8 @@ class ClassTimeTableController extends Controller
             }
         }
 
-        $check_tables = ClasstimetableOne::whereIn('class_name', $currentClasses)->orderBy('updated_at', 'desc')->get()->groupBy('class_name')->sortByDesc('updated_at');
-
+        $check_tables = ClasstimetableOne::with('shift')->whereIn('class_name', $currentClasses)->orderBy('updated_at', 'desc')->get()->groupBy('class_name')->sortByDesc('updated_at');
+        // dd($check_tables[1052]);
         if ($role == 15 || $role == 1 || $role == 43) {
 
             if (count($check_tables) > 0) {
@@ -257,7 +259,7 @@ class ClassTimeTableController extends Controller
         return view('admin.classTimeTable.versionShow', compact('class', 'class_name', 'class_id'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $user_name_id = auth()->user()->id;
         $get_dept = TeachingStaff::where(['user_name_id' => $user_name_id])->first();
@@ -308,7 +310,9 @@ class ClassTimeTableController extends Controller
             }
         }
 
-        return view('admin.classTimeTable.create', compact('course', 'academic_years', 'semester', 'teaching_staffs'));
+        $shift = ShiftModel::pluck('Name', 'id');
+
+        return view('admin.classTimeTable.create', compact('course', 'academic_years', 'semester', 'teaching_staffs', 'shift'));
     }
 
     public function getStaffAndSubject(Request $request)
@@ -337,11 +341,13 @@ class ClassTimeTableController extends Controller
 
     public function store(Request $request)
     {
+        // dd($request);
         if (isset($request->data) && isset($request->class) && $request->class != '') {
 
             $check = ClassTimeTableOne::where(['class_name' => $request->class])->get();
 
             $class = $request->class;
+            $shift = $request->shift ?? null;
             $datas = $request->data;
 
             if (!$check->count() > 0) {
@@ -349,6 +355,7 @@ class ClassTimeTableController extends Controller
                 foreach ($datas as $data) {
                     $insert = ClassTimeTableOne::create([
                         'class_name' => $class,
+                        'shift_id' => $shift,
                         'day' => $data[0]['value'],
                         'period' => $data[2]['value'],
                         'subject' => $data[3]['value'],
@@ -669,6 +676,7 @@ class ClassTimeTableController extends Controller
 
     public function check(Request $request)
     {
+        // dd($request);
         if ($request->data) {
             $currentClasses = Session::get('currentClasses');
             $check_1 = ClassTimeTableTwo::whereIn('class_name', $currentClasses)->where(['period' => $request->data['column'], 'day' => $request->data['day'], 'staff' => $request->data['selected_staff']])->whereNotIn('subject', [$request->data['subject']])->where('status', '!=', 2)->get();
@@ -687,19 +695,24 @@ class ClassTimeTableController extends Controller
 
     public function subjects(Request $request)
     {
-
+        // dd($request);
         if ($request->course != '' && $request->ay != '' && $request->semester != '' && $request->section != '') {
             $subjects = [];
-            $get_course = ToolsCourse::where(['id' => $request->course])->first();
+            $get_course = ToolsCourse::where(['id' => $request->course, 'shift_id' => $request->shift])->orWhere(['id' => $request->course])->first();
+            // $get_course = ToolsCourse::where(['id' => $request->course,'shift_id' => null])->first();
             $get_ay = AcademicYear::where(['id' => $request->ay])->first();
-
+            // dd($request->shift);
             $sem_type = $batch = $got_department = null;
 
-            if ($request->semester == '1' || $request->semester == '3' || $request->semester == '5' || $request->semester == '7') {
-                $sem_type = "ODD";
-            } else {
+            if (intval($request->semester) % 2 == 0) {
                 $sem_type = "EVEN";
+            } else {
+                $sem_type = "ODD";
             }
+
+            // if ($request->semester == '1' || $request->semester == '3' || $request->semester == '5' || $request->semester == '7') {
+            // } else {
+            // }
 
             if ($request->semester == '1' || $request->semester == '2') {
                 $batch = '01';
@@ -710,7 +723,7 @@ class ClassTimeTableController extends Controller
             } else if ($request->semester == '7' || $request->semester == '8') {
                 $batch = '04';
             }
-
+            // dd($get_course);
             if ($get_course != '') {
                 $got_course = $get_course->name;
                 $got_department = $get_course->department_id;
@@ -719,15 +732,18 @@ class ClassTimeTableController extends Controller
                 $got_ay = $get_ay->name;
             }
             $check_calendar = CollegeCalender::where(['academic_year' => $got_ay, 'semester_type' => $sem_type, 'batch' => $batch])->get();
+            // dd($check_calendar);
             if (!count($check_calendar) > 0) {
                 return response()->json(['subjects' => 'Calendar Fail', 'class_name' => null]);
             }
             $class = $got_course . '/' . $got_ay . '/' . $request->semester . '/' . $request->section;
 
             $get_enroll = CourseEnrollMaster::where('enroll_master_number', 'like', "%{$class}")->first();
+            // dd($class);
             $class_name = null;
             if (!empty($get_enroll)) {
                 $check_class = ClassRoom::where(['name' => $get_enroll->id])->get();
+                // dd($check_class);
 
                 if (!count($check_class) > 0) {
 
@@ -736,6 +752,7 @@ class ClassTimeTableController extends Controller
 
                 $class_name = $get_enroll->id;
                 $check_class_time_table = ClasstimetableOne::where(['class_name' => $get_enroll->id])->get();
+                // dd($check_class_time_table);
                 if (count($check_class_time_table) > 0) {
                     return response()->json(['subjects' => 'Fail', 'class_name' => $class_name]);
                 } else {
@@ -743,7 +760,7 @@ class ClassTimeTableController extends Controller
                         $got_department = 5; // S & H Department
                     }
                     $get_subjects = SubjectAllotment::where(['department' => $got_department, 'semester' => $request->semester, 'course' => $request->course, 'academic_year' => $request->ay])->get();
-
+                    // dd($get_subjects);
                     if (count($get_subjects) > 0) {
                         foreach ($get_subjects as $subject) {
                             $got_subject = Subject::where(['id' => $subject->subject_id])->first();
@@ -967,7 +984,7 @@ class ClassTimeTableController extends Controller
 
     public function getSections(Request $request)
     {
-
+        // dd($request);
         $get_section = [];
         if ($request->course_id != '') {
             $check_input = is_numeric($request->course_id);
@@ -982,5 +999,28 @@ class ClassTimeTableController extends Controller
             }
         }
         return response()->json(['data' => $get_section]);
+    }
+
+    public function getCourse(Request $request)
+    {
+        if ($request->shift) {
+            $data = ToolsCourse::where('shift_id', $request->shift)->pluck('short_form', 'id');
+            // $staff = TeachingStaff::where('shift_id', $request->shift)->pluck('short_form', 'id');
+            $shift = $request->shift;
+            $staff = TeachingStaff::with('personal_details:user_name_id,employment_status')
+                ->where(function ($query) use ($shift) {
+                    $query->where('shift_id', $shift)
+                        ->orWhereNull('shift_id');
+                })
+                ->select('user_name_id', 'name', 'StaffCode')
+                ->get();
+
+            // dd($staff);
+            if ($data) {
+                return response()->json(['status' => true, 'data' => $data, 'staff' => $staff]);
+            } else {
+                return response()->json(['status' => false, 'data' => 'Course Not found.']);
+            }
+        }
     }
 }
