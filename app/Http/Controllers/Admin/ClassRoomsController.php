@@ -159,7 +159,7 @@ class ClassRoomsController extends Controller
     {
         if ($request->id != '') {
             $check = ClassRoom::where(['id' => $request->id])->exists();
-            // dd('hii');
+            // dd($request);
             if ($check == true) {
                 $update = ClassRoom::where(['id' => $request->id])->update([
                     'class_incharge' => $request->incharge,
@@ -169,7 +169,8 @@ class ClassRoomsController extends Controller
                 return response()->json(['error' => false, 'data' => 'Tecnical Error']);
             }
         } else {
-            $get_enroll = CourseEnrollMaster::where(['batch_id' => $request->batch, 'course_id' => $request->course, 'academic_id' => $request->ay, 'semester' => $request->sem, 'section' => $request->sec])->select('id')->first();
+            $get_enroll = CourseEnrollMaster::where(['batch_id' => $request->batch, 'course_id' => $request->course, 'academic_id' => $request->ay, 'semester_id' => $request->sem, 'section' => $request->sec])->select('id')->first();
+            // dd($get_enroll);
             if ($get_enroll != null) {
                 $classRoom = new ClassRoom;
                 $class = $classRoom->where('name', $get_enroll->id)->orWhere('class_incharge', $request->incharge)->exists();

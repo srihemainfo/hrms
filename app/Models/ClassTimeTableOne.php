@@ -27,6 +27,7 @@ class ClassTimeTableOne extends Model
         'period',
         'subject',
         'staff',
+        'shift_id',
         'status',
         'rejected_reason',
         'day_order',
@@ -59,6 +60,10 @@ class ClassTimeTableOne extends Model
     public function non_tech_staffs()
     {
         return $this->belongsTo(NonTeachingStaff::class,'staff', 'user_name_id');
+    }
+    public function shift()
+    {
+        return $this->belongsTo(ShiftModel::class, 'shift_id');
     }
 
     public function subjects()

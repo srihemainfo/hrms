@@ -26,6 +26,7 @@ class Student extends Model
         'Roll_No',
         'Register_No',
         'Admitted_Mode',
+        'shift_id',
         'Batch',
         'Admitted_Course',
         'Academic_Year',
@@ -186,6 +187,10 @@ class Student extends Model
     public function enroll_master()
     {
         return $this->belongsTo(CourseEnrollMaster::class, 'enroll_master_id');
+    }
+    public function shift()
+    {
+        return $this->belongsTo(ShiftModel::class, 'shift_id');
     }
 
     public function subjectRegistrations()

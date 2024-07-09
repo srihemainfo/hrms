@@ -83,6 +83,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
         return view('layouts.admin');
     })->name('master-tools');
 
+    Route::get('mail', 'sampleMail@index')->name('mail.index');
+    Route::post('mail/send', 'sampleMail@send')->name('mail.send');
+    // Route::get('mail', 'sampleMail@index')->name('mail.index');
+
     // Audit Logs
     Route::resource('audit-logs', 'AuditLogsController', ['except' => ['create', 'store', 'edit', 'update', 'destroy']]);
 
@@ -457,6 +461,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('class-time-table/store_allot_students', 'ClassTimeTableController@storeAllotStudents')->name('class-time-table.store_allot_students');
     Route::post('class-time-table/get_alloted_students', 'ClassTimeTableController@getAllotStudents')->name('class-time-table.get_alloted_students');
     Route::post('get_all_section', 'ClassTimeTableController@getSections')->name('get_all_section');
+    Route::post('class-time-table/get-course', 'ClassTimeTableController@getCourse')->name('class-time-table.get-course');
     Route::get('remove-unwanted-allotedBatch', 'ClassTimeTableController@removeUnwantedAllot')->name('remove-unwanted-allotedBatch');
 
     // Staff Time Table

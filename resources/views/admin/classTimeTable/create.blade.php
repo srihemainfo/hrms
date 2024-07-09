@@ -43,9 +43,25 @@
     <div class="card">
         <div class="card-body">
             <div class="row cutters">
-                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
+                @if ($shift)
+                    <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <b for="shift" class="required">Shift</b>
+                            <select class="form-control select2" name="shift" id="shift" onchange="get_course(this)">
+                                <option value="">Select Shift</option>
+                                @foreach ($shift as $id => $entry)
+                                    <option value="{{ $id }}">{{ $entry }}</option>
+                                @endforeach
+
+                            </select>
+
+                        </div>
+                    </div>
+                @endif
+
+                <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-12">
                     <div class="form-group">
-                        <b for="course" class="required"> Course</b>
+                        <b for="course" class="required">Course</b>
                         <select class="form-control select2" name="course" id="course" onchange="get_section(this)">
                             @if (count($course) > 0)
                                 @foreach ($course as $id => $entry)
@@ -66,7 +82,6 @@
                                 <option value="{{ $id }}">{{ $entry }}</option>
                             @endforeach
                         </select>
-
                     </div>
                 </div>
                 <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12">
@@ -98,7 +113,8 @@
                     <div class="form-group" style="padding-top: 1.5rem;">
                         <button type="submit" id="submit" name="submit" class="enroll_generate_bn"
                             onclick="go()">Go</button>
-                            <span id="loadig_spin" style="display:none;font-weight:bold;" class="text-success">Processing...</span>
+                        <span id="loadig_spin" style="display:none;font-weight:bold;"
+                            class="text-success">Processing...</span>
                     </div>
                 </div>
             </div>
@@ -619,7 +635,8 @@
                     <div class="text-right" style="padding-top:1rem;">
                         <button type="submit" id="submit" name="submit" class="btn btn-primary"
                             onclick="submit()">Submit</button>
-                        <span id="submit_span" style="display:none;font-weight:bold;" class="text-success">Processing;...</span>
+                        <span id="submit_span" style="display:none;font-weight:bold;"
+                            class="text-success">Processing;...</span>
                     </div>
                 </div>
             </div>
@@ -860,15 +877,15 @@
 
                         if (response.subjects == 'Calendar Fail') {
 
-                            Swal.fire('','The Calendar Not Created Yet...','error');
+                            Swal.fire('', 'The Calendar Not Created Yet...', 'error');
 
                         } else if (response.subjects == 'Class Fail') {
 
-                            Swal.fire('','The Class Not Allocated Yet...','error');
+                            Swal.fire('', 'The Class Not Allocated Yet...', 'error');
 
                         } else if (response.subjects == 'Fail') {
 
-                            Swal.fire('','The Class Time Table Already Created','error');
+                            Swal.fire('', 'The Class Time Table Already Created', 'error');
 
                         } else {
 
@@ -915,7 +932,7 @@
                 // console.log(semester, course)
 
             } else {
-                Swal.fire('','Please Provide the Required Datas..','error');
+                Swal.fire('', 'Please Provide the Required Datas..', 'error');
             }
         }
 
@@ -963,6 +980,63 @@
             $("#selector").val('');
             $("select").select2();
             $("#periodModal").modal();
+        }
+
+        function get_course(element) {
+            if ($('#shift').val() != '') {
+                $('#course').html(`<option value="">Loading...</option>`)
+                $.ajax({
+                    url: "{{ route('admin.class-time-table.get-course') }}",
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'shift': $('#shift').val()
+                    },
+                    success: function(response) {
+                        let status = response.status;
+                        let data = response.data;
+                        let staff = response.staff;
+                        if (status == true) {
+                            let course = $('#course').empty()
+                            let staff_selecter = $('#staff_selecter').empty()
+                            course.prepend(`<option value="">Select Course</option>`)
+                            staff_selecter.prepend(`<option value="">Select Staff</option>`)
+                            $.each(data, function(index, value) {
+                                course.append(`<option value="${index}">${value}</option>`)
+                            })
+
+                            $.each(staff, function(index, value) {
+                                staff_selecter.append(
+                                    `<option value="${value.user_name_id}">${value.name}(${value.StaffCode})</option>`
+                                )
+                            })
+                        } else {
+                            Swal.fire('', data, 'error');
+                            let course = $('#course').empty()
+                            course.prepend(`<option value="">No Data.</option>`)
+                            staff_selecter.prepend(`<option value="">No Data.</option>`)
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status) {
+                            if (jqXHR.status == 500) {
+                                Swal.fire('', 'Request Timeout / Internal Server Error',
+                                    'error');
+                            } else {
+                                Swal.fire('', jqXHR.status, 'error');
+                            }
+                        } else if (textStatus) {
+                            Swal.fire('', textStatus, 'error');
+                        } else {
+                            Swal.fire('', 'Request Failed With Status: ' + jqXHR.statusText,
+                                "error");
+                        }
+                    }
+                })
+            }
+
         }
 
 
@@ -1174,7 +1248,7 @@
                             $("#periodModal").modal('hide');
 
                         } else {
-                            Swal.fire('','Technical Error','error');
+                            Swal.fire('', 'Technical Error', 'error');
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -1197,6 +1271,7 @@
 
         function submit() {
             let class_name = $("#class_name").val();
+            let shift = $("#shift").val();
             let form_len = $('.period_form').length;
             let forms = $(".period_form");
 
@@ -1219,12 +1294,13 @@
                     },
                     data: {
                         'class': class_name,
+                        'shift': shift,
                         'data': form_data
                     },
                     success: function(response) {
                         // console.log(response)
                         if (response.status) {
-                            Swal.fire('','Class Time Table Submitted For Approval','success');
+                            Swal.fire('', 'Class Time Table Submitted For Approval', 'success');
 
                             $("#loadig_spin").hide();
                             $("#submit").show();
@@ -1242,18 +1318,18 @@
                         }
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.status) {
-                        if (jqXHR.status == 500) {
-                            Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
+                        if (jqXHR.status) {
+                            if (jqXHR.status == 500) {
+                                Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
+                            } else {
+                                Swal.fire('', jqXHR.status, 'error');
+                            }
+                        } else if (textStatus) {
+                            Swal.fire('', textStatus, 'error');
                         } else {
-                            Swal.fire('', jqXHR.status, 'error');
+                            Swal.fire('', 'Request Failed With Status: ' + jqXHR.statusText, "error");
                         }
-                    } else if (textStatus) {
-                        Swal.fire('', textStatus, 'error');
-                    } else {
-                        Swal.fire('', 'Request Failed With Status: ' + jqXHR.statusText, "error");
                     }
-                }
                 })
             }
 

@@ -34,6 +34,23 @@
                                             value="{{ old('roll_no', $student->roll_no) }}">
                                     </div>
                                 </div>
+                                @if ($shift)
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="shift">Shift</label>
+                                            <select class="form-control select2" name="shift" id="shift">
+                                                <option value="">Select Shift</option>
+                                                @foreach ($shift as $id => $item)
+                                                    {{-- <option value="{{ $id }}">{{ $item }}</option> --}}
+                                                    <option value="{{ $id }}"
+                                                        {{ $student->shift_id == $id ? 'selected' : '' }}>
+                                                        {{ $item }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                @endif
+
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="emis_number">Emis Number</label>
@@ -81,7 +98,8 @@
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="scholarship">Scholarship</label>
-                                        <select name="scholarship" id="scholarship" class="form-control select2" onchange="checkScholar(this)">
+                                        <select name="scholarship" id="scholarship" class="form-control select2"
+                                            onchange="checkScholar(this)">
                                             <option value="0"
                                                 {{ $student->scholarship == '0' ? 'selected' : '' }}>No
                                             </option>
@@ -91,14 +109,17 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="scholarshipDiv" style="display:{{ $student->scholarship == '1' ? 'block':'none' }};">
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="scholarshipDiv"
+                                    style="display:{{ $student->scholarship == '1' ? 'block' : 'none' }};">
                                     <div class="form-group">
                                         <label for="scholarship_name" class="required">Scholarship Name</label>
                                         <select name="scholarship_name" id="scholarship_name"
                                             class="form-control select2">
                                             <option value="">Select Scholarship</option>
                                             @foreach ($student->scholarships as $scholarship)
-                                                <option value="{{ $scholarship->id }}" {{ $student->scholarship_name == $scholarship->id ? 'selected':'' }}>{{ $scholarship->name }}</option>
+                                                <option value="{{ $scholarship->id }}"
+                                                    {{ $student->scholarship_name == $scholarship->id ? 'selected' : '' }}>
+                                                    {{ $scholarship->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -119,10 +140,12 @@
                                     <div class="form-group">
                                         <label for="late_entry">Late Entry</label>
                                         <select name="late_entry" id="late_entry" class="form-control select2">
-                                            <option value="0" {{ $student->late_entry == '0' ? 'selected' : '' }}>
+                                            <option value="0"
+                                                {{ $student->late_entry == '0' ? 'selected' : '' }}>
                                                 No
                                             </option>
-                                            <option value="1" {{ $student->late_entry == '1' ? 'selected' : '' }}>
+                                            <option value="1"
+                                                {{ $student->late_entry == '1' ? 'selected' : '' }}>
                                                 Yes
                                             </option>
                                         </select>
@@ -284,7 +307,8 @@
                                 <div class="form-group">
                                     <label for="scholarship_name">Scholarship Name</label>
                                     <input type="text" class="form-control" name="scholarship_name"
-                                        value="{{ $student->scholarDetail != null ? $student->scholarDetail->name : '' }}" readonly>
+                                        value="{{ $student->scholarDetail != null ? $student->scholarDetail->name : '' }}"
+                                        readonly>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">

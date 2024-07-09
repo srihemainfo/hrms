@@ -15,6 +15,7 @@ use App\Models\NonTeachingStaff;
 use App\Models\Scholarship;
 use App\Models\Section;
 use App\Models\Semester;
+use App\Models\ShiftModel;
 use App\Models\Student;
 use App\Models\TeachingStaff;
 use App\Models\ToolsCourse;
@@ -91,6 +92,7 @@ class AcademicDetailsController extends Controller
         $Batch = Batch::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $AcademicYear = AcademicYear::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $Semester = Semester::pluck('semester', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $shift = ShiftModel::pluck('Name', 'id');
         $Section = Section::pluck('section', 'id')->prepend(trans('global.pleaseSelect'), '')->unique();
         $stu_main = Student::where(['user_name_id' => $request->user_name_id])->first();
         $scholarships = Scholarship::select('name', 'id')->get();
@@ -183,7 +185,7 @@ class AcademicDetailsController extends Controller
 
         }
         $check = 'academic_details';
-        return view('admin.StudentProfile.student', compact('student', 'check'));
+        return view('admin.StudentProfile.student', compact('student', 'check', 'shift'));
     }
 
     public function stu_update(UpdateAcademicDetailRequest $request, AcademicDetail $academicDetail)
@@ -215,6 +217,7 @@ class AcademicDetailsController extends Controller
             'enroll_master_number_id' => $enrollMasterId,
             'register_number' => $request->register_number,
             'emis_number' => $request->emis_number,
+            'shift_id' => $request->shift,
             'admitted_mode' => $request->admitted_mode,
             'first_graduate' => $request->first_graduate ?? '0',
             'scholarship' => $request->scholarship ?? '0',
@@ -227,6 +230,7 @@ class AcademicDetailsController extends Controller
         $stu_update = Student::where('user_name_id', $request->user_name_id)->update([
             'enroll_master_id' => $enrollMasterId,
             'register_no' => $request->register_number,
+            'shift_id' => $request->shift,
             'roll_no' => $request->roll_no,
             'student_batch' => $request->batch,
             'admitted_course' => $request->admitted_course,
@@ -248,6 +252,7 @@ class AcademicDetailsController extends Controller
             $stu_academic->admitted_mode = $request->admitted_mode;
             $stu_academic->admitted_course = $request->admitted_course;
             $stu_academic->batch = $request->batch;
+            $stu_academic->shift_id = $request->shift;
             $stu_academic->emis_number = $request->emis_number;
             $stu_academic->enroll_master_number_id = $enrollMasterId;
             $stu_academic->user_name_id = $request->user_name_id;

@@ -331,6 +331,13 @@
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
+                                        <label for="shift">Shift</label>
+                                        <input type="text" class="form-control" name="shift"
+                                            value="{{ old('shift', $academic_list->shift->Name) }}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
                                         <label for="emis_number">Emis Number</label>
                                         <input type="text" class="form-control" name="emis_number"
                                             value="{{ old('emis_number', $academic_list->emis_number) }}" readonly>

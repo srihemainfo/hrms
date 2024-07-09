@@ -98,10 +98,10 @@ class CourseEnrollMasterController extends Controller
                     if ($request->degree_type == 'UG') {
                         foreach ($semester as $semId => $sem) {
                             foreach ($section as $secId => $sec) {
-                                $checky = CourseEnrollMaster::where('enroll_master_number', $batch . '/' . $course->short_form . '/' . $academic_year[$sem - 1] . '/' . $sem . '/' . $sec)->get();
+                                $checky = CourseEnrollMaster::where('enroll_master_number', $batch . '/' . $course->name . '/' . $academic_year[$sem - 1] . '/' . $sem . '/' . $sec)->get();
                                 if (count($checky) <= 0) {
                                     $ayId = AcademicYear::where(['name' => $academic_year[$sem - 1]])->select('id')->first();
-                                    $courseEnrollMaster = CourseEnrollMaster::create(['enroll_master_number' => $batch . '/' . $course->short_form . '/' . $academic_year[$sem - 1] . '/' . $sem . '/' . $sec, 'batch_id' => $batchId->id, 'academic_id' => $ayId->id, 'course_id' => $course->id, 'semester_id' => $sem, 'section_id' => $sec, 'shift_id' => $course->shift_id ?? null]);
+                                    $courseEnrollMaster = CourseEnrollMaster::create(['enroll_master_number' => $batch . '/' . $course->name . '/' . $academic_year[$sem - 1] . '/' . $sem . '/' . $sec, 'batch_id' => $batchId->id, 'academic_id' => $ayId->id, 'course_id' => $course->id, 'semester_id' => $sem, 'section' => $sec, 'shift_id' => $course->shift_id ?? null]);
                                 } else {
                                     $courseEnrollMaster = false;
                                 }
@@ -110,11 +110,12 @@ class CourseEnrollMasterController extends Controller
                     } else {
                         for ($i = 1; $i <= 4; $i++) {
                             foreach ($section as $secId => $sec) {
-                                $checky = CourseEnrollMaster::where('enroll_master_number', $batch . '/' . $course->short_form . '/' . $academic_year[$i - 1] . '/' . $i . '/' . $sec)->get();
+                                $checky = CourseEnrollMaster::where('enroll_master_number', $batch . '/' . $course->name . '/' . $academic_year[$i - 1] . '/' . $i . '/' . $sec)->get();
                                 if (count($checky) <= 0) {
                                     $ayId = AcademicYear::where(['name' => $academic_year[$i - 1]])->select('id')->first();
                                     // dd($ayId->id);
-                                    $courseEnrollMaster = CourseEnrollMaster::create(['enroll_master_number' => $batch . '/' . $course->short_form . '/' . $academic_year[$i - 1] . '/' . $i . '/' . $sec, 'batch_id' => $batchId->id, 'academic_id' => $ayId->id, 'course_id' => $course->id, 'semester_id' => $i, 'section_id' => $sec, 'shift_id' => $course->shift_id ?? null]);
+                                    // dd($batch);
+                                    $courseEnrollMaster = CourseEnrollMaster::create(['enroll_master_number' => $batch . '/' . $course->name . '/' . $academic_year[$i - 1] . '/' . $i . '/' . $sec, 'batch_id' => $batchId->id, 'academic_id' => $ayId->id, 'course_id' => $course->id, 'semester_id' => $i, 'section' => $sec, 'shift_id' => $course->shift_id ?? null]);
                                     
                                 } else {
                                     $courseEnrollMaster = false;

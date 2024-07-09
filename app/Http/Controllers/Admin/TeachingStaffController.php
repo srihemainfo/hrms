@@ -41,6 +41,7 @@ use App\Models\PublicationDetail;
 use App\Models\Religion;
 use App\Models\Role;
 use App\Models\Sabotical;
+use App\Models\ShiftModel;
 use App\Models\Sponser;
 use App\Models\StaffSalary;
 use App\Models\Sttp;
@@ -83,6 +84,7 @@ class TeachingStaffController extends Controller
                 ->whereNull('teaching_staffs.deleted_at')
                 ->leftJoin('role_user', 'role_user.user_id', '=', 'teaching_staffs.user_name_id')
                 ->leftJoin('roles', 'roles.id', '=', 'role_user.role_id')
+                ->leftJoin('shift', 'shift.id', '=', 'teaching_staffs.shift_id')
                 ->leftJoin('personal_details', 'personal_details.user_name_id', '=', 'teaching_staffs.user_name_id')
                 ->where(function ($query) {
                     $query->where('personal_details.employment_status', 'Active')
@@ -91,7 +93,7 @@ class TeachingStaffController extends Controller
                 ->whereNotNull('personal_details.StaffCode')
                 ->orderBy('personal_details.user_name_id', 'asc')
                 ->leftJoin('teaching_types', 'teaching_types.id', '=', 'roles.type_id')
-                ->select('teaching_staffs.user_name_id', 'teaching_staffs.name', 'teaching_staffs.past_leave_access', 'teaching_staffs.StaffCode', 'teaching_staffs.Designation', 'teaching_staffs.Dept', 'roles.title', 'teaching_types.name as teach_type')
+                ->select('shift.Name as shift_name','teaching_staffs.user_name_id', 'teaching_staffs.name', 'teaching_staffs.past_leave_access', 'teaching_staffs.StaffCode', 'teaching_staffs.Designation', 'teaching_staffs.Dept', 'roles.title', 'teaching_types.name as teach_type')
                 ->get();
 
 
@@ -143,6 +145,9 @@ class TeachingStaffController extends Controller
             $table->editColumn('teach_type', function ($row) {
                 return $row->teach_type ? $row->teach_type : '';
             });
+            $table->editColumn('shift', function ($row) {
+                return $row->shift_name ? $row->shift_name : '';
+            });
 
             $table->editColumn('past_leave_access', function ($row) {
                 $accessGate2 = 'Past_Leave_Permission_Access';
@@ -180,10 +185,11 @@ class TeachingStaffController extends Controller
 
         $department = ToolsDepartment::whereNotIn('name', ['ADMIN', 'CIVIL'])->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
         $teaching_type = TeachingType::whereIn('id', [1, 2])->pluck('name', 'id');
+        $shift = ShiftModel::pluck('Name', 'id');
 
         $working_as = Role::whereIn('type_id', [1, 3])->pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        return view('admin.teachingStaffs.create', compact('department', 'working_as', 'teaching_type'));
+        return view('admin.teachingStaffs.create', compact('shift','department', 'working_as', 'teaching_type'));
     }
 
     public function store(StoreTeachingStaffRequest $request)
@@ -197,6 +203,7 @@ class TeachingStaffController extends Controller
             'Dept' => 'required',
             'Designation' => 'required',
             'doj' => 'required',
+            'shift' => 'nullable',
             'last_name' => 'required|no_special_characters',
         ]);
 
@@ -274,6 +281,7 @@ class TeachingStaffController extends Controller
         $staffCreate->Designation = $Designation;
         $staffCreate->Dept = $request->input('Dept');
         $staffCreate->role_type =  $role_type_id;
+        $staffCreate->shift_id =  $request->input('shift');
         $staffCreate->casual_leave =  $casual_leave;
         $staffCreate->personal_permission = $personal_permission;
         $staffCreate->ContactNo = $request->input('phone');

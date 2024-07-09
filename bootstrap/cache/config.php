@@ -539,11 +539,11 @@
       'smtp' => 
       array (
         'transport' => 'smtp',
-        'host' => 'mailhog',
-        'port' => '1025',
-        'encryption' => NULL,
-        'username' => NULL,
-        'password' => NULL,
+        'host' => 'smtp.gmail.com',
+        'port' => '587',
+        'encryption' => 'tsl',
+        'username' => 'prakash10253@gmail.com',
+        'password' => 'bpsoibuunglabbcf',
         'timeout' => NULL,
       ),
       'ses' => 
@@ -584,7 +584,7 @@
     ),
     'from' => 
     array (
-      'address' => 'hello@example.com',
+      'address' => 'prakash10253@gmail.com',
       'name' => 'Laravel',
     ),
     'markdown' => 

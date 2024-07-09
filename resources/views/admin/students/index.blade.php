@@ -135,6 +135,9 @@
                         <th>
                             Section
                         </th>
+                        <th>
+                            Shift
+                        </th>
 
                         <th>
                             Action
@@ -226,6 +229,10 @@
                                     name: 'enroll_master'
                                 },
                                 {
+                                    data: 'shift',
+                                    name: 'shift'
+                                },
+                                {
                                     data: 'actions',
                                     name: '{{ trans('global.actions') }}'
                                 }
@@ -309,6 +316,10 @@
                     {
                         data: 'Section',
                         name: 'enroll_master'
+                    },
+                    {
+                        data: 'shift',
+                        name: 'shift'
                     },
                     {
                         data: 'actions',

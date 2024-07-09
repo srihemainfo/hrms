@@ -2728,7 +2728,7 @@ trait CsvImportTrait
                                         $registration->enroll_master = $enroll_master;
                                         $registration->category = $insert['category'];
                                         $registration->subject_id = $get_subject->id;
-                                        $registration->status = 2;
+                                        $registration->status = 2;   
                                         $registration->save();
 
                                         $userAlert = new UserAlert;

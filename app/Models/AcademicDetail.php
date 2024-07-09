@@ -28,6 +28,7 @@ class AcademicDetail extends Model
         'admitted_mode',
         'admitted_course',
         'scholarship',
+        'shift_id',
         'first_graduate',
         'gqg',
         'batch',
@@ -62,5 +63,9 @@ class AcademicDetail extends Model
     public function scholarDetail()
     {
         return $this->belongsTo(Scholarship::class, 'scholarship_name');
+    }
+    public function shift()
+    {
+        return $this->belongsTo(ShiftModel::class, 'shift_id');
     }
 }

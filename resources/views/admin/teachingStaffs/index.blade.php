@@ -156,6 +156,9 @@
                             Role Type
                         </th>
                         <th>
+                            Shift
+                        </th>
+                        <th>
                             Past Leave Access Control
                         </th>
                         <th>
@@ -259,6 +262,10 @@
                     {
                         data: 'teach_type',
                         name: 'teach_type'
+                    },
+                    {
+                        data: 'shift',
+                        name: 'shift'
                     },
                      {
                         data: 'past_leave_access',

@@ -12,4 +12,15 @@ class ShiftModel extends Model
     public $table = 'shift';
 
     protected $guarded;
+
+    public function teaching()
+    {
+        return $this->hasMany(TeachingStaff::class, 'id', 'shift_id');
+
+    }
+    public function student()
+    {
+        return $this->hasMany(Student::class, 'id', 'shift_id');
+
+    }
 }

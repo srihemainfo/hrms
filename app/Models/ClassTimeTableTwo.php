@@ -27,6 +27,7 @@ class ClassTimeTableTwo extends Model
         'period',
         'subject',
         'staff',
+        'shift_id',
         'status',
         'rejected_reason',
         'day_order',
@@ -64,6 +65,10 @@ class ClassTimeTableTwo extends Model
     public function subjects()
     {
         return $this->belongsTo(Subject::class, 'subject');
+    }
+    public function shift()
+    {
+        return $this->belongsTo(ShiftModel::class, 'shift_id');
     }
 
     protected static function boot()
