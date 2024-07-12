@@ -14,7 +14,7 @@
         }
 
         #loading {
-            z-index: 999;
+            z-index: 9999999;
         }
     </style>
     <div class="loading" id='loading' style='display:none'>Loading&#8230;</div>
@@ -203,8 +203,8 @@
 
         $(document).on('click', '#payButton', function() {
             $('#myModal').modal('show');
-            
-            
+
+
 
             var row = $(this).closest('tr');
             var semester_idss = row.find('td:nth-child(1)').text().trim();
@@ -324,14 +324,14 @@
                         <td scope="row">${fee.status}</td>
                         <td scope="row" style="display:none;">${fee.transaction_id}</td>
                         <td>
-                            <button class="btn btn-secondary btn-xs btn-outline-secondary" title="View Receipt" id="view_receipt" onclick="view_receipt(this)">View</button>
+                            <button class="btn btn-secondary btn-xs btn-outline-secondary" title="View Receipt" id="view_receipt" target="_blank"  onclick="view_receipt('${fee.transaction_id}')">View</button>
                             <button class="btn btn-danger btn-xs btn-outline-danger" title="Delete Payment" id="delete_payment" onclick="delete_payment(this)">Delete</button>
                         </td>
                         </tr>`;
                             $('#fee_history_table tbody').append(tablerow);
 
                             var fee_status = fee.status;
-                           
+
                             if (fee_status == 'deleted') {
                                 $("#fee_history_table tbody tr").each(function() {
                                     var status11 = $(this).find('td:nth-child(7)').text()
@@ -385,7 +385,9 @@
                             if (statusUpdate == 0 || statusUpdate < 0) {
                                 $(this).find('td:nth-child(5)').text('Fully Paid').addClass(
                                     'fully-paid');
-                                $(this).find('button#payButton').prop('disabled', true);
+                                $(this).find('button#payButton').prop('disabled', true).css({
+                                    'color': 'black',
+                                });
                             } else {
                                 $(this).find('td:nth-child(5)').text('Pending').addClass('pending');
 
@@ -460,6 +462,7 @@
 
         function delete_payment(button) {
 
+
             var row = $(button).closest('tr');
             var transaction_Id = row.find('td:nth-child(8)').text().trim();
             Swal.fire({
@@ -472,7 +475,7 @@
                 reverseButtons: true
             }).then(function(result) {
                 if (result.value) {
-
+                    $('#loading').show();
                     $.ajax({
                         url: '{{ route('admin.fee_delete') }}',
                         type: 'POST',
@@ -483,7 +486,7 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(response) {
-                          
+                            $('#loading').hide();
 
                             let status = response.status;
                             if (status == true) {
@@ -494,7 +497,7 @@
                             }
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
-
+                            $('#loading').hide();
 
                             if (jqXHR.status == 422) {
                                 var errors = jqXHR.responseJSON.errors;
@@ -513,9 +516,8 @@
 
         }
 
-        function view_receipt()
-        {
-
+        function view_receipt(transaction_id) {
+            window.location.href = `{{ route('admin.generate-pdf') }}?transaction_id=${transaction_id}`;
         }
     </script>
 @endsection

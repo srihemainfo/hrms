@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Batch;
 use App\Models\CourseEnrollMaster;
 use App\Models\FeeCollection;
 use App\Models\FeeStructure;
@@ -11,6 +12,7 @@ use App\Models\ToolsCourse;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use PDF;
 
 class FeeCollectionController extends Controller
 {
@@ -156,23 +158,93 @@ class FeeCollectionController extends Controller
         // dd($request);
         $transaction_Id = $request->transaction_Id;
         $status_update = FeeCollection::where('transaction_id', $transaction_Id)->first();
-        
-        if($status_update)
-        {
+
+        if ($status_update) {
             $status_update->status = 'deleted';
             $status_update->deleted_by = auth()->id();
             $status_update->save();
 
             $user_name = $status_update->User->name;
 
-
             return response()->json(['status' => true, 'data' => 'Deleted Successfully..!', 'deleted_by' => $user_name]);
-        }
-        else
-        {
+        } else {
             return response()->json(['status' => false, 'message' => 'Data Not Fount']);
         }
-        
+
+    }
+
+    public function generatePDF(Request $request)
+    {
+
+        $transaction_id = $request->query('transaction_id');
+
+        $trans_id = FeeCollection::where('transaction_id', $transaction_id)->first();
+        $student = Student::where('id', $trans_id->student_id)->first();
+        $tool_Course = ToolsCourse::where('name', $student->admitted_course)->first();
+        $degree_type = Batch::where('name', $student->student_batch)->first();
+        $enroll_id = CourseEnrollMaster::where('id', $student->enroll_master_id)->first();
+
+        $fee_collections = FeeCollection::where([
+            ['register_no', $trans_id->register_no],
+            ['semester', $trans_id->semester],
+            ['status', 'Paid'],
+        ])
+        ->where('transaction_id', '!=', $trans_id->transaction_id)->get();
+
+        $total_paid_amount = 0;
+        foreach ($fee_collections as $fee_collect) {
+            $total_paid_amount += $fee_collect->paid_amount;
+        }
+        // dd($total_paid_amount);
+
+        $batch_id = $enroll_id->batch_id;
+        $course_id = $enroll_id->course_id;
+        $sem = $trans_id->semester;
+
+        $fee_structure = FeeStructure::where([
+            ['batch_id', $batch_id],
+            ['course_id', $course_id],
+            ['semester_id', $sem],
+        ])->first();
+
+
+
+        $full_amount = $trans_id->total_amount;
+
+        $balance_due = $full_amount - ($total_paid_amount + $trans_id->paid_amount);
+
+        // dd($balance_due);
+
+
+        $fee_components = json_decode($fee_structure->fee_component, true);
+
+
+        // dd($fee_components);
+
+        $data = [
+            'receiptNo' => $trans_id->receipt_no,
+            'paid_amount' => $trans_id->paid_amount,
+            'name' => $trans_id->student_name,
+            'amount' => $trans_id->paid_amount,
+            'register_no' => $trans_id->register_no,
+            'paid_date' => Carbon::parse($trans_id->paid_date)->format('d-m-Y'),
+            'student_batch' => $student->student_batch,
+            'enroll_id' => $student->enroll_master_id,
+            'section' => $student->section,
+            'semester' => $trans_id->semester,
+            'short_form' => $tool_Course->short_form,
+            'degree_type' => $degree_type->degree_type,
+            'fee_component'=>$fee_components,
+            'total_paid_amount'=>$total_paid_amount,
+            'balance_due'=>$balance_due,
+
+        ];
+
+        // dd($data);
+
+        $pdf = PDF::loadView('admin.feeCollection.receipt', compact('data'));
+
+        return $pdf->stream('receipt.pdf');
     }
 
 }
