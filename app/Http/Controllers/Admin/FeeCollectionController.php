@@ -237,7 +237,6 @@ class FeeCollectionController extends Controller
             'fee_component'=>$fee_components,
             'total_paid_amount'=>$total_paid_amount,
             'balance_due'=>$balance_due,
-
         ];
 
         // dd($data);

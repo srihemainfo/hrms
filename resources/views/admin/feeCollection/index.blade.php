@@ -272,7 +272,7 @@
                         <td><!-- Pending amount --></td>
                         <td><!-- Status --></td>
                         <td style="display: none;">${id}</td>
-                     
+
                         <td>
                             <button class="newViewBtn" title="Pay" id="payButton">
                                 <i class="fas fa-rupee-sign" style="font-size:22px;"></i>

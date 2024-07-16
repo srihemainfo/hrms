@@ -391,6 +391,7 @@
             </div>
         </div>
     </div>
+    
 @endsection
 @section('scripts')
     @parent
@@ -615,98 +616,8 @@
             $('#totalAmount').text(total);
 
             componentsJson = JSON.stringify(components);
-            console.log(componentsJson);
+            // console.log(componentsJson);
         }
-
-
-        // $("#course").on('change', function() {
-        //     courseVal = $("#course option:selected").val();
-        //     checkValues();
-        // });
-
-        // $("#applied_batch").on('change', function() {
-        //     batchVal = $("#applied_batch option:selected").val();
-        //     checkValues();
-        // });
-
-        // $("#semester").on('change', function() {
-        //     semesterVal = $("#semester option:selected").val();
-        //     checkValues();
-        // });
-
-        // function checkValues() {
-        //     if (courseVal != '' && batchVal != '' && semesterVal != '') {
-        //         $('.secondLoader').show()
-        //         $.ajax({
-        //             url: "{{ route('admin.fee-structure.getfeecomponents') }}",
-        //             method: 'POST',
-        //             headers: {
-        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //             },
-        //             data: {
-        //                 'courseVal': courseVal,
-        //                 'batchVal': batchVal,
-        //                 'semesterVal': semesterVal
-        //             },
-        //             success: function(response) {
-        //                 let status = response.status;
-        //                 if (status == true) {
-        //                     let feeComponents_name = response.data;
-        //                     tbody.empty();
-        //                     $.each(feeComponents_name, function(index, component) {
-        //                         if (component == '') {
-        //                             Swal.fire('', 'Fees Components was not Created..', 'error');
-        //                             $('.secondLoader').hide();
-        //                         } else {
-        //                             // console.log(index);
-        //                             tbody.append(
-        //                                 `<tr data-component-id="${index}"><td>${component}</td><td><input type="number" class="form-control" name="fee_component_${index}" /></td></tr>`
-        //                             );
-        //                             $('.secondLoader').hide();
-        //                         }
-        //                     });
-        //                     tbody.append(
-        //                         `<tr><td>Total</td><td><input type="number" class="form-control" name="total" id="total" readonly /></td></tr>`
-        //                     );
-        //                     calculateTotal();
-        //                 } else {
-        //                     Swal.fire('', response.data, 'error');
-        //                     $('.secondLoader').hide()
-        //                     tbody.empty();
-        //                 }
-        //             },
-
-        //             error: function(jqXHR, textStatus, errorThrown) {
-
-        //                 if (jqXHR.status == 422) {
-        //                     var errors = jqXHR.responseJSON.errors;
-        //                     var errorMessage = errors[Object.keys(errors)[0]][0];
-        //                     Swal.fire('', errorMessage, "error");
-        //                 } else {
-        //                     Swal.fire('', 'Request Failed: ' + jqXHR.status,
-        //                         "error");
-        //                 }
-        //             }
-        //         })
-
-        //     }
-        // }
-
-        // var total = 0;
-
-        // function calculateTotal() {
-        //     $('input[name^="fee_component_"]').on('input', function() {
-        //         total = 0; // Reset total before recalculating
-        //         $('input[name^="fee_component_"]').each(function() {
-        //             let value = parseFloat($(this).val());
-        //             if (!isNaN(value)) {
-        //                 total += value;
-        //             }
-        //         });
-        //         $('#total').val(total);
-        //         // console.log("Total Amount: " + total);
-        //     });
-        // }
 
         function printSelectedShift() {
             var shiftSelect = $("#shift option:selected").val();
@@ -792,7 +703,7 @@
             }
             // else if ($("#admission").val() == '') {
             //     $("#admission_span").html('Admission Mode Is Required').show();
-            // } 
+            // }
             else if ($("#shift").val() == '') {
                 $("#shift_span").html('Shift Is Required').show();
             } else if ($("#semester").val() == '') {
@@ -803,7 +714,7 @@
             // else if ($("#tuition_fee").val() == '' || $("#hostel_fee").val() == '' || $("#other_fee").val() == '' || $(
             //         "#admission_fee").val() == '' || $("#special_fee").val() == '') {
             //     Swal.fire('', 'Please Provide The Fee Details', 'warning');
-            // } 
+            // }
             else {
                 $("#save_div").hide();
                 $("#loading_div").show();
@@ -943,29 +854,6 @@
                                 tableBody.append(row);
                             });
 
-
-                            // $.each(feeComponentsAppend, function(index, item) {
-                            //     let row = `<tr>
-                        // <td style="display:none;"><input type="text" name="id[]" value="${item.id}"></td>      
-                        // <td><input type="text" class="form-control " name="name[]" value="${item.name}" readonly  /></td>
-                        // <td><input type="text" class="form-control"  name="amount[]" value="${item.amount}" /></td>
-                        // </tr>`;
-                            //     tableBody.append(row);
-
-                            //     let rowData = {
-                            //         id: item.id,
-                            //         name: item.name,
-                            //         amount: item.amount
-                            //     };
-                            //     jsonData.push(rowData);
-
-                            // });
-
-                            // let componentsJson = JSON.stringify(jsonData);
-                            // console.log(componentsJson)
-
-
-
                             $("#feeStructure_id").val(data.fees_id);
 
                             $("#shift").val(data.shi);
@@ -975,12 +863,6 @@
                             $("#applied_ay_div").show();
                             $("#applied_batch").val(data.batch)
                             $("#applied_ay").val(data.ay)
-
-                            // $("#tuition_fee").val(data.tuition_fee)
-                            // $("#special_fee").val(data.special_fee)
-                            // $("#admission_fee").val(data.admission_fee)
-                            // $("#hostel_fee").val(data.hostel_fee)
-                            // $("#other_fee").val(data.other_fee)
                             $("select").prop('disabled', true).select2()
                             $("#save_btn").html(`Update`);
                             $("#save_div").show();
