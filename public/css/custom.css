@@ -460,7 +460,7 @@ outline: none;
 }
 
 .newPrimaryBtn {
-    font-size: 1.2rem;
+    /* font-size: 1.2rem; */
     color: #005bbd;
     cursor: pointer;
     border: none !important;
@@ -476,7 +476,7 @@ outline: none;
 
 
 .newEditBtn {
-    font-size: 1.2rem;
+    /* font-size: 1.2rem; */
     color: #006c7c;
     cursor: pointer;
     border: none !important;
@@ -488,9 +488,22 @@ outline: none;
 .newEditBtn:hover {
     color: #17a2b8;
 }
+.newCopyBtn {
+    /* font-size: 1.2rem; */
+    color: #024d8b;
+    cursor: pointer;
+    border: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    background-color: transparent !important;
+}
+
+.newCopyBtn:hover {
+    color: #02467e;
+}
 
 .newDeleteBtn {
-    font-size: 1.2rem;
+    /* font-size: 1.2rem; */
     color: #b10000;
     cursor: pointer;
     border: none !important;
@@ -504,7 +517,7 @@ outline: none;
 }
 
 .newPrintBtn {
-    font-size: 1.2rem;
+    /* font-size: 1.2rem; */
     color: rgb(255, 38, 0);
     cursor: pointer;
 }

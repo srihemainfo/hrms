@@ -3,9 +3,9 @@
     @can('nationality_create')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
-                <btn class="btn btn-outline-success" onclick="openModal()">
+                <button class="btn btn-outline-success" onclick="openModal()">
                     Add Nationality
-                    </a>
+                    </button>
             </div>
         </div>
     @endcan

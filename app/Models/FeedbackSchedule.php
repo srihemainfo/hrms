@@ -2,20 +2,26 @@
 
 namespace App\Models;
 
-use Google\Service\Forms\Feedback;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Feedback_questions extends Model
+class FeedbackSchedule extends Model
 {
-    use SoftDeletes, HasFactory;
-    public $table = 'feedback_questions';
+    use HasFactory, SoftDeletes;
+
+    public $table = 'feedback_schedule';
 
     protected $guarded;
-    
+
     public function feedback()
     {
         return $this->belongsTo(Feedback::class, 'feedback_id');
     }
+
+    public function feedback_schedule()
+    {
+        return $this->belongsTo(FeedbackSchedule::class, 'feed_schedule_id');
+    }
+
 }
