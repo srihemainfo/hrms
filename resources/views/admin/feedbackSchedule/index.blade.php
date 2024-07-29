@@ -115,24 +115,43 @@
                                 <select name="feedback" id="feedback" class="form-control select2">
                                     <option value="">Select Feedback Name</option>
                                     @foreach ($feedback as $id => $item)
-                                        <option value="{{ $id }}">{{ $item }}</option>
+                                        <option value="{{ $item->id }}" data-type="{{ $item->feedback_type }}">
+                                            {{ $item->name }}</option>
                                     @endforeach
                                 </select>
                                 <span id="feedback_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group sub" style="display: none;">
+                                <label for="result" class="required">Subject</label>
+                                <select name="subject" id="subject" class="form-control select2" multiple>
+                                    {{-- <option value="">Select Subject</option> --}}
+                                    <option value="All">All</option>
+                                    @foreach ($subject as $id => $item)
+                                        <option value="{{ $item->subject_id }}">{{ $item->subjects->name }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="subject_span" class="text-danger text-center"
                                     style="display:none;font-size:0.9rem;"></span>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                                 <label for="result" class="required">Type</label>
                                 <select name="type" id="type" class="form-control select2">
                                     <option value="">Select Type</option>
-                                    <option value="General">General</option>
                                     <option value="Internal">Internal</option>
+                                    <option value="External">External</option>
                                 </select>
                                 <span id="type_span" class="text-danger text-center"
                                     style="display:none;font-size:0.9rem;"></span>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                                <label for="result" class="required">Expire Date</label>
+                                <label for="start_date" class="required">Start Date</label>
+                                <input type="date" name="start_date" id="start_date" class="form-control">
+                                <span id="start_date_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="expiry_date" class="required">Expire Date</label>
                                 <input type="date" name="expiry_date" id="expiry_date" class="form-control"
                                     onblur="getDays(this)">
                                 <span id="expiry_date_span" class="text-danger text-center"
@@ -230,7 +249,6 @@
                 document.execCommand('copy');
                 tempInput.remove();
                 Swal.fire('', 'Link Copied...', 'success');
-                console.log(decode);
             }
         });
 
@@ -278,7 +296,6 @@
                         render: function(data, type, row) {
                             let link = row.token_link;
                             if (link != null) {
-                                console.log(link);
                                 return data +=
                                     `<button class="newCopyBtn" data-link="${link}" onclick="cpyLink(this)" title="Copy Link"><i class="fa-fw nav-icon fas fa-copy"></i></button>`;
                             } else {
@@ -301,25 +318,37 @@
 
         };
 
+        $('#feedback').change(function() {
+            let value = $('#feedback option:selected').data('type');
+            if (value == 'Academic') {
+                $('.sub').show()
+            } else {
+                $('.sub').hide()
+            }
+        })
+
         function cpyLink(e) {
             var decode = atob($(e).data('link'));
             var tempInput = $('<input>').val(decode).appendTo('body').select();
             document.execCommand('copy');
             tempInput.remove();
             Swal.fire('', 'Link Copied...', 'success');
-            console.log(decode);
         }
 
         function openModal() {
             $("#feedback_id").val('');
             $("#feedback").val('');
             $("#type").val('').select2();
+            $("#subject").val('').select2();
+            $("#start_date").val('');
             $("#expiry_date").val('');
             $("#status").val('').select2();
             $("#sem").val('').select2();
             $("#ay").val('').select2();
             $("#degree").val('').select2();
             $("#sec").val('').select2();
+            $("#course").val('').select2();
+            $('#days').val('')
             $("#loading_div").hide();
             $("#save_btn").html(`Save`);
             $("#save_div").show();
@@ -330,9 +359,9 @@
 
         function getDays(e) {
 
-            let currentDate = new Date();
+            let start_date = new Date($('#start_date').val());
             let expiry = new Date($('#expiry_date').val());
-            let diffInTime = expiry.getTime() - currentDate.getTime();
+            let diffInTime = expiry.getTime() - start_date.getTime();
             let diffInDays = Math.ceil(diffInTime / (1000 * 3600 * 24));
 
             if (diffInDays) {
@@ -347,8 +376,13 @@
             if ($('#feedback').val() == '') {
                 $("#feedback_span").html(`Fees Components Is Required.`);
                 $("#feedback_span").show();
+            } else if ($('#start_date').val() == '') {
+                $("#start_date_span").html(`Start Date Is Required.`);
+                $("#start_date_span").show();
+            } else if ($('#expiry_date').val() == '') {
+                $("#expiry_date_span").html(`Expiry Date Is Required.`);
+                $("#expiry_date_span").show();
             } else {
-
                 $("#save_div").hide();
                 $("#loading_div").show();
                 $.ajax({
@@ -361,13 +395,15 @@
                         'id': $('#feedback_id').val(),
                         'name': $('#feedback').val(),
                         'type': $('#type').val(),
+                        'start': $('#start_date').val(),
                         'expiry': $('#expiry_date').val(),
                         'status': $('#status').val(),
-                        'degree': $('#degree').val(),
+                        'ay': $('#ay').val(),
+                        'subject': $('#subject').val(),
                         'course': $('#course').val(),
+                        'degree': $('#degree').val(),
                         'sem': $('#sem').val(),
                         'sec': $('#sec').val(),
-                        'ay': $('#ay').val()
                     },
                     success: function(response) {
                         let status = response.status;
@@ -420,16 +456,27 @@
                         let status = response.status;
                         if (status == true) {
                             var data = response.data;
-                            console.log(data)
                             $("#feedback_id").val(data.id);
-                            $("#feedback").val(data.feedback_id);
-                            $("#type").val(data.feedback_type).select2();
+                            $("#feedback").val(data.feedback_id).select2();
+                            $("#type").val(data.feedback_for).select2();
                             $("#expiry_date").val(data.expiry_date);
+                            $("#start_date").val(data.start_date);
                             $("#status").val(data.status).select2();
                             $("#sem").val(data.semester).select2();
                             $("#ay").val(data.academic_id).select2();
                             $("#degree").val(data.degree_id).select2();
                             $("#sec").val(data.section).select2();
+                            // console.log(data.subject_ids);
+                            if (data.subject_ids) {
+                                let subject = JSON.parse(data.subject_ids)
+                                $.each(subject, function(index, value) {
+                                    $("#subject option[value='" + value + "']").prop("selected", true);
+                                })
+
+                                $('.sub').show();
+                            } else {
+                                $('.sub').hide();
+                            }
                             getDays(data.expiry_date)
                             let decode = JSON.parse(data.course_id)
                             $.each(decode, function(index, value) {
@@ -437,6 +484,8 @@
                                     .prop("selected", true);
                             })
                             $("#course").select2();
+                            $("#subject").select2();
+
                             $('.tbl').show();
                             $('.questions').hide();
                             $('.buttons').hide();
@@ -486,26 +535,40 @@
                         if (status == true) {
                             var data = response.data;
                             $("#feedback_id").val(data.id);
-                            $("#feedback").val(data.feedback_id);
-                            $("#type").val(data.feedback_type).select2();
+                            $("#feedback").val(data.feedback_id).select2();
+                            $("#type").val(data.feedback_for).select2();
                             $("#expiry_date").val(data.expiry_date);
+                            $("#start_date").val(data.start_date);
                             $("#status").val(data.status).select2();
                             getDays(data.expiry_date)
-
                             $("#degree").val(data.degree_id).select2();
                             $("#ay").val(data.academic_id).select2();
                             $("#sem").val(data.semester).select2();
                             $("#sec").val(data.section).select2();
-                            let decode = JSON.parse(data.course_id)
-                            $.each(decode, function(index, value) {
-                                $("#course option[value='" + value + "']")
-                                    .prop("selected", true);
-                            })
+                            if (data.subject_ids) {
+                                let subject = JSON.parse(data.subject_ids)
+                                $.each(subject, function(index, value) {
+                                    $("#subject option[value='" + value + "']").prop("selected", true);
+                                })
+
+                                $('.sub').show();
+                            } else {
+                                $('.sub').hide();
+                            }
+                            if (data.course_id) {
+                                let decode = JSON.parse(data.course_id)
+                                $.each(decode, function(index, value) {
+                                    $("#course option[value='" + value + "']")
+                                        .prop("selected", true);
+                                })
+                            }
                             $("#course").select2();
+                            $("#subject").select2();
                             $('.tbl').hide()
                             $('.questions').show()
                             $('.buttons').show()
                             $("#save_div").show();
+                            $("#save_btn").html(`Update`);
                             $("#fee_components_span").hide();
                             $("#loading_div").hide();
                             $("#scheduleFeedbackModel").modal();

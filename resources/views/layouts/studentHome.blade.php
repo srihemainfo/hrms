@@ -457,6 +457,19 @@
                                 </p>
                             </a>
                         </li>
+                        {{-- @can('update')
+                            
+                        @endcan --}}
+                        <li class="nav-item">
+                            <a href="{{ route('admin.fee-details.get-data') }}"
+                                class="nav-link {{ request()->is('admin/fee-details/get-data') ? 'active' : '' }}">
+                                <i class="fa-fw nav-icon fas fa-money-check-alt">
+                                </i>
+                                <p>
+                                    Academic Fee
+                                </p>
+                            </a>
+                        </li>
                         @php($unread = \App\Models\QaTopic::unreadCount())
                         <li class="nav-item">
                             <a href="{{ route('admin.messenger.index') }}"

@@ -423,13 +423,7 @@
 
                 <h2>Dashboard</h2>
             </nav>
-
-
             <h4 class="content-title mb-2 ms-5">Hi, welcome back!</h4>
-
-
-
-
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                     @if (session('status'))
