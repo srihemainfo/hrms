@@ -81,9 +81,9 @@
                         <th>
                             FeedBack Name
                         </th>
-                        <th>
+                        {{-- <th>
                             FeedBack Type
-                        </th>
+                        </th> --}}
                         <th>
                             Created By
                         </th>
@@ -111,7 +111,7 @@
                                 <span id="feedback_span" class="text-danger text-center"
                                     style="display:none;font-size:0.9rem;"></span>
                             </div>
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group">
+                            {{-- <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group">
                                 <label for="result" class="required">FeedBack Type</label>
                                 <select class="form-control select2" name="feedback_type" id="feedback_type">
                                     <option value="">Select Type</option>
@@ -121,7 +121,7 @@
                                 </select>
                                 <span id="feedback_type_span" class="text-danger text-center"
                                     style="display:none;font-size:0.9rem;"></span>
-                            </div>
+                            </div> --}}
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 rating">
                                 <label for="result" class="required">Rating</label>
                                 <div class="rate">
@@ -214,10 +214,10 @@
                         data: 'name',
                         name: 'name'
                     },
-                    {
-                        data: 'feedback_type',
-                        name: 'feedback_type'
-                    },
+                    // {
+                    //     data: 'feedback_type',
+                    //     name: 'feedback_type'
+                    // },
                     {
                         data: 'createdBy',
                         name: 'createdBy'
@@ -283,13 +283,9 @@
             if ($('#feedback').val() == '') {
                 $("#feedback_span").html(`Feedback Name Is Required.`);
                 $("#feedback_span").show();
-                $("#feedback_type_span").hide();
+                // $("#feedback_type_span").hide();
             } else if ($('input[name="rate"]:checked').val() <= 2 || $('input[name="rate"]:checked').val() == undefined) {
                 Swal.fire('', 'Only 3 star to 5 star Rating is Applicable.', 'warning');
-            } else if ($('#feedback_type').val() == '') {
-                $("#feedback_type_span").html(`Type Is Required.`);
-                $("#feedback_type_span").show();
-                $("#feedback_span").hide();
             } else {
                 let ques_inp = $('.ques_inp').length
                 let question = [];
@@ -310,7 +306,7 @@
                     data: {
                         'id': $('#feedback_id').val(),
                         'name': $('#feedback').val(),
-                        'type': $('#feedback_type').val(),
+                        // 'type': $('#feedback_type').val(),
                         'rating': $('input[name="rate"]:checked').val(),
                         'question': question
                     },
@@ -368,7 +364,7 @@
                             console.log(data)
                             $("#feedback_id").val(data.id);
                             $("#feedback").val(data.name);
-                            $("#feedback_type").val(data.feedback_type).select2();
+                            // $("#feedback_type").val(data.feedback_type).select2();
                             $('input[name="rate"][value="' + data.rating + '"]').prop('checked', true);
                             $('input[name="rate"]').prop('disabled', true);
                             let question = JSON.parse(data.question)
@@ -428,7 +424,7 @@
                             var data = response.data;
                             $("#feedback_id").val(data.id);
                             $("#feedback").val(data.name);
-                            $("#feedback_type").val(data.feedback_type).select2();
+                            // $("#feedback_type").val(data.feedback_type).select2();
                             $('input[name="rate"][value="' + data.rating + '"]').prop('checked', true);
                             $('input[name="rate"]').prop('disabled', false);
                             let question = JSON.parse(data.question)

@@ -115,31 +115,30 @@
                                 <select name="feedback" id="feedback" class="form-control select2">
                                     <option value="">Select Feedback Name</option>
                                     @foreach ($feedback as $id => $item)
-                                        <option value="{{ $item->id }}" data-type="{{ $item->feedback_type }}">
-                                            {{ $item->name }}</option>
+                                        <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
                                 <span id="feedback_span" class="text-danger text-center"
                                     style="display:none;font-size:0.9rem;"></span>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group sub" style="display: none;">
-                                <label for="result" class="required">Subject</label>
-                                <select name="subject" id="subject" class="form-control select2" multiple>
-                                    {{-- <option value="">Select Subject</option> --}}
-                                    <option value="All">All</option>
-                                    @foreach ($subject as $id => $item)
-                                        <option value="{{ $item->subject_id }}">{{ $item->subjects->name }}</option>
-                                    @endforeach
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="result" class="required">Feedback Participant</label>
+                                <select name="participant" id="participant" class="form-control select2">
+                                    <option value="">Select Type</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Staff">Staff</option>
+                                    <option value="External">External</option>
                                 </select>
-                                <span id="subject_span" class="text-danger text-center"
+                                <span id="participant_span" class="text-danger text-center"
                                     style="display:none;font-size:0.9rem;"></span>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                                <label for="result" class="required">Type</label>
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group type">
+                                <label for="result" class="required">Feedback Type</label>
                                 <select name="type" id="type" class="form-control select2">
                                     <option value="">Select Type</option>
-                                    <option value="Internal">Internal</option>
-                                    <option value="External">External</option>
+                                    <option value="Course">Course Feedback</option>
+                                    <option value="Training">Training Feedback</option>
+                                    <option value="Faculty">Faculty Feedback</option>
                                 </select>
                                 <span id="type_span" class="text-danger text-center"
                                     style="display:none;font-size:0.9rem;"></span>
@@ -190,7 +189,16 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 form-group">
+                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="batch">Batch</label>
+                                <select name="batch" id="batch" class="form-control select2">
+                                    <option value="">Select Academic Year</option>
+                                    @foreach ($batch as $id => $item)
+                                        <option value="{{ $id }}">{{ $item }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
                                 <label for="ay">Ay</label>
                                 <select name="ay" id="ay" class="form-control select2">
                                     <option value="">Select Academic Year</option>
@@ -199,7 +207,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 form-group">
+                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
                                 <label for="sem">Semester</label>
                                 <select name="sem" id="sem" class="form-control select2">
                                     <option value="">Select Semester</option>
@@ -209,7 +217,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 form-group">
+                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
                                 <label for="sec">Section</label>
                                 <select name="sec" id="sec" class="form-control select2">
                                     <option value="">Select Section</option>
@@ -251,6 +259,10 @@
                 Swal.fire('', 'Link Copied...', 'success');
             }
         });
+
+        const tool_course = `@foreach ($course as $id => $item)
+                                        <option value="{{ $id }}">{{ $item }}</option>
+                                    @endforeach`
 
         function callAjax() {
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
@@ -318,12 +330,13 @@
 
         };
 
-        $('#feedback').change(function() {
-            let value = $('#feedback option:selected').data('type');
-            if (value == 'Academic') {
-                $('.sub').show()
+        $('#participant').change(function() {
+            let value = $('#participant option:selected').val();
+            console.log(value);
+            if (value == 'External') {
+                $('.type').hide();
             } else {
-                $('.sub').hide()
+                $('.type').show();
             }
         })
 
@@ -336,22 +349,24 @@
         }
 
         function openModal() {
+            console.log(tool_course);
             $("#feedback_id").val('');
             $("#feedback").val('');
-            $("#type").val('').select2();
-            $("#subject").val('').select2();
+            $("#participant").val('').select2();
             $("#start_date").val('');
             $("#expiry_date").val('');
             $("#status").val('').select2();
             $("#sem").val('').select2();
             $("#ay").val('').select2();
+            $("#batch").val('').select2();
             $("#degree").val('').select2();
             $("#sec").val('').select2();
-            $("#course").val('').select2();
+            $("#course").val(tool_course).select2();
             $('#days').val('')
             $("#loading_div").hide();
             $("#save_btn").html(`Save`);
             $("#save_div").show();
+            $(".type").show();
             $("#scheduleFeedbackModel").modal();
         }
 
@@ -370,6 +385,50 @@
 
 
         }
+
+        $('#degree').change(function() {
+            $.ajax({
+                url: '{{ route('admin.schedule-feedback.fetch_course') }}',
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'id': $('#degree').val(),
+                },
+                success: function(response) {
+                    let status = response.status;
+                    let data = response.data;
+                    if (status == true) {
+                        let course = $('#course').empty()
+                        course.prepend(
+                            `<option value="All">All</option>`)
+                        $.each(data, function(index, value) {
+                            course.append(
+                                `<option value="${value.id}">${value.short_form}</option>`)
+                        })
+                    } else {
+                        Swal.fire('', response.data, 'error');
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    if (jqXHR.status) {
+                        if (jqXHR.status == 500) {
+                            Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
+                        } else {
+                            Swal.fire('', jqXHR.status, 'error');
+                        }
+                    } else if (textStatus) {
+                        Swal.fire('', textStatus, 'error');
+                    } else {
+                        Swal.fire('', 'Request Failed With Status: ' + jqXHR.statusText,
+                            "error");
+                    }
+                    $("#save_div").show();
+                    $("#loading_div").hide();
+                }
+            })
+        })
 
 
         function saveFeedback() {
@@ -394,7 +453,7 @@
                     data: {
                         'id': $('#feedback_id').val(),
                         'name': $('#feedback').val(),
-                        'type': $('#type').val(),
+                        'type': $('#participant').val(),
                         'start': $('#start_date').val(),
                         'expiry': $('#expiry_date').val(),
                         'status': $('#status').val(),
@@ -458,7 +517,7 @@
                             var data = response.data;
                             $("#feedback_id").val(data.id);
                             $("#feedback").val(data.feedback_id).select2();
-                            $("#type").val(data.feedback_for).select2();
+                            $("#participant").val(data.feedback_for).select2();
                             $("#expiry_date").val(data.expiry_date);
                             $("#start_date").val(data.start_date);
                             $("#status").val(data.status).select2();
@@ -536,7 +595,7 @@
                             var data = response.data;
                             $("#feedback_id").val(data.id);
                             $("#feedback").val(data.feedback_id).select2();
-                            $("#type").val(data.feedback_for).select2();
+                            $("#participant").val(data.feedback_for).select2();
                             $("#expiry_date").val(data.expiry_date);
                             $("#start_date").val(data.start_date);
                             $("#status").val(data.status).select2();

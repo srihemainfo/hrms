@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicDetail;
 use App\Models\AcademicYear;
+use App\Models\Batch;
+use App\Models\ClassTimeTableTwo;
 use App\Models\Feedback;
 use App\Models\Feedback_questions;
 use App\Models\FeedbackSchedule;
 use App\Models\GeneralFeedbackModel;
 use App\Models\Section;
 use App\Models\Semester;
+use App\Models\Student;
 use App\Models\Subject;
 use App\Models\SubjectRegistration;
 use App\Models\ToolsCourse;
@@ -66,9 +69,9 @@ class FeedbackController extends Controller
             $table->editColumn('name', function ($row) {
                 return $row->name ? $row->name : '';
             });
-            $table->editColumn('feedback_type', function ($row) {
-                return $row->feedback_type ? $row->feedback_type : '';
-            });
+            // $table->editColumn('feedback_type', function ($row) {
+            //     return $row->feedback_type ? $row->feedback_type : '';
+            // });
             $table->editColumn('createdBy', function ($row) {
                 return $row->users ? $row->users->name : '';
             });
@@ -90,7 +93,7 @@ class FeedbackController extends Controller
 
                 $create = Feedback::create([
                     'name' => $request->name,
-                    'feedback_type' => $request->type,
+                    // 'feedback_type' => $request->type,
                     'rating' => $request->rating,
                     'question' => $encode,
                     'created_by' => auth()->user()->id,
@@ -120,7 +123,7 @@ class FeedbackController extends Controller
 
                 $create = Feedback::where('id', $request->id)->update([
                     'name' => $request->name,
-                    'feedback_type' => $request->type,
+                    // 'feedback_type' => $request->type,
                     'rating' => $request->rating,
                     'question' => $encode,
                     'created_by' => auth()->user()->id,
@@ -231,8 +234,7 @@ class FeedbackController extends Controller
             return $table->make(true);
         }
 
-        $subject = SubjectRegistration::with('subjects')->distinct()->select('subject_id')->get();
-        // dd($subject[1]);
+        $batch = Batch::pluck('name', 'id');
         $feedback = Feedback::select('name', 'id', 'feedback_type')->get();
         $sem = Semester::pluck('semester', 'id');
         $degree = ToolsDegreeType::pluck('name', 'id');
@@ -240,7 +242,7 @@ class FeedbackController extends Controller
         $ay = AcademicYear::pluck('name', 'id');
         $sec = Section::pluck('section', 'id')->unique();
 
-        return view('admin.feedbackSchedule.index', compact('subject', 'ay', 'sem', 'course', 'feedback', 'degree', 'sec'));
+        return view('admin.feedbackSchedule.index', compact('batch', 'ay', 'sem', 'course', 'feedback', 'degree', 'sec'));
     }
     public function scheduleStore(Request $request)
     {
@@ -339,7 +341,7 @@ class FeedbackController extends Controller
                     }
                     $subject_encode = json_encode($request->subject, true);
                 }
-                
+
                 $create = FeedbackSchedule::where('id', $request->id)->update([
                     'feedback_id' => $request->name,
                     'feedback_for' => $request->type,
@@ -391,6 +393,22 @@ class FeedbackController extends Controller
             return response()->json(['status' => 'success', 'data' => 'FeedbackSchedule Deleted Successfully']);
         } else {
             return response()->json(['status' => 'error', 'data' => 'Technical Error']);
+        }
+    }
+
+    public function fetchCourse(Request $request)
+    {
+        if ($request->id) {
+            if ($request->id != 'All') {
+                $get = ToolsCourse::where('degree_type_id', $request->id)->pluck('short_form', 'id');
+            } else {
+                $get = ToolsCourse::pluck('short_form', 'id');
+            }
+            if ($get) {
+                return response()->json(['status' => true, 'data' => $get]);
+            } else {
+                return response()->json(['status' => false, 'data' => 'Course Not Found']);
+            }
         }
     }
 
@@ -507,6 +525,36 @@ class FeedbackController extends Controller
                 // dd($create);
             }
         }
+    }
+
+    public function studentIndex(Request $request)
+    {
+        $user_id = auth()->user()->id;
+        $student = Student::with('enroll_master')->where(['user_name_id' => $user_id])->first();
+        $enroll_id = $student->enroll_master->id;
+        $today = Carbon::today()->toDateString();
+
+        // Query the database
+        $feedback = FeedbackSchedule::whereDate('start_date', '<=', $today)
+            ->whereDate('expiry_date', '>=', $today)
+            ->get();
+        dd($feedback);
+        if ($enroll_id) {
+            $subject = [];
+            $get_subjects = SubjectRegistration::where(['user_name_id' => $user_id, 'enroll_master' => $enroll_id])->select('subject_id')->get();
+            foreach ($get_subjects as $key => $value) {
+                $check = ClassTimeTableTwo::with('staffs', 'subjects')->where(['class_name' => $enroll_id, 'subject' => $value->subject_id])->select('staff', 'subject')->first();
+                if ($check) {
+                    if ($check->subjects) {
+                        $subject[] = $value->subject_id;
+                    }
+                }
+            }
+            dd($subject);
+        } else {
+
+        }
+        // dd($student->enroll_master->id, $user_id);
     }
 
 }

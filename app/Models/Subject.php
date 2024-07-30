@@ -74,4 +74,8 @@ class Subject extends Model
     {
         return $this->belongsTo(SubjectCategory::class, 'subject_cat_id');
     }
+    public function subject_register()
+    {
+        return $this->hasMany(SubjectRegistration::class, 'id', 'subject');
+    }
 }

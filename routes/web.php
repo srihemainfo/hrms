@@ -649,8 +649,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('schedule-feedback/store', 'FeedbackController@scheduleStore')->name('schedule-feedback.store');
     Route::post('schedule-feedback/view', 'FeedbackController@scheduleView')->name('schedule-feedback.view');
     Route::post('schedule-feedback/delete', 'FeedbackController@scheduleDestroy')->name('schedule-feedback.delete');
-
-
+    Route::post('schedule-feedback/fetch-course', 'FeedbackController@fetchCourse')->name('schedule-feedback.fetch_course');
+    
+    //Student Feedback
+    Route::get('feedback-forms', 'FeedbackController@studentIndex')->name('feedback-forms.index');
 
 
     // Staff Subjects
@@ -2004,6 +2006,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('erp-setting/view', 'ErpSettingController@view')->name('erp-setting.view');
     Route::post('erp-setting/delete', 'ErpSettingController@destroy')->name('erp-setting.delete');
     Route::delete('erp-setting/destroy', 'ErpSettingController@massDestroy')->name('erp-setting.massDestroy');
+
+
 
 });
 
