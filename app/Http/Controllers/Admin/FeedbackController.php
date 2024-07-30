@@ -219,7 +219,7 @@ class FeedbackController extends Controller
                 return $row->feedback ? $row->feedback->name : '';
             });
             $table->editColumn('type', function ($row) {
-                return $row->feedback_for ? $row->feedback_for : '';
+                return $row->feedback_participant ? $row->feedback_participant : '';
             });
             $table->editColumn('expiry', function ($row) {
                 return $row->expiry_date ? $row->expiry_date : '';
@@ -238,19 +238,98 @@ class FeedbackController extends Controller
         $feedback = Feedback::select('name', 'id', 'feedback_type')->get();
         $sem = Semester::pluck('semester', 'id');
         $degree = ToolsDegreeType::pluck('name', 'id');
-        $course = ToolsCourse::pluck('name', 'id');
+        $dept = ToolsDepartment::pluck('name', 'id');
+        $course = ToolsCourse::pluck('short_form', 'id');
         $ay = AcademicYear::pluck('name', 'id');
         $sec = Section::pluck('section', 'id')->unique();
 
-        return view('admin.feedbackSchedule.index', compact('batch', 'ay', 'sem', 'course', 'feedback', 'degree', 'sec'));
+        return view('admin.feedbackSchedule.index', compact('dept', 'batch', 'ay', 'sem', 'course', 'feedback', 'degree', 'sec'));
     }
     public function scheduleStore(Request $request)
     {
-        // dd($request);
         if ($request->id == '') {
-            if ($request != '') {
+            if ($request->participant != '') {
                 $course_encode = null;
-                $subject_encode = null;
+                $dept_encode = null;
+                // dd($request->course);
+                if (!empty($request->course) && $request->course[0] != null) {
+                    foreach ($request->course as $id => $value) {
+
+                        if ($value != 'All') {
+                            $check_course = ToolsCourse::where('id', $value)->exists();
+                            if (!$check_course) {
+                                return response()->json(['status' => false, 'data' => 'Course not found.']);
+                            }
+                        }
+                    }
+                    $course_encode = json_encode($request->course, true);
+                }
+                if (!empty($request->dept && $request->dept[0] != null)) {
+                    foreach ($request->dept as $id => $value) {
+                        if ($value != 'All') {
+                            $check_dept = ToolsDepartment::where('id', $value)->exists();
+                            if (!$check_dept) {
+                                return response()->json(['status' => false, 'data' => 'Department not found.']);
+                            }
+                        }
+                    }
+                    $dept_encode = json_encode($request->dept, true);
+                }
+
+                $training = null;
+                if ($request->type == 'Training') {
+                    $training = [
+                        'type_training' => $request->type_training,
+                        'title_training' => $request->title_training,
+                        'duration_training' => $request->duration_training,
+                        'person_training' => $request->person_training
+                    ];
+                    $training = json_encode($training);
+                }
+
+                if ($request->participant == 'External') {
+                    $domain = url('/');
+                    $token = Str::random(32);
+                    $encode_token = base64_encode($domain . '/feedback/' . $token);
+                    $create = FeedbackSchedule::create([
+                        'feedback_id' => $request->name,
+                        'feedback_participant' => $request->participant,
+                        'expiry_date' => $request->expiry,
+                        'start_date' => $request->start,
+                        'status' => $request->status ?? null,
+                        'token_link' => $encode_token,
+                        'created_by' => auth()->user()->name,
+                    ]);
+                } else {
+                    $create = FeedbackSchedule::create([
+                        'feedback_id' => $request->name,
+                        'feedback_participant' => $request->participant,
+                        'feedback_type' => $request->type,
+                        'training' => $training,
+                        'expiry_date' => $request->expiry,
+                        'start_date' => $request->start,
+                        'degree_id' => $request->degree,
+                        'department_id' => $dept_encode,
+                        'academic_id' => $request->ay,
+                        'batch_id' => $request->batch,
+                        'course_id' => $course_encode,
+                        'semester' => $request->sem,
+                        'section' => $request->sec,
+                        'status' => $request->status,
+                        'created_by' => auth()->user()->name,
+                    ]);
+
+                }
+                return response()->json(['status' => true, 'data' => 'FeedBack Created Successfully.']);
+
+            } else {
+                return response()->json(['status' => false, 'data' => 'Required datas not found.']);
+            }
+        } else {
+            if ($request->participant != '') {
+                $course_encode = null;
+                $dept_encode = null;
+
                 if (!empty($request->course)) {
                     foreach ($request->course as $id => $value) {
                         if ($value != 'All') {
@@ -262,95 +341,42 @@ class FeedbackController extends Controller
                     }
                     $course_encode = json_encode($request->course, true);
                 }
-                if (!empty($request->subject)) {
-                    foreach ($request->subject as $id => $value) {
+
+                if (!empty($request->dept && $request->dept[0] != null)) {
+                    foreach ($request->dept as $id => $value) {
                         if ($value != 'All') {
-                            $check_course = Subject::where('id', $value)->exists();
-                            if (!$check_course) {
-                                return response()->json(['status' => false, 'data' => 'Subjects not found.']);
+                            $check_dept = ToolsDepartment::where('id', $value)->exists();
+                            if (!$check_dept) {
+                                return response()->json(['status' => false, 'data' => 'Department not found.']);
                             }
                         }
                     }
-                    $subject_encode = json_encode($request->subject, true);
-                }
-                // dd($subject_encode, $course_encode);
-                if ($request->type != 'External') {
-
-                    $create = FeedbackSchedule::create([
-                        'feedback_id' => $request->name,
-                        'feedback_for' => $request->type,
-                        'expiry_date' => $request->expiry,
-                        'start_date' => $request->start,
-                        'degree_id' => $request->degree,
-                        'academic_id' => $request->ay,
-                        'course_id' => $course_encode,
-                        'semester' => $request->sem,
-                        'subject_ids' => $subject_encode,
-                        'section' => $request->sec,
-                        'status' => $request->status,
-                        'created_by' => auth()->user()->name,
-                    ]);
-                } else {
-                    $domain = url('/');
-                    $token = Str::random(32);
-                    $encode_token = base64_encode($domain . '/feedback/' . $token);
-                    $create = FeedbackSchedule::create([
-                        'feedback_id' => $request->name,
-                        'feedback_type' => $request->type,
-                        'expiry_date' => $request->expiry,
-                        'degree_id' => $request->degree ?? null,
-                        'academic_id' => $request->ay ?? null,
-                        'course_id' => $encode ?? null,
-                        'semester' => $request->sem ?? null,
-                        'section' => $request->sec ?? null,
-                        'status' => $request->status ?? null,
-                        'token_link' => $encode_token,
-                        'created_by' => auth()->user()->name,
-                    ]);
-
-                }
-                return response()->json(['status' => true, 'data' => 'FeedBack Created Successfully.']);
-
-            } else {
-                return response()->json(['status' => false, 'data' => 'Required datas not found.']);
-            }
-        } else {
-            if ($request) {
-                $course_encode = null;
-                $subject_encode = null;
-                if (!empty($request->subject)) {
-                    foreach ($request->course as $id => $value) {
-                        if ($value != 'All') {
-                            $check_course = ToolsCourse::where('id', $value)->exists();
-                            if (!$check_course) {
-                                return response()->json(['status' => false, 'data' => 'Course not found.']);
-                            }
-                        }
-                    }
-                    $course_encode = json_encode($request->course, true);
+                    $dept_encode = json_encode($request->dept, true);
                 }
 
-                if (!empty($request->subject)) {
-                    foreach ($request->subject as $id => $value) {
-                        if ($value != 'All') {
-                            $check_course = Subject::where('id', $value)->exists();
-                            if (!$check_course) {
-                                return response()->json(['status' => false, 'data' => 'Subjects not found.']);
-                            }
-                        }
-                    }
-                    $subject_encode = json_encode($request->subject, true);
+                $training = null;
+                if ($request->type == 'Training') {
+                    $training = [
+                        'type_training' => $request->type_training,
+                        'title_training' => $request->title_training,
+                        'duration_training' => $request->duration_training,
+                        'person_training' => $request->person_training
+                    ];
+                    $training = json_encode($training);
                 }
 
                 $create = FeedbackSchedule::where('id', $request->id)->update([
                     'feedback_id' => $request->name,
-                    'feedback_for' => $request->type,
+                    'feedback_participant' => $request->participant,
+                    'feedback_type' => $request->type,
+                    'training' => $training,
                     'expiry_date' => $request->expiry,
                     'start_date' => $request->start,
                     'degree_id' => $request->degree,
+                    'department_id' => $dept_encode,
                     'academic_id' => $request->ay,
+                    'batch_id' => $request->batch,
                     'course_id' => $course_encode,
-                    'subject_ids' => $subject_encode,
                     'semester' => $request->sem,
                     'section' => $request->sec,
                     'status' => $request->status,
@@ -421,10 +447,8 @@ class FeedbackController extends Controller
             ->where('expiry_date', '>=', date('Y-m-d'))
             ->first();
         if ($data) {
-            if (!empty($data->token_link) && !empty($data->degree_id) && !empty($data->academic_id) && !empty($data->course_id)) {
-                return view('admin.feedback.internal', compact('data'));
-            } elseif ($data->token_link) {
-                return view('admin.feedback.general', compact('data'));
+            if ($data->token_link) {
+                return view('admin.feedback.external', compact('data'));
             }
         } else {
             $data = 'The link has expired or is Invalid.';
@@ -532,29 +556,117 @@ class FeedbackController extends Controller
         $user_id = auth()->user()->id;
         $student = Student::with('enroll_master')->where(['user_name_id' => $user_id])->first();
         $enroll_id = $student->enroll_master->id;
-        $today = Carbon::today()->toDateString();
+        $enroll_batch_id = $student->enroll_master->batch_id;
+        $enroll_academic_id = $student->enroll_master->academic_id;
+        $enroll_course_id = $student->enroll_master->course_id;
+        $enroll_semester_id = $student->enroll_master->semester_id;
+        $enroll_section = $student->enroll_master->section;
 
+        $today = Carbon::today()->toDateString();
+        // dd($student->enroll_master->course_id);
         // Query the database
-        $feedback = FeedbackSchedule::whereDate('start_date', '<=', $today)
+        $feedback = FeedbackSchedule::with('feedback')->whereDate('start_date', '<=', $today)
             ->whereDate('expiry_date', '>=', $today)
+            ->where('feedback_participant', 'Student')
+            ->where('status', 'Active')
             ->get();
-        dd($feedback);
-        if ($enroll_id) {
-            $subject = [];
-            $get_subjects = SubjectRegistration::where(['user_name_id' => $user_id, 'enroll_master' => $enroll_id])->select('subject_id')->get();
-            foreach ($get_subjects as $key => $value) {
-                $check = ClassTimeTableTwo::with('staffs', 'subjects')->where(['class_name' => $enroll_id, 'subject' => $value->subject_id])->select('staff', 'subject')->first();
-                if ($check) {
-                    if ($check->subjects) {
-                        $subject[] = $value->subject_id;
+        // dd($feedback);
+        $subject = [];
+        $training = [];
+        $is_valid = false;
+        if ($enroll_id != '' && $feedback != null) {
+            foreach ($feedback as $id => $item) {
+                if ($item->feedback_type == 'Course' || $item->feedback_type == 'Training') {
+                    $decode_course_id = json_decode($item->course_id);
+                    $section = $item->section;
+                    $academic_id = $item->academic_id;
+                    $semester_id = $item->semester;
+                    $batch_id = $item->batch_id;
+                    if ($decode_course_id[0] != 'All') {
+                        $sec_valid = ($enroll_section == $section || $section == 'All') ? true : false;
+                        $sem_valid = ($enroll_semester_id == $semester_id || $semester_id == 'All') ? true : false;
+                        $c_valid = in_array($enroll_course_id, $decode_course_id) ? true : false;
+                        $a_valid = ($enroll_academic_id == $academic_id || $academic_id == 'All') ? true : false;
+                        $b_valid = ($enroll_batch_id == $batch_id || $batch_id == 'All') ? true : false;
+                        if ($sec_valid == true && $sem_valid == true && $c_valid == true && $a_valid == true && $b_valid == true) {
+                            $is_valid = true;
+                        } else {
+                            $is_valid = false;
+                        }
+                    } elseif ($decode_course_id[0] == 'All') {
+                        $is_valid = true;
+                    } else {
+                        $is_valid = false;
+                    }
+
+                    if ($is_valid == true && $item->feedback_type == 'Course') {
+                        $get_subjects = SubjectRegistration::where(['user_name_id' => $user_id, 'enroll_master' => $enroll_id])->select('subject_id')->get();
+                        foreach ($get_subjects as $key => $value) {
+                            $check = ClassTimeTableTwo::with('staffs', 'subjects')->where(['class_name' => $enroll_id, 'subject' => $value->subject_id])->select('staff', 'subject')->first();
+                            if ($check) {
+                                if ($check->subjects && $check->staffs) {
+                                    $subject[$value->subject_id] = [
+                                        'name' => $check->subjects->name,
+                                        'code' => $check->subjects->subject_code,
+                                        'staff' => $check->staffs->name,
+                                        'feedback_name' => $item->feedback->name,
+                                        'feedback_id' => $item->id
+                                    ];
+                                }
+                            }
+                        }
+                        // dd('hii', $is_valid, $item->feedback_type, $subject);
+
+                    } elseif ($is_valid == true && $item->feedback_type == 'Training') {
+                        $decode = json_decode($item->training);
+                        $training[] = [
+                            'title' => $decode->title_training,
+                            'duration' => $decode->duration_training,
+                            'person' => $decode->person_training,
+                            'feedback_name' => $item->feedback->name,
+                            'feedback_id' => $item->id
+                        ];
                     }
                 }
             }
-            dd($subject);
+
+            // dd($subject, $training);
+            return view('admin.feedback.studentIndex', compact('subject', 'training'));
+
         } else {
 
         }
-        // dd($student->enroll_master->id, $user_id);
+    }
+
+    public function studentFeedSurvey(Request $request)
+    {
+        // dd($request);
+        if ($request->feedback_id != '' && $request->datas != '') {
+            $schedule = FeedbackSchedule::where('expiry_date', '>=', date('Y-m-d'))->find($request->feedback_id);
+            $question = [];
+            if ($schedule) {
+                foreach (json_decode($schedule->feedback->question) as $key => $value) {
+                    $question[] = $value;
+                }
+                $datas = json_decode($request->datas);
+                // dd($question);
+                return view('admin.feedback.student', compact('datas', 'question'));
+            } else {
+                $data = 'The link has expired or is Invalid.';
+                return view('admin.feedback.expiry', compact('data'));
+            }
+        }
+    }
+
+    public function studentFeedStore(Request $request)
+    {
+        if ($request->feedback_id != '' && $request->user_id != '') {
+            $get_schedule = FeedbackSchedule::with('feedback')->find($request->feedback_id);
+            if ($get_schedule) {
+                $data = 'Your Feedback Submitted Successfully.';
+                return view('admin.feedback.success', compact(['data']));
+            }
+        }
     }
 
 }

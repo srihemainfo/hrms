@@ -19,11 +19,11 @@
             padding: 0;
             margin: 0;
             box-sizing: border-box;
+            font-size: 12px;
         }
 
+
         body {
-            height: 100vh;
-            width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -37,11 +37,16 @@
 
 
         .main {
+            width: 100%;
+            max-width: 600px;
+
+            /* Adjust width as needed */
+            height: 80%;
             display: flex;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            width: 100%;
+            margin: 10px;
+            /* overflow-y: scroll; */
         }
 
         .card {
@@ -63,7 +68,7 @@
 
         .card h3 {
             text-align: center;
-            margin: 20px 0;
+            /* margin: 20px 0; */
             color: #333;
             font-weight: 400;
         }
@@ -115,7 +120,7 @@
             overflow: hidden;
             white-space: nowrap;
             cursor: pointer;
-            font-size: 30px;
+            font-size: 20px;
             color: #ccc;
         }
 
@@ -396,7 +401,7 @@
                         <span class="close" onclick="closeToast(this)">×</span>
                     </div>
                 @endif
-                
+
                 @if ($errors->any())
                     @foreach ($errors->all() as $error)
                         <div class="toast error show">
@@ -406,33 +411,46 @@
                     @endforeach
                 @endif
             </div>
-            <form id="form-id" action="{{ route('feedback.store') }}" method="POST"
+            <form id="form-id" action="{{ route('admin.student-feedback-forms.store') }}" method="POST"
                 onsubmit="return handleValidate(event)">
                 @csrf
                 <h2>Feedback Survey</h2>
                 <hr>
-                <h3>{{ $data->feedback->name }}</h3>
+                <h3>{{ $datas->feedback_name }}</h3>
+                <div class="feedBack_details" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                    <div class="card">
+                        @if (property_exists($datas, 'staff'))
+                            <p style="padding: 5px"><strong style="color: #d9534f">Faculty Name :</strong>
+                                {{ $datas->staff }}</p>
+                            <p style="padding: 5px"><strong style="color: #d9534f">Subject :</strong>
+                                {{ $datas->name }}</p>
+                        @endif
+
+                        @if (property_exists($datas, 'person'))
+                            <p style="padding: 5px"><strong style="color: #d9534f">Title :</strong>
+                                {{ $datas->title }}</p>
+                            <p style="padding: 5px"><strong style="color: #d9534f">Resource Person :</strong>
+                                {{ $datas->person }}</p>
+                            <p style="padding: 5px"><strong style="color: #d9534f">Duration :</strong>
+                                {{ $datas->duration }}</p>
+                        @endif
+                    </div>
+                </div>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <label for="name">Name</label>
                     <input type="text" name="name" id="name">
                 </div>
-                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
-                    <label for="email">Email</label>
-                    <input type="text" name="email" id="email">
-                </div>
                 <div class="ques">
                     <label>Questions</label>
-                    @php
-                        $question = json_decode($data->feedback->question);
-                    @endphp
                     <input type="hidden" name="ques_count" id="ques_count" value="{{ count($question) }}">
-                    <input type="hidden" name="feedback_id" id="feedback_id" value="{{ $data->feedback_id }}">
-                    <input type="hidden" name="feed_id" id="feed_id" value="{{ $data->id }}">
+                    <input type="hidden" name="feedback_id" id="feedback_id" value="{{ $datas->feedback_id }}">
+                    <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
                     @foreach ($question as $key => $item)
                         <div class="first">
                             <label style="text-transform: uppercase;">{{ $item }}</label>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 rating">
+
                             <div class="rate">
                                 <input type="radio" id="star{{ $key + 1 }}_5" name="ques{{ $key + 1 }}"
                                     value="5" />
@@ -471,7 +489,6 @@
                     </ul>
                 </button>
 
-
                 <!-- SVG -->
                 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
                     <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 100" id="btn-layer"
@@ -498,13 +515,8 @@
         // Get the form element
         const form = document.getElementById('form-id');
         const name = document.getElementById('name');
-        const email = document.getElementById('email');
         if (name == null) {
             alert('Enter the name');
-            return false;
-        }
-        if (email == null) {
-            alert('Email the name');
             return false;
         }
 

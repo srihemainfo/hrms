@@ -653,6 +653,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     
     //Student Feedback
     Route::get('feedback-forms', 'FeedbackController@studentIndex')->name('feedback-forms.index');
+    Route::post('feedback-forms/survey', 'FeedbackController@studentFeedSurvey')->name('student-feedback-forms.survey');
+    Route::post('feedback-forms/submit', 'FeedbackController@studentFeedStore')->name('student-feedback-forms.store');
 
 
     // Staff Subjects

@@ -164,7 +164,7 @@
                                 </table>
                             </div>
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group buttons">
-                                <button onclick="addQuestion(this)" class="btn btn-sx btn-outline-success float-right"><i
+                                <button onclick="addQuestion(this)" class="btn btn-sx btn-outline-success float-left"><i
                                         class="far fa-question-circle"></i> Add Question</button>
                             </div>
                         </div>
