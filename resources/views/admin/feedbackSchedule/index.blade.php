@@ -169,7 +169,7 @@
                                     <option value="Disabled">Disabled</option>
                                 </select>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group filter">
                                 <label for="result">Degree</label>
                                 <select name="degree" id="degree" class="form-control select2">
                                     <option value="">Select Degree</option>
@@ -179,7 +179,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group filter">
                                 <label for="course">Course</label>
                                 <select name="course[]" id="course" class="form-control select2" multiple>
                                     <option value="">Select Course</option>
@@ -189,7 +189,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
+                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group filter">
                                 <label for="batch">Batch</label>
                                 <select name="batch" id="batch" class="form-control select2">
                                     <option value="">Select Academic Year</option>
@@ -198,7 +198,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
+                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group filter">
                                 <label for="ay">Ay</label>
                                 <select name="ay" id="ay" class="form-control select2">
                                     <option value="">Select Academic Year</option>
@@ -207,7 +207,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
+                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group filter">
                                 <label for="sem">Semester</label>
                                 <select name="sem" id="sem" class="form-control select2">
                                     <option value="">Select Semester</option>
@@ -217,7 +217,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
+                            <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group filter">
                                 <label for="sec">Section</label>
                                 <select name="sec" id="sec" class="form-control select2">
                                     <option value="">Select Section</option>
@@ -335,8 +335,10 @@
             console.log(value);
             if (value == 'External') {
                 $('.type').hide();
+                $('.filter').hide();
             } else {
                 $('.type').show();
+                $('.filter').show();
             }
         })
 
