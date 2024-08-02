@@ -656,6 +656,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('feedback-forms/survey', 'FeedbackController@studentFeedSurvey')->name('student-feedback-forms.survey');
     Route::post('feedback-forms/submit', 'FeedbackController@studentFeedStore')->name('student-feedback-forms.store');
 
+    //Staff Feedback
+    Route::get('feedback-form', 'FeedbackController@staffIndex')->name('feedback-form.index');
+    Route::post('feedback-form/survey', 'FeedbackController@staffFeedSurvey')->name('staff-feedback-form.survey');
+    Route::post('feedback-form/submit', 'FeedbackController@staffFeedStore')->name('staff-feedback-form.store');
+
 
     // Staff Subjects
     Route::get('staff-subjects/lesson-plan/download-pdf/{enroll}/{subject}/{status}', 'StaffSubjectsController@lessonPlanPdf')->name('staff-subjects.lesson-plan.download-pdf');

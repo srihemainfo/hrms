@@ -21,9 +21,6 @@
             align-items: center;
             justify-content: center;
             font-family: 'Poppins', sans-serif;
-            /* background: url('{{ asset('upload/expiry_img.png') }}') no-repeat center center fixed;
-            filter: grayscale(100%);
-            background-size: cover; */
         }
 
         .main {
@@ -36,12 +33,11 @@
 
         .card {
             background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
             padding: 20px;
             text-align: center;
             width: 400px;
             max-width: 90%;
-            box-shadow: rgba(0, 0, 0, 0.2) 0px 10px 20px;
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
             font-size: 16px;
         }
 
@@ -77,5 +73,13 @@
 </body>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function redirectAfterDelay() {
+        setTimeout(function() {
+            window.history.back();
+        }, 2000);
+    }
+    redirectAfterDelay();
+</script>
 
 </html>

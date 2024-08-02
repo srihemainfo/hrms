@@ -185,10 +185,7 @@
                     <a href="#" class="nav-link" data-toggle="dropdown">
                         <i class="far fa-bell"></i>
                         @php
-                            $alertsCount = \Auth::user()
-                                ->userUserAlerts()
-                                ->where('read', false)
-                                ->count();
+                            $alertsCount = \Auth::user()->userUserAlerts()->where('read', false)->count();
                         @endphp
                         @if ($alertsCount > 0)
                             <span class="badge badge-warning navbar-badge">
@@ -403,26 +400,26 @@
                             </li>
                         @endcan
                         @can('student_daily_attendance_staff_access')
-                        <li class="nav-item">
-                            <a href="{{ route('admin.student-period-attendance.index') }}"
-                                class="nav-link {{ request()->is('admin/student-period-attendance') || request()->is('admin/student-period-attendance/*') || request()->is('admin/get-staff-day-period/*') ? 'active' : '' }}">
-                                <i class="fa-fw nav-icon fas fa-address-book">
+                            <li class="nav-item">
+                                <a href="{{ route('admin.student-period-attendance.index') }}"
+                                    class="nav-link {{ request()->is('admin/student-period-attendance') || request()->is('admin/student-period-attendance/*') || request()->is('admin/get-staff-day-period/*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-address-book">
 
-                                </i>
-                                <p>
-                                    Student Daily Attendance
-                                </p>
-                            </a>
-                        </li>
+                                    </i>
+                                    <p>
+                                        Student Daily Attendance
+                                    </p>
+                                </a>
+                            </li>
                         @endcan
                         @can('student_daily_attendance_staff_summary_access')
-                        <li class="nav-item">
-                            <a href="{{ route('admin.day_student_attendance_summary.index') }}"
-                                class="nav-link {{ request()->is('admin/day_student-attendance-summary*') ? 'active' : '' }}">
-                                <i class="fa-fw nav-icon fas fa-file-alt"></i>
-                                <p>Day Attendance Summary</p>
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.day_student_attendance_summary.index') }}"
+                                    class="nav-link {{ request()->is('admin/day_student-attendance-summary*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-file-alt"></i>
+                                    <p>Day Attendance Summary</p>
+                                </a>
+                            </li>
                         @endcan
                         {{-- <li class="nav-item">
                             <a href="{{ route('admin.student-marks.index') }}"
@@ -557,11 +554,36 @@
                                 </a>
                             </li>
                         @endcan
+                        <li
+                            class="nav-item has-treeview {{ request()->is('admin/feedback-forms*') ? 'menu-open' : '' }}">
+                            <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/feedback-forms*') ? 'active' : '' }}"
+                                href="#">
+                                <i class="fas nav-icon fas fa-comment">
+                                </i>
+                                <p>
+                                    Feed Backs
+                                    <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview"
+                                style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.feedback-form.index') }}"
+                                        class="nav-link {{ request()->is('admin/feedback-form') || request()->is('admin/feedback-form/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-comments">
+                                        </i>
+                                        <p>
+                                            Forms
+                                        </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
                         @if ($data = App\Models\ExamCellCoordinator::where(['user_name_id' => auth()->user()->id])->first())
                             <li
-                                class="nav-item has-treeview {{ request()->is('admin/Exam-Cell-Coordinators*') ||request()->is('admin/Exam-time-table.*') ||request()->is('admin/Exam-Attendance/*') ||request()->is('admin/examTimetable.*') ||request()->is('admin/Exam-Mark-master/*') ||request()->is('admin/Exam-Attendance-summary-report*') ||request()->is('admin/Result_Analysis_Class_Wise*') ||request()->is('admin/Result_Analysis_Staff_Wise*') ||request()->is('admin/Result_Analysis_Abstract*') ||request()->is('admin/Result_Analysis_bar_chart*') ||request()->is('admin/Lab-mark*') ||request()->is('admin/Lab-mark*') ||request()->is('admin/lab_Exam_Attendance') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/Lab_Exam_Attendance') ||request()->is('admin/Lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam-Attendance/*') ||request()->is('admin/lab_Exam_Mark_master/*') ||request()->is('admin/lab_Exam-Mark') ||request()->is('admin/lab_Exam-Mark/*') ||request()->is('admin/lab_Exam-Attendance-summary-report*') ||request()->is('admin/lab_Result_Analysis_Abstract/*') ||request()->is('admin/lab_Result_Analysis_Class_Wise*') ||request()->is('admin/lab_Result_Analysis_Staff_Wise*') ||request()->is('admin/lab_Result_Analysis_bar_chart*') || request()->is('admin/lab-mark*') || request()->is('admin/assignment/*')  ? 'menu-open': '' }}">
-                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/Exam-Cell-Coordinators*') ||request()->is('admin/Exam-time-table.*') ||request()->is('admin/Exam-Attendance/*') ||request()->is('admin/examTimetable.*') ||request()->is('admin/Exam-Mark-master/*') ||request()->is('admin/Exam-Attendance-summary-report*') ||request()->is('admin/Result_Analysis_Staff_Wise*') ||request()->is('admin/Result_Analysis_Abstract*') ||request()->is('admin/Result_Analysis_bar_chart*') ||request()->is('admin/Lab-mark*') ||request()->is('admin/Lab-mark*') ||request()->is('admin/Lab_Exam_Attendance') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/Lab_Exam_Attendance') ||request()->is('admin/Lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam-Attendance/*') ||request()->is('admin/lab_Exam_Mark_master/*') ||request()->is('admin/lab_Exam-Mark') ||request()->is('admin/lab_Exam-Mark/*') ||request()->is('admin/lab_Exam-Attendance-summary-report*') ||request()->is('admin/lab_Result_Analysis_Abstract/*') ||request()->is('admin/lab_Result_Analysis_Class_Wise*') ||request()->is('admin/lab_Result_Analysis_Staff_Wise*') ||request()->is('admin/lab_Result_Analysis_bar_chart*') || request()->is('admin/lab-mark*') || request()->is('admin/assignment/*')  || request()->is('admin/assignment') ? 'active': '' }}"
+                                class="nav-item has-treeview {{ request()->is('admin/Exam-Cell-Coordinators*') ||request()->is('admin/Exam-time-table.*') ||request()->is('admin/Exam-Attendance/*') ||request()->is('admin/examTimetable.*') ||request()->is('admin/Exam-Mark-master/*') ||request()->is('admin/Exam-Attendance-summary-report*') ||request()->is('admin/Result_Analysis_Class_Wise*') ||request()->is('admin/Result_Analysis_Staff_Wise*') ||request()->is('admin/Result_Analysis_Abstract*') ||request()->is('admin/Result_Analysis_bar_chart*') ||request()->is('admin/Lab-mark*') ||request()->is('admin/Lab-mark*') ||request()->is('admin/lab_Exam_Attendance') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/Lab_Exam_Attendance') ||request()->is('admin/Lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam-Attendance/*') ||request()->is('admin/lab_Exam_Mark_master/*') ||request()->is('admin/lab_Exam-Mark') ||request()->is('admin/lab_Exam-Mark/*') ||request()->is('admin/lab_Exam-Attendance-summary-report*') ||request()->is('admin/lab_Result_Analysis_Abstract/*') ||request()->is('admin/lab_Result_Analysis_Class_Wise*') ||request()->is('admin/lab_Result_Analysis_Staff_Wise*') ||request()->is('admin/lab_Result_Analysis_bar_chart*') ||request()->is('admin/lab-mark*') ||request()->is('admin/assignment/*')? 'menu-open': '' }}">
+                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/Exam-Cell-Coordinators*') ||request()->is('admin/Exam-time-table.*') ||request()->is('admin/Exam-Attendance/*') ||request()->is('admin/examTimetable.*') ||request()->is('admin/Exam-Mark-master/*') ||request()->is('admin/Exam-Attendance-summary-report*') ||request()->is('admin/Result_Analysis_Staff_Wise*') ||request()->is('admin/Result_Analysis_Abstract*') ||request()->is('admin/Result_Analysis_bar_chart*') ||request()->is('admin/Lab-mark*') ||request()->is('admin/Lab-mark*') ||request()->is('admin/Lab_Exam_Attendance') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/Lab_Exam_Attendance') ||request()->is('admin/Lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam-Attendance/*') ||request()->is('admin/lab_Exam_Mark_master/*') ||request()->is('admin/lab_Exam-Mark') ||request()->is('admin/lab_Exam-Mark/*') ||request()->is('admin/lab_Exam-Attendance-summary-report*') ||request()->is('admin/lab_Result_Analysis_Abstract/*') ||request()->is('admin/lab_Result_Analysis_Class_Wise*') ||request()->is('admin/lab_Result_Analysis_Staff_Wise*') ||request()->is('admin/lab_Result_Analysis_bar_chart*') ||request()->is('admin/lab-mark*') ||request()->is('admin/assignment/*') ||request()->is('admin/assignment')? 'active': '' }}"
                                     href="#">
                                     <i class="fa nav-icon fas fa-newspaper"></i>
                                     <p>
@@ -773,118 +795,117 @@
                             </li>
                         @endif
                         @can('mark_entry_menu_access')
-                        <li
-                            class="nav-item has-treeview {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Class_Wise*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/*') || request()->is('admin/assignment/Exam-Mark/staff') || request()->is('admin/assignment/Mark/staff/*') || request()->is('admin/assignment/MarkEntry/staff/*') || request()->is('admin/assignment/Mark/*')  ? 'menu-open' : '' }}">
-                            <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/*') || request()->is('admin/assignment/Exam-Mark/staff') || request()->is('admin/assignment/Exam-Mark/staff/*') || request()->is('admin/assignment/MarkEntry/staff/*') || request()->is('admin/assignment/Mark/*')  ? 'active' : '' }}"
-                                href="#">
-                                <i class="fa-fw nav-icon fas fa-user-edit"></i>
-                                <p>
-                                    Marks Entry
-                                    <i class="right fa fa-fw fa-angle-left nav-icon"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview"
-                                style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
-                                @can('cat_mark_entry_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.Exam-Mark.staff') }}"
-                                        class="nav-link {{ request()->is('admin/Exam-Mark/staff') || request()->is('admin/Exam-Mark/*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-user-check">
-                                        </i>
-                                        <p>
-                                            CAT Mark Entry
-                                        </p>
-                                    </a>
-                                </li>
-                                @endcan
+                            <li
+                                class="nav-item has-treeview {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Class_Wise*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/*') || request()->is('admin/assignment/Exam-Mark/staff') || request()->is('admin/assignment/Mark/staff/*') || request()->is('admin/assignment/MarkEntry/staff/*') || request()->is('admin/assignment/Mark/*') ? 'menu-open' : '' }}">
+                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/*') || request()->is('admin/assignment/Exam-Mark/staff') || request()->is('admin/assignment/Exam-Mark/staff/*') || request()->is('admin/assignment/MarkEntry/staff/*') || request()->is('admin/assignment/Mark/*') ? 'active' : '' }}"
+                                    href="#">
+                                    <i class="fa-fw nav-icon fas fa-user-edit"></i>
+                                    <p>
+                                        Marks Entry
+                                        <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview"
+                                    style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
+                                    @can('cat_mark_entry_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.Exam-Mark.staff') }}"
+                                                class="nav-link {{ request()->is('admin/Exam-Mark/staff') || request()->is('admin/Exam-Mark/*') ? 'active' : '' }}">
+                                                <i class="fa-fw nav-icon fas fa-user-check">
+                                                </i>
+                                                <p>
+                                                    CAT Mark Entry
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
 
-                                @can('lab_mark_entry_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.lab_Exam-Mark.staff') }}"
-                                        class="nav-link {{ request()->is('admin/lab_Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-user-check">
+                                    @can('lab_mark_entry_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.lab_Exam-Mark.staff') }}"
+                                                class="nav-link {{ request()->is('admin/lab_Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/*') ? 'active' : '' }}">
+                                                <i class="fa-fw nav-icon fas fa-user-check">
 
-                                        </i>
-                                        <p>
-                                            LAB Mark Entry
-                                        </p>
-                                    </a>
-                                </li>
-                                @endcan
-                                @can('assignment_mark_entry_access')
-                                 <li class="nav-item">
-                                    <a href="{{ route('admin.assignment_Exam_Mark_entry_staff.index') }}"
-                                        class="nav-link {{ request()->is('admin/assignment/MarkEntry/staff/*') || request()->is('admin/assignment/Mark/Enter/*')   ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-user-check">
-                                        </i>
-                                        <p>
-                                            Assignment Mark Entry
-                                        </p>
-                                    </a>
-                                </li>
-                                @endcan
+                                                </i>
+                                                <p>
+                                                    LAB Mark Entry
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                    @can('assignment_mark_entry_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.assignment_Exam_Mark_entry_staff.index') }}"
+                                                class="nav-link {{ request()->is('admin/assignment/MarkEntry/staff/*') || request()->is('admin/assignment/Mark/Enter/*') ? 'active' : '' }}">
+                                                <i class="fa-fw nav-icon fas fa-user-check">
+                                                </i>
+                                                <p>
+                                                    Assignment Mark Entry
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
 
 
 
-                            </ul>
-                        </li>
+                                </ul>
+                            </li>
                         @endcan
                         @can('mark_view_menu_access')
 
-                        <li
-                            class="nav-item has-treeview {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Class_Wise*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark-Result/*') || request()->is('admin/lab_Exam-Mark-Result') || request()->is('admin/lab_Exam-Mark-Result/*') || request()->is('admin/assignment_Exam_Mark_Result') || request()->is('admin/assignment_Exam_Mark_Result/*') || request()->is('admin/assignment/MarkView/*') || request()->is('admin/assignment/Mark/view/*')  ? 'menu-open' : '' }}">
-                            <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark-Result/*') || request()->is('admin/lab_Exam-Mark-Result') || request()->is('admin/lab_Exam-Mark-Result/*') || request()->is('admin/assignment_Exam_Mark_Result') || request()->is('admin/assignment_Exam_Mark_Result/*') || request()->is('admin/assignment/MarkView/*') || request()->is('admin/assignment/Mark/view/*') ? 'active' : '' }}"
-                                href="#">
-                                <i class="fa-fw nav-icon fas fa-clipboard-list"></i>
-                                <p>
-                                    View Marks
-                                    <i class="right fa fa-fw fa-angle-left nav-icon"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview"
-                                style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
-                                @can('cat_mark_view_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.Exam-Mark-Result.index') }}"
-                                        class="nav-link {{ request()->is('admin/Exam-Mark-Result') || request()->is('admin/Exam-Mark-Result/*') ? 'active' : '' }}">
-                                        <i class="fa nav-icon fas fa-file-invoice">
-                                        </i>
-                                        <p>
-                                            CAT Marks
-                                        </p>
-                                    </a>
-                                </li>
-                                @endcan
-                                @can('lab_mark_view_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.lab_Exam-Mark-Result.index') }}"
-                                        class="nav-link {{ request()->is('admin/lab_Exam-Mark-Result') || request()->is('admin/lab_Exam-Mark-Result/*')   ? 'active' : '' }}">
-                                        <i class="fa nav-icon fas fa-file-invoice">
-                                        </i>
-                                        <p>
-                                            LAB Marks
-                                        </p>
-                                    </a>
-                                </li>
-                                @endcan
-                                @can('assignment_mark_view_access')
-
-                                 <li class="nav-item">
-                                    <a href="{{ route('admin.assignment_Exam_Mark_Result.index') }}"
-                                        class="nav-link {{ request()->is('admin/assignment/MarkView/*') || request()->is('admin/assignment/Mark/view/*')   ? 'active' : '' }}">
-                                        <i class="fa nav-icon fas fa-file-invoice">
-                                        </i>
-                                        <p>
-                                            Assignment Marks
-                                        </p>
-                                    </a>
-                                </li>
-                                @endcan
-
+                            <li
+                                class="nav-item has-treeview {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Class_Wise*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark-Result/*') || request()->is('admin/lab_Exam-Mark-Result') || request()->is('admin/lab_Exam-Mark-Result/*') || request()->is('admin/assignment_Exam_Mark_Result') || request()->is('admin/assignment_Exam_Mark_Result/*') || request()->is('admin/assignment/MarkView/*') || request()->is('admin/assignment/Mark/view/*') ? 'menu-open' : '' }}">
+                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark-Result/*') || request()->is('admin/lab_Exam-Mark-Result') || request()->is('admin/lab_Exam-Mark-Result/*') || request()->is('admin/assignment_Exam_Mark_Result') || request()->is('admin/assignment_Exam_Mark_Result/*') || request()->is('admin/assignment/MarkView/*') || request()->is('admin/assignment/Mark/view/*') ? 'active' : '' }}"
+                                    href="#">
+                                    <i class="fa-fw nav-icon fas fa-clipboard-list"></i>
+                                    <p>
+                                        View Marks
+                                        <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview"
+                                    style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
+                                    @can('cat_mark_view_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.Exam-Mark-Result.index') }}"
+                                                class="nav-link {{ request()->is('admin/Exam-Mark-Result') || request()->is('admin/Exam-Mark-Result/*') ? 'active' : '' }}">
+                                                <i class="fa nav-icon fas fa-file-invoice">
+                                                </i>
+                                                <p>
+                                                    CAT Marks
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                    @can('lab_mark_view_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.lab_Exam-Mark-Result.index') }}"
+                                                class="nav-link {{ request()->is('admin/lab_Exam-Mark-Result') || request()->is('admin/lab_Exam-Mark-Result/*') ? 'active' : '' }}">
+                                                <i class="fa nav-icon fas fa-file-invoice">
+                                                </i>
+                                                <p>
+                                                    LAB Marks
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                    @can('assignment_mark_view_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.assignment_Exam_Mark_Result.index') }}"
+                                                class="nav-link {{ request()->is('admin/assignment/MarkView/*') || request()->is('admin/assignment/Mark/view/*') ? 'active' : '' }}">
+                                                <i class="fa nav-icon fas fa-file-invoice">
+                                                </i>
+                                                <p>
+                                                    Assignment Marks
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
 
 
-                            </ul>
-                        </li>
+
+                                </ul>
+                            </li>
                         @endcan
                         @php($unread = \App\Models\QaTopic::unreadCount())
                         <li class="nav-item">

@@ -22,7 +22,6 @@
             font-size: 12px;
         }
 
-
         body {
             width: 100vw;
             height: 100vh;
@@ -37,24 +36,19 @@
         .main {
             width: 100%;
             max-width: 600px;
-
-            /* Adjust width as needed */
             height: 80%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 10px;
-            /* overflow-y: scroll; */
         }
 
         .card {
             background: rgba(255, 255, 255, 0.9);
-            /* border-radius: 15px; */
             padding: 20px;
             width: 800px;
             max-width: 90%;
             box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
-            font-size: 16px;
+            font-size: 12px;
         }
 
         .card h2 {
@@ -66,7 +60,7 @@
 
         .card h3 {
             text-align: center;
-            /* margin: 20px 0; */
+            margin: 20px 0;
             color: #333;
             font-weight: 400;
         }
@@ -76,6 +70,7 @@
             margin-top: 10px;
             color: #333;
             font-weight: 600;
+            font-size: 12px;
         }
 
         .card input[type="text"] {
@@ -381,7 +376,7 @@
         .toast .close {
             margin-left: 15px;
             cursor: pointer;
-            font-size: 20px;
+            font-size: 12px;
             font-weight: bold;
         }
 
@@ -417,53 +412,30 @@
             @php
                 $decode = json_decode($datas);
             @endphp
-            <form id="form-id" action="{{ route('admin.student-feedback-forms.store') }}" method="POST"
+            <form id="form-id" action="{{ route('admin.staff-feedback-form.store') }}" method="POST"
                 onsubmit="return handleValidate(event)">
                 @csrf
                 <h2>Feedback Survey</h2>
                 <hr>
-                <h3>{{ $decode->feedback_name }}</h3>
-                <div class="feedBack_details" style="padding:20px; padding-left: 0;">
-                    {{-- <div class="card" style="border-radius: 15px;"> --}}
-                    @if (property_exists($decode, 'staff'))
-                        <p style="padding: 5px"><strong style="color: #d9534f">Faculty Name :</strong>
-                            {{ $decode->staff }}</p>
-                        <p style="padding: 5px"><strong style="color: #d9534f">Subject :</strong>
-                            {{ $decode->name }}</p>
-                    @endif
-
-                    @if (property_exists($decode, 'person'))
-                        <p style="padding: 5px"><strong style="color: #d9534f">Title :</strong>
-                            {{ $decode->title }}</p>
-                        <p style="padding: 5px"><strong style="color: #d9534f">Resource Person :</strong>
-                            {{ $decode->person }}</p>
-                        <p style="padding: 5px"><strong style="color: #d9534f">Duration :</strong>
-                            {{ $decode->duration }}</p>
-                    @endif
-                    {{-- </div> --}}
-                </div>
+                <h3>{{ $decode->feedback->name }}</h3>
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <label for="name">Name</label>
                     <input type="text" name="name" id="name">
                 </div>
-                @php
-                    $question = json_decode($question);
-                @endphp
                 <div class="ques">
                     <label>Questions</label>
+                    @php
+                        $question = json_decode($decode->feedback->question);
+                    @endphp
                     <input type="hidden" name="ques_count" id="ques_count" value="{{ count($question) }}">
                     <input type="hidden" name="feedback_id" id="feedback_id" value="{{ $decode->feedback_id }}">
-                    <input type="hidden" name="feed_id" id="feed_id" value="{{ $decode->feed_id }}">
-                    <input type="hidden" name="staff_id" id="staff_id" value="{{ $decode->staff_id }}">
-                    <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
+                    <input type="hidden" name="feed_id" id="feed_id" value="{{ $decode->id }}">
                     <input type="hidden" name="datas" id="datas" value="{{ $datas }}">
-                    <input type="hidden" name="question" id="question" value="{{ json_encode($question) }}">
                     @foreach ($question as $key => $item)
                         <div class="first">
                             <label style="text-transform: uppercase;">{{ $item }}</label>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 rating">
-
                             <div class="rate">
                                 <input type="radio" id="star{{ $key + 1 }}_5" name="ques{{ $key + 1 }}"
                                     value="5" />
@@ -502,6 +474,7 @@
                     </ul>
                 </button>
 
+
                 <!-- SVG -->
                 <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
                     <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 100" id="btn-layer"
@@ -526,13 +499,12 @@
         event.preventDefault(); // Prevent default form submission
 
         // Get the form element
-        let form = document.getElementById('form-id');
+        const form = document.getElementById('form-id');
         const name = document.getElementById('name').value;
         if (name == '') {
             alert('Enter Your Name');
             return false;
         }
-
 
         const ques_count = parseInt(document.getElementById('ques_count').value, 10);
         if (isNaN(ques_count) || ques_count <= 0) {
@@ -544,7 +516,7 @@
         for (let i = 1; i <= ques_count; i++) {
             let rating = document.querySelector(`input[name="ques${i}"]:checked`);
             if (!rating) {
-                alert('Please rate all the questions.');
+                alert('Rate to the all Questions');
                 return false;
             }
         }
@@ -585,7 +557,7 @@
         toast.classList.add('fade-out');
         setTimeout(() => {
             toast.remove();
-        }, 500);
+        }, 500); // Time to match CSS transition
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -595,8 +567,8 @@
                 toast.classList.add('fade-out');
                 setTimeout(() => {
                     toast.remove();
-                }, 500);
-            }, 3000);
+                }, 500); // Time to match CSS transition
+            }, 3000); // Toast visibility time
         });
     });
 </script>

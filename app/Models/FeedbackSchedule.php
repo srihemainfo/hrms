@@ -16,12 +16,16 @@ class FeedbackSchedule extends Model
 
     public function feedback()
     {
-        return $this->belongsTo(Feedback::class, 'feedback_id');
+        return $this->hasOne(Feedback::class, 'id','feedback_id');
     }
 
     public function feedback_schedule()
     {
         return $this->belongsTo(FeedbackSchedule::class, 'feed_schedule_id');
+    }
+    public function overall_feedbacks()
+    {
+        return $this->belongsTo(OverAllFeedbacksModel::class, 'id','feed_schedule_id');
     }
 
 }

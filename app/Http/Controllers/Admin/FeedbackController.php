@@ -11,6 +11,7 @@ use App\Models\Feedback;
 use App\Models\Feedback_questions;
 use App\Models\FeedbackSchedule;
 use App\Models\GeneralFeedbackModel;
+use App\Models\OverAllFeedbacksModel;
 use App\Models\Section;
 use App\Models\Semester;
 use App\Models\Student;
@@ -481,26 +482,26 @@ class FeedbackController extends Controller
 
                 $questions = json_decode($check->feedback->question);
                 $overall_rating = $check->feedback->rating;
-                $feedback_type = $check->feedback_type;
-                $verify = GeneralFeedbackModel::where([
+                $feedback_participant = $check->feedback_participant;
+                $verify = OverAllFeedbacksModel::where([
                     'feedback_id' => $check->feedback->id,
                     'feed_schedule_id' => $check->id,
-                    'feedback_type' => $feedback_type,
+                    'feedback_participant' => $feedback_participant,
                 ])->exists();
                 if ($verify) {
-                    $email_exists = GeneralFeedbackModel::where([
+                    $email_exists = OverAllFeedbacksModel::where([
                         'feedback_id' => $check->feedback->id,
                         'feed_schedule_id' => $check->id,
-                        'feedback_type' => $feedback_type,
+                        'feedback_participant' => $feedback_participant,
                     ])->whereJsonContains('emails', $request->email)->exists();
                     if ($email_exists) {
                         $data = 'You have Already Submitted the Form.';
                         return view('admin.feedback.success', compact(['data']));
                     } else {
-                        $update = GeneralFeedbackModel::where([
+                        $update = OverAllFeedbacksModel::where([
                             'feedback_id' => $check->feedback->id,
                             'feed_schedule_id' => $check->id,
-                            'feedback_type' => $feedback_type
+                            'feedback_participant' => $feedback_participant
                         ])->get();
 
                         foreach ($update as $key => $value) {
@@ -532,10 +533,10 @@ class FeedbackController extends Controller
                         $decode_rate = json_encode([$request->ques . ($key + 1)]);
                         $decode_name = json_encode([$request->name]);
                         $decode_email = json_encode([$request->email]);
-                        $create = GeneralFeedbackModel::create([
+                        $create = OverAllFeedbacksModel::create([
                             'feedback_id' => $check->feedback->id,
                             'feed_schedule_id' => $check->id,
-                            'feedback_type' => $feedback_type,
+                            'feedback_participant' => $feedback_participant,
                             'question_name' => $value,
                             'overall_rating' => $check->feedback->rating,
                             'ratings' => $decode_rate,
@@ -565,10 +566,18 @@ class FeedbackController extends Controller
         $today = Carbon::today()->toDateString();
         // dd($student->enroll_master->course_id);
         // Query the database
-        $feedback = FeedbackSchedule::with('feedback')->whereDate('start_date', '<=', $today)
+        $feedback = FeedbackSchedule::with('feedback', 'overall_feedbacks')
+        ->whereDate('start_date', '<=', $today)
             ->whereDate('expiry_date', '>=', $today)
             ->where('feedback_participant', 'Student')
             ->where('status', 'Active')
+            ->where(function ($query) use ($user_id) {
+                $query->where(function ($q) use ($user_id) {
+                    $q->whereHas('overall_feedbacks', function ($subQuery) use ($user_id) {
+                        $subQuery->whereJsonDoesntContain('users', $user_id);
+                    });
+                })->orWhereDoesntHave('overall_feedbacks');
+            })
             ->get();
         // dd($feedback);
         $subject = [];
@@ -609,8 +618,10 @@ class FeedbackController extends Controller
                                         'name' => $check->subjects->name,
                                         'code' => $check->subjects->subject_code,
                                         'staff' => $check->staffs->name,
+                                        'staff_id' => $check->staff,
                                         'feedback_name' => $item->feedback->name,
-                                        'feedback_id' => $item->id
+                                        'feedback_id' => $item->id,
+                                        'feed_id' => $item->feedback_id,
                                     ];
                                 }
                             }
@@ -623,13 +634,16 @@ class FeedbackController extends Controller
                             'title' => $decode->title_training,
                             'duration' => $decode->duration_training,
                             'person' => $decode->person_training,
+                            'staff_id' => null,
                             'feedback_name' => $item->feedback->name,
-                            'feedback_id' => $item->id
+                            'feedback_id' => $item->id,
+                            'feed_id' => $item->feedback_id
                         ];
                     }
                 }
             }
 
+            // dd($training);
             // dd($subject, $training);
             return view('admin.feedback.studentIndex', compact('subject', 'training'));
 
@@ -648,7 +662,8 @@ class FeedbackController extends Controller
                 foreach (json_decode($schedule->feedback->question) as $key => $value) {
                     $question[] = $value;
                 }
-                $datas = json_decode($request->datas);
+                $datas = $request->datas;
+                $question = json_encode($question);
                 // dd($question);
                 return view('admin.feedback.student', compact('datas', 'question'));
             } else {
@@ -660,13 +675,241 @@ class FeedbackController extends Controller
 
     public function studentFeedStore(Request $request)
     {
-        if ($request->feedback_id != '' && $request->user_id != '') {
-            $get_schedule = FeedbackSchedule::with('feedback')->find($request->feedback_id);
-            if ($get_schedule) {
-                $data = 'Your Feedback Submitted Successfully.';
-                return view('admin.feedback.success', compact(['data']));
+        // dd($request);
+        if (!empty($request->user_id) && !empty($request->feedback_id) && !empty($request->name)) {
+            $rules = [
+                'name' => 'required',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return view('admin.feedback.student')->with(['errors' => $validator->errors(), 'datas' => $request->datas, 'question' => $request->question], 422);
+            }
+
+            $check = FeedbackSchedule::with('feedback')
+                ->where('id', $request->feedback_id)
+                ->where('expiry_date', '>=', date('Y-m-d'))
+                ->first();
+            if (!$check) {
+                $data = 'You Submited Feedback form has expired or is Invalid.';
+                return view('admin.feedback.expiry', compact('data'));
+            } else {
+                $questions = json_decode($check->feedback->question);
+                $overall_rating = $check->feedback->rating;
+                $feedback_participant = $check->feedback_participant;
+                $feedback_type = $check->feedback_type;
+                $verify = OverAllFeedbacksModel::where([
+                    'feedback_id' => $check->feedback->id,
+                    'feed_schedule_id' => $check->id,
+                    'feedback_participant' => $feedback_participant,
+                    'feedback_type' => $feedback_type,
+                    'staff_id' => $request->staff_id
+                ])->exists();
+                if ($verify) {
+                    $email_exists = OverAllFeedbacksModel::where([
+                        'feedback_id' => $check->feedback->id,
+                        'feed_schedule_id' => $check->id,
+                        'feedback_participant' => $feedback_participant,
+                        'feedback_type' => $feedback_type,
+                        'staff_id' => $request->staff_id
+                    ])->whereJsonContains('users', $request->user_id)->exists();
+                    if ($email_exists) {
+                        $data = 'You have Already Submitted the Form.';
+                        return view('admin.feedback.success', compact(['data']));
+                    } else {
+                        $update = OverAllFeedbacksModel::where([
+                            'feedback_id' => $check->feedback->id,
+                            'feed_schedule_id' => $check->id,
+                            'feedback_participant' => $feedback_participant,
+                            'feedback_type' => $feedback_type,
+                            'staff_id' => $request->staff_id
+                        ])->get();
+
+                        foreach ($update as $key => $value) {
+                            $decode_email = json_decode($value->emails, true) ?? [];
+                            $decode_name = json_decode($value->users, true) ?? [];
+                            $decode_rate = json_decode($value->ratings, true) ?? [];
+                            $r = 'ques' . ($key + 1);
+
+                            // array_push($decode_email, $request->email);
+                            array_push($decode_name, $request->user_id);
+                            array_push($decode_rate, $request->$r);
+
+                            // $value->emails = json_encode($decode_email);
+                            $value->users = json_encode($decode_name);
+                            $value->ratings = json_encode($decode_rate);
+
+                            $value->save();
+                        }
+
+                        $data = 'Feedback Submitted Successfully.';
+                        return view('admin.feedback.success', compact(['data']));
+                    }
+                } else {
+                    foreach ($questions as $key => $value) {
+                        $decode_rate = json_encode([$request->ques . ($key + 1)]);
+                        $decode_id = json_encode([$request->user_id]);
+                        // $decode_email = null;
+                        $create = OverAllFeedbacksModel::create([
+                            'feedback_id' => $check->feedback->id,
+                            'feed_schedule_id' => $check->id,
+                            'feedback_participant' => $feedback_participant,
+                            'feedback_type' => $feedback_type,
+                            'staff_id' => $request->staff_id ?? null,
+                            'question_name' => $value,
+                            'overall_rating' => $check->feedback->rating,
+                            'ratings' => $decode_rate,
+                            'users' => $decode_id,
+                            // 'emails' => $decode_email,
+                        ]);
+                    }
+                    $data = 'Feedback Submitted Successfully.';
+                    return view('admin.feedback.success', compact(['data']));
+                }
+                // dd($create);
             }
         }
     }
 
+    public function staffIndex(Request $request)
+    {
+        $user_id = auth()->user()->id;
+        $dept = auth()->user()->dept;
+        $dept = ToolsDepartment::where('name', $dept)->value('id');
+        $today = Carbon::today()->toDateString();
+
+        $data = FeedbackSchedule::with('feedback', 'overall_feedbacks')
+            ->whereDate('start_date', '<=', $today)
+            ->whereDate('expiry_date', '>=', $today)
+            ->where('feedback_participant', 'Staff')
+            ->where('feedback_type', 'Faculty')
+            ->where('status', 'Active')
+            ->where(function ($query) use ($user_id) {
+                $query->where(function ($q) use ($user_id) {
+                    $q->whereHas('overall_feedbacks', function ($subQuery) use ($user_id) {
+                        $subQuery->whereJsonDoesntContain('users', $user_id);
+                    });
+                })->orWhereDoesntHave('overall_feedbacks');
+            })
+            ->get();
+
+        return view('admin.feedback.staffIndex', compact('data'));
+    }
+
+    public function staffFeedSurvey(Request $request)
+    {
+        // dd($request);
+        if ($request->feedback_id != '' && $request->datas != '') {
+            $schedule = FeedbackSchedule::where('expiry_date', '>=', date('Y-m-d'))->find($request->feedback_id);
+            $question = [];
+            if ($schedule) {
+                foreach (json_decode($schedule->feedback->question) as $key => $value) {
+                    $question[] = $value;
+                }
+                $datas = $request->datas;
+                return view('admin.feedback.staff', compact('datas', 'question'));
+            } else {
+                $data = 'The link has expired or is Invalid.';
+                return view('admin.feedback.expiry', compact('data'));
+            }
+        }
+
+    }
+
+    public function staffFeedStore(Request $request)
+    {
+        // dd($request);
+        if (!empty($request->feedback_id) && !empty($request->name)) {
+            $rules = [
+                'name' => 'required',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return view('admin.feedback.staff')->with(['errors' => $validator->errors(), 'datas' => $request->datas], 422);
+            }
+
+            $check = FeedbackSchedule::with('feedback')
+                ->where('id', $request->feedback_id)
+                ->where('expiry_date', '>=', date('Y-m-d'))
+                ->first();
+            // dd($check, $request);
+            if (!$check) {
+                $data = 'You Submited Feedback form has expired or is Invalid.';
+                return view('admin.feedback.expiry', compact('data'));
+            } else {
+                $questions = json_decode($check->feedback->question);
+                $overall_rating = $check->feedback->rating;
+                $feedback_participant = $check->feedback_participant;
+                $feedback_type = $check->feedback_type;
+                $verify = OverAllFeedbacksModel::where([
+                    'feedback_id' => $check->feedback->id,
+                    'feed_schedule_id' => $check->id,
+                    'feedback_participant' => $feedback_participant,
+                    'feedback_type' => $feedback_type,
+                ])->exists();
+                if ($verify) {
+                    $email_exists = OverAllFeedbacksModel::where([
+                        'feedback_id' => $check->feedback->id,
+                        'feed_schedule_id' => $check->id,
+                        'feedback_participant' => $feedback_participant,
+                        'feedback_type' => $feedback_type,
+                    ])->whereJsonContains('users', auth()->user()->id)->exists();
+                    if ($email_exists) {
+                        $data = 'You have Already Submitted the Form.';
+                        return view('admin.feedback.success', compact(['data']));
+                    } else {
+                        $update = OverAllFeedbacksModel::where([
+                            'feedback_id' => $check->feedback->id,
+                            'feed_schedule_id' => $check->id,
+                            'feedback_participant' => $feedback_participant,
+                            'feedback_type' => $feedback_type,
+                        ])->get();
+                        // dd($update);
+                        foreach ($update as $key => $value) {
+                            $decode_email = json_decode($value->emails, true) ?? [];
+                            $decode_name = json_decode($value->users, true) ?? [];
+                            $decode_rate = json_decode($value->ratings, true) ?? [];
+                            $r = 'ques' . ($key + 1);
+
+                            // array_push($decode_email, $request->email);
+                            array_push($decode_name, auth()->user()->id);
+                            array_push($decode_rate, $request->$r);
+
+                            // $value->emails = json_encode($decode_email);
+                            $value->users = json_encode($decode_name);
+                            $value->ratings = json_encode($decode_rate);
+
+                            $value->save();
+                        }
+
+                        $data = 'Feedback Submitted Successfully.';
+                        return view('admin.feedback.success', compact(['data']));
+                    }
+                } else {
+                    foreach ($questions as $key => $value) {
+                        $decode_rate = json_encode([$request->ques . ($key + 1)]);
+                        $decode_id = json_encode([auth()->user()->id]);
+                        // $decode_email = null;
+                        $create = OverAllFeedbacksModel::create([
+                            'feedback_id' => $check->feedback->id,
+                            'feed_schedule_id' => $check->id,
+                            'feedback_participant' => $feedback_participant,
+                            'feedback_type' => $feedback_type,
+                            'question_name' => $value,
+                            'overall_rating' => $check->feedback->rating,
+                            'ratings' => $decode_rate,
+                            'users' => $decode_id,
+                            // 'emails' => $decode_email,
+                        ]);
+                    }
+                    $data = 'Feedback Submitted Successfully.';
+                    return view('admin.feedback.success', compact(['data']));
+                }
+                // dd($create);
+            }
+        }
+    }
 }
