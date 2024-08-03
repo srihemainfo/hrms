@@ -17,6 +17,10 @@
             z-index: 9999999;
         }
     </style>
+    @php
+        $feeCycleText = $feeCycles[0];
+
+    @endphp
     <div class="loading" id='loading' style='display:none'>Loading&#8230;</div>
     <div class="row">
         <div class="form-group col-xl-5 col-lg-5 col-md-5 col-sm-5 col-12">
@@ -56,7 +60,15 @@
                                 <th scope="col">Receipt No</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Date</th>
-                                <th scope="col">Semester</th>
+                                <th scope="col">
+                                    @if ($feeCycleText == 'SemesterWise')
+                                        Semester
+                                    @elseif($feeCycleText == 'YearlyWise')
+                                        Academic Year
+                                    @else
+                                        AY / Semester
+                                    @endif
+                                </th>
                                 <th scope="col">Amount</th>
                                 <th scope="col">Status</th>
                                 <th scope="col" style="display: none;">Transaction Id</th>
@@ -145,7 +157,15 @@
             <table class="table table-striped table-bordered" id="feeDetailsTable">
                 <thead>
                     <tr class="text-center">
-                        <th>Semester</th>
+                        <th scope="col">
+                            @if ($feeCycleText == 'SemesterWise')
+                                Semester
+                            @elseif($feeCycleText == 'YearlyWise')
+                                Academic Year
+                            @else
+                                AY / Semester
+                            @endif
+                        </th>
                         <th>Total Amount</th>
                         <th>Paid</th>
                         <th>Pending</th>
@@ -176,6 +196,7 @@
                         <input type="hidden" id="total_amountsss">
                         <input type="hidden" id="register_no">
                         <input type="hidden" id="semester_idss">
+                        <input type="hidden" id="academic_year_idss">
                         <input type="hidden" id="stu_fees_id">
                     </div>
                     <div>
@@ -205,18 +226,38 @@
             $('#myModal').modal('show');
 
 
+            var feeCycle = '{{ $feeCycleText }}';
+            if (feeCycle == 'SemesterWise') {
 
-            var row = $(this).closest('tr');
-            var semester_idss = row.find('td:nth-child(1)').text().trim();
-            var total_amount = row.find('td:nth-child(2)').text().trim();
-            var fees_id = row.find('td:nth-child(6)').text().trim();
+                var row = $(this).closest('tr');
+                var semester_idss = row.find('td:nth-child(1)').text().trim();
+                var total_amount = row.find('td:nth-child(2)').text().trim();
+                var fees_id = row.find('td:nth-child(6)').text().trim();
 
-            $('#total_amountsss').val(total_amount);
-            $('#semester_idss').val(semester_idss);
-            $('#stu_fees_id').val(fees_id);
+                $('#total_amountsss').val(total_amount);
+                $('#semester_idss').val(semester_idss);
+                $('#stu_fees_id').val(fees_id);
 
-            $("#paid_amount").val('');
-            $("#remark_details").val('')
+                $("#paid_amount").val('');
+                $("#remark_details").val('')
+
+            } else if (feeCycle == 'YearlyWise') {
+                var row = $(this).closest('tr');
+                var academic_year_idss = row.find('td:nth-child(1)').text().trim();
+                var total_amount = row.find('td:nth-child(2)').text().trim();
+                var fees_id = row.find('td:nth-child(6)').text().trim();
+
+                $('#total_amountsss').val(total_amount);
+                $('#academic_year_idss').val(academic_year_idss);
+                $('#stu_fees_id').val(fees_id);
+
+                $("#paid_amount").val('');
+                $("#remark_details").val('')
+
+            }
+
+
+
 
 
         });
@@ -226,8 +267,13 @@
         var reg_no = '';
 
         function getdetails() {
+
+
             $('#loading').show();
             var reg_no = $("#reg_no").val();
+
+            var feeCycle = '{{ $feeCycleText }}';
+            // alert(feeCycle)
 
             $.ajax({
                 url: '{{ route('admin.student-rollnumber.geter') }}',
@@ -239,6 +285,8 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(response) {
+                    // console.log(response);
+                    // alert(response.academic_year);
                     let status = response.status;
                     if (status) {
                         $("#student_id").val(response.student_id);
@@ -262,11 +310,23 @@
                         }
 
                         $.each(feeDetails, function(semester_id, details) {
+                            // console.log(semester_id);
+
+                            let firstColumnValue;
+                            if (feeCycle === 'YearlyWise') {
+                                firstColumnValue = semester_id;
+                            } else if (feeCycle === 'SemesterWise') {
+                                firstColumnValue = semester_id;
+                            } else {
+                                firstColumnValue =
+                                    'N/A'; // Default value if feeCycle doesn't match known cases
+                            }
+
                             var amountssss = details.amount;
                             var id = details.id;
 
                             let row = `<tr>
-                        <td>${semester_id}</td>
+                        <td>${firstColumnValue}</td>
                         <td>${amountssss}</td>
                         <td></td>
                         <td><!-- Pending amount --></td>
@@ -308,18 +368,28 @@
 
                         $("#fee_history_table tbody").empty();
 
-                        // To keep track of which semesters have been updated
+
                         let updatedSemesters = [];
+                        let academicYearUpdate = [];
 
                         $.each(response.data, function(index, fee) {
 
+                            let semesterOrYear;
+                            if (feeCycle === 'YearlyWise') {
+                                semesterOrYear = fee.academic_year_id;
+                            } else if (feeCycle === 'SemesterWise') {
+                                semesterOrYear = fee.semester;
+                            } else {
+                                semesterOrYear =
+                                    'N/A';
+                            }
 
                             let tablerow = `<tr>
                         <td scope="row">${index + 1}</td>
                         <td scope="row">${fee.receipt_no}</td>
                         <td scope="row">${fee.student_name}</td>
                         <td scope="row">${fee.paid_date}</td>
-                        <td scope="row">${fee.semester}</td>
+                        <td scope="row">${semesterOrYear}</td>
                         <td scope="row">${fee.paid_amount}</td>
                         <td scope="row">${fee.status}</td>
                         <td scope="row" style="display:none;">${fee.transaction_id}</td>
@@ -351,49 +421,117 @@
                             }
 
                             $(`#feeDetailsTable tbody tr`).each(function() {
-                                var semesterssId = $(this).find('td:first').text().trim();
 
-                                var $tdThird = $(this).find('td:nth-child(3)');
-                                if (semesterssId == fee.semester) {
-                                    var totals = parseInt(fee.total_paid_amount);
-                                    $tdThird.text(totals);
-                                    updatedSemesters.push(semesterssId);
+
+                                if (feeCycle == 'SemesterWise') {
+
+                                    var semesterssId = $(this).find('td:first').text().trim();
+
+                                    var $tdThird = $(this).find('td:nth-child(3)');
+                                    if (semesterssId == fee.semester) {
+                                        var totals = parseInt(fee.total_paid_amount);
+                                        $tdThird.text(totals);
+                                        updatedSemesters.push(semesterssId);
+                                    }
+
+                                    var currentAmount1 = parseInt($(this).find(
+                                            'td:nth-child(2)')
+                                        .text().trim());
+                                    var paid_amount1 = parseInt($tdThird.text().trim());
+                                    var pendingAmount1 = currentAmount1 - paid_amount1;
+                                    $(this).find('td:nth-child(4)').text(pendingAmount1);
+
+                                } else if (feeCycle == 'YearlyWise') {
+
+                                    var semesterssId1 = $(this).find('td:first').text().trim();
+
+                                    var $tdThird1 = $(this).find('td:nth-child(3)');
+                                    if (semesterssId1 == fee.academic_year_id) {
+                                        var totals1 = parseInt(fee.total_paid_amount);
+                                        $tdThird1.text(totals1);
+                                        academicYearUpdate.push(semesterssId1);
+                                    }
+
+                                    var currentAmount11 = parseInt($(this).find(
+                                            'td:nth-child(2)')
+                                        .text().trim());
+                                    var paid_amount11 = parseInt($tdThird1.text().trim());
+                                    var pendingAmount11 = currentAmount11 - paid_amount11;
+                                    $(this).find('td:nth-child(4)').text(pendingAmount11);
+
                                 }
 
-                                var currentAmount1 = parseInt($(this).find('td:nth-child(2)')
-                                    .text().trim());
-                                var paid_amount1 = parseInt($tdThird.text().trim());
-                                var pendingAmount1 = currentAmount1 - paid_amount1;
-                                $(this).find('td:nth-child(4)').text(pendingAmount1);
                             });
+
+
                         });
 
-                        // Set 3rd child to zero if not updated
-                        $(`#feeDetailsTable tbody tr`).each(function() {
-                            var semesterssId = $(this).find('td:first').text().trim();
-                            if (!updatedSemesters.includes(semesterssId)) {
-                                $(this).find('td:nth-child(3)').text(0);
-                                var currentAmount1 = parseInt($(this).find('td:nth-child(2)').text()
-                                    .trim());
-                                $(this).find('td:nth-child(4)').text(currentAmount1);
-                            }
-                        });
+                        if (feeCycle == 'SemesterWise') {
+                            // Set 3rd child to zero if not updated
+                            $(`#feeDetailsTable tbody tr`).each(function() {
+                                var semesterssId = $(this).find('td:first').text().trim();
+                                if (!updatedSemesters.includes(semesterssId)) {
+                                    $(this).find('td:nth-child(3)').text(0);
+                                    var currentAmount1 = parseInt($(this).find('td:nth-child(2)').text()
+                                        .trim());
+                                    $(this).find('td:nth-child(4)').text(currentAmount1);
+                                }
+                            });
+                        } else if (feeCycle == 'YearlyWise') {
+                            $(`#feeDetailsTable tbody tr`).each(function() {
+                                var semesterssId1 = $(this).find('td:first').text().trim();
+                                if (!academicYearUpdate.includes(semesterssId1)) {
+                                    $(this).find('td:nth-child(3)').text(0);
+                                    var currentAmount11 = parseInt($(this).find('td:nth-child(2)')
+                                        .text()
+                                        .trim());
+                                    $(this).find('td:nth-child(4)').text(currentAmount11);
+                                }
+                            });
 
-                        $(`#feeDetailsTable tbody tr`).each(function() {
+                        }
 
-                            var statusUpdate = $(this).find('td:nth-child(4)').text().trim();
-                            if (statusUpdate == 0 || statusUpdate < 0) {
-                                $(this).find('td:nth-child(5)').text('Fully Paid').addClass(
-                                    'fully-paid');
-                                $(this).find('button#payButton').prop('disabled', true).css({
-                                    'color': 'black',
-                                });
-                            } else {
-                                $(this).find('td:nth-child(5)').text('Pending').addClass('pending');
+                        if (feeCycle == 'SemesterWise') {
 
-                            }
+                            $(`#feeDetailsTable tbody tr`).each(function() {
 
-                        })
+                                var statusUpdate = $(this).find('td:nth-child(4)').text().trim();
+                                if (statusUpdate == 0 || statusUpdate < 0) {
+                                    $(this).find('td:nth-child(5)').text('Fully Paid').addClass(
+                                        'fully-paid');
+                                    $(this).find('button#payButton').prop('disabled', true).css({
+                                        'color': 'black',
+                                    });
+                                } else {
+                                    $(this).find('td:nth-child(5)').text('Pending').addClass('pending');
+
+                                }
+
+                            })
+
+                        } else if (feeCycle == 'YearlyWise') {
+
+
+                            $(`#feeDetailsTable tbody tr`).each(function() {
+
+                                var statusUpdate1 = $(this).find('td:nth-child(4)').text().trim();
+
+                                if (statusUpdate1 == 0 || statusUpdate1 < 0) {
+                                    $(this).find('td:nth-child(5)').text('Fully Paid').addClass(
+                                        'fully-paid');
+                                    $(this).find('button#payButton').prop('disabled', true).css({
+                                        'color': 'black',
+                                    });
+                                } else {
+                                    $(this).find('td:nth-child(5)').text('Pending').addClass('pending');
+
+                                }
+
+                            })
+
+                        }
+
+
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
@@ -405,6 +543,7 @@
         }
 
         function pay_now() {
+
             $('#loading').show();
             var paid_amount = $("#paid_amount").val();
             var remark_details = $("#remark_details").val();
@@ -413,6 +552,7 @@
             var tot_amount = $("#total_amountsss").val();
             var register_number = $("#register_no").val();
             var sem = $("#semester_idss").val();
+            var aca = $("#academic_year_idss").val();
             var fee_idis = $('#stu_fees_id').val();
 
             $.ajax({
@@ -428,6 +568,7 @@
                     'tot_amount': tot_amount,
                     'register_number': register_number,
                     'sem': sem,
+                    'aca': aca,
                     'fee_idis': fee_idis
 
                 },

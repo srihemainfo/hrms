@@ -485,6 +485,7 @@
                         request()->is('admin/examfee-master*') ||
                         request()->is('admin/credit-limit-master*') ||
                         request()->is('admin/fee-components*') ||
+                        request()->is('admin/fee-cycle*') ||
                         request()->is('admin/internal-weightage/*') ||
                         request()->is('admin/paymentMode*') ||
                         request()->is('admin/paymentMode/*') ||

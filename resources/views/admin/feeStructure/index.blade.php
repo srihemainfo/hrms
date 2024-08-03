@@ -1,5 +1,10 @@
 @extends('layouts.admin')
 @section('content')
+
+    @php
+        $feeCycleText = $feeCycles[0];
+    @endphp
+
     <style>
         .select2-container {
             width: 100% !important;
@@ -22,9 +27,9 @@
                 <button class="btn btn-warning" onclick="feeGenerateModal('Generate')">
                     Generate Fee
                 </button>
-                <button class="btn btn-info" onclick="feeGenerateModal('Publish')">
+                {{-- <button class="btn btn-info" onclick="feeGenerateModal('Publish')">
                     Publish Fee
-                </button>
+                </button> --}}
             </div>
             <div class="col-md-6 col-12 text-right">
                 <button class="btn btn-success" data-toggle="modal" data-target="#feeStructureImp">
@@ -61,12 +66,11 @@
                         <th>
                             Course
                         </th>
-                        <th>
-                            Semester
-                        </th>
-                        {{-- <th>
-                            Admission Mode
-                        </th> --}}
+                        @if ($feeCycleText == 'SemesterWise')
+                            <th>Semester</th>
+                        @elseif ($feeCycleText == 'YearlyWise')
+                            <th>Academic Year</th>
+                        @endif
                         <th>
                             Created By
                         </th>
@@ -127,52 +131,38 @@
                             <span id="applied_batch_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="result" class="required">Applicable Semester</label>
-                            <select class="form-control select2" id="semester" name="semester">
-                                <option value="">Select Semester</option>
-                                @foreach ($semester as $id => $sem)
-                                    <option value="{{ $id }}">{{ $sem }}</option>
-                                @endforeach
-                            </select>
-                            <span id="semester_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div>
-                        {{-- <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="result" class="required">Fee Components</label>
-                            <select class="form-control select2" id="fee_components" name="fee_components">
-                                <option value="">Select Fee Components</option>
-                                @foreach ($fee_compnents as $id => $fee_com)
-                                    <option value="{{ $id }}">{{ $fee_com }}</option>
-                                @endforeach
-                            </select>
-                            <span id="fee_components_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div> --}}
-                        {{-- <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="result" class="required">Admission Mode</label>
-                            <select class="form-control select2" style="text-transform:uppercase" id="admission"
-                                name="admission" value="">
-                                <option value="">Select Admission Mode</option>
-                                @foreach ($admission as $id => $d)
-                                    <option value="{{ $id }}">{{ $d }}</option>
-                                @endforeach
-                            </select>
-                            <span id="admission_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div> --}}
-                        {{-- <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group" id="applied_ay_div"
-                            style="display:none;">
-                            <label for="applied_ay" class="required">Applicable AY</label>
-                            <select class="form-control select2" id="applied_ay" name="applied_ay">
-                                <option value="">Select AY</option>
-                                @foreach ($ay as $id => $b)
-                                    <option value="{{ $id }}">{{ $b }}</option>
-                                @endforeach
-                            </select>
-                            <span id="applied_ay_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div> --}}
+
+
+                        @if ($feeCycleText == 'SemesterWise')
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="result" class="required">Applicable Semester</label>
+                                <select class="form-control select2" id="semester" name="semester">
+                                    <option value="">Select Semester</option>
+                                    @foreach ($semester as $id => $sem)
+                                        <option value="{{ $id }}">{{ $sem }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="semester_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
+                        @endif
+
+
+                        @if ($feeCycleText == 'YearlyWise')
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="applied_ay" class="required">Applicable AY</label>
+                                <select class="form-control select2" id="applied_ay" name="applied_ay">
+                                    <option value="">Select AY</option>
+                                    @foreach ($ay as $id => $a)
+                                        <option value="{{ $id }}">{{ $a }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="applied_ay_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
+                        @endif
+
+
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group">
                             <table class="table table-bordered table-striped table-hover text-center"
                                 id="fee_componentstable">
@@ -254,24 +244,44 @@
                             <span id="feeBatch_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="feeAy" class="required">AY</label>
-                            <select class="form-control select2" id="feeAy" name="feeAy">
-                                <option value="">Select AY</option>
-                                @foreach ($ay as $id => $a)
-                                    <option value="{{ $id }}">{{ $a }}</option>
-                                @endforeach
-                            </select>
-                            <span id="feeAy_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div>
+
+                        @if ($feeCycleText == 'SemesterWise')
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="result" class="required">Applicable Semester</label>
+                                <select class="form-control select2" id="feeSem" name="feeSem">
+                                    <option value="">Select Semester</option>
+                                    @foreach ($semester as $id => $sem)
+                                        <option value="{{ $id }}">{{ $sem }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="feeSem_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
+                        @endif
+
+
+                        @if ($feeCycleText == 'YearlyWise')
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="feeAy" class="required">Applicable AY</label>
+                                <select class="form-control select2" id="feeAy" name="feeAy">
+                                    <option value="">Select AY</option>
+                                    @foreach ($ay as $id => $a)
+                                        <option value="{{ $id }}">{{ $a }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="feeAy_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
+                        @endif
+
+
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group text-right">
                             <div id="feeGenerate_div">
                                 <button type="button" id="action_btn" class="btn btn-success"
                                     onclick="generateFee()">Generate Fee</button>
                             </div>
                             <div id="feeLoading_div" style="display:none;">
-                                <span class="theLoader">Processing...</span>
+                                <span class="theLoader"></span>
                             </div>
                         </div>
                     </div>
@@ -391,7 +401,7 @@
             </div>
         </div>
     </div>
-    
+
 @endsection
 @section('scripts')
     @parent
@@ -401,6 +411,9 @@
         });
 
         function callAjax() {
+
+            let feeCycleText = "{{ $feeCycleText }}";
+
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
             @can('nationality_delete')
                 let deleteButton = {
@@ -481,14 +494,14 @@
                         data: 'course',
                         name: 'course'
                     },
-                    {
-                        data: 'semester',
-                        name: 'semester'
-                    },
                     // {
-                    //     data: 'admission',
-                    //     name: 'admission'
+                    //     data: 'semester',
+                    //     name: 'semester'
                     // },
+                    {
+                        data: feeCycleText === 'SemesterWise' ? 'semester' : 'ay',
+                        name: feeCycleText === 'SemesterWise' ? 'semester' : 'ay'
+                    },
                     {
                         data: 'user',
                         name: 'user'
@@ -671,51 +684,25 @@
 
         function saveFeeStructure() {
 
-            // let tbody = $('#feeComponentsTable');
-            // let components = [];
 
-            // tbody.find('tr').each(function(index, row) {
-            //     let componentName = $(row).find('td:first').text();
-            //     let componentAmount = $(row).find('input').val();
-            //     // console.log(componentAmount);
-            //     let componentId = $(row).data('component-id');
-
-            //     let component = {
-            //         id: componentId,
-            //         name: componentName,
-            //         amount: componentAmount
-            //     };
-
-            //     components.push(component);
-            // });
-
-            // let componentsJson = JSON.stringify(components);
-            // console.log(componentsJson);
+            var feeCycleText = @json($feeCycleText);
 
             $("#course_span").hide();
-            // $("#admission_span").hide();
             $("#course_span").hide();
             $("#shift_span").hide();
             $("#semester_span").hide();
 
-            if ($("#course").val() == '') {
+            if ($("#shift").val() == '') {
+                $("#shift_span").html('Shift Is Required').show();
+            } else if ($("#course").val() == '') {
                 $("#course_span").html('Course Is Required').show();
             }
-            // else if ($("#admission").val() == '') {
-            //     $("#admission_span").html('Admission Mode Is Required').show();
+            // else if ($("#semester").val() == '') {
+            //     $("#semester_span").html('Semester Is Required').show();
             // }
-            else if ($("#shift").val() == '') {
-                $("#shift_span").html('Shift Is Required').show();
-            } else if ($("#semester").val() == '') {
-                $("#semester_span").html('Semester Is Required').show();
-            } else if ($("#applied_batch").val() == '') {
+            else if ($("#applied_batch").val() == '') {
                 $("#applied_batch_span").html('Applicable Batch Is Required').show();
-            }
-            // else if ($("#tuition_fee").val() == '' || $("#hostel_fee").val() == '' || $("#other_fee").val() == '' || $(
-            //         "#admission_fee").val() == '' || $("#special_fee").val() == '') {
-            //     Swal.fire('', 'Please Provide The Fee Details', 'warning');
-            // }
-            else {
+            } else {
                 $("#save_div").hide();
                 $("#loading_div").show();
                 $.ajax({
@@ -727,15 +714,11 @@
                     data: {
                         'id': $("#feeStructure_id").val(),
                         'course': $("#course").val(),
-                        // 'admission': $("#admission").val(),
                         'batch': $("#applied_batch").val(),
-                        // 'tuition_fee': $("#tuition_fee").val(),
-                        // 'special_fee': $("#special_fee").val(),
-                        // 'admission_fee': $("#admission_fee").val(),
-                        // 'hostel_fee': $("#hostel_fee").val(),
-                        // 'other_fee': $("#other_fee").val(),
                         'shift': $("#shift").val(),
                         'semester': $("#semester").val(),
+                        'applied_ay': $("#applied_ay").val(),
+                        'feeCycleText': feeCycleText,
                         'componentsJson': componentsJson
                     },
                     success: function(response) {
@@ -754,12 +737,15 @@
         }
 
         function viewfeeStructure(id) {
-            $("#loading_div").show();
+
 
 
             if (id == undefined) {
                 Swal.fire('', 'ID Not Found', 'warning');
             } else {
+
+                $('.secondLoader').show()
+
 
                 $.ajax({
 
@@ -772,7 +758,9 @@
                         'id': id
                     },
                     success: function(response) {
-                        $("#loading_div").hide();
+
+                        $('.secondLoader').hide()
+
 
                         let status = response.status;
                         if (status == true) {
@@ -797,8 +785,9 @@
                             $("#feeStructure_id").val(data.fees_id);
                             $("#shift").val(data.shi);
                             $("#semester").val(data.sem);
-                            $("#course").val(data.course)
-                            $("#admission").val(data.admission)
+                            $("#course").val(data.course);
+                            $("#applied_ay").val(data.ay)
+                            $("#admission").val(data.admission);
                             $("#applied_ay_div").show();
                             $("#applied_batch").val(data.batch);
                             $("#save_div").hide();
@@ -912,6 +901,9 @@
         }
 
         function feeGenerateModal(action) {
+
+
+
             $("select").prop('disabled', false).select2()
             if (action == 'Generate') {
                 $("#action_btn").attr('onclick', 'generateFee()').html('Generate Fee');
@@ -922,13 +914,19 @@
         }
 
         function generateFee() {
+
+
+            var feeCycleText = @json($feeCycleText);
+
             if ($("#feeBatch").val() == '') {
                 $("#feeBatch_span").html(`Batch Is Required`).show();
                 $("#feeAy_span").hide();
-            } else if ($("#feeAy").val() == '') {
+            }
+             else if ($("#feeAy").val() == '') {
                 $("#feeAy_span").html(`AY Is Required`).show();
                 $("#feeBatch_span").hide();
-            } else {
+            }
+            else {
                 $("#feeAy_span").hide();
                 $("#feeBatch_span").hide();
                 Swal.fire({
@@ -952,6 +950,8 @@
                             data: {
                                 'batch': $("#feeBatch").val(),
                                 'ay': $("#feeAy").val(),
+                                'feeSem': $("#feeSem").val(),
+                                'feeCycleText': feeCycleText
                             },
                             success: function(response) {
 
@@ -985,68 +985,68 @@
             }
         }
 
-        function publishFee() {
-            if ($("#feeBatch").val() == '') {
-                $("#feeBatch_span").html(`Batch Is Required`).show();
-                $("#feeAy_span").hide();
-            } else if ($("#feeAy").val() == '') {
-                $("#feeAy_span").html(`AY Is Required`).show();
-                $("#feeBatch_span").hide();
-            } else {
-                $("#feeAy_span").hide();
-                $("#feeBatch_span").hide();
-                Swal.fire({
-                    title: "CONFIRM",
-                    text: "This action will publish the Fees Dues to all selected batch students for selected academic year",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonText: "Yes",
-                    cancelButtonText: "No",
-                    reverseButtons: true
-                }).then(function(result) {
-                    if (result.value) {
-                        $("#feeGenerate_div").hide()
-                        $("#feeLoading_div").show()
-                        return $.ajax({
-                            url: '{{ route('admin.fee-structure.publish-fee') }}',
-                            type: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            data: {
-                                'batch': $("#feeBatch").val(),
-                                'ay': $("#feeAy").val(),
-                            },
-                            success: function(response) {
+        // function publishFee() {
+        //     if ($("#feeBatch").val() == '') {
+        //         $("#feeBatch_span").html(`Batch Is Required`).show();
+        //         $("#feeAy_span").hide();
+        //     } else if ($("#feeAy").val() == '') {
+        //         $("#feeAy_span").html(`AY Is Required`).show();
+        //         $("#feeBatch_span").hide();
+        //     } else {
+        //         $("#feeAy_span").hide();
+        //         $("#feeBatch_span").hide();
+        //         Swal.fire({
+        //             title: "CONFIRM",
+        //             text: "This action will publish the Fees Dues to all selected batch students for selected academic year",
+        //             icon: "warning",
+        //             showCancelButton: true,
+        //             confirmButtonText: "Yes",
+        //             cancelButtonText: "No",
+        //             reverseButtons: true
+        //         }).then(function(result) {
+        //             if (result.value) {
+        //                 $("#feeGenerate_div").hide()
+        //                 $("#feeLoading_div").show()
+        //                 return $.ajax({
+        //                     url: '{{ route('admin.fee-structure.publish-fee') }}',
+        //                     type: 'POST',
+        //                     headers: {
+        //                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //                     },
+        //                     data: {
+        //                         'batch': $("#feeBatch").val(),
+        //                         'ay': $("#feeAy").val(),
+        //                     },
+        //                     success: function(response) {
 
-                                if (response.status) {
-                                    Swal.fire('', response.data, "success");
-                                    callAjax();
-                                } else {
-                                    Swal.fire('', response.data, "error");
-                                }
-                                $("#feeGenerateModal").modal('hide')
-                                $("#feeGenerate_div").show()
-                                $("#feeLoading_div").hide()
+        //                         if (response.status) {
+        //                             Swal.fire('', response.data, "success");
+        //                             callAjax();
+        //                         } else {
+        //                             Swal.fire('', response.data, "error");
+        //                         }
+        //                         $("#feeGenerateModal").modal('hide')
+        //                         $("#feeGenerate_div").show()
+        //                         $("#feeLoading_div").hide()
 
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
+        //                     },
+        //                     error: function(jqXHR, textStatus, errorThrown) {
 
-                                if (jqXHR.status == 422) {
-                                    var errors = jqXHR.responseJSON.errors;
-                                    var errorMessage = errors[Object.keys(errors)[0]][0];
-                                    Swal.fire('', errorMessage, "error");
-                                } else {
-                                    Swal.fire('', 'Request failed with status: ' + jqXHR.status,
-                                        "error");
-                                }
-                                $("#feeGenerate_div").show()
-                                $("#feeLoading_div").hide()
-                            }
-                        });
-                    }
-                })
-            }
-        }
+        //                         if (jqXHR.status == 422) {
+        //                             var errors = jqXHR.responseJSON.errors;
+        //                             var errorMessage = errors[Object.keys(errors)[0]][0];
+        //                             Swal.fire('', errorMessage, "error");
+        //                         } else {
+        //                             Swal.fire('', 'Request failed with status: ' + jqXHR.status,
+        //                                 "error");
+        //                         }
+        //                         $("#feeGenerate_div").show()
+        //                         $("#feeLoading_div").hide()
+        //                     }
+        //                 });
+        //             }
+        //         })
+        //     }
+        // }
     </script>
 @endsection

@@ -54,7 +54,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::get('circle', 'ArtisanCmdController@circle');
 
-    // Api Staff Biometric 
+    // Api Staff Biometric
     Route::get('api-biometric', 'ArtisanCmdController@ApiBiometric');
     // Permissions
     Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
@@ -110,12 +110,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('year/destroy', 'YearController@massDestroy')->name('year.massDestroy');
 
 
+    // FeeCyle
+    Route::get('fee-cycle', 'feeCycleController@index')->name('fee-cycle.index');
+    Route::post('fee-cycle/store', 'feeCycleController@store')->name('fee-cycle.store');
+
+
     // FeeComponents
     Route::get('fee-components', 'feeComponentsController@index')->name('fee-components.index');
     Route::post('fee-components/view', 'feeComponentsController@view')->name('fee-components.view');
     Route::post('fee-components/edit', 'feeComponentsController@edit')->name('fee-components.edit');
     Route::post('fee-components/store', 'feeComponentsController@store')->name('fee-components.store');
-    
+
     Route::post('fee-components/delete', 'feeComponentsController@destroy')->name('fee-components.delete');
     Route::delete('fee-components/destroy', 'feeComponentsController@massDestroy')->name('fee-components.massDestroy');
 
@@ -835,6 +840,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     Route::get('fee-structure', 'FeeStructureController@index')->name('fee-structure.index');
     Route::post('fee-structure/get-course', 'FeeStructureController@getCourse')->name('fee-structure.get-course');
+    // Route::post('fee-structure/fee-cycle', 'FeeStructureController@feecycle')->name('fee-structure.fee-cycle');
     Route::post('fee-structure/view', 'FeeStructureController@view')->name('fee-structure.view');
     Route::post('fee-structure/edit', 'FeeStructureController@edit')->name('fee-structure.edit');
     Route::post('fee-structure/store', 'FeeStructureController@store')->name('fee-structure.store');

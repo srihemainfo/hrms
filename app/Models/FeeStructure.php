@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
+use App\Traits\Auditable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Traits\Auditable;
-
-
 
 class FeeStructure extends Model
 {
@@ -25,4 +23,10 @@ class FeeStructure extends Model
     {
         return $this->belongsTo(AdmissionMode::class, 'admission_id');
     }
+
+    public function academicYear()
+    {
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+    }
+
 }

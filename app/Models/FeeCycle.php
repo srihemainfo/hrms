@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class FeeComponents extends Model
+class FeeCycle extends Model
 {
     use SoftDeletes, Auditable, HasFactory;
-    public $table = 'fee_components';
+
+    public $table = 'fee_cycle';
 
     protected $dates = [
         'created_at',
@@ -18,7 +19,7 @@ class FeeComponents extends Model
     ];
 
     protected $fillable = [
-        'name',
+        'cycle_name',
         'created_at',
         'updated_at',
         'deleted_at',

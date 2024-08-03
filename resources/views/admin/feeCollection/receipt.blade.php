@@ -114,7 +114,13 @@
         </div>
         <div class="info-section">
             <span>Course : {{ $data['short_form'] }}</span>
-            <span>Semester : {{ $data['semester'] }}</span>
+            @if ($data['feeCycles'] == 'SemesterWise')
+                <span>Semester : {{ $data['semester'] }}</span>
+            @elseif ($data['feeCycles'] == 'YearlyWise')
+                <span>Academic Year : {{ $data['academic_year'] }}</span>
+            @else
+                <span>Semester/Year : N/A</span>
+            @endif
             <span>Section : {{ $data['section'] }}</span>
         </div>
         <table>
@@ -156,7 +162,7 @@
                 <tr>
                     <td>2</td>
                     <td>Balance Due</td>
-                    <td>{{$data['balance_due']}}</td>
+                    <td>{{ $data['balance_due'] }}</td>
                 </tr>
                 <tr>
                     <th colspan="2">Paid Amount</th>

@@ -18,6 +18,7 @@ class FeeCollection extends Model
         'student_name',
         'student_id',
         'receipt_no',
+        'academic_year_id',
         'semester',
         'total_amount',
         'paid_amount',
@@ -55,6 +56,10 @@ class FeeCollection extends Model
     public function User()
     {
         return $this->belongsTo(User::class, 'deleted_by');
+    }
+    public function academicYear()
+    {
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
     }
 
 }

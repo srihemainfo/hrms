@@ -60,6 +60,19 @@
             </a>
         </li>
     @endcan
+
+    @can('year_access')
+    <li class="nav-item">
+        <a href="{{ route('admin.fee-cycle.index') }}"
+            class="nav-link {{ request()->is('admin/fee-cycle') || request()->is('admin/fee-cycle/*') ? 'active' : '' }}">
+            <i class="fa-fw nav-icon fas fa-calendar-alt"></i>
+            <p>
+                {{ trans('Fee Cycle') }}
+            </p>
+        </a>
+    </li>
+    @endcan
+
     @can('year_access')
         <li class="nav-item">
             <a href="{{ route('admin.fee-components.index') }}"
@@ -71,6 +84,7 @@
             </a>
         </li>
     @endcan
+
     @can('batch_access')
         <li class="nav-item">
             <a href="{{ route('admin.batches.index') }}"

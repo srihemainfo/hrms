@@ -1,11 +1,10 @@
 @extends('layouts.admin')
 @section('content')
-<style>
-    .select2-container
-    {
-        width: 100% !important;
-    }
-</style>
+    <style>
+        .select2-container {
+            width: 100% !important;
+        }
+    </style>
     @can('nationality_create')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
@@ -62,41 +61,6 @@
                 </div>
                 <div class="modal-body">
                     <div class="row gutters">
-                        {{-- <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="result" class="required">Batch</label>
-                            <select class="form-control select2" id="applied_batch" name="applied_batch">
-                                <option value="">Select Batch</option>
-                                @foreach ($batch as $id => $b)
-                                    <option value="{{ $id }}">{{ $b }}</option>
-                                @endforeach
-                            </select>
-                            <span id="applied_batch_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="result" class="required">Course</label>
-                            <input type="hidden" id="feeStructure_id" value="">
-                            <select class="form-control select2" style="text-transform:uppercase" id="course"
-                                name="course" value="">
-                                <option value="">Select Course</option>
-                                @foreach ($course as $id => $d)
-                                    <option value="{{ $id }}">{{ $d }}</option>
-                                @endforeach
-                            </select>
-                            <span id="course_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div>
-                        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="result" class="required">Semester</label>
-                            <select class="form-control select2" id="semester" name="semester">
-                                <option value="">Select Semester</option>
-                                @foreach ($semester as $id => $sem)
-                                    <option value="{{ $id }}">{{ $sem }}</option>
-                                @endforeach
-                            </select>
-                            <span id="semester_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div> --}}
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group">
                             <label for="result" class="required">Fee Component</label>
                             <input type="hidden" name="fee_components_id" id="fee_components_id" value="">
@@ -338,7 +302,7 @@
                         if (status == true) {
                             var data = response.data;
                             console.log(data)
-                            
+
                             $("#fee_components").val(data.name);
                             $("#fee_components_id").val(data.id);
                             // $("#course").val(data.course_id).select2();
