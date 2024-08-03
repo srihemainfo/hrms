@@ -2071,11 +2071,11 @@
                     </li>
                 @endcan
 
-                @can('transport_management_access')
+                @can('feedback_management_access')
 
                     <li
-                        class="nav-item has-treeview {{ request()->is('admin/configure-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/route-allot*') ? 'menu-open' : '' }} {{ request()->is('admin/driver*') ? 'menu-open' : '' }}  {{ request()->is('admin/transport-report*') ? 'menu-open' : '' }} {{ request()->is('admin/bus-student*') ? 'menu-open' : '' }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/configure-feedback*') ? 'active' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'active' : '' }} {{ request()->is('admin/route-allot*') ? 'active' : '' }} {{ request()->is('admin/driver*') ? 'active' : '' }} {{ request()->is('admin/transport-report*') ? 'active' : '' }} {{ request()->is('admin/bus-student*') ? 'active' : '' }}"
+                        class="nav-item has-treeview {{ request()->is('admin/configure-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/feedReport-training*') ? 'menu-open' : '' }} {{ request()->is('admin/feedReport-course*') ? 'menu-open' : '' }}  {{ request()->is('admin/transport-report*') ? 'menu-open' : '' }} {{ request()->is('admin/bus-student*') ? 'menu-open' : '' }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/configure-feedback*') ? 'active' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'active' : '' }} {{ request()->is('admin/feedReport-training*') ? 'active' : '' }} {{ request()->is('admin/feedReport-course*') ? 'active' : '' }} {{ request()->is('admin/transport-report*') ? 'active' : '' }} {{ request()->is('admin/bus-student*') ? 'active' : '' }}"
                             href="#">
                             <i class="fas nav-icon fas fa-comment">
                             </i>
@@ -2109,6 +2109,35 @@
                                     </a>
                                 </li>
                             @endcan
+                            <li
+                                class="nav-item has-treeview {{ request()->is('admin/feedReport-training*') || request()->is('admin/fee-defaulters-report*') || request()->is('admin/fee-scholarship-report*') || request()->is('admin/fee-category-report*') ? 'menu-open' : '' }}">
+                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/feedReport-training*') || request()->is('admin/fee-defaulters-report*') || request()->is('admin/fee-scholarship-report*') || request()->is('admin/fee-category-report*') ? 'active' : '' }}"
+                                    href="#">
+
+                                    <i class="fa nav-icon fas fa-newspaper"></i>
+                                    <p>
+                                        Feedback Reports
+                                        <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview"
+                                    style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.feedReport-training.index') }}"
+                                            class="nav-link {{ request()->is('admin/feedReport-training*') || request()->is('admin/feedReport-training*') ? 'active' : '' }}">
+                                            <i class="fa-fw nav-icon fas fa-wallet"></i>
+                                            <p>Student Training Report</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.feedReport-course.index') }}"
+                                            class="nav-link {{ request()->is('admin/feedReport-course*') || request()->is('admin/feedReport-course*') ? 'active' : '' }}">
+                                            <i class="fa-fw nav-icon fas fa-wallet"></i>
+                                            <p>Student Course Report</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                 @endcan

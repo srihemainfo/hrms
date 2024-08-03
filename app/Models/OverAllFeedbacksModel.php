@@ -19,7 +19,11 @@ class OverAllFeedbacksModel extends Model
     }
     public function feedback_schedule()
     {
-        return $this->belongsTo(FeedbackSchedule::class, 'id', 'feed_schedule_id');
+        return $this->belongsTo(FeedbackSchedule::class, 'feed_schedule_id', 'id');
+    }
+    public function teaching()
+    {
+        return $this->belongsTo(TeachingStaff::class, 'staff_id', 'user_name_id');
     }
 
 }

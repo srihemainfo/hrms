@@ -457,22 +457,21 @@
                         {{-- @can('update')
                             
                         @endcan --}}
-                        {{-- @can('transport_management_access') --}}
-
-                        <li
-                            class="nav-item has-treeview {{ request()->is('admin/configure-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/route-allot*') ? 'menu-open' : '' }} {{ request()->is('admin/driver*') ? 'menu-open' : '' }}  {{ request()->is('admin/transport-report*') ? 'menu-open' : '' }} {{ request()->is('admin/bus-student*') ? 'menu-open' : '' }}">
-                            <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/configure-feedback*') ? 'active' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'active' : '' }} {{ request()->is('admin/route-allot*') ? 'active' : '' }} {{ request()->is('admin/driver*') ? 'active' : '' }} {{ request()->is('admin/transport-report*') ? 'active' : '' }} {{ request()->is('admin/bus-student*') ? 'active' : '' }}"
-                                href="#">
-                                <i class="fas nav-icon fas fa-comment">
-                                </i>
-                                <p>
-                                    Feed Backs
-                                    <i class="right fa fa-fw fa-angle-left nav-icon"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview"
-                                style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
-                                {{-- @can('configure_feedback_access') --}}
+                        @can('feedback_management_access')
+                            <li
+                                class="nav-item has-treeview {{ request()->is('admin/configure-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/route-allot*') ? 'menu-open' : '' }} {{ request()->is('admin/driver*') ? 'menu-open' : '' }}  {{ request()->is('admin/transport-report*') ? 'menu-open' : '' }} {{ request()->is('admin/bus-student*') ? 'menu-open' : '' }}">
+                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/configure-feedback*') ? 'active' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'active' : '' }} {{ request()->is('admin/route-allot*') ? 'active' : '' }} {{ request()->is('admin/driver*') ? 'active' : '' }} {{ request()->is('admin/transport-report*') ? 'active' : '' }} {{ request()->is('admin/bus-student*') ? 'active' : '' }}"
+                                    href="#">
+                                    <i class="fas nav-icon fas fa-comment">
+                                    </i>
+                                    <p>
+                                        Feed Backs
+                                        <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview"
+                                    style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
+                                    @can('student_feedback_forms')
                                     <li class="nav-item">
                                         <a href="{{ route('admin.feedback-forms.index') }}"
                                             class="nav-link {{ request()->is('admin/feedback-forms') || request()->is('admin/feedback-forms/*') ? 'active' : '' }}">
@@ -483,10 +482,10 @@
                                             </p>
                                         </a>
                                     </li>
-                                {{-- @endcan --}}
-                            </ul>
-                        </li>
-                        {{-- @endcan --}}
+                                    @endcan
+                                </ul>
+                            </li>
+                        @endcan
                         @php($unread = \App\Models\QaTopic::unreadCount())
                         <li class="nav-item">
                             <a href="{{ route('admin.messenger.index') }}"

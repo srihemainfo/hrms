@@ -567,7 +567,7 @@ class FeedbackController extends Controller
         // dd($student->enroll_master->course_id);
         // Query the database
         $feedback = FeedbackSchedule::with('feedback', 'overall_feedbacks')
-        ->whereDate('start_date', '<=', $today)
+            ->whereDate('start_date', '<=', $today)
             ->whereDate('expiry_date', '>=', $today)
             ->where('feedback_participant', 'Student')
             ->where('status', 'Active')
@@ -730,13 +730,11 @@ class FeedbackController extends Controller
                             $decode_email = json_decode($value->emails, true) ?? [];
                             $decode_name = json_decode($value->users, true) ?? [];
                             $decode_rate = json_decode($value->ratings, true) ?? [];
-                            $r = 'ques' . ($key + 1);
-
-                            // array_push($decode_email, $request->email);
+                            $ques = 'ques' . ($key + 1);
+                            $decode_rate[$request->user_id] = $request->$ques;
                             array_push($decode_name, $request->user_id);
-                            array_push($decode_rate, $request->$r);
+                            // dd($decode_rate);
 
-                            // $value->emails = json_encode($decode_email);
                             $value->users = json_encode($decode_name);
                             $value->ratings = json_encode($decode_rate);
 
@@ -748,9 +746,8 @@ class FeedbackController extends Controller
                     }
                 } else {
                     foreach ($questions as $key => $value) {
-                        $decode_rate = json_encode([$request->ques . ($key + 1)]);
+                        $decode_rate = json_encode([$request->user_id => $request->ques . ($key + 1)]);
                         $decode_id = json_encode([$request->user_id]);
-                        // $decode_email = null;
                         $create = OverAllFeedbacksModel::create([
                             'feedback_id' => $check->feedback->id,
                             'feed_schedule_id' => $check->id,

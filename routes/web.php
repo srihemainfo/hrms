@@ -650,7 +650,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('schedule-feedback/view', 'FeedbackController@scheduleView')->name('schedule-feedback.view');
     Route::post('schedule-feedback/delete', 'FeedbackController@scheduleDestroy')->name('schedule-feedback.delete');
     Route::post('schedule-feedback/fetch-course', 'FeedbackController@fetchCourse')->name('schedule-feedback.fetch_course');
-    
+
     //Student Feedback
     Route::get('feedback-forms', 'FeedbackController@studentIndex')->name('feedback-forms.index');
     Route::post('feedback-forms/survey', 'FeedbackController@studentFeedSurvey')->name('student-feedback-forms.survey');
@@ -660,6 +660,21 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('feedback-form', 'FeedbackController@staffIndex')->name('feedback-form.index');
     Route::post('feedback-form/survey', 'FeedbackController@staffFeedSurvey')->name('staff-feedback-form.survey');
     Route::post('feedback-form/submit', 'FeedbackController@staffFeedStore')->name('staff-feedback-form.store');
+
+
+    //Feedback Reports
+
+    //Student Others Feedback
+    Route::get('feedReport-training', 'FeedbackReportController@trainingIndex')->name('feedReport-training.index');
+    Route::post('feedback-training/report', 'FeedbackReportController@trainingReport')->name('feedback-training.report');
+    Route::post('feedback-training/view', 'FeedbackReportController@trainingView')->name('feedback-training.view');
+    Route::post('feedback-training/download', 'FeedbackReportController@trainingDownload')->name('feedback-training.download');
+
+    //Student Course Feedback
+    Route::get('feedReport-course', 'FeedbackReportController@courseIndex')->name('feedReport-course.index');
+    Route::post('feedback-course/report', 'FeedbackReportController@courseReport')->name('feedback-course.report');
+    Route::post('feedback-course/view', 'FeedbackReportController@courseView')->name('feedback-course.view');
+    Route::post('feedback-course/download', 'FeedbackReportController@courseDownload')->name('feedback-course.download');
 
 
     // Staff Subjects
