@@ -12,7 +12,7 @@
         .details span {
             padding: 10px;
             /* background-color: #007bff;
-                                        color: white; */
+                                            color: white; */
             border-radius: 3px;
         }
 
@@ -59,32 +59,32 @@
                 class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-feedbackReport text-center">
                 <thead>
                     <tr>
-                        <th width="10">
-                        </th>
-                        <th>
-                            S.No
-                        </th>
-                        <th>
-                            Question
-                        </th>
-                        <th>
-                            Submitted Count
-                        </th>
-                        <th>
-                            5 Scale (%)
-                        </th>
+                        <th>S.No</th>
+                        <th>Question</th>
+                        <th>Excellence</th>
+                        <th>Best</th>
+                        <th>Good</th>
+                        <th>Fair</th>
+                        <th>Poor</th>
+                        <th>Percentage (%)</th>
+                        <th>5 Scale</th>
                     </tr>
                 </thead>
                 <tbody id="tbody">
                     @foreach ($get_feed as $id => $item)
                         <tr>
-                            <td></td>
-                            <td>Q<sub>{{ $id + 1 }}</sub></td>
+                            <td>{{ $id + 1 }}</td>
                             <td style="text-transform: uppercase;">{{ $item->question_name }}</td>
-                            <td>{{ $item->submitted }}</td>
-                            <td>{{ $item->star_percent }}</td>
+                            <td>{{ $item->five_star }}</td>
+                            <td>{{ $item->four_star }}</td>
+                            <td>{{ $item->three_star }}</td>
+                            <td>{{ $item->two_star }}</td>
+                            <td>{{ $item->one_star }}</td>
+                            <td>{{ $item->star_percent }}%</td>
+                            <td>{{ $item->five_scale }}</td>
                         </tr>
                     @endforeach
+
                 </tbody>
             </table>
         </div>
@@ -95,7 +95,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         function convertPercentagesToNumbers(data) {
-            return data.map(value => parseFloat(value.replace('%', '')));
+            return data;
         }
 
         var ctx = document.getElementById('barChart').getContext('2d');
@@ -115,8 +115,8 @@
                     },
                     borderColor: 'rgba(75, 192, 192, 1)',
                     borderWidth: 2,
-                    barThickness: 30, 
-                    borderRadius: 10 
+                    barThickness: 30,
+                    borderRadius: 10
                 }]
             },
             options: {
@@ -144,7 +144,7 @@
                 scales: {
                     x: {
                         grid: {
-                            display: false 
+                            display: false
                         },
                         ticks: {
                             font: {
@@ -156,23 +156,23 @@
                     },
                     y: {
                         beginAtZero: true,
-                        min: 0, 
-                        max: 100, 
+                        min: 0,
+                        max: 5,
                         ticks: {
-                            stepSize: 10, 
+                            stepSize: .5,
                             font: {
                                 size: 12,
                                 family: 'Arial'
                             }
                         },
                         grid: {
-                            color: 'rgba(200, 200, 200, 0.5)' 
+                            color: 'rgba(200, 200, 200, 0.5)'
                         }
                     }
                 },
                 animation: {
-                    duration: 1000, 
-                    easing: 'easeOutBounce' 
+                    duration: 1000,
+                    easing: 'easeOutBounce'
                 }
             }
         });

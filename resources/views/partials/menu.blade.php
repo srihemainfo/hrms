@@ -2136,6 +2136,13 @@
                                             <p>Student Course Report</p>
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.feedReport-course.index') }}"
+                                            class="nav-link {{ request()->is('admin/feedReport-course*') || request()->is('admin/feedReport-course*') ? 'active' : '' }}">
+                                            <i class="fa-fw nav-icon fas fa-wallet"></i>
+                                            <p>Faculty Report</p>
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>

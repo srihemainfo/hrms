@@ -19,8 +19,7 @@
                             <option value="{{ $item->feedback->id }}">{{ $item->feedback->name }}</option>
                         @endforeach
                     </select>
-                    <span id="feedback_span" class="text-danger text-center"
-                        style="display:none;font-size:0.9rem;"></span>
+                    <span id="feedback_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
                     <label for="batch" class="required">Batch</label>
@@ -130,7 +129,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="secondLoader"></div>
+        {{-- <div class="secondLoader"></div> --}}
     </div>
 @endsection
 @section('scripts')
@@ -158,6 +157,7 @@
         function fetchReport() {
             if ($('#feedback').val() != '' && $('#batch').val() != '' && $('#ay').val() != '' && $('#course')
                 .val() != '' && $('#sem').val() != '' && $('#section').val() != '') {
+                $('.secondLoader').show();
                 $.ajax({
                     url: "{{ route('admin.feedback-course.report') }}",
                     method: 'POST',
@@ -182,43 +182,50 @@
                             let body = $('#tbody').empty()
                             let i = 0;
                             $.each(data, function(index, value) {
-                                let row = $('<tr>')
-                                row.append(`<td></td>`)
-                                row.append(`<td>${i+=1}</td>`)
-                                row.append(`<td>${value.ay}</td>`)
-                                row.append(`<td>${value.sem}</td>`)
-                                row.append(`<td>${value.sec}</td>`)
-                                row.append(`<td>${value.total_student}</td>`)
-                                row.append(`<td>${value.submitted}</td>`)
-                                row.append(`<td>${value.not_submitted}</td>`)
-                                row.append(`<td>
-                                    <form action="{{ route('admin.feedback-course.view') }}" method="post">
-                                        @csrf
-                                        <input name="feedback_id" type="hidden" value="${index}">
-                                        <input name="enroll_id" type="hidden" value="${value.enroll}">
-                                        <input name="submitted" type="hidden" value="${value.submitted}">
-                                        <button type="submit" class="newEditBtn" title="View Report" onclick="viewReport()"><i class="fas fa-file-signature"></i></button>
-                                    </form>
-                                    <form action="{{ route('admin.feedback-course.download') }}" method="post">
-                                        @csrf
-                                        <input name="feedback_id" type="hidden" value="${index}">
-                                        <input name="enroll_id" type="hidden" value="${value.enroll}">
-                                        <input name="submitted" type="hidden" value="${value.submitted}">
-                                        <input name="file_type" type="hidden" value="pdf">
-                                        <button type="submit" class="newDeleteBtn" title="Download Pdf"><i class="fas fa-download"></i></button>
-                                    </form>
-                                    <form action="{{ route('admin.feedback-course.download') }}" method="post">
-                                        @csrf
-                                        <input name="feedback_id" type="hidden" value="${index}">
-                                        <input name="enroll_id" type="hidden" value="${value.enroll}">
-                                        <input name="submitted" type="hidden" value="${value.submitted}">
-                                        <input name="file_type" type="hidden" value="excel">
-                                        <button type="submit" class="newViewBtn" title="Download Excel"><i class="fas fa-file-excel"></i></button>
-                                    </form>
-                                
-                                    </td>`)
-                                body.append(row)
+                                $.each(value, function(ind, val) {
+                                    let row = $('<tr>')
+                                    row.append(`<td></td>`)
+                                    row.append(`<td>${i+=1}</td>`)
+                                    row.append(`<td>${val.subject_code}</td>`)
+                                    row.append(`<td>${val.subject_name}</td>`)
+                                    row.append(`<td>${val.staff_name}</td>`)
+                                    row.append(`<td>${val.total_students}</td>`)
+                                    row.append(`<td>${val.submitted}</td>`)
+                                    row.append(`<td>${val.not_submitted}</td>`)
+                                    row.append(`<td>
+                                        <form action="{{ route('admin.feedback-course.view') }}" method="post">
+                                            @csrf
+                                            <input name="feedback_id" type="hidden" value="${index}">
+                                            <input name="enroll_id" type="hidden" value="${val.enroll_id}">
+                                            <input name="total_students" type="hidden" value="${val.total_students}">
+                                            <input name="staff_id" type="hidden" value="${val.staff_id},${val.subject_code},${val.subject_name}">
+                                            <button type="submit" class="newEditBtn" title="View Report" onclick="viewReport()"><i class="fas fa-file-signature"></i></button>
+                                        </form>
+                                        <form action="{{ route('admin.feedback-course.download') }}" method="post">
+                                            @csrf
+                                            <input name="feedback_id" type="hidden" value="${index}">
+                                            <input name="enroll_id" type="hidden" value="${val.enroll_id}">
+                                            <input name="total_students" type="hidden" value="${val.total_students}">
+                                            <input name="staff_id" type="hidden" value="${val.staff_id},${val.subject_code},${val.subject_name}">
+                                            <input name="file_type" type="hidden" value="pdf">
+                                            <button type="submit" class="newDeleteBtn" title="Download Pdf"><i class="fas fa-download"></i></button>
+                                        </form>
+                                        <form action="{{ route('admin.feedback-course.download') }}" method="post">
+                                            @csrf
+                                            <input name="feedback_id" type="hidden" value="${index}">
+                                            <input name="enroll_id" type="hidden" value="${val.enroll_id}">
+                                            <input name="total_students" type="hidden" value="${val.total_students}">
+                                            <input name="staff_id" type="hidden" value="${val.staff_id},${val.subject_code},${val.subject_name}">
+                                            <input name="file_type" type="hidden" value="excel">
+                                            <button type="submit" class="newViewBtn" title="Download Excel"><i class="fas fa-file-excel"></i></button>
+                                        </form>
+                                    
+                                        </td>`)
+                                    body.append(row)
+                                })
                             })
+                            $('.secondLoader').hide();
+
                             table = $('.datatable-feedbackReport').DataTable();
                         } else {
                             Swal.fire('', data, 'error');

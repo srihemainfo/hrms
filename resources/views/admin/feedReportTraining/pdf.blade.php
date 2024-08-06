@@ -17,32 +17,9 @@
             border: 1px solid black;
         }
 
-        .card {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-            padding: 20px;
-            max-width: 1000px;
-            margin: auto;
-        }
-
-        .card-header {
-            background-color: #343a40;
-            color: #ffffff;
-            padding: 20px;
-            border-radius: 12px 12px 0 0;
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-
-        .card-body {
-            padding: 20px;
-        }
-
         .details {
             margin-bottom: 20px;
-            border-bottom: 2px solid #dee2e6;
+            /* border-bottom: 2px solid #dee2e6; */
             padding-bottom: 15px;
         }
 
@@ -74,19 +51,19 @@
 
         th,
         td {
-            padding: 12px;
+            padding: 5px;
             text-align: center;
-            font-size: 0.9em;
+            font-size: 0.7em;
         }
 
-        th {
-            background-color: #007bff;
-            color: #ffffff;
+        th:nth-child(even) {
+            max-width: 90px;
             font-weight: bold;
         }
 
-        tr:nth-child(even) {
-            background-color: #e9ecef;
+        td:nth-child(even) {
+            max-width: 90px;
+            word-wrap: break-word;
         }
 
         tr:hover {
@@ -137,7 +114,7 @@
 
         .logo_div {
             position: relative;
-            height: 100px;
+            height: 70px;
             margin-top: 20px;
         }
 
@@ -155,7 +132,6 @@
 </head>
 
 <body>
-
     <div class="section">
         <div class="logo_section">
             <div class="logo_div">
@@ -163,13 +139,10 @@
                     style="width: 150px; height: 70px;">
                 <span class="collage-title">Demo College OF ENGINNERING AND TECHNOLOGY</span>
             </div>
-            <h5 style="text-align: center;">Report</h5>
+            <h5 style="text-align: center;">{{ $get_feed[0]->feedback->name }}</h5>
         </div>
     </div>
     <div class="card">
-        <div class="card-header">
-            Student Training Feedback Report
-        </div>
         <div class="card-body">
             <div class="container">
                 <div class="details">
@@ -208,21 +181,29 @@
                     class="table table-bordered table-striped table-hover ajaxTable datatable datatable-feedbackReport text-center">
                     <thead>
                         <tr>
-                            <th width="10"></th>
                             <th>S.No</th>
                             <th>Question</th>
-                            <th>Submitted Count</th>
-                            <th>5 Scale (%)</th>
+                            <th>Excellence</th>
+                            <th>Best</th>
+                            <th>Good</th>
+                            <th>Fair</th>
+                            <th>Poor</th>
+                            <th>Percentage (%)</th>
+                            <th>5 Scale</th>
                         </tr>
                     </thead>
                     <tbody id="tbody">
                         @foreach ($get_feed as $id => $item)
                             <tr>
-                                <td></td>
                                 <td>{{ $id + 1 }}</td>
-                                <td style="text-transform: uppercase;">{{ $item->question_name }}</td>
-                                <td>{{ $item->submitted }}</td>
-                                <td>{{ $item->star_percent }}</td>
+                                <td style="text-transform: capitalize;">{{ $item->question_name }}</td>
+                                <td>{{ $item->five_star }}</td>
+                                <td>{{ $item->four_star }}</td>
+                                <td>{{ $item->three_star }}</td>
+                                <td>{{ $item->two_star }}</td>
+                                <td>{{ $item->one_star }}</td>
+                                <td>{{ $item->star_percent }} %</td>
+                                <td>{{ $item->five_scale }}</td>
                             </tr>
                         @endforeach
                     </tbody>

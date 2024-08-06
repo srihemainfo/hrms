@@ -173,14 +173,14 @@
                                         @csrf
                                         <input name="feedback_id" type="hidden" value="${value.feedback_id}">
                                         <input name="enroll_id" type="hidden" value="${value.enroll}">
-                                        <input name="submitted" type="hidden" value="${value.submitted}">
+                                        <input name="total_student" type="hidden" value="${value.total_student}">
                                         <button type="submit" class="newEditBtn" title="View Report" onclick="viewReport()"><i class="fas fa-file-signature"></i></button>
                                     </form>
                                     <form action="{{ route('admin.feedback-training.download') }}" method="post">
                                         @csrf
                                         <input name="feedback_id" type="hidden" value="${value.feedback_id}">
                                         <input name="enroll_id" type="hidden" value="${value.enroll}">
-                                        <input name="submitted" type="hidden" value="${value.submitted}">
+                                        <input name="total_student" type="hidden" value="${value.total_student}">
                                         <input name="file_type" type="hidden" value="pdf">
                                         <button type="submit" class="newDeleteBtn" title="Download Pdf"><i class="fas fa-download"></i></button>
                                     </form>
@@ -188,7 +188,7 @@
                                         @csrf
                                         <input name="feedback_id" type="hidden" value="${value.feedback_id}">
                                         <input name="enroll_id" type="hidden" value="${value.enroll}">
-                                        <input name="submitted" type="hidden" value="${value.submitted}">
+                                        <input name="total_student" type="hidden" value="${value.total_student}">
                                         <input name="file_type" type="hidden" value="excel">
                                         <button type="submit" class="newViewBtn" title="Download Excel"><i class="fas fa-file-excel"></i></button>
                                     </form>

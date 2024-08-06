@@ -19,6 +19,7 @@ class BarChartExport implements FromArray, WithCharts
     protected $question;
     public $feed_name;
     public $rating;
+    public $staff_name;
 
     public function __construct(array $labels, array $data, array $question, $feed)
     {
@@ -26,6 +27,7 @@ class BarChartExport implements FromArray, WithCharts
         $this->data = $data;
         $this->question = $question;
         $this->feed_name = $feed[0]->feedback->name;
+        $this->staff_name = $feed[0]->teaching ? $feed[0]->teaching?->name : null;
         $this->rating = $feed[0]->overall_rating;
     }
 
@@ -73,12 +75,21 @@ class BarChartExport implements FromArray, WithCharts
         $plotArea = new \PhpOffice\PhpSpreadsheet\Chart\PlotArea(NULL, [$chartData]);
 
         // Create the Chart
-        $chart = new \PhpOffice\PhpSpreadsheet\Chart\Chart(
-            'chart1',
-            new Title('Bar Chart Title'),
-            new Legend(Legend::POSITION_RIGHT, NULL, false),
-            $plotArea
-        );
+        if ($this->staff_name != null) {
+            $chart = new \PhpOffice\PhpSpreadsheet\Chart\Chart(
+                'chart1',
+                new Title($this->feed_name . '-' . $this->staff_name),
+                new Legend(Legend::POSITION_RIGHT, NULL, false),
+                $plotArea
+            );
+        } else {
+            $chart = new \PhpOffice\PhpSpreadsheet\Chart\Chart(
+                'chart1',
+                new Title($this->feed_name),
+                new Legend(Legend::POSITION_RIGHT, NULL, false),
+                $plotArea
+            );
+        }
 
         $chart->setTopLeftPosition('D5');
         $chart->setBottomRightPosition('N20');

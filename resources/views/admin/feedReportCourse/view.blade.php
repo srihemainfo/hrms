@@ -12,7 +12,7 @@
         .details span {
             padding: 10px;
             /* background-color: #007bff;
-                                            color: white; */
+                                                color: white; */
             border-radius: 3px;
         }
 
@@ -22,7 +22,7 @@
     </style>
     <div class="card">
         <div class="card-header">
-            Bra Chart Report
+            Bar Chart Report
         </div>
         <div class="card-body">
             <div style="width: 80%;">
@@ -32,7 +32,7 @@
     </div>
     <div class="card">
         <div class="card-header">
-            Student Training Feedback Report
+            Student Course Feedback Report
         </div>
         <div class="card-body">
             <div class="details">
@@ -42,7 +42,6 @@
                     </div>
                     <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                         <span><strong>Participant : </strong>{{ $get_feed[0]->feedback_participant }}</span>
-
                     </div>
                 </div>
                 <div class="row">
@@ -54,37 +53,46 @@
                         <span><strong>Feedback Name : </strong>{{ $get_feed[0]->feedback->name }}</span>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                        <span><strong>Staff Name : </strong>{{ $get_feed[0]->teaching->name }}</span>
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                        <span><strong>Subject :
+                            </strong>{{ $get_feed[0]->subject_name }}({{ $get_feed[0]->subject_code }})</span>
+                    </div>
+                </div>
             </div>
             <table
                 class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-feedbackReport text-center">
                 <thead>
                     <tr>
-                        <th width="10">
-                        </th>
-                        <th>
-                            S.No
-                        </th>
-                        <th>
-                            Question
-                        </th>
-                        <th>
-                            Submitted Count
-                        </th>
-                        <th>
-                            5 Scale (%)
-                        </th>
+                        <th>S.No</th>
+                        <th>Question</th>
+                        <th>Excellence</th>
+                        <th>Best</th>
+                        <th>Good</th>
+                        <th>Fair</th>
+                        <th>Poor</th>
+                        <th>Percentage (%)</th>
+                        <th>5 Scale</th>
                     </tr>
                 </thead>
                 <tbody id="tbody">
                     @foreach ($get_feed as $id => $item)
                         <tr>
-                            <td></td>
-                            <td>Q<sub>{{ $id + 1 }}</sub></td>
+                            <td>{{ $id + 1 }}</td>
                             <td style="text-transform: uppercase;">{{ $item->question_name }}</td>
-                            <td>{{ $item->submitted }}</td>
-                            <td>{{ $item->star_percent }}</td>
+                            <td>{{ $item->five_star }}</td>
+                            <td>{{ $item->four_star }}</td>
+                            <td>{{ $item->three_star }}</td>
+                            <td>{{ $item->two_star }}</td>
+                            <td>{{ $item->one_star }}</td>
+                            <td>{{ $item->star_percent }} %</td>
+                            <td>{{ $item->five_scale }}</td>
                         </tr>
                     @endforeach
+                    
                 </tbody>
             </table>
         </div>
@@ -95,7 +103,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         function convertPercentagesToNumbers(data) {
-            return data.map(value => parseFloat(value.replace('%', '')));
+            return data;
         }
 
         var ctx = document.getElementById('barChart').getContext('2d');
@@ -157,9 +165,9 @@
                     y: {
                         beginAtZero: true,
                         min: 0,
-                        max: 100,
+                        max: 5,
                         ticks: {
-                            stepSize: 10,
+                            stepSize: .5,
                             font: {
                                 size: 12,
                                 family: 'Arial'

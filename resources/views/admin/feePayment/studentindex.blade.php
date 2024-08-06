@@ -19,7 +19,7 @@
     </style>
     <div id="loading_div" class="text-primary text-center p-3" style="display:none;">Loading...</div>
     <div id="fee_list">
-
+        
     </div>
 @endsection
 @section('scripts')
