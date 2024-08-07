@@ -458,18 +458,18 @@
                             @endcan
 
                             @can('subject_allotment_access')
-                            <li class="nav-item">
-                                <a href="{{ route('admin.subject-allotment.index') }}"
-                                    class="nav-link {{ request()->is('admin/subject-allotment') || request()->is('admin/subject-allotment*') ? 'active' : '' }}">
-                                    <i class="fa-fw nav-icon fas fa-clipboard">
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.subject-allotment.index') }}"
+                                        class="nav-link {{ request()->is('admin/subject-allotment') || request()->is('admin/subject-allotment*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-clipboard">
 
-                                    </i>
-                                    <p>
-                                        Subject Allotment
-                                    </p>
-                                </a>
-                            </li>
-                        @endcan
+                                        </i>
+                                        <p>
+                                            Subject Allotment
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
                             @can('subject_registration_access')
 
                                 <li
@@ -2075,6 +2075,91 @@
                         @endcan
 
 
+                    </li>
+                @endcan
+
+                @can('feedback_management_access')
+
+                    <li
+                        class="nav-item has-treeview {{ request()->is('admin/configure-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/feedReport-training*') ? 'menu-open' : '' }} {{ request()->is('admin/feedReport-course*') ? 'menu-open' : '' }}  {{ request()->is('admin/feedReport-faculty*') ? 'menu-open' : '' }} {{ request()->is('admin/feedReport-external*') ? 'menu-open' : '' }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/configure-feedback*') ? 'active' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'active' : '' }} {{ request()->is('admin/feedReport-training*') ? 'active' : '' }} {{ request()->is('admin/feedReport-course*') ? 'active' : '' }} {{ request()->is('admin/feedReport-faculty*') ? 'active' : '' }} {{ request()->is('admin/feedReport-external*') ? 'active' : '' }}"
+                            href="#">
+                            <i class="fas nav-icon fas fa-comment">
+                            </i>
+                            <p>
+                                Feedback Management
+                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview" style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
+                            @can('configure_feedback_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.configure-feedback.index') }}"
+                                        class="nav-link {{ request()->is('admin/configure-feedback') || request()->is('admin/configure-feedback/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-comments">
+                                        </i>
+                                        <p>
+                                            Configure FeedBack
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('configure_feedback_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.schedule-feedback.index') }}"
+                                        class="nav-link {{ request()->is('admin/schedule-feedback') || request()->is('admin/schedule-feedback/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-sticky-note">
+                                        </i>
+                                        <p>
+                                            FeedBack Schedule
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            <li
+                                class="nav-item has-treeview {{ request()->is('admin/feedReport-training*') || request()->is('admin/feedReport-faculty*') || request()->is('admin/feedReport-external*') || request()->is('admin/fee-category-report*') ? 'menu-open' : '' }}">
+                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/feedReport-training*') || request()->is('admin/feedReport-faculty*') || request()->is('admin/feedReport-external*') || request()->is('admin/fee-category-report*') ? 'active' : '' }}"
+                                    href="#">
+
+                                    <i class="fa nav-icon fas fa-newspaper"></i>
+                                    <p>
+                                        Feedback Reports
+                                        <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview"
+                                    style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.feedReport-training.index') }}"
+                                            class="nav-link {{ request()->is('admin/feedReport-training*') || request()->is('admin/feedReport-training*') ? 'active' : '' }}">
+                                            <i class="fa-fw nav-icon fas fa-wallet"></i>
+                                            <p>Student Training Report</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.feedReport-course.index') }}"
+                                            class="nav-link {{ request()->is('admin/feedReport-course*') || request()->is('admin/feedReport-course*') ? 'active' : '' }}">
+                                            <i class="fa-fw nav-icon fas fa-wallet"></i>
+                                            <p>Student Course Report</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.feedReport-faculty.index') }}"
+                                            class="nav-link {{ request()->is('admin/feedReport-faculty*') || request()->is('admin/feedReport-faculty*') ? 'active' : '' }}">
+                                            <i class="fa-fw nav-icon fas fa-wallet"></i>
+                                            <p>Faculty Report</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.feedReport-external.index') }}"
+                                            class="nav-link {{ request()->is('admin/feedReport-external*') || request()->is('admin/feedReport-external*') ? 'active' : '' }}">
+                                            <i class="fa-fw nav-icon fas fa-wallet"></i>
+                                            <p>External Report</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </li>
                 @endcan
                 {{-- @can('feedback_access')

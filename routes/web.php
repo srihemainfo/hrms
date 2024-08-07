@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\FeeDataController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,6 +14,8 @@ Auth::routes(['register' => false]);
 Route::get('/', function () {
     return redirect('/login');
 });
+Route::get('/feedback/{token}', 'Admin\FeedbackController@feedbackForm');
+Route::post('/feedback/survey', 'Admin\FeedbackController@feedbackStore')->name('feedback.store');
 
 Route::get('/test', function () {
     return view('test');
@@ -636,6 +639,59 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('inventory-report/report', 'BookIssueController@inventory')->name('inventory-report.inventory');
     Route::post('reserve-report/search', 'BookIssueController@search')->name('reserve-report.search');
 
+
+    //FeedBack Configure
+    Route::get('configure-feedback', 'FeedbackController@configureIndex')->name('configure-feedback.index');
+    Route::post('configure-feedback/edit', 'FeedbackController@configureEdit')->name('configure-feedback.edit');
+    Route::post('configure-feedback/store', 'FeedbackController@configureStore')->name('configure-feedback.store');
+    Route::post('configure-feedback/view', 'FeedbackController@configureView')->name('configure-feedback.view');
+    Route::post('configure-feedback/delete', 'FeedbackController@configureDestroy')->name('configure-feedback.delete');
+
+
+    //Feedback Schedule
+    Route::get('schedule-feedback', 'FeedbackController@scheduleIndex')->name('schedule-feedback.index');
+    Route::post('schedule-feedback/edit', 'FeedbackController@scheduleEdit')->name('schedule-feedback.edit');
+    Route::post('schedule-feedback/store', 'FeedbackController@scheduleStore')->name('schedule-feedback.store');
+    Route::post('schedule-feedback/view', 'FeedbackController@scheduleView')->name('schedule-feedback.view');
+    Route::post('schedule-feedback/delete', 'FeedbackController@scheduleDestroy')->name('schedule-feedback.delete');
+    Route::post('schedule-feedback/fetch-course', 'FeedbackController@fetchCourse')->name('schedule-feedback.fetch_course');
+
+    //Student Feedback
+    Route::get('feedback-forms', 'FeedbackController@studentIndex')->name('feedback-forms.index');
+    Route::post('feedback-forms/survey', 'FeedbackController@studentFeedSurvey')->name('student-feedback-forms.survey');
+    Route::post('feedback-forms/submit', 'FeedbackController@studentFeedStore')->name('student-feedback-forms.store');
+
+    //Staff Feedback
+    Route::get('feedback-form', 'FeedbackController@staffIndex')->name('feedback-form.index');
+    Route::post('feedback-form/survey', 'FeedbackController@staffFeedSurvey')->name('staff-feedback-form.survey');
+    Route::post('feedback-form/submit', 'FeedbackController@staffFeedStore')->name('staff-feedback-form.store');
+
+
+    //Feedback Reports----------------------------------------
+
+    //Student Others Feedback
+    Route::get('feedReport-training', 'FeedbackReportController@trainingIndex')->name('feedReport-training.index');
+    Route::post('feedback-training/report', 'FeedbackReportController@trainingReport')->name('feedback-training.report');
+    Route::post('feedback-training/view', 'FeedbackReportController@trainingView')->name('feedback-training.view');
+    Route::post('feedback-training/download', 'FeedbackReportController@trainingDownload')->name('feedback-training.download');
+
+    //Student Course Feedback
+    Route::get('feedReport-course', 'FeedbackReportController@courseIndex')->name('feedReport-course.index');
+    Route::post('feedback-course/report', 'FeedbackReportController@courseReport')->name('feedback-course.report');
+    Route::post('feedback-course/view', 'FeedbackReportController@courseView')->name('feedback-course.view');
+    Route::post('feedback-course/download', 'FeedbackReportController@courseDownload')->name('feedback-course.download');
+    
+    //Faculty Feedback
+    Route::get('feedReport-faculty', 'FeedbackReportController@facultyIndex')->name('feedReport-faculty.index');
+    Route::post('feedback-faculty/report', 'FeedbackReportController@facultyReport')->name('feedback-faculty.report');
+    Route::post('feedback-faculty/view', 'FeedbackReportController@facultyView')->name('feedback-faculty.view');
+    Route::post('feedback-faculty/download', 'FeedbackReportController@facultyDownload')->name('feedback-faculty.download');
+    
+    //External Feedback
+    Route::get('feedReport-external', 'FeedbackReportController@externalIndex')->name('feedReport-external.index');
+    Route::post('feedback-external/report', 'FeedbackReportController@externalReport')->name('feedback-external.report');
+    Route::post('feedback-external/view', 'FeedbackReportController@externalView')->name('feedback-external.view');
+    Route::post('feedback-external/download', 'FeedbackReportController@externalDownload')->name('feedback-external.download');
 
 
     // Staff Subjects
@@ -1687,15 +1743,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     //Feed back
 
-    Route::get('FeedBack/index', 'FeedbackController@index')->name('FeedBack.index');
+    // Route::get('FeedBack/index', 'FeedbackController@index')->name('FeedBack.index');
 
     //Feed Back Questions
-    Route::get('FeedBack-Questions/index', 'FeedbackQuestionsController@index')->name('feedback_questions.index');
-    Route::get('FeedBack-Questions/create', 'FeedbackQuestionsController@create')->name('feedback_questions.create');
-    Route::post('FeedBack-Questions/store', 'FeedbackQuestionsController@store')->name('feedback_questions.store');
-    Route::post('FeedBack-Questions/update/{id}', 'FeedbackQuestionsController@update')->name('feedback_questions.update');
-    Route::get('FeedBack-Questions/edit/{id}', 'FeedbackQuestionsController@edit')->name('feedback_questions.edit');
-    Route::DELETE('FeedBack-Questions/destroy/{id}', 'FeedbackQuestionsController@destroy')->name('feedback_questions.destroy');
+    // Route::get('FeedBack-Questions/index', 'FeedbackQuestionsController@index')->name('feedback_questions.index');
+    // Route::get('FeedBack-Questions/create', 'FeedbackQuestionsController@create')->name('feedback_questions.create');
+    // Route::post('FeedBack-Questions/store', 'FeedbackQuestionsController@store')->name('feedback_questions.store');
+    // Route::post('FeedBack-Questions/update/{id}', 'FeedbackQuestionsController@update')->name('feedback_questions.update');
+    // Route::get('FeedBack-Questions/edit/{id}', 'FeedbackQuestionsController@edit')->name('feedback_questions.edit');
+    // Route::DELETE('FeedBack-Questions/destroy/{id}', 'FeedbackQuestionsController@destroy')->name('feedback_questions.destroy');
 
     // Staff Salary
     Route::delete('staff-salaries/destroy', 'StaffSalaryController@massDestroy')->name('staff-salaries.massDestroy');
@@ -2002,6 +2058,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('erp-setting/view', 'ErpSettingController@view')->name('erp-setting.view');
     Route::post('erp-setting/delete', 'ErpSettingController@destroy')->name('erp-setting.delete');
     Route::delete('erp-setting/destroy', 'ErpSettingController@massDestroy')->name('erp-setting.massDestroy');
+
+
 
 });
 

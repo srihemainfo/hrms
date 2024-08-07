@@ -531,7 +531,7 @@
 
                                     </i>
                                     <p>
-                                        My Hostel Details
+                                        My Bus Details
                                     </p>
                                 </a>
                             </li>
@@ -586,7 +586,7 @@
                                             </a>
                                         </li>
                                     @endcan
-                                    @can('book_allote_access')
+                                    {{-- @can('book_allote_access')
                                         <li class="nav-item">
                                             <a href="{{ route('admin.book-allocate.index') }}"
                                                 class="nav-link {{ request()->is('admin/book-allocate') || request()->is('admin/book-allocate/*') ? 'active' : '' }}">
@@ -597,7 +597,7 @@
                                                 </p>
                                             </a>
                                         </li>
-                                    @endcan
+                                    @endcan --}}
                                 </ul>
                             </li>
                         @endcan

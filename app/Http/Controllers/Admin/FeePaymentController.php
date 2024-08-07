@@ -358,7 +358,7 @@ class FeePaymentController extends Controller
 
     public function StudentIndex(Request $request)
     {
-
+        
         return view('admin.feePayment.studentindex');
     }
 }

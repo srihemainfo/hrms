@@ -193,7 +193,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => 'E:\\EngineeringDemo\\storage\\framework/cache/data',
+        'path' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -363,10 +363,10 @@
     'convert_entities' => true,
     'options' => 
     array (
-      'font_dir' => 'E:\\EngineeringDemo\\storage\\fonts',
-      'font_cache' => 'E:\\EngineeringDemo\\storage\\fonts',
-      'temp_dir' => 'C:\\Users\\Gowtham\\AppData\\Local\\Temp',
-      'chroot' => 'E:\\EngineeringDemo',
+      'font_dir' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\fonts',
+      'font_cache' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\fonts',
+      'temp_dir' => 'C:\\Users\\Admin\\AppData\\Local\\Temp',
+      'chroot' => 'C:\\Work\\Projects\\EngineeringDemo',
       'allowed_protocols' => 
       array (
         'file://' => 
@@ -411,12 +411,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => 'E:\\EngineeringDemo\\storage\\app',
+        'root' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => 'E:\\EngineeringDemo\\storage\\app/public',
+        'root' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\app/public',
         'url' => 'http://localhost/storage',
         'visibility' => 'public',
       ),
@@ -434,7 +434,7 @@
     ),
     'links' => 
     array (
-      'E:\\EngineeringDemo\\public\\storage' => 'E:\\EngineeringDemo\\storage\\app/public',
+      'C:\\Work\\Projects\\EngineeringDemo\\public\\storage' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\app/public',
     ),
   ),
   'hashing' => 
@@ -469,13 +469,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => 'E:\\EngineeringDemo\\storage\\logs/laravel.log',
+        'path' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => 'E:\\EngineeringDemo\\storage\\logs/laravel.log',
+        'path' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -527,7 +527,7 @@
       ),
       'emergency' => 
       array (
-        'path' => 'E:\\EngineeringDemo\\storage\\logs/laravel.log',
+        'path' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\logs/laravel.log',
       ),
     ),
   ),
@@ -592,7 +592,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => 'E:\\EngineeringDemo\\resources\\views/vendor/mail',
+        0 => 'C:\\Work\\Projects\\EngineeringDemo\\resources\\views/vendor/mail',
       ),
     ),
   ),
@@ -708,7 +708,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => 'E:\\EngineeringDemo\\storage\\framework/sessions',
+    'files' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -728,13 +728,135 @@
   array (
     'paths' => 
     array (
-      0 => 'E:\\EngineeringDemo\\resources\\views',
+      0 => 'C:\\Work\\Projects\\EngineeringDemo\\resources\\views',
     ),
-    'compiled' => 'E:\\EngineeringDemo\\storage\\framework\\views',
+    'compiled' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\framework\\views',
   ),
   'image' => 
   array (
     'driver' => 'gd',
+  ),
+  'excel' => 
+  array (
+    'exports' => 
+    array (
+      'chunk_size' => 1000,
+      'pre_calculate_formulas' => false,
+      'strict_null_comparison' => false,
+      'csv' => 
+      array (
+        'delimiter' => ',',
+        'enclosure' => '"',
+        'line_ending' => '
+',
+        'use_bom' => false,
+        'include_separator_line' => false,
+        'excel_compatibility' => false,
+        'output_encoding' => '',
+        'test_auto_detect' => true,
+      ),
+      'properties' => 
+      array (
+        'creator' => '',
+        'lastModifiedBy' => '',
+        'title' => '',
+        'description' => '',
+        'subject' => '',
+        'keywords' => '',
+        'category' => '',
+        'manager' => '',
+        'company' => '',
+      ),
+    ),
+    'imports' => 
+    array (
+      'read_only' => true,
+      'ignore_empty' => false,
+      'heading_row' => 
+      array (
+        'formatter' => 'slug',
+      ),
+      'csv' => 
+      array (
+        'delimiter' => NULL,
+        'enclosure' => '"',
+        'escape_character' => '\\',
+        'contiguous' => false,
+        'input_encoding' => 'UTF-8',
+      ),
+      'properties' => 
+      array (
+        'creator' => '',
+        'lastModifiedBy' => '',
+        'title' => '',
+        'description' => '',
+        'subject' => '',
+        'keywords' => '',
+        'category' => '',
+        'manager' => '',
+        'company' => '',
+      ),
+      'cells' => 
+      array (
+        'middleware' => 
+        array (
+        ),
+      ),
+    ),
+    'extension_detector' => 
+    array (
+      'xlsx' => 'Xlsx',
+      'xlsm' => 'Xlsx',
+      'xltx' => 'Xlsx',
+      'xltm' => 'Xlsx',
+      'xls' => 'Xls',
+      'xlt' => 'Xls',
+      'ods' => 'Ods',
+      'ots' => 'Ods',
+      'slk' => 'Slk',
+      'xml' => 'Xml',
+      'gnumeric' => 'Gnumeric',
+      'htm' => 'Html',
+      'html' => 'Html',
+      'csv' => 'Csv',
+      'tsv' => 'Csv',
+      'pdf' => 'Dompdf',
+    ),
+    'value_binder' => 
+    array (
+      'default' => 'Maatwebsite\\Excel\\DefaultValueBinder',
+    ),
+    'cache' => 
+    array (
+      'driver' => 'memory',
+      'batch' => 
+      array (
+        'memory_limit' => 60000,
+      ),
+      'illuminate' => 
+      array (
+        'store' => NULL,
+      ),
+      'default_ttl' => 10800,
+    ),
+    'transactions' => 
+    array (
+      'handler' => 'db',
+      'db' => 
+      array (
+        'connection' => NULL,
+      ),
+    ),
+    'temporary_files' => 
+    array (
+      'local_path' => 'C:\\Work\\Projects\\EngineeringDemo\\storage\\framework/cache/laravel-excel',
+      'local_permissions' => 
+      array (
+      ),
+      'remote_disk' => NULL,
+      'remote_prefix' => NULL,
+      'force_resync_remote' => NULL,
+    ),
   ),
   'flare' => 
   array (
@@ -809,7 +931,7 @@
     array (
     ),
     'enable_runnable_solutions' => NULL,
-    'remote_sites_path' => 'E:\\EngineeringDemo',
+    'remote_sites_path' => 'C:\\Work\\Projects\\EngineeringDemo',
     'local_sites_path' => '',
     'housekeeping_endpoint_prefix' => '_ignition',
     'settings_file_path' => '',

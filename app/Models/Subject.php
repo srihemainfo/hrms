@@ -26,7 +26,7 @@ class Subject extends Model
         'semester_id',
         'course_id',
         'department_id',
-        'subject_code',
+        'c',
         'status',
         'subject_type_id',
         'subject_cat_id',
@@ -73,5 +73,9 @@ class Subject extends Model
     public function subject_category()
     {
         return $this->belongsTo(SubjectCategory::class, 'subject_cat_id');
+    }
+    public function subject_register()
+    {
+        return $this->hasMany(SubjectRegistration::class, 'id', 'subject');
     }
 }
