@@ -2074,8 +2074,8 @@
                 @can('feedback_management_access')
 
                     <li
-                        class="nav-item has-treeview {{ request()->is('admin/configure-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/feedReport-training*') ? 'menu-open' : '' }} {{ request()->is('admin/feedReport-course*') ? 'menu-open' : '' }}  {{ request()->is('admin/transport-report*') ? 'menu-open' : '' }} {{ request()->is('admin/bus-student*') ? 'menu-open' : '' }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/configure-feedback*') ? 'active' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'active' : '' }} {{ request()->is('admin/feedReport-training*') ? 'active' : '' }} {{ request()->is('admin/feedReport-course*') ? 'active' : '' }} {{ request()->is('admin/transport-report*') ? 'active' : '' }} {{ request()->is('admin/bus-student*') ? 'active' : '' }}"
+                        class="nav-item has-treeview {{ request()->is('admin/configure-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'menu-open' : '' }} {{ request()->is('admin/feedReport-training*') ? 'menu-open' : '' }} {{ request()->is('admin/feedReport-course*') ? 'menu-open' : '' }}  {{ request()->is('admin/feedReport-faculty*') ? 'menu-open' : '' }} {{ request()->is('admin/feedReport-external*') ? 'menu-open' : '' }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/configure-feedback*') ? 'active' : '' }} {{ request()->is('admin/schedule-feedback*') ? 'active' : '' }} {{ request()->is('admin/feedReport-training*') ? 'active' : '' }} {{ request()->is('admin/feedReport-course*') ? 'active' : '' }} {{ request()->is('admin/feedReport-faculty*') ? 'active' : '' }} {{ request()->is('admin/feedReport-external*') ? 'active' : '' }}"
                             href="#">
                             <i class="fas nav-icon fas fa-comment">
                             </i>
@@ -2110,8 +2110,8 @@
                                 </li>
                             @endcan
                             <li
-                                class="nav-item has-treeview {{ request()->is('admin/feedReport-training*') || request()->is('admin/fee-defaulters-report*') || request()->is('admin/fee-scholarship-report*') || request()->is('admin/fee-category-report*') ? 'menu-open' : '' }}">
-                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/feedReport-training*') || request()->is('admin/fee-defaulters-report*') || request()->is('admin/fee-scholarship-report*') || request()->is('admin/fee-category-report*') ? 'active' : '' }}"
+                                class="nav-item has-treeview {{ request()->is('admin/feedReport-training*') || request()->is('admin/feedReport-faculty*') || request()->is('admin/feedReport-external*') || request()->is('admin/fee-category-report*') ? 'menu-open' : '' }}">
+                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/feedReport-training*') || request()->is('admin/feedReport-faculty*') || request()->is('admin/feedReport-external*') || request()->is('admin/fee-category-report*') ? 'active' : '' }}"
                                     href="#">
 
                                     <i class="fa nav-icon fas fa-newspaper"></i>
@@ -2137,10 +2137,17 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="{{ route('admin.feedReport-course.index') }}"
-                                            class="nav-link {{ request()->is('admin/feedReport-course*') || request()->is('admin/feedReport-course*') ? 'active' : '' }}">
+                                        <a href="{{ route('admin.feedReport-faculty.index') }}"
+                                            class="nav-link {{ request()->is('admin/feedReport-faculty*') || request()->is('admin/feedReport-faculty*') ? 'active' : '' }}">
                                             <i class="fa-fw nav-icon fas fa-wallet"></i>
                                             <p>Faculty Report</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('admin.feedReport-external.index') }}"
+                                            class="nav-link {{ request()->is('admin/feedReport-external*') || request()->is('admin/feedReport-external*') ? 'active' : '' }}">
+                                            <i class="fa-fw nav-icon fas fa-wallet"></i>
+                                            <p>External Report</p>
                                         </a>
                                     </li>
                                 </ul>

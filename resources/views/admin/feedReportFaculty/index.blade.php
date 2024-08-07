@@ -12,24 +12,14 @@
         <div class="card-body">
             <div class="row gutters">
                 <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
-                    <label for="feedback_type" class="required">Feedback Type</label>
-                    <select class="form-control select2" name="feedback_type" id="feedback_type">
-                        <option value="">Select Type</option>
-                        <option value="Workshop">Workshop</option>
-                        <option value="Seminar">Seminar</option>
-                    </select>
-                    <span id="feedback_type_span" class="text-danger text-center"
-                        style="display:none;font-size:0.9rem;"></span>
-                </div>
-                <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
-                    <label for="batch" class="required">Batch</label>
-                    <select class="form-control select2" name="batch" id="batch">
-                        <option value="">Select Batch</option>
-                        @foreach ($batch as $id => $item)
-                            <option value="{{ $id }}">{{ $item }}</option>
+                    <label for="feedback" class="required">Feedback</label>
+                    <select class="form-control select2" name="feedback" id="feedback">
+                        <option value="">Select Feedback</option>
+                        @foreach ($feedback as $item)
+                            <option value="{{ $item->feedback->id }}">{{ $item->feedback->name }}</option>
                         @endforeach
                     </select>
-                    <span id="batch_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
+                    <span id="feedback_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
                     <label for="ay" class="required">Ay</label>
@@ -42,14 +32,14 @@
                     <span id="ay_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12 form-group">
-                    <label for="course" class="required">Course</label>
-                    <select class="form-control select2" name="course" id="course">
+                    <label for="dept" class="required">Department</label>
+                    <select class="form-control select2" name="dept" id="dept">
                         <option value="">Select Course</option>
-                        @foreach ($course as $id => $item)
+                        @foreach ($dept as $id => $item)
                             <option value="{{ $id }}">{{ $item }}</option>
                         @endforeach
                     </select>
-                    <span id="course_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
+                    <span id="dept_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
                 </div>
                 <div class="col">
                     <div id="save_div" class="float-right">
@@ -83,23 +73,19 @@
                             Year
                         </th>
                         <th>
-                            Sem
-                        </th>
-                        <th>
-                            Section
+                            Department
                         </th>
                         <th>
                             Total Student
                         </th>
                         <th>
-                            Students Submitted
+                            Total Submitted
                         </th>
                         <th>
-                            Students Not Submitted
+                            Not Submitted
                         </th>
                         <th>
                             Action
-
                         </th>
 
                     </tr>
@@ -110,7 +96,6 @@
         </div>
         {{-- <div class="secondLoader"></div> --}}
     </div>
-    
 @endsection
 @section('scripts')
     <script>
@@ -135,28 +120,25 @@
         };
 
         function fetchReport() {
-            if ($('#feedback_type').val() != '' && $('#batch').val() != '' && $('#ay').val() != '' && $('#course')
-                .val() != '') {
-                    $('.secondLoader').show()
+            if ($('#feedback').val() != '' && $('#ay').val() != '' && $('#dept').val() != '') {
+                $('.secondLoader').show();
                 $.ajax({
-                    url: "{{ route('admin.feedback-training.report') }}",
+                    url: "{{ route('admin.feedback-faculty.report') }}",
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'feedback_type': $('#feedback_type').val(),
-                        'batch': $('#batch').val(),
+                        'feedback': $('#feedback').val(),
                         'ay': $('#ay').val(),
-                        'course': $('#course').val()
+                        'dept': $('#dept').val()
                     },
                     success: function(response) {
                         let data = response.data
                         let status = response.status
-                        console.log(data);
                         if (status == true) {
-                            let table = $('.datatable-feedbackReport').DataTable();
-                            table.clear().destroy();
+                            let table = $('.datatable-feedbackReport').DataTable()
+                            table.clear().destroy()
                             let body = $('#tbody').empty()
                             let i = 0;
                             $.each(data, function(index, value) {
@@ -164,31 +146,30 @@
                                 row.append(`<td></td>`)
                                 row.append(`<td>${i+=1}</td>`)
                                 row.append(`<td>${value.ay}</td>`)
-                                row.append(`<td>${value.sem}</td>`)
-                                row.append(`<td>${value.sec}</td>`)
+                                row.append(`<td>${value.dept}</td>`)
                                 row.append(`<td>${value.total_student}</td>`)
                                 row.append(`<td>${value.submitted}</td>`)
                                 row.append(`<td>${value.not_submitted}</td>`)
                                 row.append(`<td>
-                                    <form action="{{ route('admin.feedback-training.view') }}" method="post">
+                                    <form action="{{ route('admin.feedback-faculty.view') }}" method="post">
                                         @csrf
                                         <input name="feedback_id" type="hidden" value="${value.feedback_id}">
-                                        <input name="enroll_id" type="hidden" value="${value.enroll}">
+                                        <input name="dept" type="hidden" value="${value.dept_id}">
                                         <input name="total_student" type="hidden" value="${value.total_student}">
                                         <button type="submit" class="newEditBtn" title="View Report" onclick="viewReport()"><i class="fas fa-file-signature"></i></button>
                                     </form>
-                                    <form action="{{ route('admin.feedback-training.download') }}" method="post">
+                                    <form action="{{ route('admin.feedback-faculty.download') }}" method="post">
                                         @csrf
                                         <input name="feedback_id" type="hidden" value="${value.feedback_id}">
-                                        <input name="enroll_id" type="hidden" value="${value.enroll}">
+                                        <input name="dept" type="hidden" value="${value.dept_id}">
                                         <input name="total_student" type="hidden" value="${value.total_student}">
                                         <input name="file_type" type="hidden" value="pdf">
                                         <button type="submit" class="newDeleteBtn" title="Download Pdf"><i class="fas fa-download"></i></button>
                                     </form>
-                                    <form action="{{ route('admin.feedback-training.download') }}" method="post">
+                                    <form action="{{ route('admin.feedback-faculty.download') }}" method="post">
                                         @csrf
                                         <input name="feedback_id" type="hidden" value="${value.feedback_id}">
-                                        <input name="enroll_id" type="hidden" value="${value.enroll}">
+                                        <input name="dept" type="hidden" value="${value.dept_id}">
                                         <input name="total_student" type="hidden" value="${value.total_student}">
                                         <input name="file_type" type="hidden" value="excel">
                                         <button type="submit" class="newViewBtn" title="Download Excel"><i class="fas fa-file-excel"></i></button>
@@ -204,6 +185,7 @@
 
                         $('#save_div').show()
                         $('#loading_div').hide()
+                        $('.secondLoader').hide();
                     }
                 })
             } else {

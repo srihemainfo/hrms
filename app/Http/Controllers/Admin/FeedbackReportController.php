@@ -13,7 +13,9 @@ use App\Models\OverAllFeedbacksModel;
 use App\Models\Section;
 use App\Models\Semester;
 use App\Models\Student;
+use App\Models\TeachingStaff;
 use App\Models\ToolsCourse;
+use App\Models\ToolsDepartment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use DB;
 use Illuminate\Http\Request;
@@ -501,5 +503,379 @@ class FeedbackReportController extends Controller
 
     }
 
+    public function facultyIndex(Request $request)
+    {
+        $ay = AcademicYear::pluck('name', 'id');
+        $dept = ToolsDepartment::pluck('name', 'id');
+        $feedback = FeedbackSchedule::with('feedback')->where('feedback_type', 'Faculty')->get();
+        return view('admin.feedReportFaculty.index', compact('ay', 'dept', 'feedback'));
+    }
 
+    public function facultyReport(Request $request)
+    {
+        $rules = [
+            'feedback' => 'required',
+            'ay' => 'required',
+            'dept' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'data' => $validator->errors()]);
+        }
+
+        $schedule = FeedbackSchedule::with('feedback', 'overall_feedbacks')->where([
+            'feedback_type' => 'Faculty',
+            'academic_id' => $request->ay,
+        ])
+            ->whereJsonContains('department_id', $request->dept)
+            ->orWhereJsonContains('department_id', 'All')->get();
+        // dd($schedule);
+
+        if (!empty($schedule)) {
+            $data = [];
+            $feed_ids = [];
+            foreach ($schedule as $key => $value) {
+                $decode_dept = json_decode($value->department_id);
+                if (in_array('All', $decode_dept) || in_array($request->dept, $decode_dept)) {
+                    $dept = ToolsDepartment::where('id', $request->dept)->select('id', 'name')->first();
+                }
+                $academic = AcademicYear::find($request->ay);
+                if ($dept) {
+                    $get_staff = TeachingStaff::where(['Dept' => $dept->name])->get();
+                    // dd($get_staff);
+                    $submitted_student = 0;
+                    foreach ($get_staff as $i => $staff) {
+                        $get_feed = OverAllFeedbacksModel::where(['feed_schedule_id' => $value->id, 'department_id' => $dept->id])->whereJsonContains('users', $staff->user_name_id)->exists();
+                        if ($get_feed) {
+                            // dd($get_feed);
+                            $submitted_student += 1;
+                        }
+                    }
+                    if (!empty($get_staff)) {
+                        $data[] = [
+                            'feedback_id' => $value->id,
+                            'ay' => $academic->name,
+                            'dept' => $dept->name,
+                            'dept_id' => $dept->id,
+                            'total_student' => count($get_staff),
+                            'not_submitted' => count($get_staff) - $submitted_student,
+                            'submitted' => $submitted_student,
+                        ];
+                    }
+                }
+            }
+            return response()->json(['status' => true, 'data' => $data]);
+        } else {
+            return response()->json(['status' => false, 'data' => 'Feedback Not Yes Created']);
+        }
+    }
+
+    public function facultyView(Request $request)
+    {
+        if ($request->feedback_id != '') {
+            $explode = explode(',', $request->staff_id);
+            $get_feed = OverAllFeedbacksModel::with('feedback', 'feedback_schedule')->where(['feed_schedule_id' => $request->feedback_id, 'department_id' => $request->dept])->get();
+            $rates = [];
+            $label = [];
+            $datas = [];
+            if (count($get_feed) > 0) {
+                foreach ($get_feed as $key => $value) {
+                    $rates = [];
+                    $rating = json_decode($value->ratings);
+                    $label[] = 'Q' . ($key + 1);
+                    foreach ($rating as $id => $item) {
+                        $dept = ToolsDepartment::where('id', $request->dept)->select('id', 'name')->first();
+                        $check = TeachingStaff::where(['user_name_id' => $id, 'Dept' => $dept->name])->first();
+
+                        if ($check) {
+                            $rates[] = $item;
+                            $value->dept = $dept->name;
+                        } else {
+                            $value->dept = '';
+                        }
+                    }
+                    $count = count($rates) != 0 ? count($rates) : 1;
+                    $fiveStarCount = array_count_values($rates)[5] ?? 0;
+                    $fourStarCount = array_count_values($rates)[4] ?? 0;
+                    $threeStarCount = array_count_values($rates)[3] ?? 0;
+                    $twoStarCount = array_count_values($rates)[2] ?? 0;
+                    $oneStarCount = array_count_values($rates)[1] ?? 0;
+                    $five_scale = ($fiveStarCount * 5 + $fourStarCount * 4 + $threeStarCount * 3 + $twoStarCount * 2 + $oneStarCount * 1) /
+                        ($fiveStarCount + $fourStarCount + $threeStarCount + $twoStarCount + $oneStarCount);
+                    $value->submitted = $request->submitted;
+                    $value->five_star = $fiveStarCount;
+                    $value->four_star = $fourStarCount;
+                    $value->three_star = $threeStarCount;
+                    $value->two_star = $twoStarCount;
+                    $value->one_star = $oneStarCount;
+                    $value->star_percent = (int) $request->total_students / $count;
+                    $value->five_scale = $five_scale;
+                    $datas[] = $value->five_scale;
+                }
+                $data = [
+                    'labels' => $label,
+                    'data' => $datas,
+                ];
+                // dd($data, $get_feed);
+                return view('admin.feedReportFaculty.view', compact('get_feed', 'data'));
+            } else {
+                return back()->with('error', 'No one Submitted the FeedBack.');
+            }
+        }
+    }
+
+    public function facultyDownload(Request $request)
+    {
+        if ($request->feedback_id != '') {
+            $get_feed = OverAllFeedbacksModel::with('feedback', 'feedback_schedule', 'teaching')->where(['feed_schedule_id' => $request->feedback_id, 'staff_id' => $request->staff_id])->get();
+            $rates = [];
+            $label = [];
+            $datas = [];
+            $question = [];
+            $explode = explode(',', $request->staff_id);
+
+            if (count($get_feed) > 0) {
+                foreach ($get_feed as $key => $value) {
+                    $rates = [];
+                    $rating = json_decode($value->ratings);
+                    $label[] = 'Q' . ($key + 1);
+                    foreach ($rating as $id => $item) {
+                        $dept = ToolsDepartment::where('id', $request->dept)->select('id', 'name')->first();
+                        $check = TeachingStaff::where(['user_name_id' => $id, 'Dept' => $dept->name])->first();
+
+                        if ($check) {
+                            $rates[] = $item;
+                            $value->dept = $dept->name;
+                        } else {
+                            $value->dept = '';
+                        }
+                    }
+                    $count = count($rates) != 0 ? count($rates) : 1;
+                    $fiveStarCount = array_count_values($rates)[5] ?? 0;
+                    $fourStarCount = array_count_values($rates)[4] ?? 0;
+                    $threeStarCount = array_count_values($rates)[3] ?? 0;
+                    $twoStarCount = array_count_values($rates)[2] ?? 0;
+                    $oneStarCount = array_count_values($rates)[1] ?? 0;
+                    $five_scale = ($fiveStarCount * 5 + $fourStarCount * 4 + $threeStarCount * 3 + $twoStarCount * 2 + $oneStarCount * 1) /
+                        ($fiveStarCount + $fourStarCount + $threeStarCount + $twoStarCount + $oneStarCount);
+                    $value->submitted = $request->submitted;
+                    $value->five_star = $fiveStarCount;
+                    $value->four_star = $fourStarCount;
+                    $value->three_star = $threeStarCount;
+                    $value->two_star = $twoStarCount;
+                    $value->one_star = $oneStarCount;
+                    $value->star_percent = (int) $request->total_students / $count;
+                    $value->five_scale = $five_scale;
+                    $datas[] = $value->five_scale;
+                    $question[] = $value->question_name;
+                }
+                $data = [
+                    'labels' => $label,
+                    'data' => $datas,
+                    'question' => $question,
+                ];
+                // dd($get_feed);
+                if ($request->file_type == 'pdf') {
+                    $pdf = Pdf::loadView('admin.feedReportFaculty.pdf', compact('get_feed'));
+                    $pdf->setPaper('A4');
+                    return $pdf->stream($get_feed[0]->feedback->name . '.pdf');
+                } elseif ($request->file_type == 'excel') {
+                    return Excel::download(new BarChartExport($data['labels'], $data['data'], $data['question'], $get_feed), $get_feed[0]->feedback->name . '.xlsx');
+                }
+            } else {
+
+                return back()->with('error', 'No one Submitted the FeedBack.');
+            }
+
+        }
+
+    }
+
+    public function externalIndex(Request $request)
+    {
+        $ay = AcademicYear::pluck('name', 'id');
+        $dept = ToolsDepartment::pluck('name', 'id');
+        $feedback = FeedbackSchedule::with('feedback')->where('feedback_participant', 'External')->get();
+        return view('admin.feedReportExternal.index', compact('ay', 'dept', 'feedback'));
+    }
+
+    public function externalReport(Request $request)
+    {
+        $rules = [
+            'feedback' => 'required',
+            'ay' => 'required',
+            'dept' => 'required',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'data' => $validator->errors()]);
+        } 
+
+        $schedule = FeedbackSchedule::with('feedback', 'overall_feedbacks')->where([
+            'feedback_participant', 'External',
+            'academic_id' => $request->ay,
+        ])
+            ->whereJsonContains('department_id', $request->dept)
+            ->orWhereJsonContains('department_id', 'All')->get();
+        // dd($schedule);
+
+        if (!empty($schedule)) {
+            $data = [];
+            $feed_ids = [];
+            foreach ($schedule as $key => $value) {
+                $decode_dept = json_decode($value->department_id);
+                if (in_array('All', $decode_dept) || in_array($request->dept, $decode_dept)) {
+                    $dept = ToolsDepartment::where('id', $request->dept)->select('id', 'name')->first();
+                }
+                $academic = AcademicYear::find($request->ay);
+                if ($dept) {
+                    $get_staff = TeachingStaff::where(['Dept' => $dept->name])->get();
+                    // dd($get_staff);
+                    $submitted_student = 0;
+                    foreach ($get_staff as $i => $staff) {
+                        $get_feed = OverAllFeedbacksModel::where(['feed_schedule_id' => $value->id, 'department_id' => $dept->id])->whereJsonContains('users', $staff->user_name_id)->exists();
+                        if ($get_feed) {
+                            // dd($get_feed);
+                            $submitted_student += 1;
+                        }
+                    }
+                    if (!empty($get_staff)) {
+                        $data[] = [
+                            'feedback_id' => $value->id,
+                            'ay' => $academic->name,
+                            'dept' => $dept->name,
+                            'dept_id' => $dept->id,
+                            'total_student' => count($get_staff),
+                            'not_submitted' => count($get_staff) - $submitted_student,
+                            'submitted' => $submitted_student,
+                        ];
+                    }
+                }
+            }
+            return response()->json(['status' => true, 'data' => $data]);
+        } else {
+            return response()->json(['status' => false, 'data' => 'Feedback Not Yes Created']);
+        }
+    }
+
+    public function externalView(Request $request)
+    {
+        if ($request->feedback_id != '') {
+            $explode = explode(',', $request->staff_id);
+            $get_feed = OverAllFeedbacksModel::with('feedback', 'feedback_schedule')->where(['feed_schedule_id' => $request->feedback_id, 'department_id' => $request->dept])->get();
+            $rates = [];
+            $label = [];
+            $datas = [];
+            if (count($get_feed) > 0) {
+                foreach ($get_feed as $key => $value) {
+                    $rates = [];
+                    $rating = json_decode($value->ratings);
+                    $label[] = 'Q' . ($key + 1);
+                    foreach ($rating as $id => $item) {
+                        $dept = ToolsDepartment::where('id', $request->dept)->select('id', 'name')->first();
+                        $check = TeachingStaff::where(['user_name_id' => $id, 'Dept' => $dept->name])->first();
+
+                        if ($check) {
+                            $rates[] = $item;
+                            $value->dept = $dept->name;
+                        } else {
+                            $value->dept = '';
+                        }
+                    }
+                    $count = count($rates) != 0 ? count($rates) : 1;
+                    $fiveStarCount = array_count_values($rates)[5] ?? 0;
+                    $fourStarCount = array_count_values($rates)[4] ?? 0;
+                    $threeStarCount = array_count_values($rates)[3] ?? 0;
+                    $twoStarCount = array_count_values($rates)[2] ?? 0;
+                    $oneStarCount = array_count_values($rates)[1] ?? 0;
+                    $five_scale = ($fiveStarCount * 5 + $fourStarCount * 4 + $threeStarCount * 3 + $twoStarCount * 2 + $oneStarCount * 1) /
+                        ($fiveStarCount + $fourStarCount + $threeStarCount + $twoStarCount + $oneStarCount);
+                    $value->submitted = $request->submitted;
+                    $value->five_star = $fiveStarCount;
+                    $value->four_star = $fourStarCount;
+                    $value->three_star = $threeStarCount;
+                    $value->two_star = $twoStarCount;
+                    $value->one_star = $oneStarCount;
+                    $value->star_percent = (int) $request->total_students / $count;
+                    $value->five_scale = $five_scale;
+                    $datas[] = $value->five_scale;
+                }
+                $data = [
+                    'labels' => $label,
+                    'data' => $datas,
+                ];
+                // dd($data, $get_feed);
+                return view('admin.feedReportFaculty.view', compact('get_feed', 'data'));
+            } else {
+                return back()->with('error', 'No one Submitted the FeedBack.');
+            }
+        }
+    }
+
+    public function externalDownload(Request $request)
+    {
+        if ($request->feedback_id != '') {
+            $get_feed = OverAllFeedbacksModel::with('feedback', 'feedback_schedule', 'teaching')->where(['feed_schedule_id' => $request->feedback_id, 'staff_id' => $request->staff_id])->get();
+            $rates = [];
+            $label = [];
+            $datas = [];
+            $question = [];
+            $explode = explode(',', $request->staff_id);
+
+            if (count($get_feed) > 0) {
+                foreach ($get_feed as $key => $value) {
+                    $rates = [];
+                    $rating = json_decode($value->ratings);
+                    $label[] = 'Q' . ($key + 1);
+                    foreach ($rating as $id => $item) {
+                        $dept = ToolsDepartment::where('id', $request->dept)->select('id', 'name')->first();
+                        $check = TeachingStaff::where(['user_name_id' => $id, 'Dept' => $dept->name])->first();
+
+                        if ($check) {
+                            $rates[] = $item;
+                            $value->dept = $dept->name;
+                        } else {
+                            $value->dept = '';
+                        }
+                    }
+                    $count = count($rates) != 0 ? count($rates) : 1;
+                    $fiveStarCount = array_count_values($rates)[5] ?? 0;
+                    $fourStarCount = array_count_values($rates)[4] ?? 0;
+                    $threeStarCount = array_count_values($rates)[3] ?? 0;
+                    $twoStarCount = array_count_values($rates)[2] ?? 0;
+                    $oneStarCount = array_count_values($rates)[1] ?? 0;
+                    $five_scale = ($fiveStarCount * 5 + $fourStarCount * 4 + $threeStarCount * 3 + $twoStarCount * 2 + $oneStarCount * 1) /
+                        ($fiveStarCount + $fourStarCount + $threeStarCount + $twoStarCount + $oneStarCount);
+                    $value->submitted = $request->submitted;
+                    $value->five_star = $fiveStarCount;
+                    $value->four_star = $fourStarCount;
+                    $value->three_star = $threeStarCount;
+                    $value->two_star = $twoStarCount;
+                    $value->one_star = $oneStarCount;
+                    $value->star_percent = (int) $request->total_students / $count;
+                    $value->five_scale = $five_scale;
+                    $datas[] = $value->five_scale;
+                    $question[] = $value->question_name;
+                }
+                $data = [
+                    'labels' => $label,
+                    'data' => $datas,
+                    'question' => $question,
+                ];
+                // dd($get_feed);
+                if ($request->file_type == 'pdf') {
+                    $pdf = Pdf::loadView('admin.feedReportFaculty.pdf', compact('get_feed'));
+                    $pdf->setPaper('A4');
+                    return $pdf->stream($get_feed[0]->feedback->name . '.pdf');
+                } elseif ($request->file_type == 'excel') {
+                    return Excel::download(new BarChartExport($data['labels'], $data['data'], $data['question'], $get_feed), $get_feed[0]->feedback->name . '.xlsx');
+                }
+            } else {
+
+                return back()->with('error', 'No one Submitted the FeedBack.');
+            }
+
+        }
+
+    }
 }

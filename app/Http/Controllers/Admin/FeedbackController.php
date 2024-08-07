@@ -449,7 +449,8 @@ class FeedbackController extends Controller
             ->first();
         if ($data) {
             if ($data->token_link) {
-                return view('admin.feedback.external', compact('data'));
+                $dept = ToolsDepartment::pluck('name', 'id');
+                return view('admin.feedback.external', compact('data', 'dept'));
             }
         } else {
             $data = 'The link has expired or is Invalid.';
@@ -460,9 +461,10 @@ class FeedbackController extends Controller
     public function feedbackStore(Request $request)
     {
         // dd($request);
-        if (!empty($request->feed_id) && !empty($request->feedback_id) && !empty($request->name)) {
+        if (!empty($request->feed_id) && !empty($request->feedback_id) && !empty($request->name) && !empty($request->dept)) {
             $rules = [
                 'email' => 'required|email',
+                'dept' => 'required',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -487,12 +489,14 @@ class FeedbackController extends Controller
                     'feedback_id' => $check->feedback->id,
                     'feed_schedule_id' => $check->id,
                     'feedback_participant' => $feedback_participant,
+                    'department_id' => $request->dept
                 ])->exists();
                 if ($verify) {
                     $email_exists = OverAllFeedbacksModel::where([
                         'feedback_id' => $check->feedback->id,
                         'feed_schedule_id' => $check->id,
                         'feedback_participant' => $feedback_participant,
+                        'department_id' => $request->dept
                     ])->whereJsonContains('emails', $request->email)->exists();
                     if ($email_exists) {
                         $data = 'You have Already Submitted the Form.';
@@ -501,33 +505,32 @@ class FeedbackController extends Controller
                         $update = OverAllFeedbacksModel::where([
                             'feedback_id' => $check->feedback->id,
                             'feed_schedule_id' => $check->id,
-                            'feedback_participant' => $feedback_participant
+                            'feedback_participant' => $feedback_participant,
+                            'department_id' => $request->dept
                         ])->get();
 
                         foreach ($update as $key => $value) {
-                            // Decode JSON columns into PHP arrays
+
                             $decode_email = json_decode($value->emails, true) ?? [];
                             $decode_name = json_decode($value->users, true) ?? [];
                             $decode_rate = json_decode($value->ratings, true) ?? [];
                             $r = 'ques' . ($key + 1);
-                            // Add new values to arrays
+
                             array_push($decode_email, $request->email);
                             array_push($decode_name, $request->name);
                             array_push($decode_rate, $request->$r);
-                            // Encode arrays back to JSON
+
                             $value->emails = json_encode($decode_email);
                             $value->users = json_encode($decode_name);
                             $value->ratings = json_encode($decode_rate);
 
-                            // Save updated record
                             $value->save();
                         }
 
                         $data = 'Feedback Submitted Successfully.';
                         return view('admin.feedback.success', compact(['data']));
                     }
-                    // $decode_email = json_decode($email_exists->emails);
-                    // dd($email_exists);
+
                 } else {
                     foreach ($questions as $key => $value) {
                         $decode_rate = json_encode([$request->ques . ($key + 1)]);
@@ -538,6 +541,7 @@ class FeedbackController extends Controller
                             'feed_schedule_id' => $check->id,
                             'feedback_participant' => $feedback_participant,
                             'question_name' => $value,
+                            'department_id' => $request->dept,
                             'overall_rating' => $check->feedback->rating,
                             'ratings' => $decode_rate,
                             'users' => $decode_name,
@@ -827,6 +831,8 @@ class FeedbackController extends Controller
             if ($validator->fails()) {
                 return view('admin.feedback.staff')->with(['errors' => $validator->errors(), 'datas' => $request->datas], 422);
             }
+            $dept = ToolsDepartment::where('name', auth()->user()->dept)->first();
+            // dd($request, $dept);
 
             $check = FeedbackSchedule::with('feedback')
                 ->where('id', $request->feedback_id)
@@ -846,6 +852,7 @@ class FeedbackController extends Controller
                     'feed_schedule_id' => $check->id,
                     'feedback_participant' => $feedback_participant,
                     'feedback_type' => $feedback_type,
+                    'department_id' => $dept->id,
                 ])->exists();
                 if ($verify) {
                     $email_exists = OverAllFeedbacksModel::where([
@@ -853,6 +860,7 @@ class FeedbackController extends Controller
                         'feed_schedule_id' => $check->id,
                         'feedback_participant' => $feedback_participant,
                         'feedback_type' => $feedback_type,
+                        'department_id' => $dept->id,
                     ])->whereJsonContains('users', auth()->user()->id)->exists();
                     if ($email_exists) {
                         $data = 'You have Already Submitted the Form.';
@@ -863,19 +871,18 @@ class FeedbackController extends Controller
                             'feed_schedule_id' => $check->id,
                             'feedback_participant' => $feedback_participant,
                             'feedback_type' => $feedback_type,
+                            'department_id' => $dept->id,
                         ])->get();
                         // dd($update);
                         foreach ($update as $key => $value) {
                             $decode_email = json_decode($value->emails, true) ?? [];
                             $decode_name = json_decode($value->users, true) ?? [];
                             $decode_rate = json_decode($value->ratings, true) ?? [];
-                            $r = 'ques' . ($key + 1);
+                            $ques = 'ques' . ($key + 1);
+                            $decode_rate[$request->user_id] = $request->$ques;
+                            array_push($decode_name, $request->user_id);
+                            // dd($decode_rate);
 
-                            // array_push($decode_email, $request->email);
-                            array_push($decode_name, auth()->user()->id);
-                            array_push($decode_rate, $request->$r);
-
-                            // $value->emails = json_encode($decode_email);
                             $value->users = json_encode($decode_name);
                             $value->ratings = json_encode($decode_rate);
 
@@ -887,7 +894,7 @@ class FeedbackController extends Controller
                     }
                 } else {
                     foreach ($questions as $key => $value) {
-                        $decode_rate = json_encode([$request->ques . ($key + 1)]);
+                        $decode_rate = json_encode([auth()->user()->id => $request->ques . ($key + 1)]);
                         $decode_id = json_encode([auth()->user()->id]);
                         // $decode_email = null;
                         $create = OverAllFeedbacksModel::create([
@@ -897,6 +904,7 @@ class FeedbackController extends Controller
                             'feedback_type' => $feedback_type,
                             'question_name' => $value,
                             'overall_rating' => $check->feedback->rating,
+                            'department_id' => $dept->id,
                             'ratings' => $decode_rate,
                             'users' => $decode_id,
                             // 'emails' => $decode_email,

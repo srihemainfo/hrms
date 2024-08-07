@@ -23,7 +23,7 @@
         }
 
         body {
-            
+
             display: flex;
             align-items: center;
             justify-content: center;
@@ -385,6 +385,23 @@
             transform: translateY(20px);
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
+
+        select {
+            width: 350px;
+            /* outline: none; */
+            border: 1px solid #dddddd;
+            padding: .5rem;
+            font-size: 1.1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 4px rgb(146 161 176 / 15%);
+            cursor: pointer;
+        }
+
+        select:focus,
+        select:hover {
+            outline: none;
+            border: 1px solid rgba(0, 0, 0, 0.329);
+        }
     </style>
 </head>
 
@@ -398,7 +415,7 @@
                         <span class="close" onclick="closeToast(this)">×</span>
                     </div>
                 @endif
-                
+
                 @if ($errors->any())
                     @foreach ($errors->all() as $error)
                         <div class="toast error show">
@@ -421,6 +438,15 @@
                 <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
                     <label for="email">Email</label>
                     <input type="text" name="email" id="email">
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    <label for="dept">Department</label>
+                    <select class="form-control select2" name="dept" id="dept">
+                        <option value="">Select Department</option>
+                        @foreach ($dept as $key => $item)
+                            <option value="{{ $key }}">{{ $item }}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="ques">
                     <label>Questions</label>
@@ -501,12 +527,17 @@
         const form = document.getElementById('form-id');
         const name = document.getElementById('name');
         const email = document.getElementById('email');
+        const dept = document.getElementById('dept');
         if (name == null) {
             alert('Enter the name');
             return false;
         }
         if (email == null) {
-            alert('Email the name');
+            alert('Enter the email');
+            return false;
+        }
+        if (dept == null) {
+            alert('Enter the Department');
             return false;
         }
 

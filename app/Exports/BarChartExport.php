@@ -20,6 +20,7 @@ class BarChartExport implements FromArray, WithCharts
     public $feed_name;
     public $rating;
     public $staff_name;
+    public $dept;
 
     public function __construct(array $labels, array $data, array $question, $feed)
     {
@@ -27,8 +28,9 @@ class BarChartExport implements FromArray, WithCharts
         $this->data = $data;
         $this->question = $question;
         $this->feed_name = $feed[0]->feedback->name;
-        $this->staff_name = $feed[0]->teaching ? $feed[0]->teaching?->name : null;
+        $this->staff_name = $feed[0]->teaching ? $feed[0]->teaching->name : null;
         $this->rating = $feed[0]->overall_rating;
+        $this->dept = $feed[0]->dept ? $feed[0]->dept : null;
     }
 
     public function array(): array
@@ -79,6 +81,13 @@ class BarChartExport implements FromArray, WithCharts
             $chart = new \PhpOffice\PhpSpreadsheet\Chart\Chart(
                 'chart1',
                 new Title($this->feed_name . '-' . $this->staff_name),
+                new Legend(Legend::POSITION_RIGHT, NULL, false),
+                $plotArea
+            );
+        } elseif ($this->dept != null) {
+            $chart = new \PhpOffice\PhpSpreadsheet\Chart\Chart(
+                'chart1',
+                new Title($this->feed_name . '-' . $this->dept),
                 new Legend(Legend::POSITION_RIGHT, NULL, false),
                 $plotArea
             );

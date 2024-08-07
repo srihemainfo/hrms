@@ -662,7 +662,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('feedback-form/submit', 'FeedbackController@staffFeedStore')->name('staff-feedback-form.store');
 
 
-    //Feedback Reports
+    //Feedback Reports----------------------------------------
 
     //Student Others Feedback
     Route::get('feedReport-training', 'FeedbackReportController@trainingIndex')->name('feedReport-training.index');
@@ -675,6 +675,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('feedback-course/report', 'FeedbackReportController@courseReport')->name('feedback-course.report');
     Route::post('feedback-course/view', 'FeedbackReportController@courseView')->name('feedback-course.view');
     Route::post('feedback-course/download', 'FeedbackReportController@courseDownload')->name('feedback-course.download');
+    
+    //Faculty Feedback
+    Route::get('feedReport-faculty', 'FeedbackReportController@facultyIndex')->name('feedReport-faculty.index');
+    Route::post('feedback-faculty/report', 'FeedbackReportController@facultyReport')->name('feedback-faculty.report');
+    Route::post('feedback-faculty/view', 'FeedbackReportController@facultyView')->name('feedback-faculty.view');
+    Route::post('feedback-faculty/download', 'FeedbackReportController@facultyDownload')->name('feedback-faculty.download');
+    
+    //External Feedback
+    Route::get('feedReport-external', 'FeedbackReportController@externalIndex')->name('feedReport-external.index');
+    Route::post('feedback-external/report', 'FeedbackReportController@externalReport')->name('feedback-external.report');
+    Route::post('feedback-external/view', 'FeedbackReportController@externalView')->name('feedback-external.view');
+    Route::post('feedback-external/download', 'FeedbackReportController@externalDownload')->name('feedback-external.download');
 
 
     // Staff Subjects
