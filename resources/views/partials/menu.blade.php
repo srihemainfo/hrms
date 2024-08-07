@@ -442,7 +442,7 @@
                                     </a>
                                 </li>
                             @endcan
-                           
+
                             @can('subject_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.subjects.index') }}"
@@ -1333,6 +1333,13 @@
                                     <p>Fee Collection</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.feeScholarship.index') }}"
+                                    class="nav-link {{ request()->is('admin/fee-scholarship*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-receipt"></i>
+                                    <p>ScholarShip</p>
+                                </a>
+                            </li>
                             {{-- <li class="nav-item">
                                 <a href="{{ route('admin.fee.year-wise-report') }}"
                                     class="nav-link {{ request()->is('admin/fee/*') ? 'active' : '' }}">
@@ -2087,7 +2094,7 @@
                         }else{
                             $data='';
                         }
-                    @endphp 
+                    @endphp
                     <li class="nav-item">
                         <a href="{{ route('admin.FeedBack.index') }}"
                             class="nav-link {{ request()->is('admin/FeedBack') || request()->is('admin/FeedBack/*') ? 'active' : '' }}">

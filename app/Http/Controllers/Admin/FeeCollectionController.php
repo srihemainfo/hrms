@@ -59,6 +59,8 @@ class FeeCollectionController extends Controller
                 ->with('academicYear')
                 ->get();
 
+ 
+
             $ids = $feeStructures->pluck('id');
             $feeLists = FeeList::whereIn('fee_id', $ids)->pluck('fee_id');
 

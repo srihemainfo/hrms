@@ -37,6 +37,12 @@
                             Foundation Name
                         </th>
                         <th>
+                            Amount
+                        </th>
+                        <th>
+                            Percentage
+                        </th>
+                        <th>
                             Started AY
                         </th>
                         <th>
@@ -73,12 +79,13 @@
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
                         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="foundation_name" class="required">Foundation / Organization Full Name</label>
+                            <label for="foundation_name" class="required">Sponser / Organization Full Name</label>
                             <input type="text" value="" name="foundation_name" style="text-transform:uppercase"
                                 id="foundation_name" class="form-control">
                             <span id="foundation_name_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
+
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
                             <label for="started_ay" class="required">Started AY</label>
                             <select class="select2 form-control" name="started_ay" id="started_ay">
@@ -117,6 +124,20 @@
                             <span id="status_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="received_in_div">
+                            <label for="received_in" class="required">Received In</label>
+                            <select class="select2 form-control" name="received_in" id="received_in"
+                                onchange="received_in(this)">
+                                <option value="">Select Type</option>
+                                <option value="amount">Amount</option>
+                                <option value="percentage">Percentage</option>
+                            </select>
+                            <span id="received_in_span" class="text-danger text-center"
+                                style="display:none;font-size:0.9rem;"></span>
+                        </div>
+
+
                         <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-9 form-group" id="reasonDiv"
                             style="display:none;">
                             <label for="inactive_reason" class="required">Inactive Reason</label>
@@ -131,6 +152,24 @@
                             <input type="text" class="date form-control" value="" name="inactive_date"
                                 id="inactive_date">
                             <span id="inactive_date_span" class="text-danger text-center"
+                                style="display:none;font-size:0.9rem;"></span>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group" style="display: none;"
+                            id="amount_input">
+                            <label for="amount_input_box">Amount</label>
+                            <input type="number" value="" name="amount_input_box" id="amount_input_box"
+                                placeholder="Enter Amount" class="form-control">
+                            <span id="amount_input_box_span" class="text-danger text-center"
+                                style="display:none;font-size:0.9rem;"></span>
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group" style="display: none;"
+                            id="percentage_input">
+                            <label for="percentage_input_box">Percentage</label>
+                            <input type="number" value="" name="percentage_input_box" id="percentage_input_box"
+                                placeholder="Enter Percentage" class="form-control">
+                            <span id="percentage_input_box_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
                     </div>
@@ -236,6 +275,14 @@
                         name: 'foundation_name'
                     },
                     {
+                        data: 'amount',
+                        name: 'amount'
+                    },
+                    {
+                        data: 'percentage',
+                        name: 'percentage'
+                    },
+                    {
                         data: 'started_ay',
                         name: 'started_ay'
                     },
@@ -278,7 +325,11 @@
             $("#inactive_reason").val('')
             $("#inactive_date").val('')
             $("#status option:nth-child(1)").prop('selected', true);
+            $("#received_in option:nth-child(1)").prop('selected', true);
+            $("#amount_input").hide();
+            $("#percentage_input").hide();
             $("#status").select2()
+            $("#received_in").select2()
             $("#scholarship_span").hide();
             $("#loading_div").hide();
             $("#save_btn").html(`Save`);
@@ -302,10 +353,54 @@
             }
         }
 
+        function received_in(element1) {
+
+            $("#amount_input_box").val('');
+            $("#percentage_input_box").val('');
+
+            if ($(element1).val() == 'amount') {
+
+                $("#amount_input").show();
+                $("#percentage_input").hide();
+
+                $('#amount_input_box').on('input', function() {
+                    var value = $(this).val().replace(/[^0-9]/g, '');
+                    $(this).val(value);
+                });
+
+            } else if ($(element1).val() == 'percentage') {
+
+                $("#amount_input").hide();
+                $("#percentage_input").show();
+
+                $('#percentage_input_box').on('input', function() {
+                    var number = parseFloat($(this).val());
+                    if (isNaN(number)) {
+                        number = 0; // Default to 0 if input is not a number
+                    }
+                    if (number > 100) {
+                        number = 100;
+                    }
+
+                    // $(this).val(number.toFixed(1));
+                    $(this).val(number);
+
+                });
+
+            } else {
+                $("#amount_input").hide();
+                $("#percentage_input").hide();
+            }
+
+        }
+
+
+
         function saveScholarship() {
             $("#loading_div").hide();
             if ($("#scholarship").val() == '') {
                 $("#scholarship_span").html(`Scholarship Is Required.`);
+                $("#received_in_span").hide();
                 $("#scholarship_span").show();
                 $("#foundation_name_span").hide();
                 $("#started_ay_span").hide();
@@ -314,6 +409,7 @@
             } else if ($("#foundation_name").val() == '') {
                 $("#foundation_name_span").html(`Foundation Name Is Required.`);
                 $("#scholarship_span").hide();
+                $("#received_in_span").hide();
                 $("#foundation_name_span").show();
                 $("#started_ay_span").hide();
                 $("#started_batch_span").hide();
@@ -321,6 +417,7 @@
             } else if ($("#started_ay").val() == '') {
                 $("#started_ay_span").html(`AY Is Required.`);
                 $("#scholarship_span").hide();
+                $("#received_in_span").hide();
                 $("#foundation_name_span").hide();
                 $("#started_ay_span").show();
                 $("#started_batch_span").hide();
@@ -328,17 +425,31 @@
             } else if ($("#started_batch").val() == '') {
                 $("#started_batch_span").html(`Batch Is Required.`);
                 $("#scholarship_span").hide();
+                $("#received_in_span").hide();
                 $("#foundation_name_span").hide();
                 $("#started_ay_span").hide();
                 $("#started_batch_span").show();
 
-            } else {
+            }
+            // else if ($("#received_in").val() == '') {
+
+            //     $("#received_in_span").html(`Received Type Is Required.`);
+            //     $("#received_in_span").show();
+            //     $("#scholarship_span").hide();
+            //     $("#foundation_name_span").hide();
+            //     $("#started_ay_span").hide();
+            //     $("#started_batch_span").hide();
+
+            // }
+            else {
                 $("#inactive_reason_span").hide();
                 $("#inactive_date_span").hide();
                 $("#scholarship_span").hide();
                 $("#foundation_name_span").hide();
                 $("#started_ay_span").hide();
                 $("#started_batch_span").hide();
+                $("#received_in_span").hide();
+
 
                 if ($("#status").val() == 'Inactive') {
                     if ($("#inactive_reason").val() == '') {
@@ -376,6 +487,16 @@
                 let status = $("#status").val();
                 let inactive_reason = '';
                 let inactive_date = '';
+                let received_in = $("#received_in").val();
+                let amount_input_box = '';
+                let percentage_input_box = '';
+                if (received_in == 'amount') {
+                    amount_input_box = $("#amount_input_box").val();
+                    amount_input_box = amount_input_box;
+                } else if (received_in == 'percentage') {
+                    percentage_input_box = $("#percentage_input_box").val();
+                    percentage_input_box = percentage_input_box + '%';
+                }
                 if (status == 'Inactive') {
                     inactive_reason = $("#inactive_reason").val()
                     inactive_date = $("#inactive_date").val()
@@ -396,6 +517,8 @@
                         'status': status,
                         'inactive_reason': inactive_reason,
                         'inactive_date': inactive_date,
+                        'amount_input_box': amount_input_box,
+                        'percentage_input_box': percentage_input_box,
                     },
                     success: function(response) {
                         let status = response.status;
@@ -448,9 +571,27 @@
                         if (status == true) {
                             var data = response.data;
                             console.log(typeof(data.status));
+                            console.log(data.percentage)
                             $("#scholarship_id").val(data.id);
                             $("#scholarship").val(data.name);
                             $("#foundation_name").val(data.foundation_name);
+                            $("#received_in_div").hide();
+                            if (data.percentage != null) {
+                                var numericPercentage = data.percentage.replace('%', '');
+                                $("#percentage_input").show();
+                                $("#amount_input").hide();
+                                $("#percentage_input_box").val(numericPercentage);
+                            } else if (data.amount != null) {
+
+                                $("#amount_input").show();
+                                $("#percentage_input").hide();
+                                $("#amount_input_box").val(data.amount);
+
+                            } else {
+                                $("#amount_input").hide();
+                                $("#percentage_input").hide();
+
+                            }
                             $("#started_ay").val(data.started_ay);
                             $("#started_ay").select2()
                             $("#started_batch").val(data.started_batch);
@@ -517,6 +658,7 @@
                         let status = response.status;
                         if (status == true) {
                             var data = response.data;
+                            console.log(data);
                             $("#scholarship_id").val(data.id);
                             $("#scholarship").val(data.name);
                             $("#foundation_name").val(data.foundation_name);
@@ -525,6 +667,26 @@
                             $("#started_batch").val(data.started_batch);
                             $("#started_batch").select2()
                             $("#remarks").val(data.remarks);
+                            $("#received_in_div").hide();
+
+                            if (data.percentage != null) {
+                                var numericPercentage = data.percentage.replace('%', '');
+                                $("#percentage_input").show();
+                                $("#amount_input").hide();
+                                $("#percentage_input_box").val(numericPercentage);
+                            } else if (data.amount != null) {
+
+                                $("#amount_input").show();
+                                $("#percentage_input").hide();
+                                $("#amount_input_box").val(data.amount);
+
+                            } else {
+                                $("#amount_input").hide();
+                                $("#percentage_input").hide();
+
+                            }
+
+
                             if (data.status == '1') {
                                 $("#status option:nth-child(2)").prop('selected', true);
                                 $("#status").select2()
@@ -602,7 +764,8 @@
                             error: function(jqXHR, textStatus, errorThrown) {
                                 if (jqXHR.status) {
                                     if (jqXHR.status == 500) {
-                                        Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
+                                        Swal.fire('', 'Request Timeout / Internal Server Error',
+                                            'error');
                                     } else {
                                         Swal.fire('', jqXHR.status, 'error');
                                     }

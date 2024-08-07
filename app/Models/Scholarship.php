@@ -22,6 +22,8 @@ class Scholarship extends Model
         'name',
         'foundation_name',
         'remarks',
+        'amount',
+        'percentage',
         'started_ay',
         'started_batch',
         'status',

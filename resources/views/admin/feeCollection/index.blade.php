@@ -310,7 +310,7 @@
                         }
 
                         $.each(feeDetails, function(semester_id, details) {
-                            // console.log(semester_id);
+                            // console.log(semester_id.academic_year_name);
 
                             let firstColumnValue;
                             if (feeCycle === 'YearlyWise') {

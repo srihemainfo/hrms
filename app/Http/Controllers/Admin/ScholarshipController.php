@@ -49,6 +49,16 @@ class ScholarshipController extends Controller
             $table->editColumn('foundation_name', function ($row) {
                 return $row->foundation_name ? $row->foundation_name : '';
             });
+
+            $table->editColumn('amount', function ($row) {
+                return $row->amount ? $row->amount : '';
+            });
+
+            $table->editColumn('percentage', function ($row) {
+                return $row->percentage ? $row->percentage : '';
+            });
+
+
             $table->editColumn('started_ay', function ($row) {
                 return $row->theAys ? $row->theAys->name : '';
             });
@@ -95,12 +105,16 @@ class ScholarshipController extends Controller
                         'started_batch' => $request->started_batch,
                         'remarks' => isset($request->remarks) ? $request->remarks : null,
                         'status' => $request->status == 'Inactive' ? 0 : 1,
+                        'amount' => isset($request->amount_input_box) ? $request->amount_input_box : null,
+                        'percentage' => isset($request->percentage_input_box) ? $request->percentage_input_box: null,
                         'inactive_reason' => isset($request->inactive_reason) ? $request->inactive_reason : null,
                         'inactive_date' => isset($request->inactive_date) ? $request->inactive_date : null,
                     ]);
                 }
                 return response()->json(['status' => true, 'data' => 'Scholarship Created']);
             } else {
+
+                dd($request);
                 $count = Scholarship::whereNotIn('id', [$request->id])->where(['name' => $request->name, 'foundation_name' => $request->foundation_name])->count();
                 // dd($count);
                 if ($count > 0) {
@@ -109,6 +123,7 @@ class ScholarshipController extends Controller
                     $update = Scholarship::where(['id' => $request->id])->update([
                         'name' => strtoupper($request->name),
                         'foundation_name' => strtoupper($request->foundation_name),
+                        'amount' => $request->amount_input_box,
                         'started_ay' => $request->started_ay,
                         'started_batch' => $request->started_batch,
                         'remarks' => isset($request->remarks) ? $request->remarks : null,
@@ -130,6 +145,8 @@ class ScholarshipController extends Controller
             $data = Scholarship::where(['id' => $request->id])->select('id', 'name', 'foundation_name', 'started_ay',
             'started_batch',
             'remarks',
+            'amount',
+            'percentage',
             'status',
             'inactive_reason',
             'inactive_date')->first();
@@ -146,6 +163,8 @@ class ScholarshipController extends Controller
             $data = Scholarship::where(['id' => $request->id])->select('id', 'name', 'foundation_name', 'started_ay',
             'started_batch',
             'remarks',
+            'amount',
+            'percentage',
             'status',
             'inactive_reason',
             'inactive_date')->first();
@@ -157,7 +176,7 @@ class ScholarshipController extends Controller
 
     public function destroy(Request $request)
     {
-        
+
         if (isset($request->id)) {
             $delete = Scholarship::where(['id' => $request->id])->update([
                 'deleted_at' => Carbon::now(),

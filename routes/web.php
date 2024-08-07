@@ -860,6 +860,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('student_alldetails', 'FeeCollectionController@getStudentData')->name('student-details.alldetails');
 
 
+    //Fee ScholarShip
+    Route::get('fee-scholarship', 'FeeScholarshipController@index')->name('feeScholarship.index');
+    Route::post('fee-scholarship/geter', 'FeeScholarshipController@getScholarship')->name('fee-scholarship.getter');
+    Route::post('fee-scholarship/store', 'FeeScholarshipController@store')->name('fee-scholarship.store');
+    Route::post('fee-scholarship/view', 'FeeScholarshipController@view')->name('fee-scholarship.view');
+    Route::post('fee-scholarship/edit', 'FeeScholarshipController@edit')->name('fee-scholarship.edit');
+    Route::post('fee-scholarship/delete', 'FeeScholarshipController@destroy')->name('fee-scholarship.delete');
+    Route::post('fee-scholarship/massdetroy', 'FeeScholarshipController@massDestroy')->name('fee-scholarship.massDestroy');
+
+
+
+
 
     // Fee Data Import
     Route::get('fee-data-import', 'FeeDataController@index')->name('fee-data-import.index');

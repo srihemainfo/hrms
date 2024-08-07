@@ -26,7 +26,7 @@ class FeeStructure extends Model
 
     public function academicYear()
     {
-        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+        return $this->hasOne(AcademicYear::class,'id', 'academic_year_id');
     }
 
 }
