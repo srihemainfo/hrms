@@ -39,6 +39,9 @@
                             Register Number
                         </th>
                         <th>
+                            Student Name
+                        </th>
+                        <th>
                             Foundation Name
                         </th>
                         <th>
@@ -68,13 +71,22 @@
                     <div class="row gutters">
                         <input type="hidden" name="feescholarship_id" id="feescholarship_id">
 
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group" id="filteration_div">
+                            <label for="filteration" class="required">Select Type</label>
+                            <select name="filteration" id="filteration" class="form-control select2"
+                                style="font-size: 18px;" onchange="test()">
+                                <option value="">Select Type</option>
+                                <option value="for_all">For All Students</option>
+                                <option value="department_wise">Filter Based Enrollment Wise</option>
+                            </select>
+                            <span id="filteration_span" class="text-danger text-center"
+                                style="display:none;font-size:0.9rem;"></span>
+                        </div>
 
-
-
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
-                            <label for="schoalrship" class="required">Select Schoalrship</label>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="scholarship_div">
+                            <label for="schoalrship" class="required">Select Scholarship</label>
                             <select name="schoalrship" id="scholarship" class="form-control select2"
-                                style="font-size: 18px;" onchange="getscholarship()">>
+                                style="font-size: 18px;" onchange="getscholarship()">
                                 <option value="">Select Scholarship</option>
                                 @foreach ($getScholarship as $id => $scholarship)
                                     <option value="{{ $id }}">{{ $scholarship }}</option>
@@ -84,7 +96,49 @@
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
 
-                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group" id="amt_per_edit_box"
+                            style="display: none;">
+                            <label for="amt_per_edit" class="required">Scholarship Details</label>
+                            <input type="text" id="amt_per_edit" class="form-control">
+                        </div>
+
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group" id="amt_percentage_box"
+                            style="display: none;">
+                            <label for="amt_percentage" class="required">Scholarship Details</label>
+                            <input type="text" id="amt_percentage" class="form-control" readonly>
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="enroll_div">
+                            <label for="enroll_id" class="required">Select Enroll Master</label>
+                            <select class="form-control select2" id="enroll_id" name="enroll_id"
+                                onchange="filter_students()">
+                                <option value="">Select Enroll Master</option>
+                                @foreach ($CourseEnrollMaster as $id => $b)
+                                    <option value="{{ $id }}">{{ $b }}</option>
+                                @endforeach
+                            </select>
+                            <span id="enroll_id_span" class="text-danger text-center"
+                                style="display:none; font-size:0.9rem;"></span>
+                        </div>
+
+
+
+
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="batch_filter_std_div">
+                            <label for="feeBatch" class="required">Select Students</label>
+                            <select class="form-control select2" id="batch_filter_std" name="batch_filter_std" multiple>
+                                <option value="">Select Students</option>
+
+                            </select>
+                            <span id="batch_filter_std_span" class="text-danger text-center"
+                                style="display:none; font-size:0.9rem;"></span>
+                        </div>
+
+
+
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="student_div">
                             <label for="started_batch" class="required">Select Student</label>
                             <select name="student" id="student" class="form-control select2" style="font-size: 18px;"
                                 multiple>
@@ -102,17 +156,7 @@
 
 
 
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group" id="amt_per_edit_box"
-                            style="display: none;">
-                            <label for="amt_per_edit" class="required">Scholarship Details</label>
-                            <input type="text" id="amt_per_edit" class="form-control">
-                        </div>
 
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group" id="amt_percentage_box"
-                            style="display: none;">
-                            <label for="amt_percentage" class="required">Scholarship Details</label>
-                            <input type="text" id="amt_percentage" class="form-control" readonly>
-                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -128,8 +172,8 @@
 
 
 
-    {{-- <div class="modal fade" id="scholarshipModalviewedit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="scholarshipModalviewedit" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
@@ -159,7 +203,7 @@
                 </div>
             </div>
         </div>
-    </div> --}}
+    </div>
 @endsection
 @section('scripts')
     @parent
@@ -245,6 +289,10 @@
                         name: 'stu_reg_no'
                     },
                     {
+                        data: 'student_name',
+                        name: 'student_name'
+                    },
+                    {
                         data: 'scholar_id',
                         name: 'scholar_id'
                     },
@@ -273,15 +321,34 @@
 
         function openModal() {
 
+            $("#batch_filter_std_div").hide();
+
+            $("#save_btn").hide();
+            $("#scholarship_div").hide();
+            $("#student_div").hide();
+            $("#enroll_div").hide();
+
+
+            $("#filteration").val('').select2();
+            $("#enroll_id").val('').select2();
+
             $("select").prop('disabled', false).select2();
 
             $("#scholarshipModal").modal();
             $("#feescholarship_id").val('')
             $("#scholarship").val('').select2();
             // $("#student").val('').select2();
+            var $studentDropdown = $("#student");
+            if ($studentDropdown.val().length) {
+                $studentDropdown.val([]).trigger('change');
+            }
             $("#amt_percentage_box").hide();
             $("#amt_per_edit_box").hide();
+
+
+
         }
+
 
         function getscholarship() {
 
@@ -302,10 +369,6 @@
 
                     let status = response.status;
                     if (status) {
-
-
-
-
                         $("#amt_percentage_box").show();
                         $("#amt_percentage").val(response.value);
 
@@ -327,6 +390,100 @@
 
                 }
             });
+        }
+
+        function test() {
+
+            var filteration = $("#filteration").val();
+
+            if (filteration == 'for_all') {
+
+                $("#save_btn").show();
+                $("#scholarship_div").show();
+                $("#student_div").show();
+                $("#enroll_div").hide();
+                $("#batch_filter_std_div").hide();
+
+
+            } else if (filteration == 'department_wise') {
+
+                $("#enroll_div").show();
+                $("#save_btn").show();
+                $("#scholarship_div").show();
+                $("#student_div").hide();
+                $("#batch_filter_std_div").show();
+
+
+
+
+
+            } else {
+                $("#save_btn").hide();
+                $("#scholarship_div").hide();
+                $("#student_div").hide();
+                $("#enroll_div").hide();
+                $("#batch_filter_std_div").hide();
+
+
+            }
+
+        }
+
+        function filter_students() {
+            var enroll_id = $("#enroll_id").val();
+            // alert(batch_name);
+            $('#loading').show();
+
+            $.ajax({
+
+                url: '{{ route('admin.fee-scholarship.filter_student') }}',
+                type: 'POST',
+                data: {
+                    'enroll_id': enroll_id,
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+
+                    let status = response.status;
+                    if (status) {
+                        if (status == true) {
+                            console.log(response);
+                            let students = response.data;
+                            $('#batch_filter_std').empty();
+                            $('#batch_filter_std').append('<option value="">Select Students</option>');
+
+                            $.each(students, function(register_number, name) {
+                                $('#batch_filter_std').append(
+                                    `<option value="${register_number}">${name} (${register_number})</option>`
+                                );
+                            });
+
+                            $('#batch_filter_std').trigger('change.select2');
+
+                        } else {
+                            Swal.fire('', response.data, 'error');
+                        }
+
+                    } else {
+                        Swal.fire('', response.data, 'error');
+
+                    }
+                    $('#loading').hide();
+
+
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    let errorMessage = textStatus || errorThrown || 'Request Failed';
+                    Swal.fire('', errorMessage, 'error');
+
+                    $('#loading').hide();
+
+
+                }
+
+            })
         }
 
         function saveScholarship() {
@@ -352,6 +509,7 @@
                 var amt_percentage = $("#amt_percentage").val();
                 var id = $("#feescholarship_id").val();
                 var amt_per_edit = $("#amt_per_edit").val();
+                var batch_filter_std = $("#batch_filter_std").val();
 
                 $("#loading_div").show();
 
@@ -363,7 +521,8 @@
                         'scholarship': scholarship,
                         'amt_percentage': amt_percentage,
                         'student': student,
-                        'amt_per_edit': amt_per_edit
+                        'amt_per_edit': amt_per_edit,
+                        'batch_filter_std': batch_filter_std
 
                     },
                     headers: {
@@ -406,57 +565,57 @@
 
         }
 
-        // function viewfeeScholarship(id) {
-        //     if (id == undefined) {
-        //         Swal.fire('', 'ID Not Found', 'warning');
-        //     } else {
-        //         $('.secondLoader').show()
-        //         $.ajax({
-        //             url: "{{ route('admin.fee-scholarship.view') }}",
-        //             method: 'POST',
-        //             headers: {
-        //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //             },
-        //             data: {
-        //                 'id': id
-        //             },
-        //             success: function(response) {
-        //                 $('.secondLoader').hide()
-        //                 let status = response.status;
-        //                 if (status == true) {
-        //                     var data = response.data;
-        //                     var foundation_name = response.foundation_name;
-        //                     // console.log(foundation_name);
-        //                     // console.log(data);
+        function viewfeeScholarship(id) {
+            if (id == undefined) {
+                Swal.fire('', 'ID Not Found', 'warning');
+            } else {
+                $('.secondLoader').show()
+                $.ajax({
+                    url: "{{ route('admin.fee-scholarship.view') }}",
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        'id': id
+                    },
+                    success: function(response) {
+                        $('.secondLoader').hide()
+                        let status = response.status;
+                        if (status == true) {
+                            var data = response.data;
+                            var foundation_name = response.foundation_name;
+                            // console.log(foundation_name);
+                            // console.log(data);
 
-        //                     $("#feescholarship_id").val(data.id);
-        //                     $("#scholarshipModalviewedit").modal();
-        //                     $("#reg_number").val(data.stu_reg_no);
-        //                     $("#scholarship_details").val(data.scholar_details);
-        //                     $("#foundation_name").val(foundation_name.foundation_name);
-        //                     $("#save_div").hide();
+                            $("#feescholarship_id").val(data.id);
+                            $("#scholarshipModalviewedit").modal();
+                            $("#reg_number").val(data.stu_reg_no);
+                            $("#scholarship_details").val(data.scholar_details);
+                            $("#foundation_name").val(foundation_name.foundation_name);
+                            $("#save_div").hide();
 
-        //                 } else {
-        //                     Swal.fire('', response.data, 'error');
-        //                 }
-        //             },
-        //             error: function(jqXHR, textStatus, errorThrown) {
-        //                 if (jqXHR.status) {
-        //                     if (jqXHR.status == 500) {
-        //                         Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
-        //                     } else {
-        //                         Swal.fire('', jqXHR.status, 'error');
-        //                     }
-        //                 } else if (textStatus) {
-        //                     Swal.fire('', textStatus, 'error');
-        //                 } else {
-        //                     Swal.fire('', 'Request Failed With Status: ' + jqXHR.statusText,
-        //                         "error");
-        //                 }
-        //             }
-        //         })
-        //     }
-        // }
+                        } else {
+                            Swal.fire('', response.data, 'error');
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.status) {
+                            if (jqXHR.status == 500) {
+                                Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
+                            } else {
+                                Swal.fire('', jqXHR.status, 'error');
+                            }
+                        } else if (textStatus) {
+                            Swal.fire('', textStatus, 'error');
+                        } else {
+                            Swal.fire('', 'Request Failed With Status: ' + jqXHR.statusText,
+                                "error");
+                        }
+                    }
+                })
+            }
+        }
 
 
 
@@ -533,7 +692,7 @@
                             $("select").prop('disabled', true).select2()
                             $("#feescholarship_id").val(data.id);
 
-                            callAjax();
+                            // callAjax();
 
 
 

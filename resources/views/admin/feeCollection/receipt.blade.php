@@ -118,8 +118,8 @@
                 <span>Semester : {{ $data['semester'] }}</span>
             @elseif ($data['feeCycles'] == 'YearlyWise')
                 <span>Academic Year : {{ $data['academic_year'] }}</span>
-            @else
-                <span>Semester/Year : N/A</span>
+            @elseif ($data['feeCycles'] == 'CustomsWise')
+                <span>FeeCycle : {{ $data['customs_id'] }}</span>
             @endif
             <span>Section : {{ $data['section'] }}</span>
         </div>

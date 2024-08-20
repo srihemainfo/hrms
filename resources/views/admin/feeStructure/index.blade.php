@@ -17,6 +17,10 @@
             width: 50%;
             margin: auto;
         }
+
+        .secondLoader {
+            z-index: 9999;
+        }
     </style>
     @can('fee_structure_create')
         <div style="margin-bottom: 10px;" class="row">
@@ -69,6 +73,9 @@
                         @if ($feeCycleText == 'SemesterWise')
                             <th>Semester</th>
                         @elseif ($feeCycleText == 'YearlyWise')
+                            <th>Academic Year</th>
+                        @elseif ($feeCycleText == 'CustomsWise')
+                            <th>Fee Cycle</th>
                             <th>Academic Year</th>
                         @endif
                         <th>
@@ -148,7 +155,7 @@
                         @endif
 
 
-                        @if ($feeCycleText == 'YearlyWise')
+                        @if ($feeCycleText == 'YearlyWise' || $feeCycleText == 'CustomsWise')
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                                 <label for="applied_ay" class="required">Applicable AY</label>
                                 <select class="form-control select2" id="applied_ay" name="applied_ay">
@@ -158,6 +165,21 @@
                                     @endforeach
                                 </select>
                                 <span id="applied_ay_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
+                        @endif
+
+
+                        @if ($feeCycleText == 'CustomsWise')
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="customs" class="required">Customs</label>
+                                <select class="form-control select2" id="customs" name="customs">
+                                    <option value="">Select Customs</option>
+                                    @foreach ($customsFee as $id => $cf)
+                                        <option value="{{ $id }}">{{ $cf }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="customs_span" class="text-danger text-center"
                                     style="display:none;font-size:0.9rem;"></span>
                             </div>
                         @endif
@@ -260,7 +282,7 @@
                         @endif
 
 
-                        @if ($feeCycleText == 'YearlyWise')
+                        @if ($feeCycleText == 'YearlyWise' || $feeCycleText == 'CustomsWise')
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                                 <label for="feeAy" class="required">Applicable AY</label>
                                 <select class="form-control select2" id="feeAy" name="feeAy">
@@ -270,6 +292,21 @@
                                     @endforeach
                                 </select>
                                 <span id="feeAy_span" class="text-danger text-center"
+                                    style="display:none;font-size:0.9rem;"></span>
+                            </div>
+                        @endif
+
+
+                        @if ($feeCycleText == 'CustomsWise')
+                            <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
+                                <label for="customsfeegenerate" class="required">Customs</label>
+                                <select class="form-control select2" id="customsfeegenerate" name="customsfeegenerate">
+                                    <option value="">Select Customs</option>
+                                    @foreach ($customsFee as $id => $cf)
+                                        <option value="{{ $id }}">{{ $cf }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="customsfeegenerate_span" class="text-danger text-center"
                                     style="display:none;font-size:0.9rem;"></span>
                             </div>
                         @endif
@@ -469,54 +506,70 @@
             if ($.fn.DataTable.isDataTable('.datatable-FeeStructure')) {
                 $('.datatable-FeeStructure').DataTable().destroy();
             }
+            let columnsConfig = [{
+                    data: 'placeholder',
+                    name: 'placeholder'
+                },
+                {
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'shift',
+                    name: 'shift'
+                },
+                {
+                    data: 'batch',
+                    name: 'batch'
+                },
+                {
+                    data: 'course',
+                    name: 'course'
+                }
+            ];
+
+            // Add appropriate columns based on feeCycleText
+            if (feeCycleText === 'SemesterWise') {
+                columnsConfig.push({
+                    data: 'semester',
+                    name: 'semester'
+                });
+            } else if (feeCycleText === 'CustomsWise') {
+                columnsConfig.push({
+                    data: 'cusfee_name',
+                    name: 'cusfee_name'
+                }, {
+                    data: 'ay',
+                    name: 'ay'
+                });
+            } else {
+                columnsConfig.push({
+                    data: 'ay',
+                    name: 'ay'
+                });
+            }
+
+            columnsConfig.push({
+                data: 'user',
+                name: 'user'
+            }, {
+                data: 'actions',
+                name: 'actions'
+            });
+
             let dtOverrideGlobals = {
                 buttons: dtButtons,
                 retrieve: true,
                 aaSorting: [],
                 ajax: "{{ route('admin.fee-structure.index') }}",
-                columns: [{
-                        data: 'placeholder',
-                        name: 'placeholder'
-                    },
-                    {
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'shift',
-                        name: 'shift'
-                    },
-                    {
-                        data: 'batch',
-                        name: 'batch'
-                    },
-                    {
-                        data: 'course',
-                        name: 'course'
-                    },
-                    // {
-                    //     data: 'semester',
-                    //     name: 'semester'
-                    // },
-                    {
-                        data: feeCycleText === 'SemesterWise' ? 'semester' : 'ay',
-                        name: feeCycleText === 'SemesterWise' ? 'semester' : 'ay'
-                    },
-                    {
-                        data: 'user',
-                        name: 'user'
-                    },
-                    {
-                        data: 'actions',
-                        name: 'actions'
-                    }
-                ],
+                columns: columnsConfig,
                 orderCellsTop: true,
                 order: [
                     [1, 'desc']
                 ],
-                pageLength: 10,
+                pageLength: 10
             };
+
             let table = $('.datatable-FeeStructure').DataTable(dtOverrideGlobals);
             $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e) {
                 $($.fn.dataTable.tables(true)).DataTable()
@@ -537,6 +590,7 @@
             $("#course").val('').select2()
             $("#fee_components").val('').select2()
             $("#shift").val('').select2()
+            $("#customs").val('').select2()
             $("#semester").val('').select2()
             $("#admission").val('').select2()
             $("#applied_batch").val('').select2()
@@ -715,6 +769,7 @@
                         'id': $("#feeStructure_id").val(),
                         'course': $("#course").val(),
                         'batch': $("#applied_batch").val(),
+                        'customs': $("#customs").val(),
                         'shift': $("#shift").val(),
                         'semester': $("#semester").val(),
                         'applied_ay': $("#applied_ay").val(),
@@ -921,12 +976,10 @@
             if ($("#feeBatch").val() == '') {
                 $("#feeBatch_span").html(`Batch Is Required`).show();
                 $("#feeAy_span").hide();
-            }
-             else if ($("#feeAy").val() == '') {
+            } else if ($("#feeAy").val() == '') {
                 $("#feeAy_span").html(`AY Is Required`).show();
                 $("#feeBatch_span").hide();
-            }
-            else {
+            } else {
                 $("#feeAy_span").hide();
                 $("#feeBatch_span").hide();
                 Swal.fire({
@@ -951,6 +1004,7 @@
                                 'batch': $("#feeBatch").val(),
                                 'ay': $("#feeAy").val(),
                                 'feeSem': $("#feeSem").val(),
+                                'customsfeegenerate' : $("#customsfeegenerate").val(),
                                 'feeCycleText': feeCycleText
                             },
                             success: function(response) {

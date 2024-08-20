@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AcademicDetail;
+use App\Models\Batch;
 use App\Models\Scholarship;
 use App\Models\ScholarStudents;
 use App\Models\Student;
+use App\Models\CourseEnrollMaster;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -19,7 +22,8 @@ class FeeScholarshipController extends Controller
 
             $query = $query = ScholarStudents::query()->select(sprintf('%s.*', (new ScholarStudents)->table))
                 ->leftJoin('scholarships', 'scholarship_students.scholar_id', '=', 'scholarships.id')
-                ->addSelect('scholarships.foundation_name as name');
+                ->leftJoin('students', 'scholarship_students.stu_reg_no', '=', 'students.register_no')
+                ->addSelect('scholarships.foundation_name as name', 'students.name as student_name');
             $table = Datatables::of($query);
 
             $table = DataTables::of($query);
@@ -56,6 +60,10 @@ class FeeScholarshipController extends Controller
                 return $row->stu_reg_no ? $row->stu_reg_no : '';
             });
 
+            $table->editColumn('student_name', function ($row) {
+                return $row->student_name ? $row->student_name : '';
+            });
+
             $table->editColumn('scholar_id', function ($row) {
                 return $row->name ? $row->name : '';
             });
@@ -71,7 +79,9 @@ class FeeScholarshipController extends Controller
 
         $getStudents = Student::select('register_no', 'name')->get();
         $getScholarship = Scholarship::where('status', 1)->pluck('name', 'id');
-        return view('admin.feeScholarship.index', compact('getStudents', 'getScholarship'));
+        // $batch = Batch::pluck('name', 'id');
+        $CourseEnrollMaster = CourseEnrollMaster::pluck('enroll_master_number', 'id');
+        return view('admin.feeScholarship.index', compact('getStudents', 'getScholarship', 'CourseEnrollMaster'));
 
     }
 
@@ -98,10 +108,36 @@ class FeeScholarshipController extends Controller
 
     }
 
+    public function filter_student(Request $request)
+    {
+        $enroll_id = $request->enroll_id;
+        $enroll_id_names = CourseEnrollMaster::where('id', $enroll_id)->first();
+        $enroll_name = $enroll_id_names->id;
+        // dd($enroll_name);
+
+        $students_names = Student::where('enroll_master_id', $enroll_name)->pluck('name', 'register_no');
+
+        if ($students_names) {
+            return response()->json(['status' => true, 'data' => $students_names]);
+        } else {
+            return response()->json(['status' => false, 'data' => 'Students Not Found']);
+
+        }
+
+        // dd($students);
+
+    }
+
     public function store(Request $request)
     {
         // dd($request);
-        if (isset($request->student)) {
+        if (isset($request->scholarship)) {
+
+            $students = $request->student ?? $request->batch_filter_std;
+
+            if (empty($students)) {
+                return response()->json(['status' => false, 'data' => 'No students found']);
+            }
 
             // dd($request->student);
 
@@ -113,7 +149,7 @@ class FeeScholarshipController extends Controller
                 } else {
                     $scholarship = $request->scholarship;
                     $amt_percentage = $request->amt_percentage;
-                    $students = $request->student;
+                    // $students = $request->student;
 
                     foreach ($students as $student) {
                         ScholarStudents::create([
@@ -122,6 +158,13 @@ class FeeScholarshipController extends Controller
                             'stu_reg_no' => $student,
 
                         ]);
+
+                        AcademicDetail::whereIn('register_number', $students)
+                            ->update([
+                                'scholarship' => 1,
+                                'scholarship_name' => $scholarship,
+                            ]);
+
                     }
                     return response()->json(['status' => true, 'data' => 'Scholarship Created Successfully']);
 
@@ -131,11 +174,10 @@ class FeeScholarshipController extends Controller
                 // dd($request);
 
                 $amt_per_edit = $request->amt_per_edit;
-                $update  = ScholarStudents::where(['id' => $request->id])->update([
+                $update = ScholarStudents::where(['id' => $request->id])->update([
                     'scholar_details' => $amt_per_edit,
                 ]);
                 return response()->json(['status' => true, 'data' => 'Scholarship Updated Successfully']);
-
 
             }
 

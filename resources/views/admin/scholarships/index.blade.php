@@ -322,6 +322,7 @@
             $("#started_batch").val('');
             $("#started_batch").select2()
             $("#remarks").val('');
+            $("#received_in_div").show();
             $("#inactive_reason").val('')
             $("#inactive_date").val('')
             $("#status option:nth-child(1)").prop('selected', true);
@@ -431,16 +432,16 @@
                 $("#started_batch_span").show();
 
             }
-            // else if ($("#received_in").val() == '') {
+            else if ($("#received_in").val() == '') {
 
-            //     $("#received_in_span").html(`Received Type Is Required.`);
-            //     $("#received_in_span").show();
-            //     $("#scholarship_span").hide();
-            //     $("#foundation_name_span").hide();
-            //     $("#started_ay_span").hide();
-            //     $("#started_batch_span").hide();
+                $("#received_in_span").html(`Received Type Is Required.`);
+                $("#received_in_span").show();
+                $("#scholarship_span").hide();
+                $("#foundation_name_span").hide();
+                $("#started_ay_span").hide();
+                $("#started_batch_span").hide();
 
-            // }
+            }
             else {
                 $("#inactive_reason_span").hide();
                 $("#inactive_date_span").hide();
@@ -515,6 +516,7 @@
                         'started_batch': started_batch,
                         'remarks': remarks,
                         'status': status,
+                        'received_in' : received_in,
                         'inactive_reason': inactive_reason,
                         'inactive_date': inactive_date,
                         'amount_input_box': amount_input_box,
@@ -575,7 +577,9 @@
                             $("#scholarship_id").val(data.id);
                             $("#scholarship").val(data.name);
                             $("#foundation_name").val(data.foundation_name);
-                            $("#received_in_div").hide();
+                            // $("#received_in_div").hide();
+                            $("#received_in").select2();
+                            $("#received_in").val(data.scholarship_type);
                             if (data.percentage != null) {
                                 var numericPercentage = data.percentage.replace('%', '');
                                 $("#percentage_input").show();
@@ -667,7 +671,8 @@
                             $("#started_batch").val(data.started_batch);
                             $("#started_batch").select2()
                             $("#remarks").val(data.remarks);
-                            $("#received_in_div").hide();
+                            $("#received_in").val(data.scholarship_type);
+                            $("#received_in").select2();
 
                             if (data.percentage != null) {
                                 var numericPercentage = data.percentage.replace('%', '');

@@ -103,6 +103,7 @@ class ScholarshipController extends Controller
                         'foundation_name' => strtoupper($request->foundation_name),
                         'started_ay' => $request->started_ay,
                         'started_batch' => $request->started_batch,
+                        'scholarship_type' => $request->received_in,
                         'remarks' => isset($request->remarks) ? $request->remarks : null,
                         'status' => $request->status == 'Inactive' ? 0 : 1,
                         'amount' => isset($request->amount_input_box) ? $request->amount_input_box : null,
@@ -114,7 +115,7 @@ class ScholarshipController extends Controller
                 return response()->json(['status' => true, 'data' => 'Scholarship Created']);
             } else {
 
-                dd($request);
+                // dd($request);
                 $count = Scholarship::whereNotIn('id', [$request->id])->where(['name' => $request->name, 'foundation_name' => $request->foundation_name])->count();
                 // dd($count);
                 if ($count > 0) {
@@ -123,8 +124,11 @@ class ScholarshipController extends Controller
                     $update = Scholarship::where(['id' => $request->id])->update([
                         'name' => strtoupper($request->name),
                         'foundation_name' => strtoupper($request->foundation_name),
-                        'amount' => $request->amount_input_box,
+                        // 'amount' => $request->amount_input_box,
                         'started_ay' => $request->started_ay,
+                        'scholarship_type' => $request->received_in,
+                        'amount' => isset($request->amount_input_box) ? $request->amount_input_box : null,
+                        'percentage' => isset($request->percentage_input_box) ? $request->percentage_input_box: null,
                         'started_batch' => $request->started_batch,
                         'remarks' => isset($request->remarks) ? $request->remarks : null,
                         'status' => $request->status == 'Inactive' ? 0 : 1,
@@ -165,6 +169,7 @@ class ScholarshipController extends Controller
             'remarks',
             'amount',
             'percentage',
+            'scholarship_type',
             'status',
             'inactive_reason',
             'inactive_date')->first();

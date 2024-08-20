@@ -116,7 +116,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // FeeCyle
     Route::get('fee-cycle', 'feeCycleController@index')->name('fee-cycle.index');
     Route::post('fee-cycle/store', 'feeCycleController@store')->name('fee-cycle.store');
-
+    Route::post('fee-cycle/customs', 'feeCycleController@customs')->name('fee-cycle.customs');
+    Route::get('fee-cycle/customsnames', 'feeCycleController@getCustomsFeeNames')->name('fee-cycle.customsnames');
 
     // FeeComponents
     Route::get('fee-components', 'feeComponentsController@index')->name('fee-components.index');
@@ -680,13 +681,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('feedback-course/report', 'FeedbackReportController@courseReport')->name('feedback-course.report');
     Route::post('feedback-course/view', 'FeedbackReportController@courseView')->name('feedback-course.view');
     Route::post('feedback-course/download', 'FeedbackReportController@courseDownload')->name('feedback-course.download');
-    
+
     //Faculty Feedback
     Route::get('feedReport-faculty', 'FeedbackReportController@facultyIndex')->name('feedReport-faculty.index');
     Route::post('feedback-faculty/report', 'FeedbackReportController@facultyReport')->name('feedback-faculty.report');
     Route::post('feedback-faculty/view', 'FeedbackReportController@facultyView')->name('feedback-faculty.view');
     Route::post('feedback-faculty/download', 'FeedbackReportController@facultyDownload')->name('feedback-faculty.download');
-    
+
     //External Feedback
     Route::get('feedReport-external', 'FeedbackReportController@externalIndex')->name('feedReport-external.index');
     Route::post('feedback-external/report', 'FeedbackReportController@externalReport')->name('feedback-external.report');
@@ -909,6 +910,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     //Fee Collection
     Route::get('fee-collection', 'FeeCollectionController@index')->name('fee-collection.index');
     Route::post('student_rollnumber', 'FeeCollectionController@fetch_detils')->name('student-rollnumber.geter');
+    Route::post('student_scholarship', 'FeeCollectionController@fetch_scholarship')->name('student-scholarship');
     Route::post('fee_payment', 'FeeCollectionController@fee_payment')->name('fee_payment');
     Route::post('fee_history', 'FeeCollectionController@fee_history')->name('fee_history');
     Route::post('fee_delete', 'FeeCollectionController@fee_delete')->name('fee_delete');
@@ -920,6 +922,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('fee-scholarship', 'FeeScholarshipController@index')->name('feeScholarship.index');
     Route::post('fee-scholarship/geter', 'FeeScholarshipController@getScholarship')->name('fee-scholarship.getter');
     Route::post('fee-scholarship/store', 'FeeScholarshipController@store')->name('fee-scholarship.store');
+    Route::post('fee-scholarship/filter_student', 'FeeScholarshipController@filter_student')->name('fee-scholarship.filter_student');
     Route::post('fee-scholarship/view', 'FeeScholarshipController@view')->name('fee-scholarship.view');
     Route::post('fee-scholarship/edit', 'FeeScholarshipController@edit')->name('fee-scholarship.edit');
     Route::post('fee-scholarship/delete', 'FeeScholarshipController@destroy')->name('fee-scholarship.delete');
