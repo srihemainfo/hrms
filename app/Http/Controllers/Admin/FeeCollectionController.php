@@ -61,7 +61,6 @@ class FeeCollectionController extends Controller
                 ->where('course_id', $course_id)
                 ->with('academicYear')
                 ->get();
-                dd($feeStructures);
 
             $ids = $feeStructures->pluck('id');
             $feeLists = FeeList::whereIn('fee_id', $ids)->pluck('fee_id');
@@ -88,10 +87,7 @@ class FeeCollectionController extends Controller
                                     $fee_name = $customsFee ? $customsFee->fee_name : 'Unknown';
                                 }
 
-                                $fee_semester = $feeStructure->semester_id ?? null;
-                                if (empty($fee_semester)) {
-                                    continue;
-                                }
+                                $fee_semester = $feeStructure->semester_id ?? 'Unknown';
 
 
                                 $academic_year_name = $feeStructure->academicYear ? $feeStructure->academicYear->name : 'Unknown';

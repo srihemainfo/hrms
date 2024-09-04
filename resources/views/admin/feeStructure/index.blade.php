@@ -172,9 +172,9 @@
 
                         @if ($feeCycleText == 'CustomsWise')
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                                <label for="customs" class="required">Customs</label>
+                                <label for="customs" class="required">Fee Cycle Name</label>
                                 <select class="form-control select2" id="customs" name="customs">
-                                    <option value="">Select Customs</option>
+                                    <option value="">Select Fee Cycle Name</option>
                                     @foreach ($customsFee as $id => $cf)
                                         <option value="{{ $id }}">{{ $cf }}</option>
                                     @endforeach
