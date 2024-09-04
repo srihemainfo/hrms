@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicDetail;
-use App\Models\Batch;
+use App\Models\CourseEnrollMaster;
 use App\Models\Scholarship;
 use App\Models\ScholarStudents;
 use App\Models\Student;
-use App\Models\CourseEnrollMaster;
+use App\Models\ToolsCourse;
+use App\Models\Batch;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -110,12 +111,14 @@ class FeeScholarshipController extends Controller
 
     public function filter_student(Request $request)
     {
-        $enroll_id = $request->enroll_id;
-        $enroll_id_names = CourseEnrollMaster::where('id', $enroll_id)->first();
-        $enroll_name = $enroll_id_names->id;
-        // dd($enroll_name);
 
-        $students_names = Student::where('enroll_master_id', $enroll_name)->pluck('name', 'register_no');
+
+        $batch = $request->batch;
+        $course = $request->course;
+
+        $students_names = Student::where('admitted_course', $course)
+        ->where('student_batch', $batch)
+        ->pluck('name', 'register_no');
 
         if ($students_names) {
             return response()->json(['status' => true, 'data' => $students_names]);
@@ -236,6 +239,17 @@ class FeeScholarshipController extends Controller
             'deleted_at' => Carbon::now(),
         ]);
         return response()->json(['status' => 'success', 'data' => 'Scholarship Deleted Successfully']);
+    }
+
+    public function assign(Request $request)
+    {
+
+        $getScholarship = Scholarship::where('status', 1)->pluck('name', 'id');
+        $batch = Batch::pluck('name', 'id');
+        $students = Student::select('name', 'register_no')->get();
+        $course = ToolsCourse::pluck('name', 'id');
+        return view('admin.feeScholarship.assign' , compact('getScholarship','batch','course','students'));
+
     }
 
 }

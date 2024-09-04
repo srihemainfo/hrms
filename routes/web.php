@@ -497,6 +497,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('hostel-warden/delete', 'HostelWardenController@destroy')->name('hostel-warden.delete');
     Route::delete('hostel-warden/destroy', 'HostelWardenController@massDestroy')->name('hostel-warden.massDestroy');
 
+    //Hostel Fee
+    Route::get('hostel_fee', 'HostelfeeController@index')->name('hostel_fee.index');
+    Route::post('hostel_fee/store', 'HostelfeeController@store')->name('hostel_fee.store');
+    Route::post('hostel_fee/delete', 'HostelfeeController@delete')->name('hostel_fee.delete');
+    Route::post('hostel_fee/view', 'HostelfeeController@view')->name('hostel_fee.view');
+    Route::post('hostel_fee/edit', 'HostelfeeController@edit')->name('hostel_fee.edit');
+    Route::post('hostel_fee/filter_student', 'HostelfeeController@filter_student')->name('hostel_fee.filter_student');
+    Route::delete('hostel_fee/destroy', 'HostelfeeController@MassDestroy')->name('hostel_fee.massDestroy');
+
+
+
     Route::get('hostelRoom', 'HostelBlockController@roomIndex')->name('hostelRoom.index');
     Route::post('hostelRoom/view', 'HostelBlockController@roomView')->name('hostelRoom.view');
     Route::post('hostelRoom/edit', 'HostelBlockController@roomEdit')->name('hostelRoom.edit');
@@ -911,6 +922,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('fee-collection', 'FeeCollectionController@index')->name('fee-collection.index');
     Route::post('student_rollnumber', 'FeeCollectionController@fetch_detils')->name('student-rollnumber.geter');
     Route::post('student_scholarship', 'FeeCollectionController@fetch_scholarship')->name('student-scholarship');
+    Route::post('student_hostel_fee', 'FeeCollectionController@fetch_hostel_fee')->name('student-hostelfee');
     Route::post('fee_payment', 'FeeCollectionController@fee_payment')->name('fee_payment');
     Route::post('fee_history', 'FeeCollectionController@fee_history')->name('fee_history');
     Route::post('fee_delete', 'FeeCollectionController@fee_delete')->name('fee_delete');
@@ -921,6 +933,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     //Fee ScholarShip
     Route::get('fee-scholarship', 'FeeScholarshipController@index')->name('feeScholarship.index');
     Route::post('fee-scholarship/geter', 'FeeScholarshipController@getScholarship')->name('fee-scholarship.getter');
+    Route::get('fee-scholarship/assign', 'FeeScholarshipController@assign')->name('fee-scholarship.assign');
     Route::post('fee-scholarship/store', 'FeeScholarshipController@store')->name('fee-scholarship.store');
     Route::post('fee-scholarship/filter_student', 'FeeScholarshipController@filter_student')->name('fee-scholarship.filter_student');
     Route::post('fee-scholarship/view', 'FeeScholarshipController@view')->name('fee-scholarship.view');

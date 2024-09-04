@@ -12,6 +12,8 @@ use App\Models\FeeCollection;
 use App\Models\FeeCycle;
 use App\Models\FeeList;
 use App\Models\FeeStructure;
+use App\Models\PaymentMode;
+use App\Models\Scholarship;
 use App\Models\ScholarStudents;
 use App\Models\Student;
 use App\Models\ToolsCourse;
@@ -27,7 +29,8 @@ class FeeCollectionController extends Controller
         $feeCycles = FeeCycle::pluck('cycle_name');
 
         $students = Student::select('register_no', 'name')->get();
-        return view('admin.feeCollection.index', compact('students', 'feeCycles'));
+        $payment_mode = PaymentMode::pluck('name', 'id');
+        return view('admin.feeCollection.index', compact('students', 'feeCycles', 'payment_mode'));
     }
     public function fetch_detils(Request $request)
     {
@@ -89,15 +92,10 @@ class FeeCollectionController extends Controller
 
                                 $fee_semester = $feeStructure->semester_id ?? 'Unknown';
 
-
                                 $academic_year_name = $feeStructure->academicYear ? $feeStructure->academicYear->name : 'Unknown';
 
                                 // Concatenate fee_name and academic_year_name in the desired format
                                 $concatenated_name = $fee_name . ' (' . $academic_year_name . ')';
-
-
-
-
 
                                 $total_amounts[] = [
                                     'id' => $feeStructure->id,
@@ -238,8 +236,13 @@ class FeeCollectionController extends Controller
 
             $student_reg_no = $request->register_no_scholar;
             $customs_idss = $request->customs_idss;
+            $academic_year_no = $request->academic_year_no;
 
-            $customs_name = CustomsFee::where('id', $customs_idss)->pluck('id')->first();
+            $academic_year_id = AcademicYear::where('name', $academic_year_no)->pluck('id')->first();
+
+            $cleaned_customs_idss = preg_replace("/\s*\(.*?\)/", '', $customs_idss);
+
+            $customs_name = CustomsFee::where('fee_name', $cleaned_customs_idss)->pluck('id')->first();
 
             // dd($academic_year_id);
             // $semesters = $request->semesters_no;
@@ -252,6 +255,7 @@ class FeeCollectionController extends Controller
 
                 $get_payment_Details = FeeCollection::where('register_no', $student_reg_no)
                     ->where('customs_id', $customs_name)
+                    ->where('academic_year_id', $academic_year_id)
                     ->where('status', 'Paid')
                     ->get();
 
@@ -269,9 +273,13 @@ class FeeCollectionController extends Controller
                 // dd($paymentTypes);
 
                 $get_scholarship = $get_scholarship_details->scholar_details;
+                $scholar_id = $get_scholarship_details->scholar_id;
+
+                $scholarship = Scholarship::where('id', $scholar_id)->select('foundation_name')->first();
 
                 return response()->json([
                     'status' => true,
+                    'scholarship' => $scholarship,
                     'data' => $get_scholarship,
                 ]);
             } else {
@@ -292,7 +300,7 @@ class FeeCollectionController extends Controller
         if (isset($request->register_number)) {
 
             $academicYearId = AcademicYear::where('name', $request->aca)->pluck('id')->first();
-            $cusfeename  = CustomsFee::where('fee_name', $request->customs_idss)->pluck('id')->first();
+            $cusfeename = CustomsFee::where('fee_name', $request->customs_idss)->pluck('id')->first();
 
             $lastReceipt = FeeCollection::orderBy('id', 'desc')->first();
             $nextReceiptNumber = $lastReceipt ? $lastReceipt->receipt_no + 1 : 100001;
@@ -302,18 +310,27 @@ class FeeCollectionController extends Controller
             if ($request->paid_amount !== null) {
                 $paidAmount = $request->paid_amount;
                 $paymentType = 'Amount';
-                $remarks = $request->remark_details;
             } elseif ($request->payable_amount !== null) {
                 $paidAmount = $request->payable_amount;
                 $paymentType = 'Scholarship';
-                $remarks = $request->check_no;
             } elseif ($request->discount_amount !== null) {
                 $paidAmount = $request->discount_amount;
                 $paymentType = 'Discount';
-                $remarks = $request->discount_remark;
             } else {
                 $paidAmount = 0;
                 $paymentType = 'Unknown';
+            }
+
+            if ($request->remark_details !== null) {
+                $remarks = $request->remark_details;
+            } elseif ($request->dd !== null) {
+                $remarks = $request->dd;
+            } elseif ($request->cheque_number !== null) {
+                $remarks = $request->cheque_number;
+            } elseif ($request->reference_number !== null) {
+                $remarks = $request->reference_number;
+            } else {
+                $remarks = 'Unknown';
             }
 
             $store = FeeCollection::create([
@@ -323,6 +340,7 @@ class FeeCollectionController extends Controller
                 'student_id' => $request->student_id,
                 'total_amount' => $request->tot_amount,
                 'status' => 'Paid',
+                'applicable_fee' => $request->applicable_fee,
                 'gateway_type' => 'Offline',
                 'payment_type' => $paymentType,
                 'remarks' => $remarks,
@@ -333,6 +351,8 @@ class FeeCollectionController extends Controller
                 'receipt_no' => $nextReceiptNumber,
                 'transaction_id' => $transactionId,
                 'fees_id' => $request->fee_idis,
+                'payment_mode' => $request->payment_mode,
+
             ]);
             return response()->json(['status' => true, 'data' => 'Payment Successful']);
         } else {
@@ -366,10 +386,7 @@ class FeeCollectionController extends Controller
                 $fee_name = $customsFee ? $customsFee->fee_name : 'Unknown';
             }
 
-
             $concatenated_name = $fee_name . ' (' . $academicYearName . ')';
-
-
 
             $response_data[] = [
                 'register_no' => $reg_no,
@@ -392,6 +409,11 @@ class FeeCollectionController extends Controller
         }
         return response()->json(['status' => true, 'data' => $response_data]);
 
+    }
+
+    public function fetch_hostel_fee(Request $request)
+    {
+        dd($request);
     }
 
     public function fee_delete(Request $request)

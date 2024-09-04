@@ -23,6 +23,8 @@ class FeeCollection extends Model
         'semester',
         'total_amount',
         'paid_amount',
+        'payment_mode',
+        'applicable_fee',
         'paid_date',
         'gateway_type',
         'settlement_date',

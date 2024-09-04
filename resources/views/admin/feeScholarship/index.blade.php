@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-    @can('scholarship_create')
+    {{-- @can('scholarship_create')
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
                 <button class="btn btn-outline-success" onclick="openModal()">
@@ -8,7 +8,17 @@
                 </button>
             </div>
         </div>
+    @endcan --}}
+    @can('scholarship_create')
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <a class="btn btn-outline-success" href="{{ route('admin.fee-scholarship.assign') }}">
+                    Assign Scholarship
+                </a>
+            </div>
+        </div>
     @endcan
+
     <style>
         .select2-container {
             width: 100% !important;
@@ -123,8 +133,6 @@
 
 
 
-
-
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="batch_filter_std_div">
                             <label for="feeBatch" class="required">Select Students</label>
                             <select class="form-control select2" id="batch_filter_std" name="batch_filter_std" multiple>
@@ -134,8 +142,6 @@
                             <span id="batch_filter_std_span" class="text-danger text-center"
                                 style="display:none; font-size:0.9rem;"></span>
                         </div>
-
-
 
 
                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="student_div">
@@ -153,9 +159,6 @@
                             <span id="student_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
-
-
-
 
                     </div>
                 </div>
@@ -319,172 +322,171 @@
 
         };
 
-        function openModal() {
+        // function openModal() {
 
-            $("#batch_filter_std_div").hide();
+        //     $("#batch_filter_std_div").hide();
 
-            $("#save_btn").hide();
-            $("#scholarship_div").hide();
-            $("#student_div").hide();
-            $("#enroll_div").hide();
-
-
-            $("#filteration").val('').select2();
-            $("#enroll_id").val('').select2();
-
-            $("select").prop('disabled', false).select2();
-
-            $("#scholarshipModal").modal();
-            $("#feescholarship_id").val('')
-            $("#scholarship").val('').select2();
-            // $("#student").val('').select2();
-            var $studentDropdown = $("#student");
-            if ($studentDropdown.val().length) {
-                $studentDropdown.val([]).trigger('change');
-            }
-            $("#amt_percentage_box").hide();
-            $("#amt_per_edit_box").hide();
+        //     $("#save_btn").hide();
+        //     $("#scholarship_div").hide();
+        //     $("#student_div").hide();
+        //     $("#enroll_div").hide();
 
 
+        //     $("#filteration").val('').select2();
+        //     $("#enroll_id").val('').select2();
 
-        }
+        //     $("select").prop('disabled', false).select2();
 
-
-        function getscholarship() {
-
-            $('#loading').show();
-
-            var scholarship = $("#scholarship").val();
-
-            $.ajax({
-                url: '{{ route('admin.fee-scholarship.getter') }}',
-                type: 'POST',
-                data: {
-                    'scholarship': scholarship
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-
-                    let status = response.status;
-                    if (status) {
-                        $("#amt_percentage_box").show();
-                        $("#amt_percentage").val(response.value);
-
-                    } else {
-                        Swal.fire('', response.data, 'error');
-                        $("#amt_percentage_box").hide();
-                    }
-
-                    $('#loading').hide();
-
-
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    let errorMessage = textStatus || errorThrown || 'Request Failed';
-                    Swal.fire('', errorMessage, 'error');
-
-                    $('#loading').hide();
-                    $("#amt_percentage_box").hide();
-
-                }
-            });
-        }
-
-        function test() {
-
-            var filteration = $("#filteration").val();
-
-            if (filteration == 'for_all') {
-
-                $("#save_btn").show();
-                $("#scholarship_div").show();
-                $("#student_div").show();
-                $("#enroll_div").hide();
-                $("#batch_filter_std_div").hide();
-
-
-            } else if (filteration == 'department_wise') {
-
-                $("#enroll_div").show();
-                $("#save_btn").show();
-                $("#scholarship_div").show();
-                $("#student_div").hide();
-                $("#batch_filter_std_div").show();
+        //     $("#scholarshipModal").modal();
+        //     $("#feescholarship_id").val('')
+        //     $("#scholarship").val('').select2();
+        //     $("#student").val('').select2();
+        //     var $studentDropdown = $("#student");
+        //     if ($studentDropdown.val().length) {
+        //         $studentDropdown.val([]).trigger('change');
+        //     }
+        //     $("#amt_percentage_box").hide();
+        //     $("#amt_per_edit_box").hide();
 
 
 
+        // }
 
 
-            } else {
-                $("#save_btn").hide();
-                $("#scholarship_div").hide();
-                $("#student_div").hide();
-                $("#enroll_div").hide();
-                $("#batch_filter_std_div").hide();
+        // function getscholarship() {
+
+        //     $('#loading').show();
+
+        //     var scholarship = $("#scholarship").val();
+
+        //     $.ajax({
+        //         url: '{{ route('admin.fee-scholarship.getter') }}',
+        //         type: 'POST',
+        //         data: {
+        //             'scholarship': scholarship
+        //         },
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         success: function(response) {
+
+        //             let status = response.status;
+        //             if (status) {
+        //                 $("#amt_percentage_box").show();
+        //                 $("#amt_percentage").val(response.value);
+
+        //             } else {
+        //                 Swal.fire('', response.data, 'error');
+        //                 $("#amt_percentage_box").hide();
+        //             }
+
+        //             $('#loading').hide();
 
 
-            }
+        //         },
+        //         error: function(jqXHR, textStatus, errorThrown) {
+        //             let errorMessage = textStatus || errorThrown || 'Request Failed';
+        //             Swal.fire('', errorMessage, 'error');
 
-        }
+        //             $('#loading').hide();
+        //             $("#amt_percentage_box").hide();
 
-        function filter_students() {
-            var enroll_id = $("#enroll_id").val();
-            // alert(batch_name);
-            $('#loading').show();
+        //         }
+        //     });
+        // }
 
-            $.ajax({
+        // function test() {
 
-                url: '{{ route('admin.fee-scholarship.filter_student') }}',
-                type: 'POST',
-                data: {
-                    'enroll_id': enroll_id,
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
+        //     var filteration = $("#filteration").val();
 
-                    let status = response.status;
-                    if (status) {
-                        if (status == true) {
-                            console.log(response);
-                            let students = response.data;
-                            $('#batch_filter_std').empty();
-                            $('#batch_filter_std').append('<option value="">Select Students</option>');
+        //     if (filteration == 'for_all') {
 
-                            $.each(students, function(register_number, name) {
-                                $('#batch_filter_std').append(
-                                    `<option value="${register_number}">${name} (${register_number})</option>`
-                                );
-                            });
-
-                            $('#batch_filter_std').trigger('change.select2');
-
-                        } else {
-                            Swal.fire('', response.data, 'error');
-                        }
-
-                    } else {
-                        Swal.fire('', response.data, 'error');
-
-                    }
-                    $('#loading').hide();
+        //         $("#save_btn").show();
+        //         $("#scholarship_div").show();
+        //         $("#student_div").show();
+        //         $("#enroll_div").hide();
+        //         $("#batch_filter_std_div").hide();
 
 
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    let errorMessage = textStatus || errorThrown || 'Request Failed';
-                    Swal.fire('', errorMessage, 'error');
+        //     } else if (filteration == 'department_wise') {
 
-                    $('#loading').hide();
+        //         $("#enroll_div").show();
+        //         $("#save_btn").show();
+        //         $("#scholarship_div").show();
+        //         $("#student_div").hide();
+        //         $("#batch_filter_std_div").show();
 
 
-                }
 
-            })
-        }
+
+
+        //     } else {
+        //         $("#save_btn").hide();
+        //         $("#scholarship_div").hide();
+        //         $("#student_div").hide();
+        //         $("#enroll_div").hide();
+        //         $("#batch_filter_std_div").hide();
+
+
+        //     }
+
+        // }
+
+        // function filter_students() {
+        //     var enroll_id = $("#enroll_id").val();
+        //     $('#loading').show();
+
+        //     $.ajax({
+
+        //         url: '{{ route('admin.fee-scholarship.filter_student') }}',
+        //         type: 'POST',
+        //         data: {
+        //             'enroll_id': enroll_id,
+        //         },
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         success: function(response) {
+
+        //             let status = response.status;
+        //             if (status) {
+        //                 if (status == true) {
+        //                     console.log(response);
+        //                     let students = response.data;
+        //                     $('#batch_filter_std').empty();
+        //                     $('#batch_filter_std').append('<option value="">Select Students</option>');
+
+        //                     $.each(students, function(register_number, name) {
+        //                         $('#batch_filter_std').append(
+        //                             `<option value="${register_number}">${name} (${register_number})</option>`
+        //                         );
+        //                     });
+
+        //                     $('#batch_filter_std').trigger('change.select2');
+
+        //                 } else {
+        //                     Swal.fire('', response.data, 'error');
+        //                 }
+
+        //             } else {
+        //                 Swal.fire('', response.data, 'error');
+
+        //             }
+        //             $('#loading').hide();
+
+
+        //         },
+        //         error: function(jqXHR, textStatus, errorThrown) {
+        //             let errorMessage = textStatus || errorThrown || 'Request Failed';
+        //             Swal.fire('', errorMessage, 'error');
+
+        //             $('#loading').hide();
+
+
+        //         }
+
+        //     })
+        // }
 
         function saveScholarship() {
 
@@ -637,6 +639,7 @@
                         $('.secondLoader').hide()
                         let status = response.status;
                         if (status == true) {
+                            $("#batch_filter_std_div").hide();
                             var data = response.data;
                             console.log(data);
                             var foundation_name = response.foundation_name;

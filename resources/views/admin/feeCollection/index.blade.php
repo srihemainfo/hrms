@@ -5,6 +5,10 @@
             color: green;
         }
 
+        .select2-container {
+            width: 100% !important;
+        }
+
         .pending {
             color: red;
         }
@@ -15,6 +19,10 @@
 
         #loading {
             z-index: 9999999;
+        }
+
+        .error {
+            color: red;
         }
     </style>
     @php
@@ -180,51 +188,7 @@
 
         </div>
     </div>
-    {{-- <div class="card">
-        <div class="card-header text-center">
-            Fee Summary
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <table class="table table-striped table-bordered text-center">
-                        <tbody>
-                            <tr>
-                                <th>Total Amount</th>
-                                <td id='total_amount_summary'></td>
-                            </tr>
-                            <tr>
-                                <th>Total Paid Amount</th>
-                                <td id='total_paid_amount_summary'></td>
-                            </tr>
-                            <tr>
-                                <th>Pending Amount</th>
-                                <td id='pending_amount_summary'></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-md-6">
-                    <table class="table table-striped table-bordered text-center">
-                        <tbody>
-                            <tr>
-                                <th>Total Amount</th>
-                                <td id='total_amount_summary'></td>
-                            </tr>
-                            <tr>
-                                <th>Total Paid Amount</th>
-                                <td id='total_paid_amount_summary'></td>
-                            </tr>
-                            <tr>
-                                <th>Pending Amount</th>
-                                <td id='pending_amount_summary'></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div> --}}
+
     <div class="card">
         <div class="card-header text-center">
             Fee Details
@@ -261,8 +225,8 @@
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text center" id="myModalLabel">Fees Payment</h5>
+                <div class="modal-header text center">
+                    <h5 class="modal-title" id="myModalLabel">Payment</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -277,7 +241,7 @@
                                     <input class="form-check-input" type="radio" name="payment_type" id="fees_payment"
                                         value="fees" checked>
                                     <label class="form-check-label" for="fees_payment">
-                                        Fees Payment
+                                        Fee Payment
                                     </label>
                                 </div>
                                 <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12 form-check">
@@ -301,6 +265,13 @@
                         <input type="hidden" id="student_id">
                         <input type="hidden" id="student_name">
                         <div class="row gutters">
+
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" style="display: none;"
+                                id="scholarship_name_details_div">
+                                <label for="scholarship_name_details">Scholarship Name And Details</label>
+                                <input type="text" id="scholarship_name_details" class="form-control" readonly>
+                            </div>
+
                             <div style="display: none;" class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group"
                                 id="reg_no_div">
                                 <label for="register_no">Regsiter Number</label>
@@ -311,35 +282,35 @@
                                 <label for="scholar_details">Scholar Details</label>
                                 <input type="text" id="scholar_details" class="form-control" readonly>
                             </div>
+
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" style="display: none;"
                                 id="total_amountsss_div">
                                 <label for="total_amountsss">Total Amount</label>
                                 <input type="text" id="total_amountsss" class="form-control" readonly>
                             </div>
+
+
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" style="display: none;"
                                 id="payable_amount_div">
-                                <label for="payable_amount">Payable Amount</label>
+                                <label for="payable_amo bunt">Scholarship Amount</label>
                                 <input type="text" id="payable_amount" class="form-control" readonly>
-                            </div>
-
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group" style="display: none;"
-                                id="check_no_div">
-                                <label for="check_no">If it is Cheque, Please Enter the Cheque Number</label>
-                                <input type="text" id="check_no" class="form-control">
                             </div>
 
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" style="display: none;"
                                 id="discount_amount_div">
-                                <label for="discount_amount">Discount Amount</label>
+                                <label for="discount_amount">Discount Amount <span class="text-danger">*</span></label>
                                 <input type="text" id="discount_amount" class="form-control"
                                     placeholder="Enter Discount Amount">
+                                <span id="discount_amount_error" class="error"></span>
                             </div>
+
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" style="display: none;"
                                 id="discount_remark_div">
                                 <label for="discount_remark">Discount Remarks</label>
                                 <input type="text" id="discount_remark" class="form-control"
                                     placeholder="Enter Discount Remarks">
                             </div>
+
                         </div>
 
                         <input type="hidden" id="semester_idss">
@@ -347,13 +318,73 @@
                         <input type="hidden" id="customs_idss">
                         <input type="hidden" id="stu_fees_id">
                     </div>
-                    <div>
-                        <input type="number" placeholder="Enter Amount" id="paid_amount" class="form-control">
+                    <div class="row gutters">
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="applicable_fee_div">
+                            <label for="applicable_fee" class="required">Applicable Fee</label>
+                            <select class="form-control select2" id="applicable_fee" name="applicable_fee"
+                                value="" onchange="applicable_fee()">
+                                <option value="">Select Fee</option>
+                                <option value="academic_fee">Academic Fee</option>
+                                <option value="hostel_fee">Hostel Fee</option>
+                                <option value="transport_fee">Transport Fee</option>
+                            </select>
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="paid_amount_div">
+                            <label for="paid_amount">Academic Fee<span class="text-danger">*</span></label>
+                            <input type="number" placeholder="Enter Academic Fee" id="paid_amount"
+                                class="form-control">
+                            <span id="paid_amount_error" class="error"></span>
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="hostel_amount_div"
+                            style="display: none;">
+                            <label for="hostel_amount">Hostel Fee<span class="text-danger">*</span></label>
+                            <input type="number" placeholder="Enter Hostel Fee" id="hostel_amount"
+                                class="form-control">
+                            <span id="hostel_amount_error" class="error"></span>
+                        </div>
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="payment_mode_div">
+                            <label for="payment_mode" class="required">Payment Mode</label>
+                            <select class="form-control select2" id="payment_mode" name="payment_mode" value=""
+                                onchange="payment_mode()">
+                                <option value="">Select Payment Mode</option>
+                                @foreach ($payment_mode as $id => $payment_md)
+                                    <option value="{{ $payment_md }}">{{ $payment_md }}</option>
+                                @endforeach
+                            </select>
+                            <span id="payment_mode_error" class="error"></span>
+                        </div>
+
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="remark_details_div">
+                            <label for="remark_details">Academic Fee Remark</label>
+                            <input type="text" placeholder="Enter Academic Fee Remark" id="remark_details"
+                                class="form-control">
+                        </div>
+
+
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="cheque_number_div">
+                            <label for="cheque_number">Cheque Number<span class="text-danger">*</span></label>
+                            <input type="text" placeholder="Enter Cheque Number" id="cheque_number"
+                                class="form-control">
+                            <span id="cheque_number_error" class="error"></span>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="dd_div">
+                            <label for="dd">DD Number<span class="text-danger">*</span></label>
+                            <input type="text" placeholder="Enter DD Number" id="dd" class="form-control">
+                            <span id="dd_error" class="error"></span>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="reference_number_div">
+                            <label for="reference_number">Reference Number<span class="text-danger">*</span></label>
+                            <input type="text" placeholder="Enter Reference Number" id="reference_number"
+                                class="form-control">
+                            <span id="reference_number_error" class="error"></span>
+                        </div>
+
                     </div>
-                    <span id="paid_amount_error" style="color: red;"></span>
-                    <div class="mt-2">
-                        <input type="text" placeholder="Enter Remark" id="remark_details" class="form-control">
-                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -389,6 +420,16 @@
             $("#discount_amount_div").hide();
             $("#discount_remark_div").hide()
             $("#check_no_div").hide()
+            $("#paid_amount_div").hide();
+            $("#remark_details_div").hide();
+            $("#pay_now").hide();
+            $("#cheque_number_div").hide();
+            $("#dd_div").hide();
+            $("#applicable_fee").val('').select2();
+            $("#payment_mode").val('').select2();
+            $("#remark_details_div").hide();
+            $("#reference_number_div").hide();
+
 
 
 
@@ -440,20 +481,104 @@
 
         });
 
+        function applicable_fee() {
+
+            $("#payment_mode").val('')
+
+            var applicable_fee = $("#applicable_fee").val();
+
+            if (applicable_fee == 'academic_fee') {
+                console.log("Condition met for academic_fee, displaying relevant elements.");
+                $("#pay_now").show();
+                $("#hostel_amount_div").hide();
+                $("#paid_amount_div").show();
+                $("#cheque_number_div").hide();
+                $("#dd_div").hide();
+            } else if (applicable_fee == 'hostel_fee') {
+                $("#pay_now").show();
+                $("#hostel_amount_div").show();
+                $("#paid_amount_div").hide();
+                $("#remark_details_div").hide();
+                $("#cheque_number_div").hide();
+                $("#dd_div").hide();
+            } else {
+                $("#pay_now").hide();
+                $("#hostel_amount_div").hide();
+                $("#paid_amount_div").hide();
+                $("#remark_details_div").hide();
+                $("#cheque_number_div").hide();
+                $("#dd_div").hide();
+            }
+        }
+
+
+
+
+        function payment_mode() {
+
+            var payment_mode = $("#payment_mode").val();
+            if (payment_mode == 'CHEQUE') {
+                $("#cheque_number_div").show();
+                $("#remark_details_div").hide();
+                $("#reference_number_div").hide();
+                $("#dd_div").hide();
+
+
+            } else if (payment_mode == 'DD') {
+                $("#dd_div").show();
+                $("#remark_details_div").hide();
+                $("#cheque_number_div").hide();
+                $("#reference_number_div").hide();
+            } else if (payment_mode == 'CASH') {
+                $("#remark_details_div").show();
+                $("#cheque_number_div").hide();
+                $("#reference_number_div").hide();
+                $("#dd_div").hide();
+            } else if (payment_mode == 'BANK TRANSFER') {
+                $("#remark_details_div").hide();
+                $("#cheque_number_div").hide();
+                $("#reference_number_div").show();
+                $("#dd_div").hide();
+            } else if (payment_mode == 'UPI - ONLINE PAYMENT') {
+                $("#remark_details_div").hide();
+                $("#cheque_number_div").hide();
+                $("#reference_number_div").show();
+                $("#dd_div").hide();
+            } else {
+                $("#cheque_number_div").hide();
+                $("#remark_details_div").hide();
+                $("#dd_div").hide();
+                $("#reference_number_div").hide();
+
+            }
+
+        }
+
 
         $('input[name="payment_type"]').change(function() {
 
             if ($('#scholarship_payment').is(':checked')) {
 
                 $('#loading').show();
-                $('#paid_amount').hide();
-                $('#remark_details').hide();
+                $('#paid_amount_div').hide();
+                $('#remark_details_div').hide();
                 $('#paid_amount_error').hide();
                 $("#paid_amount").val('');
 
                 $("#discount_amount_div").hide();
                 $("#discount_remark_div").hide();
                 $("#check_no_div").show();
+                $("#applicable_fee_div").show();
+                $("#payment_mode_div").show()
+                $("#cheque_number_div").hide();
+                $("#reference_number_div").hide();
+                $("#dd_div").hide();
+                $("#payment_mode").val('').select2();
+                $("#hostel_amount_div").hide();
+
+
+
+
 
 
                 var register_no_scholar = $("#register_no").val();
@@ -469,7 +594,7 @@
                         'register_no_scholar': register_no_scholar,
                         'semesters_no': semesters_no,
                         'academic_year_no': academic_year_no,
-                        'customs_idss' : customs_idss,
+                        'customs_idss': customs_idss,
                     },
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -478,14 +603,28 @@
 
                         let status = response.status;
                         let scholarshipDetails = response.data;
-                        if (status) {
-                            console.log(scholarshipDetails);
+                        let scholarshipDetails1 = "";
 
-                            $("#scholar_details_div").show();
-                            $("#total_amountsss_div").show();
-                            $("#reg_no_div").show();
+                        // Check if response.scholarship exists and foundation_name is defined
+                        if (response.scholarship && response.scholarship.foundation_name) {
+                            scholarshipDetails1 = response.scholarship.foundation_name + " - " +
+                                scholarshipDetails;
+                        } else {
+                            $("#scholarship_name_details_div").hide();
+                        }
+
+                        if (status) {
+                            $("#pay_now").show();
+
+
+                            // $("#scholar_details_div").show();
+                            // $("#total_amountsss_div").show();
+                            // $("#reg_no_div").show();
+                            $("#paid_amount_div").hide()
                             $("#payable_amount_div").show();
                             $("#scholar_details").val(scholarshipDetails)
+                            $("#scholarship_name_details_div").show();
+                            $("#scholarship_name_details").val(scholarshipDetails1);
 
                             var lastChar = scholarshipDetails.trim().slice(-1);
                             // alert(lastChar)
@@ -509,6 +648,7 @@
                             $("#reg_no_div").hide();
                             $("#total_amountsss_div").hide()
                             $("#payable_amount_div").hide();
+                            $("#scholarship_name_details_div").hide();
                             $("#pay_now").hide();
                             Swal.fire('', response.data, 'error');
                         }
@@ -532,23 +672,31 @@
                 $("#total_amountsss_div").hide();
                 $("#scholar_details_div").hide();
                 $("#reg_no_div").hide();
-                $('#paid_amount').hide();
-                $('#remark_details').hide();
+                $('#paid_amount_div').hide();
+                $("#scholarship_name_details_div").hide();
+                $('#remark_details_div').hide();
                 $('#paid_amount_error').hide();
                 $("#paid_amount").val('');
+                $("#applicable_fee_div").hide();
+                $("#cheque_number_div").hide();
+                $("#hostel_amount_div").hide();
+
 
                 $("#discount_amount_div").show();
                 $("#discount_remark_div").show();
                 $("#pay_now").show();
                 $("#check_no_div").hide();
-
-
+                $("#payment_mode_div").hide()
+                $("#dd_div").hide();
+                $("#reference_number_div").hide();
 
 
             } else {
 
-                $('#paid_amount').show();
-                $('#remark_details').show();
+                $('#paid_amount_div').hide();
+                $("#hostel_amount_div").hide();
+                $('#remark_details_div').hide();
+                $("#scholarship_name_details_div").hide();
                 $('#paid_amount_error').show();
                 $("#scholar_details_div").hide();
                 $("#total_amountsss_div").hide()
@@ -559,6 +707,22 @@
 
                 $("#discount_amount_div").hide();
                 $("#discount_remark_div").hide();
+
+
+
+                $("#pay_now").hide();
+                $("#applicable_fee_div").show();
+                $("#payment_mode_div").show()
+                $("#applicable_fee").val('').select2();
+                $("#payment_mode").val('').select2();
+
+                $("#dd_div").hide();
+
+                $("#cheque_number_div").hide();
+                $("#reference_number_div").hide();
+
+                // $("#hostel_amount_div").show();
+
 
             }
 
@@ -576,7 +740,7 @@
             var reg_no = $("#reg_no").val();
 
             var feeCycle = '{{ $feeCycleText }}';
-            // alert(feeCycle)
+
 
             $.ajax({
                 url: '{{ route('admin.student-rollnumber.geter') }}',
@@ -589,7 +753,7 @@
                 },
                 success: function(response) {
                     console.log(response);
-                    // alert(response.academic_year);
+
                     let status = response.status;
                     if (status) {
                         $("#student_id").val(response.student_id);
@@ -614,9 +778,6 @@
                         }
 
                         $.each(feeDetails, function(index, details) {
-                            // console.log(semester_id.academic_year_name);
-
-                            // console.log(details);
 
                             let firstColumnValue;
                             if (feeCycle === 'YearlyWise') {
@@ -930,10 +1091,132 @@
             var payable_amount = $("#payable_amount").val();
             var discount_amount = $("#discount_amount").val();
             var discount_remark = $("#discount_remark").val();
-            var check_no = $("#check_no").val();
+            // var check_no = $("#check_no").val();
             var customs_idss = $("#customs_idss").val();
-
+            var payment_mode = $("#payment_mode").val();
+            var dd = $("#dd").val();
+            var cheque_number = $("#cheque_number").val();
+            var reference_number = $("#reference_number").val();
+            var applicable_fee = $("#applicable_fee").val();
             customs_idss = customs_idss.replace(/\s*\(.*?\)\s*/g, '').trim();
+
+
+            if ($('#discount_payment').is(':checked')) {
+
+                var discount_amount = $("#discount_amount").val();
+
+                if (discount_amount == '' || isNaN(discount_amount) || parseFloat(discount_amount) <= 0) {
+                    $("#discount_amount_error").text('Enter a Valid Amount');
+                    $('#loading').hide();
+                    return false;
+                } else {
+                    $("#discount_amount_error").text('');
+
+                }
+            } else if ($('#scholarship_payment').is(':checked')) {
+
+                var payment_mode = $("#payment_mode").val();
+                if (payment_mode == '') {
+                    $("#payment_mode_error").text('Please Select a Payment Mode');
+                    $('#loading').hide();
+                    return false;
+                } else if (payment_mode == 'DD') {
+
+                    var dd = $("#dd").val();
+                    if (dd == '') {
+                        $("#dd_error").text('Please Enter DD Number');
+                        $("#cheque_number_error").text('');
+                        $("#payment_mode_error").text('');
+                        $('#loading').hide();
+                        return false;
+                    }
+
+                } else if (payment_mode == 'CHEQUE') {
+
+                    var cheque_number = $("#cheque_number").val();
+                    if (cheque_number == '') {
+                        $("#cheque_number_error").text('Please Enter Cheque Number');
+                        $("#payment_mode_error").text('');
+                        $("#dd_error").text('');
+                        $("#reference_number_error").text('');
+                        $('#loading').hide();
+                        return false;
+                    }
+
+                } else if (payment_mode == 'UPI - ONLINE PAYMENT' || payment_mode == 'BANK TRANSFER') {
+
+                    var reference_number = $("#reference_number").val();
+                    if (reference_number == '') {
+                        $("#reference_number_error").text('Please Enter Reference Number');
+                        $('#loading').hide();
+                        $("#payment_mode_error").text('');
+                        return false;
+                    }
+
+                } else {
+                    $("#payment_mode_error").text('');
+                }
+
+            } else if ($('#fees_payment').is(':checked')) {
+
+
+                var paid_amount = $("#paid_amount").val();
+                var payment_mode = $("#payment_mode").val();
+
+                if (paid_amount == '') {
+
+                    $("#paid_amount_error").text('Enter a Valid amount');
+                    $('#loading').hide();
+                    return false;
+
+                }
+
+
+                if (payment_mode == '') {
+                    $("#payment_mode_error").text('Please Select a Payment Mode');
+                    $("#paid_amount_error").text('')
+                    $('#loading').hide();
+                    return false;
+                } else if (payment_mode == 'DD') {
+
+                    var dd = $("#dd").val();
+                    if (dd == '') {
+                        $("#dd_error").text('Please Enter DD Number');
+                        $("#cheque_number_error").text('');
+                        $("#payment_mode_error").text('');
+                        $('#loading').hide();
+                        return false;
+                    }
+
+                } else if (payment_mode == 'CHEQUE') {
+
+                    var cheque_number = $("#cheque_number").val();
+                    if (cheque_number == '') {
+                        $("#cheque_number_error").text('Please Enter Cheque Number');
+                        $("#payment_mode_error").text('');
+                        $("#dd_error").text('');
+                        $('#loading').hide();
+                        return false;
+                    }
+
+                } else if (payment_mode == 'UPI - ONLINE PAYMENT' || payment_mode == 'BANK TRANSFER') {
+
+                    var reference_number = $("#reference_number").val();
+                    if (reference_number == '') {
+                        $("#reference_number_error").text('Please Enter Reference Number');
+                        $('#loading').hide();
+                        $("#payment_mode_error").text('');
+                        return false;
+                    }
+
+                } else {
+                    $("#payment_mode_error").text('');
+                }
+
+
+            }
+
+
 
 
             $.ajax({
@@ -954,8 +1237,13 @@
                     'payable_amount': payable_amount,
                     'discount_amount': discount_amount,
                     'discount_remark': discount_remark,
-                    'check_no': check_no,
-                    'customs_idss': customs_idss
+                    // 'check_no': check_no,
+                    'customs_idss': customs_idss,
+                    'payment_mode': payment_mode,
+                    'dd': dd,
+                    'cheque_number': cheque_number,
+                    'reference_number': reference_number,
+                    'applicable_fee': applicable_fee
 
                 },
                 headers: {

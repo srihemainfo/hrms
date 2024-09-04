@@ -114,6 +114,7 @@
                                     style="display:none;font-size:0.9rem;"></span>
                             </div>
                         @endcan
+
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="result" class="required">Course</label>
                             <input type="hidden" id="feeStructure_id" value="">
@@ -127,6 +128,7 @@
                             <span id="course_span" class="text-danger text-center"
                                 style="display:none;font-size:0.9rem;"></span>
                         </div>
+
                         <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
                             <label for="result" class="required">Applicable Batch</label>
                             <select class="form-control select2" id="applied_batch" name="applied_batch">
@@ -299,9 +301,9 @@
 
                         @if ($feeCycleText == 'CustomsWise')
                             <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 form-group">
-                                <label for="customsfeegenerate" class="required">Customs</label>
+                                <label for="customsfeegenerate" class="required">Fee Cycle Name</label>
                                 <select class="form-control select2" id="customsfeegenerate" name="customsfeegenerate">
-                                    <option value="">Select Customs</option>
+                                    <option value="">Select Fee Cycle Name</option>
                                     @foreach ($customsFee as $id => $cf)
                                         <option value="{{ $id }}">{{ $cf }}</option>
                                     @endforeach
@@ -648,7 +650,6 @@
             $('#feeComponentsTable').append(newRow);
             updateTotal();
 
-            // Clear the inputs after adding
             $('#fee_components').val('');
             $('#amount').val('');
         }

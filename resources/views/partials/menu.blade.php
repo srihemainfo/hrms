@@ -1337,7 +1337,7 @@
                                 <a href="{{ route('admin.feeScholarship.index') }}"
                                     class="nav-link {{ request()->is('admin/fee-scholarship*') ? 'active' : '' }}">
                                     <i class="fa-fw nav-icon fas fa-receipt"></i>
-                                    <p>ScholarShip</p>
+                                    <p>Assign ScholarShip</p>
                                 </a>
                             </li>
                             {{-- <li class="nav-item">
@@ -1813,6 +1813,19 @@
                                         </i>
                                         <p>
                                             Attendance Report
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('hostel_report_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.hostel_fee.index') }}"
+                                        class="nav-link {{ request()->is('admin/hostel_fee-index') || request()->is('admin/admin/hostel_fee-index/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-file-alt">
+
+                                        </i>
+                                        <p>
+                                            Hostel Fee
                                         </p>
                                     </a>
                                 </li>

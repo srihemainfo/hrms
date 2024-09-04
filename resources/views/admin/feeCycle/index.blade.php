@@ -265,8 +265,8 @@
                         for (var i = 0; i < numInputs; i++) {
                             inputContainer.append(
                                 '<div class="col-md-10 mb-2">' +
-                                '<input type="text" class="form-control" placeholder="Example : Term or Installment' +
-                                (i + 1) + '">' +
+                                '<input type="text" class="form-control" placeholder="Fee Cycle (Example : Term or Installment ' +
+                                (i + 1) + ')">' +
                                 '</div>'
                             );
                         }
