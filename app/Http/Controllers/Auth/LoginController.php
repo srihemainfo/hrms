@@ -23,7 +23,7 @@ class LoginController extends Controller
      */
 
     use AuthenticatesUsers;
-    use CurrentAySemTrait;
+    // use CurrentAySemTrait;
 
     /**
      * Where to redirect users after login.
@@ -61,7 +61,7 @@ class LoginController extends Controller
         if (!session()->exists('appUser')) {
             session(['appUser' => false]);
         }
-        $getCurrentClass = $this->getCurrent_Ay_Sem();
+        // $getCurrentClass = $this->getCurrent_Ay_Sem();
         $intendedUrl = session('url.intended') ?: '/admin';
 
         return redirect($intendedUrl);

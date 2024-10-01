@@ -3,69 +3,70 @@
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <button class="btn btn-outline-success" onclick="openModal()">
-                {{ trans('global.add') }} {{ trans('cruds.leaveType.title_singular') }}
+                Add Designation
             </button>
         </div>
     </div>
 
+    <style>
+        .select2 {
+            width: 100% !important;
+        }
+    </style>
     <div class="card">
         <div class="card-header">
-            {{ trans('cruds.leaveType.title_singular') }} {{ trans('global.list') }}
+            Designation List
         </div>
 
         <div class="card-body">
             <table
-                class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-LeaveType text-center">
+                class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Designation text-center">
                 <thead>
                     <tr>
                         <th width="10">
 
                         </th>
                         <th>
-                            {{ trans('cruds.leaveType.fields.id') }}
+                            ID
                         </th>
                         <th>
-                            {{ trans('cruds.leaveType.fields.name') }}
+                            Name
                         </th>
                         <th>
-                            &nbsp;
+                            Action
                         </th>
                     </tr>
                 </thead>
             </table>
         </div>
-
         <div class="secondLoader"></div>
     </div>
-
-    <div class="modal fade" id="leaveTypeModal" role="dialog">
+    <div class="modal fade" id="designationModel" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" style="outline: none;" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <div class="row gutters">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group">
-                            <label for="result" class="required">Leave Type</label>
-                            <input type="hidden" name="leave_id" id="leave_id" value="">
-                            <input type="text" class="form-control" style="text-transform:uppercase" id="leave"
-                                name="leave" value="">
-                            <span id="leave_span" class="text-danger text-center"
-                                style="display:none;font-size:0.9rem;"></span>
-                        </div>
+                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 form-group">
+                        <input type="hidden" name="designation_id" id="designation_id" value="">
+                        <label for="designation" class="required">Designation</label>
+                        <input type="text" class="form-control" id="designation" name="designation" value="">
+                        <span id="designation_span" class="text-danger text-center"
+                            style="display:none;font-size:0.9rem;"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <div id="save_div">
                         <button type="button" id="save_btn" class="btn btn-outline-success"
-                            onclick="saveLeave()">Save</button>
+                            onclick="saveSection()">Save</button>
                     </div>
                     <div id="loading_div">
                         <span class="theLoader"></span>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 @endsection
@@ -80,63 +81,64 @@
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
             dtButtons.splice(2, 2);
             dtButtons.splice(3, 3);
-            @can('staff_biometric_delete')
-                let deleteButton = {
-                    text: 'Delete Selected',
-                    className: 'btn-outline-danger',
-                    action: function(e, dt, node, config) {
-                        var ids = $.map(dt.rows({
-                            selected: true
-                        }).data(), function(entry) {
-                            return entry.id
-                        });
 
-                        if (ids.length === 0) {
-                            Swal.fire('', 'No Rows Selected', 'warning');
-                            return
-                        }
+            let deleteButton = {
+                text: 'Delete Selected',
+                className: 'btn-outline-danger',
+                action: function(e, dt, node, config) {
+                    var ids = $.map(dt.rows({
+                        selected: true
+                    }).data(), function(entry) {
+                        return entry.id
+                    });
 
-                        Swal.fire({
-                            title: "Are You Sure?",
-                            text: "Do You Really Want To Delete !",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonText: "Yes",
-                            cancelButtonText: "No",
-                            reverseButtons: true
-                        }).then(function(result) {
-                            if (result.value) {
-                                $('.secondLoader').show()
-                                $.ajax({
-                                        headers: {
-                                            'x-csrf-token': _token
-                                        },
-                                        method: 'POST',
-                                        url: "{{ route('admin.leave-types.massDestroy') }}",
-                                        data: {
-                                            ids: ids,
-                                            _method: 'DELETE'
-                                        }
-                                    })
-                                    .done(function(response) {
-                                        $('.secondLoader').hide()
-                                        Swal.fire('', response.data, response.status);
-                                        callAjax()
-                                    })
-                            }
-                        })
+                    if (ids.length === 0) {
+                        Swal.fire('', 'No Rows Selected', 'warning');
+
+                        return
                     }
+
+                    Swal.fire({
+                        title: "Are You Sure?",
+                        text: "Do You Really Want To Delete !",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes",
+                        cancelButtonText: "No",
+                        reverseButtons: true
+                    }).then(function(result) {
+                        if (result.value) {
+                            $('.secondLoader').show()
+                            $.ajax({
+                                    headers: {
+                                        'x-csrf-token': _token
+                                    },
+                                    method: 'POST',
+                                    url: "{{ route('admin.designation.massDestroy') }}",
+                                    data: {
+                                        ids: ids,
+                                        _method: 'DELETE'
+                                    }
+                                })
+                                .done(function(response) {
+                                    Swal.fire('', response.data, response.status);
+                                    $('.secondLoader').hide()
+                                    callAjax()
+                                })
+                        }
+                    })
                 }
-                dtButtons.push(deleteButton)
-            @endcan
-            if ($.fn.DataTable.isDataTable('.datatable-LeaveType')) {
-                $('.datatable-LeaveType').DataTable().destroy();
+            }
+            dtButtons.push(deleteButton)
+
+            if ($.fn.DataTable.isDataTable('.datatable-Designation')) {
+                $('.datatable-Designation').DataTable().destroy();
             }
             let dtOverrideGlobals = {
                 buttons: dtButtons,
                 retrieve: true,
                 aaSorting: [],
-                ajax: "{{ route('admin.leave-types.index') }}",
+                ajax: "{{ route('admin.designation.index') }}",
                 columns: [{
                         data: 'placeholder',
                         name: 'placeholder'
@@ -160,7 +162,7 @@
                 ],
                 pageLength: 10,
             };
-            let table = $('.datatable-LeaveType').DataTable(dtOverrideGlobals);
+            let table = $('.datatable-Designation').DataTable(dtOverrideGlobals);
             $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e) {
                 $($.fn.dataTable.tables(true)).DataTable()
                     .columns.adjust();
@@ -169,38 +171,35 @@
         };
 
         function openModal() {
-            $("#leave").val('')
-            $("#leave_id").val('')
-            $("#leave_span").hide();
+            $("#designation_id").val('')
+            $("#designation").val('')
+            $("#designation_span").hide();
             $("#loading_div").hide();
             $("#save_btn").html(`Save`);
             $("#save_div").show();
-            $("#leaveTypeModal").modal();
+            $("#designationModel").modal();
         }
 
-        function saveLeave() {
+        function saveSection() {
             $("#loading_div").hide();
-            if ($("#leave").val() == '') {
-                $("#leave_span").html(`Leave Is Required.`);
-                $("#leave_span").show();
-            } else if (!isNaN($("#leave").val())) {
-                $("#leave_span").html(`It Is Not a Word.`);
-                $("#leave_span").show();
+            if ($("#designation").val() == '') {
+                $("#designation_span").html(`Course Is Required.`);
+                $("#designation_span").show();
             } else {
                 $("#save_div").hide();
-                $("#leave_span").hide();
+                $("#designation_span").hide();
                 $("#loading_div").show();
-                let leave = $("#leave").val();
-                let id = $("#leave_id").val();
+                let id = $("#designation_id").val();
+                let designation = $("#designation").val();
                 $.ajax({
-                    url: "{{ route('admin.leave-types.store') }}",
+                    url: "{{ route('admin.designation.store') }}",
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'name': leave,
-                        'id': id
+                        'id': id,
+                        'designation': designation
                     },
                     success: function(response) {
                         let status = response.status;
@@ -209,7 +208,7 @@
                         } else {
                             Swal.fire('', response.data, 'error');
                         }
-                        $("#leaveTypeModal").modal('hide');
+                        $("#designationModel").modal('hide');
                         callAjax();
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -230,13 +229,14 @@
             }
         }
 
-        function viewLeaveType(id) {
+        function viewDesignation(id) {
             if (id == undefined) {
                 Swal.fire('', 'ID Not Found', 'warning');
             } else {
                 $('.secondLoader').show()
+
                 $.ajax({
-                    url: "{{ route('admin.leave-types.view') }}",
+                    url: "{{ route('admin.designation.view') }}",
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -246,15 +246,15 @@
                     },
                     success: function(response) {
                         $('.secondLoader').hide()
+
                         let status = response.status;
                         if (status == true) {
                             var data = response.data;
-                            $("#leave_id").val(data.id);
-                            $("#leave").val(data.name);
+                            $("#designation").val(data.name);
                             $("#save_div").hide();
-                            $("#leave_span").hide();
+                            $("#designation_span").hide();
                             $("#loading_div").hide();
-                            $("#leaveTypeModal").modal();
+                            $("#designationModel").modal();
                         } else {
                             Swal.fire('', response.data, 'error');
                         }
@@ -277,13 +277,13 @@
             }
         }
 
-        function editLeaveType(id) {
+        function editDesignation(id) {
             if (id == undefined) {
                 Swal.fire('', 'ID Not Found', 'warning');
             } else {
                 $('.secondLoader').show()
                 $.ajax({
-                    url: "{{ route('admin.leave-types.edit') }}",
+                    url: "{{ route('admin.designation.edit') }}",
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -296,14 +296,13 @@
                         let status = response.status;
                         if (status == true) {
                             var data = response.data;
-                            console.log(data.id);
-                            $("#leave_id").val(data.id);
-                            $("#leave").val(data.name);
+                            $("#designation_id").val(data.id);
+                            $("#designation").val(data.name);
                             $("#save_btn").html(`Update`);
                             $("#save_div").show();
-                            $("#leave_span").hide();
+                            $("#designation_span").hide();
                             $("#loading_div").hide();
-                            $("#leaveTypeModal").modal();
+                            $("#designationModel").modal();
                         } else {
                             Swal.fire('', response.data, 'error');
                         }
@@ -326,13 +325,14 @@
             }
         }
 
-        function deleteLeaveType(id) {
+
+        function deleteDesignation(id) {
             if (id == undefined) {
                 Swal.fire('', 'ID Not Found', 'warning');
             } else {
                 Swal.fire({
                     title: "Are You Sure?",
-                    text: "Do You Really Want To Delete !",
+                    text: "Do You Really Want To Delete!",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonText: "Yes",
@@ -340,9 +340,9 @@
                     reverseButtons: true
                 }).then(function(result) {
                     if (result.value) {
-                        $('.secondLoader').show()
+                        $('.secondLoader').show(); // Show loader only if confirmed
                         $.ajax({
-                            url: "{{ route('admin.leave-types.delete') }}",
+                            url: "{{ route('admin.designation.delete') }}",
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -351,11 +351,12 @@
                                 'id': id
                             },
                             success: function(response) {
-                                $('.secondLoader').hide()
                                 Swal.fire('', response.data, response.status);
+                                $('.secondLoader').hide(); // Hide loader on success
                                 callAjax();
                             },
                             error: function(jqXHR, textStatus, errorThrown) {
+                                $('.secondLoader').hide(); // Hide loader on error
                                 if (jqXHR.status) {
                                     if (jqXHR.status == 500) {
                                         Swal.fire('', 'Request Timeout / Internal Server Error',
@@ -370,9 +371,9 @@
                                         "error");
                                 }
                             }
-                        })
+                        });
                     }
-                })
+                });
             }
         }
     </script>

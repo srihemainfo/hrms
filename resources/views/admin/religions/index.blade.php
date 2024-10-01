@@ -29,7 +29,7 @@
                             {{ trans('cruds.religion.fields.name') }}
                         </th>
                         <th>
-                            &nbsp;
+                            Action
                         </th>
                     </tr>
                 </thead>

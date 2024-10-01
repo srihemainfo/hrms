@@ -67,6 +67,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('roles/destroy', 'RolesController@massDestroy')->name('roles.massDestroy');
     Route::resource('roles', 'RolesController');
 
+    //Designation
+    Route::get('designation', 'DesignationController@index')->name('designation.index');
+    Route::post('designation/view', 'DesignationController@view')->name('designation.view');
+    Route::post('designation/edit', 'designationController@edit')->name('designation.edit');
+    Route::post('designation/store', 'DesignationController@store')->name('designation.store');
+    Route::post('designation/delete', 'DesignationController@destroy')->name('designation.delete');
+    Route::delete('designation/destroy', 'DesignationController@massDestroy')->name('designation.massDestroy');
+
     // Users
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::post('users/parse-csv-import', 'UsersController@parseCsvImport')->name('users.parseCsvImport');
@@ -317,6 +325,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('blood-groups/store', 'BloodGroupController@store')->name('blood-groups.store');
     Route::post('blood-groups/delete', 'BloodGroupController@destroy')->name('blood-groups.delete');
     Route::delete('blood-groups/destroy', 'BloodGroupController@massDestroy')->name('blood-groups.massDestroy');
+
+    //State
+    Route::get('state', 'StateController@index')->name('state.index');
+    Route::post('state/view', 'StateController@view')->name('state.view');
+    Route::post('state/edit', 'StateController@edit')->name('state.edit');
+    Route::post('state/store', 'StateController@store')->name('state.store');
+    Route::post('state/delete', 'StateController@destroy')->name('state.delete');
+    Route::delete('state/destroy', 'StateController@massDestroy')->name('state.massDestroy');
+
 
     // Community
     Route::get('communities', 'CommunityController@index')->name('communities.index');
@@ -1865,6 +1882,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('inactive_teaching_or_nonteach', 'InactiveStaffsListController@inactive_teaching_or_nonteach')->name('inactive_teaching_or_nonteach');
     Route::resource('Staff_status', 'StaffStatusController');
 
+    //Staffs
+    Route::resource('staffs', 'StaffsController');
+    Route::delete('staffs/destroy', 'StaffsController@massDestroy')->name('staffs.massDestroy');
+
+    // Route::get('staffs', 'StaffsController@index')->name('staffs.index');
+    // Route::post('staffs/view', 'StaffsController@view')->name('staffs.view');
+    // Route::post('staffs/edit', 'StaffsController@edit')->name('staffs.edit');
+    // Route::post('staffs/store', 'StaffsController@store')->name('staffs.store');
+    // Route::post('staffs/delete', 'StaffsController@destroy')->name('staffs.delete');
+    // Route::delete('staffs/destroy', 'StaffsController@massDestroy')->name('staffs.massDestroy');
+
+
     // Grade Master
     Route::get('grade-master/index', 'GradeMasterController@index')->name('grade-master.index');
     Route::post('grade-master/view', 'GradeMasterController@view')->name('grade-master.view');
@@ -2180,6 +2209,8 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     Route::post('semesters/delete', 'SemesterController@destroy')->name('semesters.delete');
     Route::post('semesters/change-status', 'SemesterController@changeStatus')->name('semesters.change-status');
     Route::delete('semesters/destroy', 'SemesterController@massDestroy')->name('semesters.massDestroy');
+
+
 
     // Course Enroll Master
     Route::post('course_enroll_masters/enroll_index', 'CourseEnrollMasterController@enroll_index')->name('course_enroll_masters.enroll_index');

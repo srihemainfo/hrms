@@ -6,20 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Http\Requests\MassDestroyUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Models\AcademicDetail;
-use App\Models\CourseEnrollMaster;
-use App\Models\ExperienceDetail;
+use App\Models\Designation;
 use App\Models\NonTeachingStaff;
 use App\Models\PersonalDetail;
 use App\Models\Role;
-use App\Models\ShiftModel;
+use App\Models\Staffs;
 use App\Models\Student;
 use App\Models\TeachingStaff;
-use App\Models\TeachingType;
-use App\Models\ToolsDepartment;
 use App\Models\User;
 use Carbon\Carbon;
-use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -32,7 +27,7 @@ class UsersController extends Controller
 
     public function index(Request $request)
     {
-        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             // $query = User::with(['roles'])->where('id', '!=', 2973)->select(sprintf('%s.*', (new User)->table));
@@ -40,8 +35,8 @@ class UsersController extends Controller
             $query = DB::table('users')
                 ->leftJoin('role_user', 'role_user.user_id', '=', 'users.id')
                 ->leftJoin('roles', 'roles.id', '=', 'role_user.role_id')
-                ->leftJoin('teaching_types', 'teaching_types.id', '=', 'roles.type_id')
-                ->select('users.id', 'users.name', 'users.email', 'roles.title', 'teaching_types.name as teach_type', 'users.employID', 'users.register_no', 'users.created_at')
+            // ->leftJoin('teaching_types', 'teaching_types.id', '=', 'roles.type_id')
+                ->select('users.id', 'users.name', 'users.email', 'roles.title', 'users.created_at')
                 ->where('users.id', '!=', 2973)
                 ->WhereNull('users.deleted_at')
                 ->get();
@@ -75,19 +70,19 @@ class UsersController extends Controller
             $table->editColumn('email', function ($row) {
                 return $row->email ? $row->email : '';
             });
-            $table->editColumn('staff_code', function ($row) {
-                if ($row->employID != null) {
-                    return $row->employID;
-                } else if ($row->register_no != null) {
-                    return $row->register_no;
-                } else {
-                    return '';
-                }
-            });
-            $table->editColumn('role_type', function ($row) {
+            // $table->editColumn('staff_code', function ($row) {
+            //     if ($row->employID != null) {
+            //         return $row->employID;
+            //     } else if ($row->register_no != null) {
+            //         return $row->register_no;
+            //     } else {
+            //         return '';
+            //     }
+            // });
+            // $table->editColumn('role_type', function ($row) {
 
-                return $row->teach_type ? $row->teach_type : '';
-            });
+            //     return $row->teach_type ? $row->teach_type : '';
+            // });
             $table->editColumn('roles', function ($row) {
                 return $row->title ? sprintf('<span class="label label-info label-many">%s</span>', $row->title) : '';
             });
@@ -104,196 +99,226 @@ class UsersController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $roles = Role::pluck('title', 'id');
-        $enroll_masters = CourseEnrollMaster::pluck('enroll_master_number', 'id');
         $working_as = Role::pluck('title', 'id');
-        $department = ToolsDepartment::pluck('name', 'id');
-        $TeachingType = TeachingType::pluck('name', 'id');
-        $shift = ShiftModel::pluck('Name', 'id');
+        $designations = Designation::pluck('name', 'id');
 
-        return view('admin.users.create', compact('shift','roles', 'enroll_masters', 'working_as', 'department', 'TeachingType'));
+        return view('admin.users.create', compact('roles', 'working_as', 'designations'));
     }
 
     public function store(Request $request)
     {
-
-        if (isset($request->role_type)) {
+        if (isset($request->role)) {
             $user = new User();
-            $personalDetails = new PersonalDetail();
+            $staffs = new Staffs();
 
-            //users
-            if ($request->role_type == 1 || $request->role_type == 3 || $request->role_type == 2 || $request->role_type == 4 || $request->role_type == 5) {
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = bcrypt($request->phone_number);
+            $user->save();
 
-                $casual_leave = 0;
-                $personal_permission = 0;
-                if ($request->doj != null || $request->doj != '') {
-                    $yearMonth = substr($request->doj, 0, 7);
-                    $explode = explode('-', $request->doj);
 
-                    $year = (int) $explode[0];
-                    $month = (int) $explode[1];
-                    $day = (int) $explode[2];
+            $user->roles()->sync([$request->role]);
 
-                    $casual_leave = 0;
 
-                    if ($yearMonth == date('Y-m') && $day == 1) {
-                        $casual_leave = 1;
-                    } elseif (($year == (int) date('Y') || $year == (int) date('Y') - 1) && (($year == (int) date('Y') - 1 && $month == (int) date('m', strtotime('last month'))) || ($year == (int) date('Y') && $month < (int) date('m'))) && $day >= 26) {
-                        $casual_leave = 1;
-                    }
+            if ($user->id != '') {
 
-                    $personal_permission = 0;
-                    if ($yearMonth == date('Y-m') && ($day > 1 && $day <= 15)) {
-                        $personal_permission = 1;
-                    } elseif (
-                        ($year == (int) date('Y') || $year == (int) date('Y') - 1) &&
-                        (($year == (int) date('Y') - 1 && $month == (int) date('m', strtotime('last month'))) || ($year == (int) date('Y') && $month < (int) date('m'))) &&
-                        $day >= 26
-                    ) {
-                        $personal_permission = 2;
-                    }
-                }
+                $staffs->user_id = $user->id;
+                $staffs->name = $request->name;
+                $staffs->email = $request->email;
+                $staffs->phone_number = $request->phone_number;
+                $staffs->gender = $request->gender;
+                $staffs->designation_id = $request->designation;
+                $staffs->role_id = $request->role;
+                $staffs->status = '';
+                $staffs->employee_id = '';
+                $staffs->biometric = '';
 
-                $user->name = $request->firstname . ' ' . $request->last_name;
-                $user->dept = $request->Dept;
-                $user->employID = $request->StaffCode;
-                $user->email = $request->email;
-                $user->password = bcrypt($request->phone);
-                $user->save();
-                $user->roles()->sync([$request->role]);
+                $staffs->save();
 
-                if ($request->role_type == 1 || $request->role_type == 3) {
-
-                    $staffCreate = new TeachingStaff();
-                    $staffCreate->name = $request->firstname . ' ' . $request->last_name;
-                    $staffCreate->last_name = $request->last_name;
-                    $staffCreate->StaffCode = $request->StaffCode;
-                    $staffCreate->Designation = $request->Designation;
-                    $staffCreate->Dept = $request->Dept;
-                    $staffCreate->shift_id = $request->shift;
-                    $staffCreate->casual_leave = $casual_leave;
-                    $staffCreate->personal_permission = $personal_permission;
-                    $staffCreate->EmailIDOffical = $request->email;
-                    $staffCreate->ContactNo = $request->phone;
-                    $staffCreate->role_type = $request->role_type;
-                    $staffCreate->user_name_id = $user->id;
-                    $staffCreate->save();
-
-                    $personalDetails->name = $request->firstname;
-                    $personalDetails->last_name = $request->last_name;
-                    $personalDetails->StaffCode = $request->StaffCode;
-                    $personalDetails->email = $request->email;
-                    $personalDetails->mobile_number = $request->phone;
-                    $personalDetails->user_name_id = $user->id;
-                    $personalDetails->save();
-
-                    $experience_details = new ExperienceDetail();
-                    $experience_details->user_name_id = $user->id;
-                    $experience_details->doj = $request->doj;
-                    $experience_details->save();
-
-                    if ($user->id != '' && $staffCreate->id != '' && $personalDetails->id != '') {
-                        return response()->json(['status' => true, 'data' => 'User created successfully']);
-                    } else {
-                        return response()->json(['status' => false, 'data' => 'User creation failed']);
-                    }
-                } elseif ($request->role_type == 2 || $request->role_type == 4 || $request->role_type == 5) {
-
-                    $nonTeachingStaff = new NonTeachingStaff();
-                    $nonTeachingStaff->name = $request->firstname . ' ' . $request->last_name;
-                    $nonTeachingStaff->last_name = $request->last_name;
-                    $nonTeachingStaff->StaffCode = $request->StaffCode;
-                    $nonTeachingStaff->Designation = $request->Designation;
-                    $nonTeachingStaff->Dept = $request->Dept;
-                    $nonTeachingStaff->casual_leave = $casual_leave;
-                    $nonTeachingStaff->personal_permission = $personal_permission;
-                    $nonTeachingStaff->phone = $request->phone;
-                    $nonTeachingStaff->email = $request->email;
-                    $nonTeachingStaff->role_type = $request->role_type;
-                    $nonTeachingStaff->user_name_id = $user->id;
-                    $nonTeachingStaff->save();
-
-                    $personalDetails->name = $request->firstname;
-                    $personalDetails->last_name = $request->last_name;
-                    $personalDetails->StaffCode = $request->StaffCode;
-                    $personalDetails->email = $request->email;
-                    $personalDetails->mobile_number = $request->phone;
-                    $personalDetails->user_name_id = $user->id;
-                    $personalDetails->save();
-
-                    $experience_details = new ExperienceDetail();
-                    $experience_details->user_name_id = $user->id;
-                    $experience_details->doj = $request->doj;
-                    $experience_details->save();
-
-                    if ($user->id != '' && $nonTeachingStaff->id != '' && $personalDetails->id != '') {
-                        return response()->json(['status' => true, 'data' => 'User created successfully']);
-                    } else {
-                        return response()->json(['status' => false, 'data' => 'User creation failed']);
-                    }
-                }
+                return response()->json(['status' => true, 'data' => 'User created successfully']);
             } else {
-                if ($request->role_type == 6 && $request->role == 11) {
-                    $user->name = $request->name;
-                    $user->register_no = $request->register_no;
-                    $user->enroll_master_id = $request->enroll_master_id;
-                    $user->email = $request->email;
-                    $user->save();
-                    $user->roles()->sync([$request->role]);
-
-                    $student = new Student();
-                    $student->name = $request->name;
-                    $student->student_email_id = $request->email;
-                    $student->student_phone_no = $request->phone;
-                    $student->register_no = $request->register_no;
-                    $student->shift_id = $request->shift;
-                    $student->roll_no = $request->rollNumber;
-                    $student->enroll_master_id = $request->enroll_master_id;
-                    $student->user_name_id = $user->id;
-                    $student->save();
-
-                    $academinDetails = new AcademicDetail();
-                    $academinDetails->roll_no = $request->rollNumber;
-                    $academinDetails->register_number = $request->register_no;
-                    $academinDetails->user_name_id = $user->id;
-                    $academinDetails->save();
-
-                    $personalDetails->name = $user->name;
-                    $personalDetails->email = $user->email;
-                    $personalDetails->mobile_number = $request->phone;
-                    $personalDetails->user_name_id = $user->id;
-                    $personalDetails->save();
-
-                    if ($user->id != '' && $academinDetails->id != '' && $personalDetails->id != '' && $student->id != '') {
-                        return response()->json(['status' => true, 'data' => 'User created successfully']);
-                    } else {
-                        return response()->json(['status' => false, 'data' => 'User creation failed']);
-                    }
-                } else {
-                    $user->name = $request->fname;
-                    $user->password = $request->password;
-                    $user->email = $request->email;
-                    $user->save();
-                    $user->roles()->sync([$request->role]);
-
-                    if ($user->id != '') {
-                        return response()->json(['status' => true, 'data' => 'User created successfully']);
-                    } else {
-                        return response()->json(['status' => false, 'data' => 'User creation failed']);
-                    }
-                }
+                return response()->json(['status' => false, 'data' => 'User creation failed']);
             }
         }
+
+
+        // if (isset($request->role_type)) {
+        //     $user = new User();
+        //     $personalDetails = new PersonalDetail();
+
+        //     if ($request->role_type == 1 || $request->role_type == 3 || $request->role_type == 2 || $request->role_type == 4 || $request->role_type == 5) {
+
+        //         $casual_leave = 0;
+        //         $personal_permission = 0;
+        //         if ($request->doj != null || $request->doj != '') {
+        //             $yearMonth = substr($request->doj, 0, 7);
+        //             $explode = explode('-', $request->doj);
+
+        //             $year = (int) $explode[0];
+        //             $month = (int) $explode[1];
+        //             $day = (int) $explode[2];
+
+        //             $casual_leave = 0;
+
+        //             if ($yearMonth == date('Y-m') && $day == 1) {
+        //                 $casual_leave = 1;
+        //             } elseif (($year == (int) date('Y') || $year == (int) date('Y') - 1) && (($year == (int) date('Y') - 1 && $month == (int) date('m', strtotime('last month'))) || ($year == (int) date('Y') && $month < (int) date('m'))) && $day >= 26) {
+        //                 $casual_leave = 1;
+        //             }
+
+        //             $personal_permission = 0;
+        //             if ($yearMonth == date('Y-m') && ($day > 1 && $day <= 15)) {
+        //                 $personal_permission = 1;
+        //             } elseif (
+        //                 ($year == (int) date('Y') || $year == (int) date('Y') - 1) &&
+        //                 (($year == (int) date('Y') - 1 && $month == (int) date('m', strtotime('last month'))) || ($year == (int) date('Y') && $month < (int) date('m'))) &&
+        //                 $day >= 26
+        //             ) {
+        //                 $personal_permission = 2;
+        //             }
+        //         }
+
+        //         $user->name = $request->firstname . ' ' . $request->last_name;
+        //         $user->dept = $request->Dept;
+        //         $user->employID = $request->StaffCode;
+        //         $user->email = $request->email;
+        //         $user->password = bcrypt($request->phone);
+        //         $user->save();
+        //         $user->roles()->sync([$request->role]);
+
+        //         if ($request->role_type == 1 || $request->role_type == 3) {
+
+        //             $staffCreate = new TeachingStaff();
+        //             $staffCreate->name = $request->firstname . ' ' . $request->last_name;
+        //             $staffCreate->last_name = $request->last_name;
+        //             $staffCreate->StaffCode = $request->StaffCode;
+        //             $staffCreate->Designation = $request->Designation;
+        //             $staffCreate->Dept = $request->Dept;
+        //             $staffCreate->shift_id = $request->shift;
+        //             $staffCreate->casual_leave = $casual_leave;
+        //             $staffCreate->personal_permission = $personal_permission;
+        //             $staffCreate->EmailIDOffical = $request->email;
+        //             $staffCreate->ContactNo = $request->phone;
+        //             $staffCreate->role_type = $request->role_type;
+        //             $staffCreate->user_name_id = $user->id;
+        //             $staffCreate->save();
+
+        //             $personalDetails->name = $request->firstname;
+        //             $personalDetails->last_name = $request->last_name;
+        //             $personalDetails->StaffCode = $request->StaffCode;
+        //             $personalDetails->email = $request->email;
+        //             $personalDetails->mobile_number = $request->phone;
+        //             $personalDetails->user_name_id = $user->id;
+        //             $personalDetails->save();
+
+        //             $experience_details = new ExperienceDetail();
+        //             $experience_details->user_name_id = $user->id;
+        //             $experience_details->doj = $request->doj;
+        //             $experience_details->save();
+
+        //             if ($user->id != '' && $staffCreate->id != '' && $personalDetails->id != '') {
+        //                 return response()->json(['status' => true, 'data' => 'User created successfully']);
+        //             } else {
+        //                 return response()->json(['status' => false, 'data' => 'User creation failed']);
+        //             }
+        //         } elseif ($request->role_type == 2 || $request->role_type == 4 || $request->role_type == 5) {
+
+        //             $nonTeachingStaff = new NonTeachingStaff();
+        //             $nonTeachingStaff->name = $request->firstname . ' ' . $request->last_name;
+        //             $nonTeachingStaff->last_name = $request->last_name;
+        //             $nonTeachingStaff->StaffCode = $request->StaffCode;
+        //             $nonTeachingStaff->Designation = $request->Designation;
+        //             $nonTeachingStaff->Dept = $request->Dept;
+        //             $nonTeachingStaff->casual_leave = $casual_leave;
+        //             $nonTeachingStaff->personal_permission = $personal_permission;
+        //             $nonTeachingStaff->phone = $request->phone;
+        //             $nonTeachingStaff->email = $request->email;
+        //             $nonTeachingStaff->role_type = $request->role_type;
+        //             $nonTeachingStaff->user_name_id = $user->id;
+        //             $nonTeachingStaff->save();
+
+        //             $personalDetails->name = $request->firstname;
+        //             $personalDetails->last_name = $request->last_name;
+        //             $personalDetails->StaffCode = $request->StaffCode;
+        //             $personalDetails->email = $request->email;
+        //             $personalDetails->mobile_number = $request->phone;
+        //             $personalDetails->user_name_id = $user->id;
+        //             $personalDetails->save();
+
+        //             $experience_details = new ExperienceDetail();
+        //             $experience_details->user_name_id = $user->id;
+        //             $experience_details->doj = $request->doj;
+        //             $experience_details->save();
+
+        //             if ($user->id != '' && $nonTeachingStaff->id != '' && $personalDetails->id != '') {
+        //                 return response()->json(['status' => true, 'data' => 'User created successfully']);
+        //             } else {
+        //                 return response()->json(['status' => false, 'data' => 'User creation failed']);
+        //             }
+        //         }
+        //     } else {
+        //         if ($request->role_type == 6 && $request->role == 11) {
+        //             $user->name = $request->name;
+        //             $user->register_no = $request->register_no;
+        //             $user->enroll_master_id = $request->enroll_master_id;
+        //             $user->email = $request->email;
+        //             $user->save();
+        //             $user->roles()->sync([$request->role]);
+
+        //             $student = new Student();
+        //             $student->name = $request->name;
+        //             $student->student_email_id = $request->email;
+        //             $student->student_phone_no = $request->phone;
+        //             $student->register_no = $request->register_no;
+        //             $student->shift_id = $request->shift;
+        //             $student->roll_no = $request->rollNumber;
+        //             $student->enroll_master_id = $request->enroll_master_id;
+        //             $student->user_name_id = $user->id;
+        //             $student->save();
+
+        //             $academinDetails = new AcademicDetail();
+        //             $academinDetails->roll_no = $request->rollNumber;
+        //             $academinDetails->register_number = $request->register_no;
+        //             $academinDetails->user_name_id = $user->id;
+        //             $academinDetails->save();
+
+        //             $personalDetails->name = $user->name;
+        //             $personalDetails->email = $user->email;
+        //             $personalDetails->mobile_number = $request->phone;
+        //             $personalDetails->user_name_id = $user->id;
+        //             $personalDetails->save();
+
+        //             if ($user->id != '' && $academinDetails->id != '' && $personalDetails->id != '' && $student->id != '') {
+        //                 return response()->json(['status' => true, 'data' => 'User created successfully']);
+        //             } else {
+        //                 return response()->json(['status' => false, 'data' => 'User creation failed']);
+        //             }
+        //         } else {
+        //             $user->name = $request->fname;
+        //             $user->password = $request->password;
+        //             $user->email = $request->email;
+        //             $user->save();
+        //             $user->roles()->sync([$request->role]);
+
+        //             if ($user->id != '') {
+        //                 return response()->json(['status' => true, 'data' => 'User created successfully']);
+        //             } else {
+        //                 return response()->json(['status' => false, 'data' => 'User creation failed']);
+        //             }
+        //         }
+        //     }
+        // }
     }
 
     public function edit(User $user)
     {
-        abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $roles = Role::pluck('title', 'id');
         $user->load('roles');
-        $role_type = TeachingType::pluck('name', 'id')->prepend('Select Type', '');
+        // $role_type = TeachingType::pluck('name', 'id')->prepend('Select Type', '');
         return view('admin.users.edit', compact('role_type', 'user', 'roles'));
     }
 
@@ -307,7 +332,7 @@ class UsersController extends Controller
 
         if ($request->role_type == 1 || $request->role_type == 3) {
             $teach = TeachingStaff::where('user_name_id', $user->id)->get();
-            if (count($teach) <= 0) {         
+            if (count($teach) <= 0) {
 
                 $nonTeach = NonTeachingStaff::where('user_name_id', $user->id)->get();
 
@@ -442,7 +467,7 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
-        abort_if(Gate::denies('user_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('user_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user->load('roles', 'userUserAlerts');
 
@@ -451,7 +476,7 @@ class UsersController extends Controller
 
     public function destroy(User $user)
     {
-        abort_if(Gate::denies('user_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('user_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         // dd($user->id);
         $user->delete();
 
@@ -489,13 +514,13 @@ class UsersController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-    public function block(Request $request)
-    {
+    // public function block(Request $request)
+    // {
 
-        $role_type = TeachingType::pluck('name', 'id');
+    //     $role_type = TeachingType::pluck('name', 'id');
 
-        return view('admin.users.block', compact('role_type'));
-    }
+    //     return view('admin.users.block', compact('role_type'));
+    // }
     public function fetchRoles(Request $request)
     {
         $roles = Role::where(['type_id' => $request->role_type])->select('id', 'title')->get();
