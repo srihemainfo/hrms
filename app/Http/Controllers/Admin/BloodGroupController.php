@@ -62,7 +62,7 @@ class BloodGroupController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('blood_group_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('blood_group_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.bloodGroups.create');
     }
@@ -115,7 +115,7 @@ class BloodGroupController extends Controller
 
     public function show(BloodGroup $bloodGroup)
     {
-        abort_if(Gate::denies('blood_group_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('blood_group_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.bloodGroups.show', compact('bloodGroup'));
     }
