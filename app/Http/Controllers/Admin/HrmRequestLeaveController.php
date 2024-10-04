@@ -69,7 +69,7 @@ class HrmRequestLeaveController extends Controller
             //     $query = HrmRequestLeaf::where(['status' => 'Pending'])->whereIn('level', [0, 1])->whereIn('leave_type', [2, 3, 4, 6, 7, 8])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
             //     $query1 = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 0])->whereIn('leave_type', [1, 5])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
             //     // dd($query);
-            // } 
+            // }
 
 
             $list = $query;
@@ -144,7 +144,7 @@ class HrmRequestLeaveController extends Controller
                         $list[$i]->dept = $staff->Dept;
                         $list[$i]->staff_code = $staff->StaffCode;
                         $list[$i]->url = 'teaching-staff-edge';
-                    } 
+                    }
                     // else {
                     //     $n_staff = NonTeachingStaff::where(['user_name_id' => $list[$i]->user_id])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
                     //     $getRole = DB::table('role_user')->leftJoin('roles', 'roles.id', '=', 'role_user.role_id')->where(['role_user.user_id' => $list[$i]->user_id])->select('roles.type_id')->first();

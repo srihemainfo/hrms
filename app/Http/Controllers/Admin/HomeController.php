@@ -153,7 +153,7 @@ class HomeController extends SystemCalendarController
                 return view('student_home', compact('month', 'year', 'numDays', 'firstDayOfWeek', 'weekdays', 'events', 'profile', 'timeTable', 'currentDay'));
             } else {
                 $teachingStaffs = TeachingStaff::count('id');
-                $nonTeachingStaffs = NonTeachingStaff::count('id');
+                // $nonTeachingStaffs = NonTeachingStaff::count('id');
                 $userCounts = User::count('id');
                 $currentDate = date('Y-m-d');
                 $calender = CollegeCalender::where('from_date', '<=', $currentDate)
@@ -199,7 +199,7 @@ class HomeController extends SystemCalendarController
                     $staff_od = 0;
                 }
 
-                return view('home', compact('month', 'year', 'numDays', 'firstDayOfWeek', 'weekdays', 'events', 'staff_leaves', 'staff_od', 'check', 'teachingStaffs', 'nonTeachingStaffs', 'userCounts'));
+                return view('home', compact('month', 'year', 'numDays', 'firstDayOfWeek', 'weekdays', 'events', 'staff_leaves', 'staff_od', 'check', 'teachingStaffs',  'userCounts'));
             }
         }
 

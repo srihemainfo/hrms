@@ -166,7 +166,7 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.teaching-staffs.index') }}"
                                     class="nav-link {{ request()->is('admin/teaching-staffs') || request()->is('admin/teaching-staffs*') ? 'active' : '' }}">
                                     <i class="fas nav-icon fa-chalkboard-teacher">
@@ -175,7 +175,7 @@
                                         {{ trans('cruds.teachingStaff.title') }}
                                     </p>
                                 </a>
-                            </li>
+                            </li> --}}
 
 
                             <li class="nav-item">
@@ -463,7 +463,6 @@
                             class="nav-link {{ request()->is('admin/master-tools') ||
                             request()->is('admin/master-tools/*') ||
                             request()->is('admin/tools*') ||
-                            request()->is('admin/year*') ||
                             request()->is('admin/batches*') ||
                             request()->is('admin/academic-years*') ||
                             request()->is('admin/semesters*') ||
@@ -537,12 +536,12 @@
 
 
                 {{-- <li class="nav-item">
-                    <a href="{{ route('admin.systemCalendar') }}"
-                        class="nav-link {{ request()->is('admin/system-calendar') || request()->is('admin/system-calendar/*') ? 'active' : '' }}">
-                        <i class="fas fa-fw fa-calendar nav-icon">
-
-                        </i>
-                        <p>
+=======
+                <li class="nav-item">
+                    <a href="{{ route('admin.designation.index') }}"
+                        class="nav-link {{ request()->is('admin/master-tools') ||
+                        request()->is('admin/master-tools/*') ||
+                        request()->is('admin/tools*') ||
                             {{ trans('global.systemCalendar') }}
                         </p>
                     </a>
