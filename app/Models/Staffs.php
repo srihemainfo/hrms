@@ -12,6 +12,9 @@ class Staffs extends Model
     use SoftDeletes, Auditable, HasFactory;
 
     public $table = 'staffs';
+<<<<<<< HEAD
+    protected $guarded;
+=======
 
     protected $dates = [
         'created_at',
@@ -34,6 +37,5 @@ class Staffs extends Model
         'updated_at',
         'deleted_at',
     ];
-
-    
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
 }

@@ -17,15 +17,7 @@ class UpdateCollegeCalenderRequest extends FormRequest
     public function rules()
     {
         return [
-            'type' => [
-                'string',
-                'nullable',
-            ],
             'academic_year' => [
-                'string',
-                'nullable',
-            ],
-            'shift' => [
                 'string',
                 'nullable',
             ],

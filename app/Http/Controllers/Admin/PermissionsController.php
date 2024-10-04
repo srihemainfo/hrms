@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyPermissionRequest;
 use App\Http\Requests\UpdatePermissionRequest;
 use App\Models\Permission;
+<<<<<<< HEAD
+=======
 use Illuminate\Support\Facades\Gate;
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +18,11 @@ class PermissionsController extends Controller
 {
     public function index()
     {
+<<<<<<< HEAD
+        // abort_if(Gate::denies('permission_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+=======
          abort_if(Gate::denies('permission_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
 
         $permissions = Permission::all();
 

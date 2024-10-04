@@ -60,6 +60,10 @@
         </li>
     @endcan
 
+<<<<<<< HEAD
+
+    @can('designation_access')
+=======
 
     @can('designation_access')
         <li class="nav-item">
@@ -74,14 +78,13 @@
     @endcan
 
     @can('education_type_access')
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
         <li class="nav-item">
-            <a href="{{ route('admin.education-types.index') }}"
-                class="nav-link {{ request()->is('admin/education-types') || request()->is('admin/education-types/*') ? 'active' : '' }}">
-                <i class="fa-fw nav-icon fas fa-tasks">
-
-                </i>
+            <a href="{{ route('admin.designation.index') }}"
+                class="nav-link {{ request()->is('admin/designation') || request()->is('admin/designation/*') ? 'active' : '' }}">
+                <i class="fa-fw nav-icon fas fa-user"></i>
                 <p>
-                    {{ trans('cruds.educationType.title') }}
+                    Designation
                 </p>
             </a>
         </li>
@@ -92,6 +95,8 @@
             <a href="{{ route('admin.leave-types.index') }}"
                 class="nav-link {{ request()->is('admin/leave-types') || request()->is('admin/leave-types/*') ? 'active' : '' }}">
                 <i class="fa-fw nav-icon fas fa-monument">
+<<<<<<< HEAD
+=======
 
                 </i>
                 <p>
@@ -158,6 +163,49 @@
             </a>
         </li>
     @endcan
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
+
+    @can('state_access')
+        <li class="nav-item">
+            <a href="{{ route('admin.state.index') }}"
+                class="nav-link {{ request()->is('admin/state') || request()->is('admin/state/*') ? 'active' : '' }}">
+                <i class="fa-fw nav-icon fas fa-map"></i>
+                <p>
+                    State
+                </p>
+            </a>
+        </li>
+    @endcan
+<<<<<<< HEAD
+
+    @can('nationality_access')
+        <li class="nav-item">
+            <a href="{{ route('admin.nationalities.index') }}"
+                class="nav-link {{ request()->is('admin/nationalities') || request()->is('admin/nationalities/*') ? 'active' : '' }}">
+                <i class="fa-fw nav-icon fas fa-globe-asia">
+
+                </i>
+                <p>
+                    {{ trans('cruds.nationality.title') }}
+                </p>
+            </a>
+        </li>
+    @endcan
+
+    @can('religion_access')
+        <li class="nav-item">
+            <a href="{{ route('admin.religions.index') }}"
+                class="nav-link {{ request()->is('admin/religions') || request()->is('admin/religions/*') ? 'active' : '' }}">
+                <i class="fa-fw nav-icon fas fa-pray">
+
+                </i>
+                <p>
+                    {{ trans('cruds.religion.title') }}
+                </p>
+            </a>
+        </li>
+    @endcan
+
 
     @can('state_access')
         <li class="nav-item">
@@ -171,6 +219,9 @@
         </li>
     @endcan
 
+=======
+
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
 
     @can('email_setting_access')
         <li class="nav-item">

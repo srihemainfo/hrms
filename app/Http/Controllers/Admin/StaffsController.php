@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+<<<<<<< HEAD
+use App\Models\Role;
+=======
 use App\Models\BloodGroup;
 use App\Models\Community;
 use App\Models\Designation;
@@ -13,14 +16,12 @@ use App\Models\MediumofStudied;
 use App\Models\MotherTongue;
 use App\Models\Nationality;
 use App\Models\PersonalDetail;
-use App\Models\BankAccountDetail;
-use App\Models\Document;
-use App\Models\Address;
 use App\Models\Religion;
 use App\Models\Role;
 use App\Models\Staffs;
 use App\Models\State;
 use App\Models\User;
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -34,14 +35,40 @@ class StaffsController extends Controller
                 ->whereNull('staffs.deleted_at')
                 ->leftJoin('roles', 'roles.id', '=', 'staffs.role_id')
                 ->leftJoin('designation', 'designation.id', '=', 'staffs.designation_id')
+<<<<<<< HEAD
+                ->select('staffs.id','staffs.email','staffs.phone_number','staffs.status','staffs.name','staffs.employee_id','roles.title as roled','designation.name as des')
+                ->get();
+            // dd($query);
+=======
                 ->select('staffs.id', 'staffs.email', 'staffs.phone_number', 'staffs.status', 'staffs.name', 'staffs.user_name_id', 'staffs.employee_id', 'roles.title as roled', 'designation.name as des')
                 ->get();
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
             $table = DataTables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
             $table->addColumn('actions', '&nbsp;');
 
             $table->editColumn('actions', function ($row) {
+<<<<<<< HEAD
+                $viewGate = 'staffs_show';
+                $editGate = 'staffs_edit';
+                $deleteGate = 'staffs_delete';
+                $editFunct = 'editStaffs';
+                $viewFunct = 'viewStaffs';
+                $deleteFunct = 'deleteStaffs';
+                $crudRoutePart = 'Staffs';
+
+                return view('partials.ajaxTableActions', compact(
+                    'viewGate',
+                    'editGate',
+                    'deleteGate',
+                    'editFunct',
+                    'viewFunct',
+                    'deleteFunct',
+                    'crudRoutePart',
+                    'row'
+                ));
+=======
                 $row->id = $row->user_name_id;
 
                 $viewGate = 'staffs_show';
@@ -59,6 +86,7 @@ class StaffsController extends Controller
                         'row'
                     )
                 );
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
             });
 
             $table->editColumn('id', function ($row) {
@@ -83,6 +111,10 @@ class StaffsController extends Controller
                 return $row->email ? $row->email : '';
             });
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
             $table->editColumn('phone_number', function ($row) {
                 return $row->phone_number ? $row->phone_number : '';
             });
@@ -100,6 +132,8 @@ class StaffsController extends Controller
 
         return view('admin.staffs.index', compact('role'));
     }
+<<<<<<< HEAD
+=======
 
     public function destroy($request)
     {
@@ -138,14 +172,13 @@ class StaffsController extends Controller
         } else {
 
             $user_name_id = $staff->user_name_id;
-            // dd($user_name_id);
-            $document = Document::where(['nameofuser_id' => $user_name_id, 'fileName' => 'Profile'])->get();
+            // $document = Document::where(['nameofuser_id' => $user_name_id, 'fileName' => 'Profile'])->get();
 
-            if ($document->count() <= 0) {
-                $staff->filePath = '';
-            } else {
-                $staff->filePath = $document[0]->filePath;
-            }
+            // if ($document->count() <= 0) {
+            //     $staff->filePath = '';
+            // } else {
+            //     $staff->filePath = $document[0]->filePath;
+            // }
 
             $personal = PersonalDetail::where(['user_name_id' => $user_name_id])->get();
             $blood_groups = BloodGroup::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
@@ -216,7 +249,7 @@ class StaffsController extends Controller
                 // $personal[0]->known_languages = $known_languages;
                 // $personal[0]->BiometricID = $staff->BiometricID;
                 // $personal[0]->gender = $staff->gender;
-                // $personal[0]->known_languages = $known_languages;
+                $personal[0]->known_languages = $known_languages;
                 $staff->gender = $personal[0]->gender;
 
                 $detail = $personal[0];
@@ -262,20 +295,20 @@ class StaffsController extends Controller
                 $experience_list = $experience_details;
             }
 
-            $address_details = Address::where(['name_id' => $user_name_id, 'status' => 1])->get();
+            // $address_details = Address::where(['name_id' => $user_name_id, 'status' => 1])->get();
 
-            if ($address_details->count() <= 0) {
-                $address_list = [];
-            } else {
-                $address_list = $address_details;
-            }
+            // if ($address_details->count() <= 0) {
+            //     $address_list = [];
+            // } else {
+            //     $address_list = $address_details;
+            // }
 
-            $bank_details = BankAccountDetail::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
-            if ($bank_details->count() <= 0) {
-                $bank_list = [];
-            } else {
-                $bank_list = $bank_details;
-            }
+            // $bank_details = BankAccountDetail::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($bank_details->count() <= 0) {
+            //     $bank_list = [];
+            // } else {
+            //     $bank_list = $bank_details;
+            // }
 
             // $salary_details = StaffSalary::where(['user_name_id' => $user_name_id])->get();
             // if ($salary_details->count() <= 0) {
@@ -373,13 +406,13 @@ class StaffsController extends Controller
             //     $online_course_list = $online_course;
             // }
 
-            $document = Document::where(['nameofuser_id' => $user_name_id, 'status' => 1])->get();
-            if ($document->count() <= 0) {
+            // $document = Document::where(['nameofuser_id' => $user_name_id, 'status' => 1])->get();
+            // if ($document->count() <= 0) {
 
-                $document_list = [];
-            } else {
-                $document_list = $document;
-            }
+            //     $document_list = [];
+            // } else {
+            //     $document_list = $document;
+            // }
 
             // // $seminar_details = Seminar::where(['user_name_id' => $user_name_id])->get();
 
@@ -497,7 +530,7 @@ class StaffsController extends Controller
             // $first_entry = 'data';
 
             if (is_numeric($request)) {
-                return view('admin.Staffs.staffshow', compact('staff', 'detail', 'experience_list', 'education_list', 'document_list'));
+                return view('admin.Staffs.staffshow', compact('staff', 'detail', 'experience_list', 'education_list'));
             } else {
                 if ($who == 'tech') {
                     return view('admin.edges.staff', compact('first_entry', 'name', 'staff', 'detail', 'experience_list', 'education_list'));
@@ -524,23 +557,13 @@ class StaffsController extends Controller
             //     $req = $request;
             // }
 
-
-
             $query = Staffs::where(['user_name_id' => $request])->get();
             // $document = Document::where(['nameofuser_id' => $request, 'fileName' => 'Profile'])->get();
             $query_one = PersonalDetail::where(['user_name_id' => $request])->get();
-
-            $designations = Designation::pluck('name', 'id');
-            $roles = Role::pluck('title', 'id');
-
-            // $designations = Designation::get();
         }
-        // dd($query);
 
         if ($query->count() <= 0) {
             $query->user_name_id = $request;
-
-            // $query->designation_id = '';
 
             // if ($document->count() <= 0) {
             //     $query->filePath = '';
@@ -554,8 +577,6 @@ class StaffsController extends Controller
 
             $staff = $query;
         } else {
-
-            // $query[0]->designation = $designations;
 
             // if ($document->count() <= 0) {
             //     $query[0]->filePath = '';
@@ -574,7 +595,7 @@ class StaffsController extends Controller
 
         // dd($staff);
 
-        return view('admin.StaffProfile.staff', compact('check', 'staff','designations','roles'));
+        return view('admin.StaffProfile.staff', compact('check', 'staff'));
     }
 
     public function update(Request $request, Staffs $staffs)
@@ -584,4 +605,5 @@ class StaffsController extends Controller
 
         return redirect()->route('admin.teaching-staffs.index');
     }
+>>>>>>> 6563285674506c09c4794a263e688088e7e74606
 }
