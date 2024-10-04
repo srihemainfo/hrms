@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-<<<<<<< HEAD
 use App\Models\Role;
-=======
 use App\Models\BloodGroup;
 use App\Models\Community;
 use App\Models\Designation;
@@ -21,7 +19,6 @@ use App\Models\Role;
 use App\Models\Staffs;
 use App\Models\State;
 use App\Models\User;
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -35,40 +32,17 @@ class StaffsController extends Controller
                 ->whereNull('staffs.deleted_at')
                 ->leftJoin('roles', 'roles.id', '=', 'staffs.role_id')
                 ->leftJoin('designation', 'designation.id', '=', 'staffs.designation_id')
-<<<<<<< HEAD
                 ->select('staffs.id','staffs.email','staffs.phone_number','staffs.status','staffs.name','staffs.employee_id','roles.title as roled','designation.name as des')
                 ->get();
             // dd($query);
-=======
                 ->select('staffs.id', 'staffs.email', 'staffs.phone_number', 'staffs.status', 'staffs.name', 'staffs.user_name_id', 'staffs.employee_id', 'roles.title as roled', 'designation.name as des')
                 ->get();
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
             $table = DataTables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
             $table->addColumn('actions', '&nbsp;');
 
             $table->editColumn('actions', function ($row) {
-<<<<<<< HEAD
-                $viewGate = 'staffs_show';
-                $editGate = 'staffs_edit';
-                $deleteGate = 'staffs_delete';
-                $editFunct = 'editStaffs';
-                $viewFunct = 'viewStaffs';
-                $deleteFunct = 'deleteStaffs';
-                $crudRoutePart = 'Staffs';
-
-                return view('partials.ajaxTableActions', compact(
-                    'viewGate',
-                    'editGate',
-                    'deleteGate',
-                    'editFunct',
-                    'viewFunct',
-                    'deleteFunct',
-                    'crudRoutePart',
-                    'row'
-                ));
-=======
                 $row->id = $row->user_name_id;
 
                 $viewGate = 'staffs_show';
@@ -86,7 +60,6 @@ class StaffsController extends Controller
                         'row'
                     )
                 );
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
             });
 
             $table->editColumn('id', function ($row) {
@@ -111,10 +84,6 @@ class StaffsController extends Controller
                 return $row->email ? $row->email : '';
             });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
             $table->editColumn('phone_number', function ($row) {
                 return $row->phone_number ? $row->phone_number : '';
             });
@@ -132,8 +101,6 @@ class StaffsController extends Controller
 
         return view('admin.staffs.index', compact('role'));
     }
-<<<<<<< HEAD
-=======
 
     public function destroy($request)
     {
@@ -605,5 +572,4 @@ class StaffsController extends Controller
 
         return redirect()->route('admin.teaching-staffs.index');
     }
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
 }

@@ -351,7 +351,7 @@ class HrmRequestLeaveController extends Controller
 
     public function alter_staff(Request $request)
     {
-        dd($request);
+        // dd($request);
         if ($request->data != '') {
             $form_data = $request->data;
             $alter_data = [];
