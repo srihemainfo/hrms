@@ -65,15 +65,11 @@ class TeachingStaffController extends Controller
 
     public function index(Request $request)
     {
-<<<<<<< HEAD
         // abort_if(Gate::denies('teaching_staff_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         // $a = MsBiometric::get();
         // $b = "SELECT * FROM AttendanceLogs";
         // $a = DB::connection('sqlsrv')->getPdo();
         // dd($a);
-=======
-
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
         if ($request->ajax()) {
 
             $query = DB::table('teaching_staffs')

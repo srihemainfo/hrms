@@ -1881,17 +1881,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('staffs', 'StaffsController');
     Route::delete('staffs/destroy', 'StaffsController@massDestroy')->name('staffs.massDestroy');
 
-<<<<<<< HEAD
-=======
-    // Route::get('staffs', 'StaffsController@index')->name('staffs.index');
-    // Route::post('staffs/view', 'StaffsController@view')->name('staffs.view');
-    // Route::post('staffs/edit', 'StaffsController@edit')->name('staffs.edit');
-    // Route::post('staffs/store', 'StaffsController@store')->name('staffs.store');
-    // Route::post('staffs/delete', 'StaffsController@destroy')->name('staffs.delete');
-    // Route::delete('staffs/destroy', 'StaffsController@massDestroy')->name('staffs.massDestroy');
-
-
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
     // Grade Master
     Route::get('grade-master/index', 'GradeMasterController@index')->name('grade-master.index');
     Route::post('grade-master/view', 'GradeMasterController@view')->name('grade-master.view');

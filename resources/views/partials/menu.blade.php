@@ -176,7 +176,6 @@
                                     </p>
                                 </a>
                             </li>
-<<<<<<< HEAD
 
 
                             <li class="nav-item">
@@ -206,11 +205,8 @@
                             </p>
                         </a>
                         <ul class="nav nav-treeview " style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
-=======
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
 
 
-<<<<<<< HEAD
                                         </i>
                                         <p>
                                             Staff Biometrics
@@ -456,24 +452,12 @@
                                     </a>
                                 </li>
                             @endcan --}}
-=======
-                            <li class="nav-item">
-                                <a href="{{ route('admin.inactive_staff.index') }}"
-                                    class="nav-link {{ request()->is('admin/inactive_staff') || request()->is('admin/inactive_staff/*') ? 'active' : '' }}">
-                                    <i class="fa-fw nav-icon fas fa-user-times"></i>
-                                    <p>
-                                        Inactive Staff List
-                                    </p>
-                                </a>
-                            </li>
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
 
                         </ul>
                     </li>
                 @endcan
 
                 @can('master_tool_access')
-<<<<<<< HEAD
                     <li class="nav-item">
                         <a href="{{ route('admin.designation.index') }}"
                             class="nav-link {{ request()->is('admin/master-tools') ||
@@ -553,75 +537,6 @@
 
 
                 {{-- <li class="nav-item">
-=======
-                <li class="nav-item">
-                    <a href="{{ route('admin.designation.index') }}"
-                        class="nav-link {{ request()->is('admin/master-tools') ||
-                        request()->is('admin/master-tools/*') ||
-                        request()->is('admin/tools*') ||
-                        request()->is('admin/year*') ||
-                        request()->is('admin/batches*') ||
-                        request()->is('admin/academic-years*') ||
-                        request()->is('admin/semesters*') ||
-                        request()->is('admin/sections*') ||
-                        request()->is('admin/course-enroll-masters*') ||
-                        request()->is('admin/lab_title*') ||
-                        request()->is('admin/nationalities*') ||
-                        request()->is('admin/religions*') ||
-                        request()->is('admin/state*') ||
-                        request()->is('admin/blood-groups*') ||
-                        request()->is('admin/communities*') ||
-                        request()->is('admin/mother-tongues*') ||
-                        request()->is('admin/education-boards*') ||
-                        request()->is('admin/education-types*') ||
-                        request()->is('admin/scholarships*') ||
-                        request()->is('admin/mediumof-studieds*') ||
-                        request()->is('admin/teaching-types*') ||
-                        request()->is('admin/examstaffs*') ||
-                        request()->is('admin/college-blocks*') ||
-                        request()->is('admin/scholarships*') ||
-                        request()->is('admin/shift*') ||
-                        request()->is('admin/leave-statuses*') ||
-                        request()->is('admin/class-rooms*') ||
-                        request()->is('admin/class-batch*') ||
-                        request()->is('admin/email-settings*') ||
-                        request()->is('admin/sms-settings*') ||
-                        request()->is('admin/sms-templates*') ||
-                        request()->is('admin/email-templates*') ||
-                        request()->is('admin/Shift/*') ||
-                        request()->is('admin/Shift') ||
-                        request()->is('admin/tool-lab') ||
-                        request()->is('admin/tool-lab/*') ||
-                        request()->is('admin/rooms') ||
-                        request()->is('admin/rooms/*') ||
-                        request()->is('admin/grade-master*') ||
-                        request()->is('admin/examfee-master*') ||
-                        request()->is('admin/credit-limit-master*') ||
-                        request()->is('admin/internal-weightage/*') ||
-                        request()->is('admin/paymentMode') ||
-                        request()->is('admin/paymentMode/*') ||
-                        request()->is('admin/fee-components*') ||
-                        request()->is('admin/events*') ||
-                        request()->is('admin/events/*') ||
-                        request()->is('admin/leave-types*') ||
-                        request()->is('admin/leave-types/*') ||
-                        request()->is('admin/admission-mode*') ||
-                        request()->is('admin/result-master*')
-                            ? 'active'
-                            : '' }}">
-                        <i class="fa-fw nav-icon fas fa-tools">
-
-                        </i>
-                        <p>
-                            Master Tools
-                        </p>
-                    </a>
-                </li>
-                @endcan
-
-
-                <li class="nav-item">
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
                     <a href="{{ route('admin.systemCalendar') }}"
                         class="nav-link {{ request()->is('admin/system-calendar') || request()->is('admin/system-calendar/*') ? 'active' : '' }}">
                         <i class="fas fa-fw fa-calendar nav-icon">
@@ -631,11 +546,7 @@
                             {{ trans('global.systemCalendar') }}
                         </p>
                     </a>
-<<<<<<< HEAD
                 </li> --}}
-=======
-                </li>
->>>>>>> 6563285674506c09c4794a263e688088e7e74606
 
                 @php($unread = \App\Models\QaTopic::unreadCount())
                 <li class="nav-item">
