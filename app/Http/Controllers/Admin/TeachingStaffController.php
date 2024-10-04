@@ -43,6 +43,7 @@ use App\Models\Role;
 use App\Models\Sabotical;
 use App\Models\ShiftModel;
 use App\Models\Sponser;
+use App\Models\Staffs;
 use App\Models\StaffSalary;
 use App\Models\Sttp;
 use App\Models\TeachingStaff;
@@ -64,7 +65,11 @@ class TeachingStaffController extends Controller
 
     public function index(Request $request)
     {
-
+        // abort_if(Gate::denies('teaching_staff_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // $a = MsBiometric::get();
+        // $b = "SELECT * FROM AttendanceLogs";
+        // $a = DB::connection('sqlsrv')->getPdo();
+        // dd($a);
         if ($request->ajax()) {
 
             $query = DB::table('teaching_staffs')
@@ -846,7 +851,7 @@ class TeachingStaffController extends Controller
         if (isset($request->data)) {
 
             $staff = auth()->user()->id;
-            $update_control = TeachingStaff::where(['user_name_id' => $staff])->select('past_leave_access')->first();
+            $update_control = Staffs::where(['user_name_id' => $staff])->select('past_leave_access')->first();
             if ($update_control['past_leave_access'] == 1) {
 
                 $given_Dates = $request->date;
@@ -882,7 +887,6 @@ class TeachingStaffController extends Controller
                     return response()->json(['status' => true]);
                 }
             } else {
-
                 return response()->json(['status' => false]);
             }
         }

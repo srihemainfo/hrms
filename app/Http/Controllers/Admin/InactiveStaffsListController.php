@@ -3,47 +3,98 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\CsvImportTrait;
+use App\Http\Requests\MassDestroyTeachingStaffRequest;
+use App\Http\Requests\StoreTeachingStaffRequest;
+use App\Http\Requests\UpdateTeachingStaffRequest;
 use App\Models\Address;
+use App\Models\Award;
 use App\Models\BankAccountDetail;
 use App\Models\BloodGroup;
 use App\Models\Community;
-use App\Models\Designation;
 use App\Models\Document;
 use App\Models\EducationalDetail;
 use App\Models\EducationType;
+use App\Models\EntranceExam;
+use App\Models\EventOrganized;
+use App\Models\EventParticipation;
+use App\Models\Events;
+use App\Models\Examstaff;
 use App\Models\ExperienceDetail;
+use App\Models\HrmRequestLeaf;
+use App\Models\IndustrialExperience;
+use App\Models\IndustrialTraining;
+use App\Models\Intern;
+use App\Models\Iv;
+use App\Models\LeaveType;
 use App\Models\MediumofStudied;
 use App\Models\MotherTongue;
+use App\Models\NonTeachingStaff;
+use App\Models\OnlineCourse;
+use App\Models\Designation;
+use App\Models\Patent;
+use App\Models\PermissionRequest;
+use App\Models\State;
 use App\Models\Nationality;
 use App\Models\PersonalDetail;
+use App\Models\PhdDetail;
+use App\Models\PromotionDetails;
+use App\Models\PublicationDetail;
 use App\Models\Religion;
 use App\Models\Role;
+use App\Models\Sabotical;
+use App\Models\Sponser;
+use App\Models\StaffSalary;
 use App\Models\Staffs;
-use App\Models\State;
+use App\Models\Sttp;
+use App\Models\TeachingStaff;
+use App\Models\ToolsDepartment;
 use App\Models\User;
+use App\Models\Workshop;
+use Gate;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use DateTime;
 
-class StaffsController extends Controller
+
+class InactiveStaffsListController extends Controller
 {
+
     public function index(Request $request)
     {
+
+        // abort_if(Gate::denies('teaching_staff_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        if (isset($request->staff_status)) {
+            $staff_status = $request->staff_status;
+            session(['staff_status' => $staff_status]); // Store the value in the session
+        } else {
+            $staff_status = session('staff_status', 'teaching_staff'); // Retrieve the value from the session, default to 'teaching_staff' if not set
+        }
+
+
         if ($request->ajax()) {
-            $query = DB::table('staffs')
-                ->whereNull('staffs.deleted_at')
-                ->leftJoin('roles', 'roles.id', '=', 'staffs.role_id')
-                ->leftJoin('designation', 'designation.id', '=', 'staffs.designation_id')
-                ->leftJoin('personal_details', 'personal_details.user_name_id', '=', 'staffs.user_name_id')
-                ->where(function ($query) {
-                    $query->where('personal_details.employment_status', 'Active')
-                        ->orWhereNull('personal_details.employment_status');
-                })
-                ->orderBy('personal_details.user_name_id', 'asc')
-                ->select('staffs.id', 'staffs.email', 'staffs.phone_number', 'staffs.status', 'staffs.name', 'staffs.user_name_id', 'staffs.employee_id', 'roles.title as roled', 'designation.name as des')
-                ->get();
-// dd($query);
-            $table = DataTables::of($query);
+
+
+            $status = PersonalDetail::whereNotNull('user_name_id')
+            ->whereIn('employment_status',['Relieving','Medical Leave','Break','Maternity Leave'])
+            ->orderBy('id', 'asc')
+            ->select('user_name_id')
+            ->get();
+            // dd($status);
+
+            $userNameIds = $status->pluck('user_name_id');
+
+
+            if($staff_status === 'teaching_staff'){
+
+                $staff_details = Staffs::whereIn('user_name_id', $userNameIds)->select('id','name','employee_id','user_name_id')->get();
+            } else{
+                $staff_details = NonTeachingStaff::whereIn('user_name_id', $userNameIds)->select('id','name','Dept','StaffCode','Designation','past_leave_access','user_name_id')->get();
+            }
+
+            $table = Datatables::of($staff_details);
 
             $table->addColumn('placeholder', '&nbsp;');
             $table->addColumn('actions', '&nbsp;');
@@ -54,7 +105,7 @@ class StaffsController extends Controller
                 $viewGate = 'staffs_show';
                 $editGate = 'staffs_edit';
                 $deleteGate = 'staffs_delete';
-                $crudRoutePart = 'staffs';
+                $crudRoutePart = 'inactive_staff';
 
                 return view(
                     'partials.datatablesActions',
@@ -68,70 +119,118 @@ class StaffsController extends Controller
                 );
             });
 
-            $table->editColumn('id', function ($row) {
-                return $row->user_name_id ? $row->user_name_id : '';
-            });
-
-            $table->editColumn('name', function ($row) {
-                return $row->name ? $row->name : '';
-            });
+            // $table->editColumn('Dept', function ($row) {
+            //     return $row->Dept ? $row->Dept : '';
+            // });
             $table->editColumn('employee_id', function ($row) {
                 return $row->employee_id ? $row->employee_id : '';
             });
-
-            $table->editColumn('title', function ($row) {
-                return $row->roled ? $row->roled : '';
-            });
-
-            // $table->editColumn('status', function ($row) {
-            //     return $row->status ? $row->status : '';
+            // $table->editColumn('Designation', function ($row) {
+            //     return $row->Designation ? $row->Designation : '';
             // });
 
-            $table->editColumn('email', function ($row) {
-                return $row->email ? $row->email : '';
-            });
-
-            $table->editColumn('phone_number', function ($row) {
-                return $row->phone_number ? $row->phone_number : '';
-            });
-
-            $table->editColumn('designation', function ($row) {
-                return $row->des ? $row->des : '';
-            });
-
             $table->editColumn('active_status', function ($row) {
-                $status = PersonalDetail::where('user_name_id', $row->user_name_id)->select('employment_status')->first();
 
-                $employmentStatus = $status ? $status->employment_status : null;
+                $status = PersonalDetail::where('user_name_id',$row->user_name_id)->select('employment_status')->first();
+
+                $employmentStatus = $status ? $status->employment_status : Null;
                 if ($employmentStatus != '') {
-                    if ($employmentStatus == 'Active') {
-                        return 'Active';
-                    } else {
-                        return 'Inactive';
-                    }
+                        return $employmentStatus;
                 } else {
                     return '';
                 }
+
             });
 
-            $table->rawColumns(['actions', 'placeholder']);
+            // $table->editColumn('past_leave_access', function ($row) {
+            //     $accessGate2 = 'Past_Leave_Permission_Access';
+            //     return view('partials.controlBtn', compact('accessGate2', 'row'));
+            // });
 
+            $table->rawColumns(['actions', 'placeholder', 'past_leave_access']);
+            $request->session()->forget('staff_status');
             return $table->make(true);
+            // dd(session()->forget('staff_status'));
+            // session(['staff_status' => '']);
+
         }
 
-        $role = Role::pluck('title', 'id');
-
-        return view('admin.staffs.index', compact('role'));
+        return view('admin.inactiveStaffsList.index',compact('staff_status'));
     }
 
-    public function destroy($request)
+    public function edit($request)
     {
-        // dd($request);
-        // abort_if(Gate::denies('student_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        $teaching_staff = Staffs::where('user_name_id', $request)->delete();
-        // $personal = PersonalDetail::where('user_name_id', $request)->delete();
-        $user = User::find($request)->delete();
-        return back();
+
+        // abort_if(Gate::denies('teaching_staff_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        if ($request) {
+
+            // $decodedParam = base64_decode($one, true);
+
+            // if ($decodedParam === true) {
+            //     dd($request);
+            //     $req= base64_decode($request);
+            // }else{
+            //     dd($request);
+            //     $req = $request;
+            // }
+
+            $query = Staffs::where(['user_name_id' => $request])->get();
+            // $document = Document::where(['nameofuser_id' => $request, 'fileName' => 'Profile'])->get();
+            $query_one = PersonalDetail::where(['user_name_id' => $request])->get();
+
+            $designations = Designation::pluck('name', 'id');
+            $roles = Role::pluck('title', 'id');
+
+            // $designations = Designation::get();
+        }
+        // dd($query);
+
+        if ($query->count() <= 0) {
+            $query->user_name_id = $request;
+
+            // $query->designation_id = '';
+
+            // if ($document->count() <= 0) {
+            //     $query->filePath = '';
+            // } else {
+            //     $query->filePath = $document[0]->filePath;
+            // }
+
+            if ($query_one->count() > 0) {
+                $query->Gender = $query_one[0]->gender;
+            }
+
+            $staff = $query;
+        } else {
+
+            // $query[0]->designation = $designations;
+
+            // if ($document->count() <= 0) {
+            //     $query[0]->filePath = '';
+            // } else {
+            //     $query[0]->filePath = $document[0]->filePath;
+            // }
+
+            if ($query_one->count() > 0) {
+                $query[0]->Gender = $query_one[0]->gender;
+            }
+
+            $staff = $query[0];
+        }
+
+        $check = "entry";
+
+        // dd($staff);
+
+        return view('admin.StaffProfile.staff', compact('check', 'staff', 'designations', 'roles'));
+    }
+
+    public function update(Request $request, TeachingStaff $teachingStaff)
+    {
+
+        $teachingStaff->update($request->all());
+
+        return redirect()->route('admin.inactiveStaffsList.index');
     }
 
     public function show($request)
@@ -534,78 +633,124 @@ class StaffsController extends Controller
         }
     }
 
-    public function edit($request)
+    public function destroy($request)
     {
+        // abort_if(Gate::denies('student_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        // abort_if(Gate::denies('teaching_staff_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        if ($request) {
+        $teaching_staff = Staffs::where(['user_name_id' => $request])->first();
 
-            // $decodedParam = base64_decode($one, true);
+        $staff = Staffs::find($teaching_staff->id);
 
-            // if ($decodedParam === true) {
-            //     dd($request);
-            //     $req= base64_decode($request);
-            // }else{
-            //     dd($request);
-            //     $req = $request;
-            // }
+        $user = User::find($request);
 
-            $query = Staffs::where(['user_name_id' => $request])->get();
-            // $document = Document::where(['nameofuser_id' => $request, 'fileName' => 'Profile'])->get();
-            $query_one = PersonalDetail::where(['user_name_id' => $request])->get();
+        $staff->delete();
+        $user->delete();
 
-            $designations = Designation::pluck('name', 'id');
-            $roles = Role::pluck('title', 'id');
-
-            // $designations = Designation::get();
-        }
-        // dd($query);
-
-        if ($query->count() <= 0) {
-            $query->user_name_id = $request;
-
-            // $query->designation_id = '';
-
-            // if ($document->count() <= 0) {
-            //     $query->filePath = '';
-            // } else {
-            //     $query->filePath = $document[0]->filePath;
-            // }
-
-            if ($query_one->count() > 0) {
-                $query->Gender = $query_one[0]->gender;
-            }
-
-            $staff = $query;
-        } else {
-
-            // $query[0]->designation = $designations;
-
-            // if ($document->count() <= 0) {
-            //     $query[0]->filePath = '';
-            // } else {
-            //     $query[0]->filePath = $document[0]->filePath;
-            // }
-
-            if ($query_one->count() > 0) {
-                $query[0]->Gender = $query_one[0]->gender;
-            }
-
-            $staff = $query[0];
-        }
-
-        $check = "entry";
-
-        // dd($staff);
-
-        return view('admin.StaffProfile.staff', compact('check', 'staff', 'designations', 'roles'));
+        return back();
     }
 
-    public function update(Request $request, Staffs $staffs)
+    public function massDestroy(Request $request)
     {
+        // dd($request);
+        $teachingStaffs = Staffs::find(request('ids'));
 
-        $staffs->update($request->all());
+        foreach ($teachingStaffs as $teachingStaff) {
+            $teachingStaff->delete();
+            $user = User::find($teachingStaff->user_name_id);
+            $user->delete();
+        }
 
-        return redirect()->route('admin.staffs.index');
+        return response(null, Response::HTTP_NO_CONTENT);
     }
+
+    // public function past_leave_apply_access(Request $request)
+    // {
+
+    //     if (isset($request->id) && $request->id != '' && isset($request->status) && $request->status != '') {
+    //         $update_control = TeachingStaff::where(['user_name_id' => $request->id])->update([
+    //             'past_leave_access' => (int) $request->status,
+    //         ]);
+    //         if ($request->status == '1') {
+    //             $status = 'Enable';
+    //             $update_control = TeachingStaff::where(['user_name_id' => $request->id])->select('past_leave_access')->first();
+    //             $id = $update_control->past_leave_access;
+    //         } else {
+    //             $status = 'Disable';
+    //             $update_control = TeachingStaff::where(['user_name_id' => $request->id])->select('past_leave_access')->first();
+    //             $id = $update_control->past_leave_access;
+    //         }
+    //         if ($update_control) {
+    //             return response()->json(['status' => true, 'id' => $id, 'data' => $status . 'd']);
+    //         } else {
+    //             return response()->json(['status' => false, 'id' => $id, 'data' => $status . ' Process Failed']);
+    //         }
+    //     } else {
+    //         return response()->json(['status' => false, 'data' => 'Technical Error']);
+    //     }
+    // }
+
+    // public function Past_Leave_Access_check(Request $request)
+
+    // {
+    //     if (isset($request->data)) {
+
+
+    //         $staff = auth()->user()->id;
+    //         $update_control = TeachingStaff::where(['user_name_id' => $staff])->select('past_leave_access')->first();
+    //         if ($update_control['past_leave_access']  == 1) {
+
+    //             $given_Dates = $request->date;
+    //             $given_Date = new \DateTime($given_Dates);
+    //             $given_Date->setTime(0, 0, 0);
+    //             $currentDate = new \DateTime();
+    //             $currentDate->setTime(0, 0, 0);
+    //             $startDateAllowed = new \DateTime('first day of previous month');
+    //             $startDateAllowed->setDate($startDateAllowed->format('Y'), $startDateAllowed->format('m'), 26);
+    //             $startDateAllowed->setTime(0, 0, 0);
+    //             $endDateAllowed = new \DateTime('last day of this month');
+    //             $endDateAllowed->setDate($endDateAllowed->format('Y'), $endDateAllowed->format('m'), 25);
+    //             $endDateAllowed->setTime(0, 0, 0);
+    //             $endDateAllowed2 = new \DateTime('last day of this month');
+    //             $endDateAllowed2->setDate($endDateAllowed->format('Y'), $endDateAllowed->format('m'), 26);
+    //             $endDateAllowed2->setTime(0, 0, 0);
+
+
+    //             if ($currentDate > $given_Date) {
+
+    //                 if ($startDateAllowed <= $given_Date) {
+
+    //                     return response()->json(['status' => true]);
+    //                 } else {
+    //                     return response()->json(['status' => false]);
+    //                 }
+    //             } else if ($currentDate > $endDateAllowed) {
+    //                 if ($endDateAllowed < $given_Date) {
+    //                     return response()->json(['status' => true]);
+    //                 } else {
+    //                     return response()->json(['status' => false]);
+    //                 }
+    //             } else {
+    //                 return response()->json(['status' => true]);
+    //             }
+    //         } else {
+
+    //             return response()->json(['status' => false]);
+    //         }
+    //     }
+    // }
+
+    public function inactive_teaching_or_nonteach(Request $request){
+        $id = $request->id;
+        $teaching = Staffs::where('user_name_id', $id)->count();
+        if($teaching == '1'){
+
+            return response()->json(['status' => true]);
+        }else{
+
+            return response()->json(['status' => false]);
+        }
+
+
+    }
+
 }

@@ -484,7 +484,7 @@
             </div>
         </div>
 
-        {{-- <div class="row gutters" style="margin:7.5px 0px 0px 0px;">
+        <div class="row gutters" style="margin:7.5px 0px 0px 0px;">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" style="padding:0;">
                 <div class="card ">
                     <div class="card-header">
@@ -508,14 +508,14 @@
                                         value="{{ $detail->BiometricID }}" readonly>
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="AICTE">AICTE</label>
                                     <input type="text" class="form-control" name="AICTE"
                                         value="{{ $detail->AICTE }}" readonly>
                                 </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            </div> --}}
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="au_card_no">Anna University Code</label>
                                     <input type="text" class="form-control" name="au_card_no"
@@ -528,7 +528,7 @@
                                     <input type="text" class="form-control" name="employment_type"
                                         value="{{ $detail->employment_type }}" readonly>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="employment_status">Employment Status</label>
@@ -536,7 +536,7 @@
                                         value="{{ $detail->employment_status }}" readonly>
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="rit_club_incharge">RIT Club Incharge</label>
                                     @if ($detail->rit_club_incharge == true)
@@ -561,12 +561,12 @@
                                     <input type="text" class="form-control" name="future_tech_membership_type"
                                         value="{{ $detail->future_tech_membership_type }}" readonly>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
         {{-- @if (count($phd_list) > 0)
             <div class="row gutters" style="margin:7.5px 0px 0px 0px;">

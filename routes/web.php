@@ -4,11 +4,6 @@ use App\Http\Controllers\Admin\FeeDataController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-// use App\Http\Controllers\Admin\GoogleDriveController;
-
-// Route::get('/auth', [GoogleDriveController::class, 'authenticate']);
-// Route::get('/auth/callback', [GoogleDriveController::class, 'handleCallback']);
-// Route::view('/', 'welcome');
 Auth::routes(['register' => false]);
 
 Route::get('/', function () {
@@ -1680,12 +1675,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('internship-requests', 'InternshipRequestController');
 
     // College Calender
-    Route::delete('college-calenders/destroy', 'CollegeCalenderController@massDestroy')->name('college-calenders.massDestroy');
-    Route::post('college-calenders/parse-csv-import', 'CollegeCalenderController@parseCsvImport')->name('college-calenders.parseCsvImport');
-    Route::post('college-calenders/process-csv-import', 'CollegeCalenderController@processCsvImport')->name('college-calenders.processCsvImport');
-    Route::resource('college-calenders', 'CollegeCalenderController');
-    Route::post('college-calenders/att_access', 'CollegeCalenderController@attAccess')->name('college-calenders.att_access');
-    Route::post('/update-day', 'CollegeCalenderController@updateDay')->name('update-day');
+    Route::delete('college-calenders/destroy', 'OfficeCalender@massDestroy')->name('college-calenders.massDestroy');
+    Route::post('college-calenders/parse-csv-import', 'OfficeCalender@parseCsvImport')->name('college-calenders.parseCsvImport');
+    Route::post('college-calenders/process-csv-import', 'OfficeCalender@processCsvImport')->name('college-calenders.processCsvImport');
+    Route::resource('college-calenders', 'OfficeCalender');
+    Route::post('college-calenders/att_access', 'OfficeCalender@attAccess')->name('college-calenders.att_access');
+    Route::post('/update-day', 'OfficeCalender@updateDay')->name('update-day');
 
     // Hrm Request Permission
     Route::delete('hrm-request-permissions/destroy', 'HrmRequestPermissionController@massDestroy')->name('hrm-request-permissions.massDestroy');

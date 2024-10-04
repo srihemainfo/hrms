@@ -73,59 +73,19 @@
         </li>
     @endcan
 
-    @can('education_type_access')
-        <li class="nav-item">
-            <a href="{{ route('admin.education-types.index') }}"
-                class="nav-link {{ request()->is('admin/education-types') || request()->is('admin/education-types/*') ? 'active' : '' }}">
-                <i class="fa-fw nav-icon fas fa-tasks">
-
-                </i>
-                <p>
-                    {{ trans('cruds.educationType.title') }}
-                </p>
-            </a>
-        </li>
-    @endcan
-
     @can('leave_type_access')
         <li class="nav-item">
             <a href="{{ route('admin.leave-types.index') }}"
                 class="nav-link {{ request()->is('admin/leave-types') || request()->is('admin/leave-types/*') ? 'active' : '' }}">
                 <i class="fa-fw nav-icon fas fa-monument">
 
-                </i>
-                <p>
-
-                    {{ trans('cruds.leaveType.title') }}
-                </p>
-            </a>
-        </li>
-    @endcan
-
-    @can('mother_tongue_access')
+    @can('state_access')
         <li class="nav-item">
-            <a href="{{ route('admin.mother-tongues.index') }}"
-                class="nav-link {{ request()->is('admin/mother-tongues') || request()->is('admin/mother-tongues/*') ? 'active' : '' }}">
-                <i class="fa-fw nav-icon fas fa-language">
-
-                </i>
+            <a href="{{ route('admin.state.index') }}"
+                class="nav-link {{ request()->is('admin/state') || request()->is('admin/state/*') ? 'active' : '' }}">
+                <i class="fa-fw nav-icon fas fa-map"></i>
                 <p>
-                    {{ trans('cruds.motherTongue.title') }}
-                </p>
-            </a>
-        </li>
-    @endcan
-
-
-    @can('mediumof_studied_access')
-        <li class="nav-item">
-            <a href="{{ route('admin.mediumof-studieds.index') }}"
-                class="nav-link {{ request()->is('admin/mediumof-studieds') || request()->is('admin/mediumof-studieds/*') ? 'active' : '' }}">
-                <i class="fa-fw nav-icon fas fa-ticket-alt">
-
-                </i>
-                <p>
-                    {{ trans('cruds.mediumofStudied.title') }}
+                    State
                 </p>
             </a>
         </li>
@@ -158,6 +118,7 @@
             </a>
         </li>
     @endcan
+
 
     @can('state_access')
         <li class="nav-item">

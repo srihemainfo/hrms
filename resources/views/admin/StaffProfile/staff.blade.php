@@ -354,7 +354,7 @@
                     </li>
                 {{-- @endcan --}}
 
-                @can('employment_detail_access')
+                {{-- @can('employment_detail_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.employment-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
                             class="nav-link {{ request()->is('admin/employment-details') || request()->is('admin/employment-details/*') ? 'active' : '' }}">
@@ -366,7 +366,7 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
                 {{-- @can('experience_detail_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.experience-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
@@ -380,7 +380,7 @@
                         </a>
                     </li>
                 {{-- @endcan --}}
-                @can('staff_promotion_access')
+                {{-- @can('staff_promotion_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.promotion-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
                             class="nav-link {{ request()->is('admin/promotion-details') || request()->is('admin/promotion-details/*') ? 'active' : '' }}">
@@ -392,7 +392,7 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
                 {{-- @can('educational_detail_access') --}}
                     <li class="nav-item">
 
@@ -594,7 +594,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('document_access')
+                {{-- @can('document_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.documents.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
                             class="nav-link {{ request()->is('admin/documents') || request()->is('admin/documents/*') ? 'active' : '' }}">
@@ -606,7 +606,7 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
                 @can('patent_access')
                     <li class="nav-item">
                         <a href="{{ route('admin.patents.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"

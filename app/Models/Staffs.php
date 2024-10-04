@@ -30,10 +30,12 @@ class Staffs extends Model
         'status',
         'biometric',
         'employee_id',
+        'DOJ',
+        'DOR',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
 
-    
+
 }

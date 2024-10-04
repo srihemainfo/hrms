@@ -380,7 +380,14 @@ class PersonalDetailsController extends Controller
             $query->aadhar_number = null;
             $query->state = null;
             $query->nationality = null;
+            $query->employee_id = null;
+            $query->phone_number = null;
             $query->country = null;
+            $query->gender = null;
+            $query->state_id = $states;
+            $query->nationality_id = $nationalities;
+            $query->state = null;
+            $query->nationality = null;
             $query->user_name_id = null;
             $query->blood_group_id = $blood_groups;
             $query->blood_group = null;
@@ -401,7 +408,7 @@ class PersonalDetailsController extends Controller
             $query->PassportNo = null;
             $query->total_experience = null;
             $query->COECode = null;
-            $query->department_id = $departments;
+            // $query->department_id = $departments;
             $query->department = null;
 
             // $query->DOJ = null;
@@ -412,11 +419,11 @@ class PersonalDetailsController extends Controller
             $query->user_name_id = $request->user_name_id;
             $query->add = 'Add';
 
-            if ($document->count() <= 0) {
-                $query->filePath = null;
-            } else {
-                $query->filePath = $document[0]->filePath;
-            }
+            // if ($document->count() <= 0) {
+            //     $query->filePath = null;
+            // } else {
+            //     $query->filePath = $document[0]->filePath;
+            // }
 
             $staff = $query;
 
@@ -434,7 +441,7 @@ class PersonalDetailsController extends Controller
             $query[0]->religion = $religions;
             $query[0]->state = $states;
             $query[0]->nationality = $nationalities;
-            $query[0]->known_languages = $known_languages;
+            // $query[0]->known_languages = $known_languages;
             // $query[0]->BiometricID = $teaching_staff->BiometricID;
             // $query[0]->AICTE = $teaching_staff->AICTE;
             // $query[0]->PanNo = $teaching_staff->PanNo;
