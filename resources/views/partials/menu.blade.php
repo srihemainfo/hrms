@@ -166,7 +166,7 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.teaching-staffs.index') }}"
                                     class="nav-link {{ request()->is('admin/teaching-staffs') || request()->is('admin/teaching-staffs*') ? 'active' : '' }}">
                                     <i class="fas nav-icon fa-chalkboard-teacher">
@@ -175,7 +175,7 @@
                                         {{ trans('cruds.teachingStaff.title') }}
                                     </p>
                                 </a>
-                            </li>
+                            </li> --}}
 
 
                             <li class="nav-item">
