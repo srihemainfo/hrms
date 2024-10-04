@@ -193,7 +193,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => 'C:\\Work\\Hrms\\storage\\framework/cache/data',
+        'path' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -363,10 +363,10 @@
     'convert_entities' => true,
     'options' => 
     array (
-      'font_dir' => 'C:\\Work\\Hrms\\storage\\fonts',
-      'font_cache' => 'C:\\Work\\Hrms\\storage\\fonts',
+      'font_dir' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\fonts',
+      'font_cache' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\fonts',
       'temp_dir' => 'C:\\Users\\Admin\\AppData\\Local\\Temp',
-      'chroot' => 'C:\\Work\\Hrms',
+      'chroot' => 'C:\\Work\\Projects\\HR_Management\\hrms',
       'allowed_protocols' => 
       array (
         'file://' => 
@@ -411,12 +411,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\Work\\Hrms\\storage\\app',
+        'root' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => 'C:\\Work\\Hrms\\storage\\app/public',
+        'root' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\app/public',
         'url' => 'http://localhost/storage',
         'visibility' => 'public',
       ),
@@ -434,7 +434,7 @@
     ),
     'links' => 
     array (
-      'C:\\Work\\Hrms\\public\\storage' => 'C:\\Work\\Hrms\\storage\\app/public',
+      'C:\\Work\\Projects\\HR_Management\\hrms\\public\\storage' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\app/public',
     ),
   ),
   'hashing' => 
@@ -469,13 +469,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => 'C:\\Work\\Hrms\\storage\\logs/laravel.log',
+        'path' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => 'C:\\Work\\Hrms\\storage\\logs/laravel.log',
+        'path' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -527,7 +527,7 @@
       ),
       'emergency' => 
       array (
-        'path' => 'C:\\Work\\Hrms\\storage\\logs/laravel.log',
+        'path' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\logs/laravel.log',
       ),
     ),
   ),
@@ -592,7 +592,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => 'C:\\Work\\Hrms\\resources\\views/vendor/mail',
+        0 => 'C:\\Work\\Projects\\HR_Management\\hrms\\resources\\views/vendor/mail',
       ),
     ),
   ),
@@ -708,7 +708,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => 'C:\\Work\\Hrms\\storage\\framework/sessions',
+    'files' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -728,9 +728,9 @@
   array (
     'paths' => 
     array (
-      0 => 'C:\\Work\\Hrms\\resources\\views',
+      0 => 'C:\\Work\\Projects\\HR_Management\\hrms\\resources\\views',
     ),
-    'compiled' => 'C:\\Work\\Hrms\\storage\\framework\\views',
+    'compiled' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\framework\\views',
   ),
   'image' => 
   array (
@@ -849,7 +849,7 @@
     ),
     'temporary_files' => 
     array (
-      'local_path' => 'C:\\Work\\Hrms\\storage\\framework/cache/laravel-excel',
+      'local_path' => 'C:\\Work\\Projects\\HR_Management\\hrms\\storage\\framework/cache/laravel-excel',
       'local_permissions' => 
       array (
       ),
@@ -931,7 +931,7 @@
     array (
     ),
     'enable_runnable_solutions' => NULL,
-    'remote_sites_path' => 'C:\\Work\\Hrms',
+    'remote_sites_path' => 'C:\\Work\\Projects\\HR_Management\\hrms',
     'local_sites_path' => '',
     'housekeeping_endpoint_prefix' => '_ignition',
     'settings_file_path' => '',
