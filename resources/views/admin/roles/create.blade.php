@@ -10,12 +10,7 @@
         <form method="POST" action="{{ route("admin.roles.store") }}" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
-                <label for="type_id" class="required">{{ trans('cruds.role.fields.type') }}</label>
-                <select class="form-control select2 {{ $errors->has('type') ? 'is-invalid' : '' }}" name="type_id" id="type_id">
-                    @foreach($types as $id => $entry)
-                        <option value="{{ $id }}" {{ old('type_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
-                    @endforeach
-                </select>
+               
                 @if($errors->has('type'))
                     <span class="text-danger">{{ $errors->first('type') }}</span>
                 @endif

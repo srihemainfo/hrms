@@ -1,14 +1,13 @@
 @extends('layouts.admin')
 @section('content')
-    @can('leave_type_create')
-        <div style="margin-bottom: 10px;" class="row">
-            <div class="col-lg-12">
-                <button class="btn btn-outline-success" onclick="openModal()">
-                    {{ trans('global.add') }} {{ trans('cruds.leaveType.title_singular') }}
-                </button>
-            </div>
+    <div style="margin-bottom: 10px;" class="row">
+        <div class="col-lg-12">
+            <button class="btn btn-outline-success" onclick="openModal()">
+                {{ trans('global.add') }} {{ trans('cruds.leaveType.title_singular') }}
+            </button>
         </div>
-    @endcan
+    </div>
+
     <div class="card">
         <div class="card-header">
             {{ trans('cruds.leaveType.title_singular') }} {{ trans('global.list') }}
@@ -359,7 +358,8 @@
                             error: function(jqXHR, textStatus, errorThrown) {
                                 if (jqXHR.status) {
                                     if (jqXHR.status == 500) {
-                                        Swal.fire('', 'Request Timeout / Internal Server Error', 'error');
+                                        Swal.fire('', 'Request Timeout / Internal Server Error',
+                                            'error');
                                     } else {
                                         Swal.fire('', jqXHR.status, 'error');
                                     }

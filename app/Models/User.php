@@ -40,6 +40,7 @@ class User extends Authenticatable
         'dept',
         'email_verified_at',
         'password',
+        'employee_id',
         'remember_token',
         'created_at',
         'updated_at',

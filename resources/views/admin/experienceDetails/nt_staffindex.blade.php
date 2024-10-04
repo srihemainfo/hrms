@@ -31,7 +31,7 @@
                                         placeholder="Enter Department" value="{{ $staff_edit->department }}">
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="name_of_organisation">Organisation Name</label>
                                     <input type="text" class="form-control" name="name_of_organisation"
@@ -39,7 +39,7 @@
                                         value="{{ $staff_edit->name_of_organisation }}">
                                     <input type="hidden" class="form-control" name="taken_subjects" value="">
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="doj">Date Of Joining</label>

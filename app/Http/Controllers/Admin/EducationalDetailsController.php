@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\EducationType;
 use App\Models\TeachingStaff;
 use App\Models\MediumofStudied;
+use App\Models\Staffs;
 use App\Models\NonTeachingStaff;
 use App\Models\EducationalDetail;
 use App\Http\Controllers\Controller;
@@ -23,7 +24,7 @@ class EducationalDetailsController extends Controller
 
     public function index(Request $request)
     {
-        abort_if(Gate::denies('educational_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('educational_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = EducationalDetail::with(['education_type', 'medium'])->select(sprintf('%s.*', (new EducationalDetail)->table));
@@ -122,7 +123,7 @@ class EducationalDetailsController extends Controller
 
     public function stu_index(Request $request)
     {
-        abort_if(Gate::denies('educational_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('educational_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $education_types = EducationType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -311,7 +312,7 @@ class EducationalDetailsController extends Controller
     {
 
 
-        abort_if(Gate::denies('educational_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('educational_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $education_types = EducationType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $medium = MediumofStudied::pluck('medium', 'id')->prepend(trans('global.pleaseSelect'), '');
@@ -416,7 +417,7 @@ class EducationalDetailsController extends Controller
         }
 
         $check = 'educational_details';
-        $check_staff_1 = TeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
+        $check_staff_1 = Staffs::where(['user_name_id' => $request->user_name_id])->get();
 
         if (count($check_staff_1) > 0) {
             return view('admin.StaffProfile.staff', compact('staff', 'check', 'list', 'staff_edit'));
@@ -430,7 +431,7 @@ class EducationalDetailsController extends Controller
     }
 
 
-    public function staff_update(UpdateEducationalDetailRequest $request, EducationalDetail $educationalDetail)
+    public function staff_update(Request $request, EducationalDetail $educationalDetail)
     {
 
         $request->validate([
@@ -490,7 +491,7 @@ class EducationalDetailsController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('educational_detail_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('educational_detail_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $education_types = EducationType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -508,7 +509,7 @@ class EducationalDetailsController extends Controller
 
     public function edit(EducationalDetail $educationalDetail)
     {
-        abort_if(Gate::denies('educational_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('educational_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $education_types = EducationType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -528,7 +529,7 @@ class EducationalDetailsController extends Controller
 
     public function show(EducationalDetail $educationalDetail)
     {
-        abort_if(Gate::denies('educational_detail_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('educational_detail_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $educationalDetail->load('education_type', 'medium');
 
@@ -537,7 +538,7 @@ class EducationalDetailsController extends Controller
 
     public function destroy(EducationalDetail $educationalDetail)
     {
-        abort_if(Gate::denies('educational_detail_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('educational_detail_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $educationalDetail->delete();
 

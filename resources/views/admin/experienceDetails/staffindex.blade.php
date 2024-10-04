@@ -37,13 +37,13 @@
                                         value="{{ $staff_edit->name_of_organisation }}">
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="taken_subjects">Taken Subjects</label>
                                     <input type="text" class="form-control" name="taken_subjects"
                                         placeholder="Enter Taken Subjects" value="{{ $staff_edit->taken_subjects }}">
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="doj">Date Of Joining</label>
@@ -125,9 +125,9 @@
                                     <th>
                                         Organisation Name
                                     </th>
-                                    <th>
+                                    {{-- <th>
                                         Taken Subjects
-                                    </th>
+                                    </th> --}}
                                     <th>
                                         Date Of Joining
                                     </th>
@@ -158,7 +158,7 @@
                                         <td>{{ $list[$i]->designation }}</td>
                                         <td>{{ $list[$i]->department }}</td>
                                         <td>{{ $list[$i]->name_of_organisation }}</td>
-                                        <td>{{ $list[$i]->taken_subjects }}</td>
+                                        {{-- <td>{{ $list[$i]->taken_subjects }}</td> --}}
                                         <td>{{ $list[$i]->doj }}</td>
                                         <td>{{ $list[$i]->dor }}</td>
                                         <td>{{ $list[$i]->last_drawn_salary }}</td>

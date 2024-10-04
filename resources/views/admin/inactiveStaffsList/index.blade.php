@@ -117,16 +117,16 @@
         </div>
         <div class="card-body">
             <ul class="nav nav-tabs mb-3" style="font-size: 1.3rem;">
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link{{ $staff_status === 'teaching_staff' ? ' active' : '' }}"
                         href="{{ route('admin.inactive_staff.index', ['staff_status' => 'teaching_staff']) }}">Teaching
                         Staff</a>
-                </li>
-                <li class="nav-item">
+                </li> --}}
+                {{-- <li class="nav-item">
                     <a class="nav-link{{ $staff_status === 'non_teaching_staff' ? ' active' : '' }}"
                         href="{{ route('admin.inactive_staff.index', ['staff_status' => 'non_teaching_staff']) }}">Non
                         Teaching Staff</a>
-                </li>
+                </li> --}}
             </ul>
 
             <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-TeachingStaff">
@@ -135,20 +135,20 @@
                         <th width="10"></th>
                         <th>ID</th>
                         <th>
-                            Staff Code
+                            Employee ID
                         </th>
                         <th>
                             Name
                         </th>
-                        <th>
+                        {{-- <th>
                             Department
-                        </th>
-                        <th>
+                        </th> --}}
+                        {{-- <th>
                             Designation
-                        </th>
-                        <th>
+                        </th> --}}
+                        {{-- <th>
                             Past Leave Access
-                        </th>
+                        </th> --}}
                         <th>
                             Status
                         </th>
@@ -232,25 +232,25 @@
                         name: 'user_name_id'
                     },
                     {
-                        data: 'StaffCode',
-                        name: 'StaffCode'
+                        data: 'employee_id',
+                        name: 'employee_id'
                     },
                     {
                         data: 'name',
                         name: 'name'
                     },
-                    {
-                        data: 'Dept',
-                        name: 'Dept'
-                    },
-                    {
-                        data: 'Designation',
-                        name: 'Designation'
-                    },
-                    {
-                        data: 'past_leave_access',
-                        name: 'past_leave_access'
-                    },
+                    // {
+                    //     data: 'Dept',
+                    //     name: 'Dept'
+                    // },
+                    // {
+                    //     data: 'Designation',
+                    //     name: 'Designation'
+                    // },
+                    // {
+                    //     data: 'past_leave_access',
+                    //     name: 'past_leave_access'
+                    // },
                     {
                         data: 'active_status',
                         name: 'active_status',

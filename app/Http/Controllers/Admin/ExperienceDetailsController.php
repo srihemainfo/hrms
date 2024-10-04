@@ -9,6 +9,7 @@ use App\Http\Requests\StoreExperienceDetailRequest;
 use App\Http\Requests\UpdateExperienceDetailRequest;
 use App\Models\ExperienceDetail;
 use App\Models\NonTeachingStaff;
+use App\Models\Staffs;
 use App\Models\TeachingStaff;
 use App\Models\User;
 use Gate;
@@ -22,7 +23,7 @@ class ExperienceDetailsController extends Controller
 
     public function index(Request $request)
     {
-        abort_if(Gate::denies('experience_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('experience_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = ExperienceDetail::with(['name'])->select(sprintf('%s.*', (new ExperienceDetail)->table));
@@ -77,7 +78,7 @@ class ExperienceDetailsController extends Controller
     public function staff_index(Request $request)
     {
 
-        abort_if(Gate::denies('experience_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('experience_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if (!$request->updater) {
 
@@ -158,7 +159,7 @@ class ExperienceDetailsController extends Controller
 
         $check = 'experience_details';
 
-        $check_staff_1 = TeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
+        $check_staff_1 = Staffs::where(['user_name_id' => $request->user_name_id])->get();
 
         if (count($check_staff_1) > 0) {
             return view('admin.StaffProfile.staff', compact('staff', 'check', 'list', 'staff_edit'));
@@ -171,7 +172,7 @@ class ExperienceDetailsController extends Controller
         }
     }
 
-    public function staff_update(UpdateExperienceDetailRequest $request, ExperienceDetail $experienceDetail)
+    public function staff_update(Request $request, ExperienceDetail $experienceDetail)
     {
 // dd($request);
         if (!$request->id == 0 || $request->id != '') {
@@ -196,7 +197,7 @@ class ExperienceDetailsController extends Controller
             $staff_education->designation = $request->designation;
             $staff_education->department = $request->department;
             $staff_education->name_of_organisation = $request->name_of_organisation;
-            $staff_education->taken_subjects = $request->taken_subjects;
+            // $staff_education->taken_subjects = $request->taken_subjects;
             $staff_education->doj = $request->doj;
             $staff_education->dor = $request->dor;
             $staff_education->last_drawn_salary = $request->last_drawn_salary;
@@ -218,7 +219,7 @@ class ExperienceDetailsController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('experience_detail_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('experience_detail_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $names = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -234,7 +235,7 @@ class ExperienceDetailsController extends Controller
 
     public function edit(ExperienceDetail $experienceDetail)
     {
-        abort_if(Gate::denies('experience_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('experience_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $names = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -252,7 +253,7 @@ class ExperienceDetailsController extends Controller
 
     public function show(ExperienceDetail $experienceDetail)
     {
-        abort_if(Gate::denies('experience_detail_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('experience_detail_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $experienceDetail->load('name');
 
@@ -261,7 +262,7 @@ class ExperienceDetailsController extends Controller
 
     public function destroy(ExperienceDetail $experienceDetail)
     {
-        abort_if(Gate::denies('experience_detail_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('experience_detail_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $experienceDetail->delete();
 

@@ -22,49 +22,34 @@ class PersonalDetail extends Model
 
     protected $fillable = [
         'user_name_id',
-        'age',
-        'dob',
+        'role_id',
+        'designation_id',
         'name',
+        'dob',
+        'age',
         'email',
+        'phone_number',
+        'emergency_contact_no',
+        'father_name',
+        'spouse_name',
         'gender',
-        'gender',
-        'student_id',
-        'staff_id',
-        'mobile_number',
-        'aadhar_number',
         'blood_group_id',
-        'mother_tongue_id',
         'religion_id',
+        'aadhar_number',
         'community_id',
+        'marital_status',
+        'pan_number',
+        'total_experience',
+        'nationality',
         'state',
-        'country',
+        'mother_tongue_id',
+        'BiometricID',
+        'DOJ',
+        'DOR',
+        'employment_status',
         'created_at',
         'updated_at',
         'deleted_at',
-        'last_name',
-        'father_name',
-        'spouse_name',
-        'StaffCode',
-        'BiometricID',
-        'AICTE',
-        'PanNo',
-        'DOJ',
-        'DOR',
-        'au_card_no',
-        'COECode',
-        'PassportNo',
-        'employment_type',
-        'employment_status',
-        'rit_club_incharge',
-        'future_tech_membership',
-        'future_tech_membership_type',
-        'known_languages',
-        'emergency_contact_no',
-        'caste',
-        'different_abled_person',
-        'whatsapp_no',
-        'annual_income',
-        'first_graduate'
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -111,6 +96,16 @@ class PersonalDetail extends Model
     public function department()
     {
         return $this->belongsTo(ToolsDepartment::class, 'department_id');
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class, 'state_id');
+    }
+
+    public function nationality()
+    {
+        return $this->belongsTo(Nationality::class, 'nationality_id');
     }
 
 }

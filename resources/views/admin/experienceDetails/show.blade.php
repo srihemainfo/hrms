@@ -47,14 +47,14 @@
                             {{ $experienceDetail->worked_place }}
                         </td>
                     </tr>
-                    <tr>
+                    {{-- <tr>
                         <th>
                             {{ trans('cruds.experienceDetail.fields.taken_subjects') }}
                         </th>
                         <td>
                             {{ $experienceDetail->taken_subjects }}
                         </td>
-                    </tr>
+                    </tr> --}}
                     <tr>
                         <th>
                             {{ trans('cruds.experienceDetail.fields.from_date') }}

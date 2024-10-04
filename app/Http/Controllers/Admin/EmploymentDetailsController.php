@@ -3,20 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdatePersonalDetailRequest;
 use App\Models\NonTeachingStaff;
 use App\Models\PersonalDetail;
-use App\Models\TeachingStaff;
-use App\Models\StaffOldCurrentStatus;
-use Gate;
+use App\Models\Staffs;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class EmploymentDetailsController extends Controller
 {
     public function staff_index(Request $request)
     {
-        abort_if(Gate::denies('employment_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('employment_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request) {
 
@@ -50,7 +46,7 @@ class EmploymentDetailsController extends Controller
             $staff = $query[0];
         }
         $check = 'employee_details';
-        $check_staff_1 = TeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
+        $check_staff_1 = Staffs::where(['user_name_id' => $request->user_name_id])->get();
 
         if (count($check_staff_1) > 0) {
             return view('admin.StaffProfile.staff', compact('staff', 'check'));
@@ -63,20 +59,27 @@ class EmploymentDetailsController extends Controller
         }
     }
 
-    public function staff_update(UpdatePersonalDetailRequest $request, PersonalDetail $personalDetail)
+    public function staff_update(Request $request, PersonalDetail $personalDetail)
     {
 
         $personal = $personalDetail->where('user_name_id', $request->user_name_id)->update([
             'BiometricID' => $request->BiometricID,
-            'AICTE' => $request->AICTE,
+            // 'AICTE' => $request->AICTE,
             'DOJ' => $request->DOJ,
             'DOR' => $request->DOR,
-            'au_card_no' => $request->au_card_no,
-            'employment_type' => $request->employment_type,
+            // 'au_card_no' => $request->au_card_no,
+            // 'employment_type' => $request->employment_type,
             'employment_status' => $request->employment_status,
-            'rit_club_incharge' => $request->rit_club_incharge,
-            'future_tech_membership' => $request->future_tech_membership,
-            'future_tech_membership_type' => $request->future_tech_membership_type,
+            // 'rit_club_incharge' => $request->rit_club_incharge,
+            // 'future_tech_membership' => $request->future_tech_membership,
+            // 'future_tech_membership_type' => $request->future_tech_membership_type,
+        ]);
+
+        $teach_staff_update = Staffs::where('user_name_id', $request->user_name_id)->update([
+            'biometric' => $request->BiometricID,
+            'DOJ' => $request->DOJ,
+            'status' => $request->employment_status,
+            'DOR' => $request->DOR,
         ]);
 
         if ($personal) {
@@ -87,24 +90,23 @@ class EmploymentDetailsController extends Controller
             $personalDetail = PersonalDetail::create([
                 'name' => $request->name,
                 'BiometricID' => $request->BiometricID,
-                'AICTE' => $request->AICTE,
+                // 'AICTE' => $request->AICTE,
                 'DOJ' => $request->DOJ,
                 'DOR' => $request->DOR,
-                'au_card_no' => $request->au_card_no,
-                'employment_type' => $request->employment_type,
+                // 'au_card_no' => $request->au_card_no,
+                // 'employment_type' => $request->employment_type,
                 'employment_status' => $request->employment_status,
-                'rit_club_incharge' => $request->rit_club_incharge,
-                'future_tech_membership' => $request->future_tech_membership,
-                'future_tech_membership_type' => $request->future_tech_membership_type,
+                // 'rit_club_incharge' => $request->rit_club_incharge,
+                // 'future_tech_membership' => $request->future_tech_membership,
+                // 'future_tech_membership_type' => $request->future_tech_membership_type,
                 'user_name_id' => $request->user_name_id,
             ]);
 
-            $teach_staff_update = TeachingStaff::where('user_name_id', $request->user_name_id)->update([
-                'BiometricID' => $request->BiometricID,
-                'AICTE' => $request->AICTE,
+            $teach_staff_update = Staffs::where('user_name_id', $request->user_name_id)->update([
+                'biometric' => $request->BiometricID,
                 'DOJ' => $request->DOJ,
+                'status' => $request->employment_status,
                 'DOR' => $request->DOR,
-                'au_card_no' => $request->au_card_no,
             ]);
 
             if ($personalDetail) {
@@ -112,57 +114,6 @@ class EmploymentDetailsController extends Controller
             } else {
             }
         }
-
-        $status_check = StaffOldCurrentStatus::where('user_name_id', $request->user_name_id)->get()->last();
-        $tech_or_nontech = NonTeachingStaff::where('user_name_id', $request->user_name_id)->select('user_name_id','Dept','Designation')->first();
-        if($tech_or_nontech != '' ){
-                $staff_status = 'NonTeaching';
-                $Dept = $tech_or_nontech->Dept;
-                $Designation = $tech_or_nontech->Designation;
-        }else{
-        $tech_or_nontech = TeachingStaff::where('user_name_id', $request->user_name_id)->select('user_name_id','Dept','Designation')->first();
-                
-            $staff_status = 'Teaching';
-            $Dept = $tech_or_nontech->Dept;
-            $Designation = $tech_or_nontech->Designation;
-        }
-
-        if ($status_check != '') {
-            if ($status_check->status  != $request->employment_status) {
-                
-                $date1 = strtotime($status_check->start_time);
-                $date2 = strtotime(now());
-                $diff = $date2 - $date1;
-                $days = floor($diff / (60 * 60 * 24));
-                $status_update = $status_check->update(['end_time' => now(), 'total_days' => $days,'current_status'=>$request->employment_status]);
-
-                // create_new Status
-                $status_create = StaffOldCurrentStatus::create([
-                    'staff_name' => $request->name,
-                    'user_name_id' => $request->user_name_id,
-                    'status' => $request->employment_status,
-                    'teach_or_nonteach' => $staff_status,
-                    'Dept' =>  $Dept ?  $Dept : NULL,
-                    'Designation' =>  $Designation ?  $Designation : NULL,
-                    'start_time' => now(),
-                    'updated_by' => auth()->user()->id,
-                ]);
-            }
-        } else {
-            $status_create = StaffOldCurrentStatus::create([
-                'staff_name' => $request->name,
-                'user_name_id' => $request->user_name_id,
-                'status' => $request->employment_status,
-                'current_status' => $request->employment_status,
-                'teach_or_nonteach' => $staff_status,
-                'Dept' =>  $Dept ?  $Dept : NULL,
-                'Designation' =>  $Designation ?  $Designation : NULL,
-                'start_time' => now(),
-                'end_time' => now(),
-                'updated_by' => auth()->user()->id,
-            ]);
-        }
-
 
         return redirect()->route('admin.employment-details.staff_index', $staff);
     }

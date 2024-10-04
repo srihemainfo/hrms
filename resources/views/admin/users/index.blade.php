@@ -1,21 +1,21 @@
 @extends('layouts.admin')
 @section('content')
-    @can('user_create')
+    {{-- @can('user_create') --}}
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-10">
                 <a class="btn btn-success" href="{{ route('admin.users.create') }}">
                     {{ trans('global.add') }} {{ trans('cruds.user.title_singular') }}
                 </a>
-                <a class="btn btn-danger" href="{{ route('admin.users.block') }}">
+                {{-- <a class="btn btn-danger" href="{{ route('admin.users.block') }}">
                     Block User
-                </a>
+                </a> --}}
                 {{-- <a class="btn btn-info" href="{{ route('admin.users.unblock') }}">
                 Unblock User
             </a> --}}
-                <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
+                {{-- <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
                     {{ trans('global.app_csvImport') }}
                 </button>
-                @include('csvImport.modal', ['model' => 'User', 'route' => 'admin.users.parseCsvImport'])
+                @include('csvImport.modal', ['model' => 'User', 'route' => 'admin.users.parseCsvImport']) --}}
             </div>
             <div class="col-lg-2" style="text-align:right;">
                 <a class="btn btn-danger" href="{{ route('admin.users.block_list') }}">
@@ -23,7 +23,7 @@
                 </a>
             </div>
         </div>
-    @endcan
+    {{-- @endcan --}}
     <div class="card">
         <div class="card-header">
             {{ trans('cruds.user.title_singular') }} {{ trans('global.list') }}
@@ -42,20 +42,20 @@
                         <th>
                             Name
                         </th>
-                        <th>
+                        {{-- <th>
                             Staff Code / Reg No
-                        </th>
+                        </th> --}}
                         <th>
                             Email
                         </th>
-                        <th>
+                        {{-- <th>
                             Role Type
-                        </th>
+                        </th> --}}
                         <th>
                             Created At
                         </th>
                         <th>
-                            Roles 
+                            Roles
                         </th>
                         <th>
                             Action
@@ -71,7 +71,7 @@
     <script>
         $(function() {
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-            @can('user_delete')
+
                 let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
                 let deleteButton = {
                     text: deleteButtonTrans,
@@ -109,7 +109,7 @@
                     }
                 }
                 dtButtons.push(deleteButton)
-            @endcan
+        
 
             let dtOverrideGlobals = {
                 buttons: dtButtons,
@@ -130,18 +130,12 @@
                         data: 'name',
                         name: 'name'
                     },
-                    {
-                        data: 'staff_code',
-                        name: 'staff_code'
-                    },
+
                     {
                         data: 'email',
                         name: 'email'
                     },
-                    {
-                        data: 'role_type',
-                        name: 'role_type'
-                    },
+
                     {
                         data: 'created',
                         name: 'created'

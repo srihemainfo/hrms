@@ -21,13 +21,13 @@
                                         placeholder="Enter Biometric ID" value="{{ $staff->BiometricID }}">
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="AICTE">AICTE</label>
                                     <input type="text" class="form-control" name="AICTE" placeholder="Enter AICTE"
                                         value="{{ $staff->AICTE }}">
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="DOJ">Date Of Joining</label>
@@ -43,14 +43,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="au_card_no">Anna University Code</label>
                                     <input type="text" class="form-control" name="au_card_no"
                                         placeholder="Enter Anna University Code" value="{{ $staff->au_card_no }}">
                                 </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            </div> --}}
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="employment_type">Employment Type</label>
                                     <select
@@ -70,7 +70,7 @@
                                         </option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="employment_status">Employment Status</label>
@@ -87,9 +87,9 @@
                                             Medical
                                             Leave
                                         </option>
-                                        <option value="Break"
+                                        {{-- <option value="Break"
                                             {{ $staff->employment_status == 'Break' ? 'selected' : '' }}>Break
-                                        </option>
+                                        </option> --}}
                                         <option value="Maternity Leave"
                                             {{ $staff->employment_status == 'Maternity Leave' ? 'selected' : '' }}>
                                             Maternity
@@ -99,10 +99,14 @@
                                             {{ $staff->employment_status == 'Relieving' ? 'selected' : '' }}>
                                             Relieving
                                         </option>
+                                        <option value="Work From Home"
+                                            {{ $staff->employment_status == 'Work From Home' ? 'selected' : '' }}>
+                                            Work From Home
+                                        </option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="rit_club_incharge">RIT Club Incharge</label>
                                     <select
@@ -117,15 +121,15 @@
                                         </option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            </div> --}}
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="future_tech_membership">Future Tech Centre Membership</label>
                                     <input type="text" class="form-control" name="future_tech_membership"
                                         placeholder="" value="{{ $staff->future_tech_membership }}">
                                 </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                            </div> --}}
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="future_tech_membership_type">Future Tech Centre Membership Type</label>
                                     <select
@@ -143,7 +147,7 @@
                                             Member </option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </div>
 

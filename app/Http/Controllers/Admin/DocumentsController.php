@@ -10,6 +10,7 @@ use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\UpdateDocumentRequest;
 use App\Models\Document;
 use App\Models\EducationType;
+use App\Models\Staffs;
 use App\Models\NonTeachingStaff;
 use App\Models\TeachingStaff;
 use App\Models\User;
@@ -25,7 +26,7 @@ class DocumentsController extends Controller
 
     public function index(Request $request)
     {
-        abort_if(Gate::denies('document_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('document_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = Document::with(['nameofuser'])->select(sprintf('%s.*', (new Document)->table));
@@ -83,7 +84,7 @@ class DocumentsController extends Controller
     public function stu_index(Request $request)
     {
 
-        abort_if(Gate::denies('document_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('document_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $education_types = EducationType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -171,7 +172,7 @@ class DocumentsController extends Controller
     public function staff_index(Request $request)
     {
 
-        abort_if(Gate::denies('document_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('document_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request) {
             $query = Document::where(['nameofuser_id' => $request->user_name_id])->get();
@@ -200,7 +201,7 @@ class DocumentsController extends Controller
         $document = Document::where('nameofuser_id', $request->user_name_id)->get();
         $education_types = EducationType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $check_staff_1 = TeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
+        $check_staff_1 = Staffs::where(['user_name_id' => $request->user_name_id])->get();
 
         if (count($check_staff_1) > 0) {
             return view('admin.StaffProfile.staff', compact('staff', 'check', 'document', 'education_types'));
@@ -278,14 +279,14 @@ class DocumentsController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('document_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('document_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $nameofusers = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.documents.create', compact('nameofusers'));
     }
 
-    public function store(StoreDocumentRequest $request)
+    public function store(Request $request)
     {
         $document = Document::create($request->all());
 
@@ -302,7 +303,7 @@ class DocumentsController extends Controller
 
     public function edit(Document $document)
     {
-        abort_if(Gate::denies('document_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('document_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $nameofusers = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -311,7 +312,7 @@ class DocumentsController extends Controller
         return view('admin.documents.edit', compact('document', 'nameofusers'));
     }
 
-    public function update(UpdateDocumentRequest $request, Document $document)
+    public function update(Request $request, Document $document)
     {
         $document->update($request->all());
 
@@ -334,7 +335,7 @@ class DocumentsController extends Controller
 
     public function show(Document $document)
     {
-        abort_if(Gate::denies('document_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('document_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $document->load('nameofuser');
 
@@ -343,7 +344,7 @@ class DocumentsController extends Controller
 
     public function destroy(Document $document)
     {
-        abort_if(Gate::denies('document_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('document_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $document->delete();
 
@@ -363,8 +364,9 @@ class DocumentsController extends Controller
 
     public function storeCKEditorImages(Request $request)
     {
-        abort_if(Gate::denies('document_create') && Gate::denies('document_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('document_create') && Gate::denies('document_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
+        
         $model = new Document();
         $model->id = $request->input('crud_id', 0);
         $model->exists = true;

@@ -24,7 +24,7 @@
         }
 
         .status.dead:before {
-            background-color: #C9404D;
+            background-color: #55292e;
             border-color: #C42C3B;
             box-shadow: 0px 0px 4px 1px #C9404D;
         }
@@ -140,9 +140,9 @@
                     <tr>
                         <th width="10"></th>
                         <th>ID</th>
-                        <th>
+                        {{-- <th>
                             Staff Code
-                        </th>
+                        </th> --}}
                         <th>
                             Name
                         </th>
@@ -152,18 +152,18 @@
                         <th>
                             Designation
                         </th>
-                        <th>
+                        {{-- <th>
                             Role Type
-                        </th>
-                        <th>
+                        </th> --}}
+                        {{-- <th>
                             Shift
-                        </th>
+                        </th> --}}
                         <th>
                             Past Leave Access Control
                         </th>
-                        <th>
+                        {{-- <th>
                             Status
-                        </th>
+                        </th> --}}
                         <th>
                             Action
                         </th>
@@ -220,21 +220,11 @@
 
             let dtOverrideGlobals = {
                 buttons: dtButtons,
-                // processing: true,
-                // serverSide: true,
+
                 retrieve: true,
                 aaSorting: [],
                 ajax: "{{ route('admin.teaching-staffs.index') }}",
-                // 'columnDefs': [{
-                //         "targets": 7,
-                //         "className": "text-center",
-                //         // "width": "4%"
-                //     },
-                //     // {
-                //     //     "targets": 2,
-                //     //     "className": "text-right",
-                //     // }
-                // ],
+
                 columns: [{
                         data: 'placeholder',
                         name: 'placeholder'
@@ -243,10 +233,10 @@
                         data: 'id',
                         name: 'id'
                     },
-                    {
-                        data: 'StaffCode',
-                        name: 'StaffCode'
-                    },
+                    // {
+                    //     data: 'StaffCode',
+                    //     name: 'StaffCode'
+                    // },
                     {
                         data: 'name',
                         name: 'name'
@@ -259,47 +249,47 @@
                         data: 'Designation',
                         name: 'Designation'
                     },
-                    {
-                        data: 'teach_type',
-                        name: 'teach_type'
-                    },
-                    {
-                        data: 'shift',
-                        name: 'shift'
-                    },
+                    // {
+                    //     data: 'teach_type',
+                    //     name: 'teach_type'
+                    // },
+                    // {
+                    //     data: 'shift',
+                    //     name: 'shift'
+                    // },
                      {
                         data: 'past_leave_access',
                         name: 'past_leave_access'
                     },
-                    {
-                        data: 'active_status',
-                        name: 'active_status',
-                        render: function(data, type, row) {
-                            if (type === 'display' || type === 'filter') {
-                                if (data) {
-                                    var buttonLabel = '';
-                                    var buttonClass = '';
+                    // {
+                    //     data: 'active_status',
+                    //     name: 'active_status',
+                    //     render: function(data, type, row) {
+                    //         if (type === 'display' || type === 'filter') {
+                    //             if (data) {
+                    //                 var buttonLabel = '';
+                    //                 var buttonClass = '';
 
-                                    if (data === 'Active') {
-                                        buttonLabel = 'Active';
-                                        buttonClass = 'status open';
-                                    } else {
-                                        buttonLabel = 'Inactive';
-                                        buttonClass = 'status dead';
-                                    }
+                    //                 if (data === 'Active') {
+                    //                     buttonLabel = 'Active';
+                    //                     buttonClass = 'status open';
+                    //                 } else {
+                    //                     buttonLabel = 'Inactive';
+                    //                     buttonClass = 'status dead';
+                    //                 }
 
-                                    var button = $('<span>').addClass(buttonClass).text(buttonLabel);
-                                    return $('<div>').append(button).html();
-                                } else {
-                                    return '<p>Status Not Updated</p>';
-                                }
-                            }
+                    //                 var button = $('<span>').addClass(buttonClass).text(buttonLabel);
+                    //                 return $('<div>').append(button).html();
+                    //             } else {
+                    //                 return '<p>Status Not Updated</p>';
+                    //             }
+                    //         }
 
-                            return data;
-                        },
-                        type: 'html',
-                        className: 'text-center'
-                    },
+                    //         return data;
+                    //     },
+                    //     type: 'html',
+                    //     className: 'text-center'
+                    // },
                     {
                         data: 'actions',
                         name: '{{ trans('global.actions') }}'

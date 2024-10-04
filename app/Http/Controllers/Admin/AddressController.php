@@ -8,6 +8,7 @@ use App\Models\Address;
 use Illuminate\Http\Request;
 use App\Models\TeachingStaff;
 use App\Events\StaffInsertEvent;
+use App\Models\Staffs;
 use App\Models\NonTeachingStaff;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,7 +24,7 @@ class AddressController extends Controller
 
     public function index(Request $request)
     {
-        abort_if(Gate::denies('address_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('address_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = Address::with(['name'])->select(sprintf('%s.*', (new Address)->table));
@@ -271,7 +272,7 @@ class AddressController extends Controller
 
 
         $check = "address_details";
-        $check_staff_1 = TeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
+        $check_staff_1 = Staffs::where(['user_name_id' => $request->user_name_id])->get();
 
         if (count($check_staff_1) > 0) {
             return view('admin.StaffProfile.staff', compact('staff', 'check', 'list', 'staff_edit'));
@@ -283,7 +284,7 @@ class AddressController extends Controller
             }
         }
     }
-    public function staff_update(UpdateAddressRequest $request, Address $address)
+    public function staff_update(Request $request, Address $address)
     {
         $addresses = $address->where(['name_id' => $request->user_name_id, 'address_type' => $request->address_type])->update(request()->except(['_token', 'submit', 'id', 'name', 'user_name_id']));
 
@@ -317,14 +318,14 @@ class AddressController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('address_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('address_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $names = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.addresses.create', compact('names'));
     }
 
-    public function store(StoreAddressRequest $request)
+    public function store(Request $request)
     {
         $address = Address::create($request->all());
 
@@ -333,7 +334,7 @@ class AddressController extends Controller
 
     public function edit(Address $address)
     {
-        abort_if(Gate::denies('address_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('address_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $names = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -342,7 +343,7 @@ class AddressController extends Controller
         return view('admin.addresses.edit', compact('address', 'names'));
     }
 
-    public function update(UpdateAddressRequest $request, Address $address)
+    public function update(Request $request, Address $address)
     {
         $address->update($request->all());
 
@@ -351,7 +352,7 @@ class AddressController extends Controller
 
     public function show(Address $address)
     {
-        abort_if(Gate::denies('address_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('address_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $address->load('name');
 
@@ -360,14 +361,14 @@ class AddressController extends Controller
 
     public function destroy(Address $address)
     {
-        abort_if(Gate::denies('address_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('address_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $address->delete();
 
         return back();
     }
 
-    public function massDestroy(MassDestroyAddressRequest $request)
+    public function massDestroy(Request $request)
     {
         $addresses = Address::find(request('ids'));
 

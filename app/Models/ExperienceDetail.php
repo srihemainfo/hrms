@@ -28,7 +28,6 @@ class ExperienceDetail extends Model
         'department',
         'name_of_organisation',
         'last_drawn_salary',
-        'taken_subjects',
         'doj',
         'dor',
         'responsibilities',

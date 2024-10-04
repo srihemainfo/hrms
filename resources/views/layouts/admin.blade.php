@@ -29,32 +29,7 @@
     <link href="https://cdn.datatables.net/buttons/1.2.4/css/buttons.dataTables.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.css" rel="stylesheet" />
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet" />
-    {{-- <link href="{{ asset('css/materialize.css') }}" rel="stylesheet" /> --}}
-    <script>
-        // $(window).on("load", function() {
-        //     // Disable right-click context menu
-        //     document.addEventListener("contextmenu", (e) => e.preventDefault());
 
-        //     // Function to check if Ctrl+Shift+Key combination is pressed
-        //     function ctrlShiftKey(e, keyCode) {
-        //         return e.ctrlKey && e.shiftKey && e.keyCode === keyCode.charCodeAt(0);
-        //     }
-
-        //     // Function to disable certain key combinations
-        //     document.onkeydown = function(e) {
-        //         // Disable F12, Ctrl + Shift + I, Ctrl + Shift + J, Ctrl + U
-        //         if (
-        //             e.keyCode === 123 ||
-        //             ctrlShiftKey(e, "I") ||
-        //             ctrlShiftKey(e, "J") ||
-        //             ctrlShiftKey(e, "C") ||
-        //             (e.ctrlKey && e.keyCode === "U".charCodeAt(0))
-        //         ) {
-        //             return false;
-        //         }
-        //     };
-        // });
-    </script>
 
     @yield('styles')
 </head>
@@ -62,6 +37,10 @@
     .bell-item a {
         width: 287px;
         text-wrap: wrap;
+    }
+
+    *{
+        font-size:0.9rem;
     }
 
     .bell-item {
@@ -445,70 +424,71 @@
 
 
                 @if (request()->is('admin/master-tools') ||
-                        request()->is('admin/tools*') ||
-                        request()->is('admin/batches*') ||
-                        request()->is('admin/year*') ||
-                        request()->is('admin/academic-years*') ||
-                        request()->is('admin/semesters*') ||
-                        request()->is('admin/sections*') ||
-                        request()->is('admin/course-enroll-masters*') ||
-                        request()->is('admin/lab_title*') ||
-                        request()->is('admin/nationalities*') ||
-                        request()->is('admin/religions*') ||
-                        request()->is('admin/blood-groups*') ||
-                        request()->is('admin/communities*') ||
-                        request()->is('admin/mother-tongues*') ||
-                        request()->is('admin/education-boards*') ||
-                        request()->is('admin/education-types*') ||
-                        request()->is('admin/scholarships*') ||
-                        request()->is('admin/mediumof-studieds*') ||
-                        request()->is('admin/teaching-types*') ||
-                        request()->is('admin/examstaffs*') ||
-                        request()->is('admin/college-blocks*') ||
-                        request()->is('admin/scholarships*') ||
-                        request()->is('admin/leave-statuses*') ||
-                        request()->is('admin/class-rooms*') ||
-                        request()->is('admin/class-batch*') ||
-                        request()->is('admin/email-settings*') ||
-                        request()->is('admin/sms-settings*') ||
-                        request()->is('admin/sms-templates*') ||
-                        request()->is('admin/email-templates*') ||
-                        request()->is('admin/Shift/*') ||
-                        request()->is('admin/Shift') ||
-                        request()->is('admin/tool-lab') ||
-                        request()->is('admin/tool-lab/*') ||
-                        request()->is('admin/rooms') ||
-                        request()->is('admin/rooms/*') ||
-                        request()->is('admin/events/*') ||
-                        request()->is('admin/leave-types/*') ||
-                        request()->is('admin/grade-master*') ||
-                        request()->is('admin/examfee-master*') ||
-                        request()->is('admin/credit-limit-master*') ||
-                        request()->is('admin/fee-components*') ||
-                        request()->is('admin/fee-cycle*') ||
-                        request()->is('admin/internal-weightage/*') ||
-                        request()->is('admin/paymentMode*') ||
-                        request()->is('admin/paymentMode/*') ||
-                        request()->is('admin/events*') ||
-                        request()->is('admin/events/*') ||
-                        request()->is('admin/leave-types*') ||
-                        request()->is('admin/leave-types/*') ||
-                        request()->is('admin/admission-mode*') ||
-                        request()->is('admin/feedback-type*') ||
-                        request()->is('admin/result-master*'))
-                    <!-- //  General Tools menu will match URL /tools/999 or /tools/create -->
+                request()->is('admin/tools*') ||
+                request()->is('admin/batches*') ||
+                request()->is('admin/year*') ||
+                request()->is('admin/designation*') ||
+                request()->is('admin/academic-years*') ||
+                request()->is('admin/semesters*') ||
+                request()->is('admin/sections*') ||
+                request()->is('admin/course-enroll-masters*') ||
+                request()->is('admin/lab_title*') ||
+                request()->is('admin/nationalities*') ||
+                request()->is('admin/religions*') ||
+                request()->is('admin/blood-groups*') ||
+                request()->is('admin/state*') ||
+                request()->is('admin/communities*') ||
+                request()->is('admin/mother-tongues*') ||
+                request()->is('admin/education-boards*') ||
+                request()->is('admin/education-types*') ||
+                request()->is('admin/scholarships*') ||
+                request()->is('admin/mediumof-studieds*') ||
+                request()->is('admin/teaching-types*') ||
+                request()->is('admin/examstaffs*') ||
+                request()->is('admin/college-blocks*') ||
+                request()->is('admin/scholarships*') ||
+                request()->is('admin/leave-statuses*') ||
+                request()->is('admin/class-rooms*') ||
+                request()->is('admin/class-batch*') ||
+                request()->is('admin/email-settings*') ||
+                request()->is('admin/sms-settings*') ||
+                request()->is('admin/sms-templates*') ||
+                request()->is('admin/email-templates*') ||
+                request()->is('admin/Shift/*') ||
+                request()->is('admin/Shift') ||
+                request()->is('admin/tool-lab') ||
+                request()->is('admin/tool-lab/*') ||
+                request()->is('admin/rooms') ||
+                request()->is('admin/rooms/*') ||
+                request()->is('admin/events/*') ||
+                request()->is('admin/leave-types/*') ||
+                request()->is('admin/grade-master*') ||
+                request()->is('admin/examfee-master*') ||
+                request()->is('admin/credit-limit-master*') ||
+                request()->is('admin/fee-components*') ||
+                request()->is('admin/fee-cycle*') ||
+                request()->is('admin/internal-weightage/*') ||
+                request()->is('admin/paymentMode*') ||
+                request()->is('admin/paymentMode/*') ||
+                request()->is('admin/events*') ||
+                request()->is('admin/events/*') ||
+                request()->is('admin/leave-types*') ||
+                request()->is('admin/leave-types/*') ||
+                request()->is('admin/admission-mode*') ||
+                request()->is('admin/result-master*'))
+            <!-- //  General Tools menu will match URL /tools/999 or /tools/create -->
 
-                    <div class="row">
-                        <div class="col-9" style="border-right: 1px solid #cecdcd;">@yield('content')</div>
-                        <div class="col-3"> @include('partials.toolsmenu')</div>
-                    </div>
-                @else
-                    @yield('content')
-                @endif
+            <div class="row">
+                <div class="col-9" style="border-right: 1px solid #cecdcd;">@yield('content')</div>
+                <div class="col-3"> @include('partials.toolsmenu')</div>
+            </div>
+        @else
+            @yield('content')
+        @endif
 
 
             </section>
-            <!-- /.content -->
+
         </div>
 
         <footer class="main-footer">

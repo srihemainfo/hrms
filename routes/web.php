@@ -67,6 +67,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::delete('roles/destroy', 'RolesController@massDestroy')->name('roles.massDestroy');
     Route::resource('roles', 'RolesController');
 
+    //Designation
+    Route::get('designation', 'DesignationController@index')->name('designation.index');
+    Route::post('designation/view', 'DesignationController@view')->name('designation.view');
+    Route::post('designation/edit', 'designationController@edit')->name('designation.edit');
+    Route::post('designation/store', 'DesignationController@store')->name('designation.store');
+    Route::post('designation/delete', 'DesignationController@destroy')->name('designation.delete');
+    Route::delete('designation/destroy', 'DesignationController@massDestroy')->name('designation.massDestroy');
+
     // Users
     Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::post('users/parse-csv-import', 'UsersController@parseCsvImport')->name('users.parseCsvImport');
@@ -116,7 +124,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     // FeeCyle
     Route::get('fee-cycle', 'feeCycleController@index')->name('fee-cycle.index');
     Route::post('fee-cycle/store', 'feeCycleController@store')->name('fee-cycle.store');
-
+    Route::post('fee-cycle/customs', 'feeCycleController@customs')->name('fee-cycle.customs');
+    Route::get('fee-cycle/customsnames', 'feeCycleController@getCustomsFeeNames')->name('fee-cycle.customsnames');
 
     // FeeComponents
     Route::get('fee-components', 'feeComponentsController@index')->name('fee-components.index');
@@ -317,6 +326,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('blood-groups/delete', 'BloodGroupController@destroy')->name('blood-groups.delete');
     Route::delete('blood-groups/destroy', 'BloodGroupController@massDestroy')->name('blood-groups.massDestroy');
 
+    //State
+    Route::get('state', 'StateController@index')->name('state.index');
+    Route::post('state/view', 'StateController@view')->name('state.view');
+    Route::post('state/edit', 'StateController@edit')->name('state.edit');
+    Route::post('state/store', 'StateController@store')->name('state.store');
+    Route::post('state/delete', 'StateController@destroy')->name('state.delete');
+    Route::delete('state/destroy', 'StateController@massDestroy')->name('state.massDestroy');
+
+
     // Community
     Route::get('communities', 'CommunityController@index')->name('communities.index');
     Route::post('communities/view', 'CommunityController@view')->name('communities.view');
@@ -496,6 +514,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('hostel-warden/delete', 'HostelWardenController@destroy')->name('hostel-warden.delete');
     Route::delete('hostel-warden/destroy', 'HostelWardenController@massDestroy')->name('hostel-warden.massDestroy');
 
+    //Hostel Fee
+    Route::get('hostel_fee', 'HostelfeeController@index')->name('hostel_fee.index');
+    Route::post('hostel_fee/store', 'HostelfeeController@store')->name('hostel_fee.store');
+    Route::post('hostel_fee/delete', 'HostelfeeController@delete')->name('hostel_fee.delete');
+    Route::post('hostel_fee/view', 'HostelfeeController@view')->name('hostel_fee.view');
+    Route::post('hostel_fee/edit', 'HostelfeeController@edit')->name('hostel_fee.edit');
+    Route::post('hostel_fee/filter_student', 'HostelfeeController@filter_student')->name('hostel_fee.filter_student');
+    Route::delete('hostel_fee/destroy', 'HostelfeeController@MassDestroy')->name('hostel_fee.massDestroy');
+
+
+
     Route::get('hostelRoom', 'HostelBlockController@roomIndex')->name('hostelRoom.index');
     Route::post('hostelRoom/view', 'HostelBlockController@roomView')->name('hostelRoom.view');
     Route::post('hostelRoom/edit', 'HostelBlockController@roomEdit')->name('hostelRoom.edit');
@@ -639,24 +668,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('inventory-report/report', 'BookIssueController@inventory')->name('inventory-report.inventory');
     Route::post('reserve-report/search', 'BookIssueController@search')->name('reserve-report.search');
 
-    // Feedback type Master
-    Route::get('feedback-type', 'FeedbackTypeController@index')->name('feedback-type.index');
-    Route::post('feedback-type/edit', 'FeedbackTypeController@edit')->name('feedback-type.edit');
-    Route::post('feedback-type/store', 'FeedbackTypeController@store')->name('feedback-type.store');
-    Route::post('feedback-type/view', 'FeedbackTypeController@view')->name('feedback-type.view');
-    Route::post('feedback-type/delete', 'FeedbackTypeController@destroy')->name('feedback-type.delete');
-    Route::delete('feedback-type/massDestroy', 'FeedbackTypeController@massDestroy')->name('feedback-type.massDestroy');
-    
-    
+
     //FeedBack Configure
     Route::get('configure-feedback', 'FeedbackController@configureIndex')->name('configure-feedback.index');
     Route::post('configure-feedback/edit', 'FeedbackController@configureEdit')->name('configure-feedback.edit');
     Route::post('configure-feedback/store', 'FeedbackController@configureStore')->name('configure-feedback.store');
     Route::post('configure-feedback/view', 'FeedbackController@configureView')->name('configure-feedback.view');
     Route::post('configure-feedback/delete', 'FeedbackController@configureDestroy')->name('configure-feedback.delete');
-    
-    
-    
+
+
     //Feedback Schedule
     Route::get('schedule-feedback', 'FeedbackController@scheduleIndex')->name('schedule-feedback.index');
     Route::post('schedule-feedback/edit', 'FeedbackController@scheduleEdit')->name('schedule-feedback.edit');
@@ -664,9 +684,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('schedule-feedback/view', 'FeedbackController@scheduleView')->name('schedule-feedback.view');
     Route::post('schedule-feedback/delete', 'FeedbackController@scheduleDestroy')->name('schedule-feedback.delete');
     Route::post('schedule-feedback/fetch-course', 'FeedbackController@fetchCourse')->name('schedule-feedback.fetch_course');
-    Route::post('schedule-feedback/fetch-section', 'FeedbackController@fetchSection')->name('schedule-feedback.fetch_section');
-    Route::post('schedule-feedback/change-status', 'FeedbackController@change_status')->name('schedule-feedback.change-status');
-    
+
     //Student Feedback
     Route::get('feedback-forms', 'FeedbackController@studentIndex')->name('feedback-forms.index');
     Route::post('feedback-forms/survey', 'FeedbackController@studentFeedSurvey')->name('student-feedback-forms.survey');
@@ -691,13 +709,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('feedback-course/report', 'FeedbackReportController@courseReport')->name('feedback-course.report');
     Route::post('feedback-course/view', 'FeedbackReportController@courseView')->name('feedback-course.view');
     Route::post('feedback-course/download', 'FeedbackReportController@courseDownload')->name('feedback-course.download');
-    
+
     //Faculty Feedback
     Route::get('feedReport-faculty', 'FeedbackReportController@facultyIndex')->name('feedReport-faculty.index');
     Route::post('feedback-faculty/report', 'FeedbackReportController@facultyReport')->name('feedback-faculty.report');
     Route::post('feedback-faculty/view', 'FeedbackReportController@facultyView')->name('feedback-faculty.view');
     Route::post('feedback-faculty/download', 'FeedbackReportController@facultyDownload')->name('feedback-faculty.download');
-    
+
     //External Feedback
     Route::get('feedReport-external', 'FeedbackReportController@externalIndex')->name('feedReport-external.index');
     Route::post('feedback-external/report', 'FeedbackReportController@externalReport')->name('feedback-external.report');
@@ -920,6 +938,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     //Fee Collection
     Route::get('fee-collection', 'FeeCollectionController@index')->name('fee-collection.index');
     Route::post('student_rollnumber', 'FeeCollectionController@fetch_detils')->name('student-rollnumber.geter');
+    Route::post('student_scholarship', 'FeeCollectionController@fetch_scholarship')->name('student-scholarship');
+    Route::post('student_hostel_fee', 'FeeCollectionController@fetch_hostel_fee')->name('student-hostelfee');
     Route::post('fee_payment', 'FeeCollectionController@fee_payment')->name('fee_payment');
     Route::post('fee_history', 'FeeCollectionController@fee_history')->name('fee_history');
     Route::post('fee_delete', 'FeeCollectionController@fee_delete')->name('fee_delete');
@@ -930,7 +950,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     //Fee ScholarShip
     Route::get('fee-scholarship', 'FeeScholarshipController@index')->name('feeScholarship.index');
     Route::post('fee-scholarship/geter', 'FeeScholarshipController@getScholarship')->name('fee-scholarship.getter');
+    Route::get('fee-scholarship/assign', 'FeeScholarshipController@assign')->name('fee-scholarship.assign');
     Route::post('fee-scholarship/store', 'FeeScholarshipController@store')->name('fee-scholarship.store');
+    Route::post('fee-scholarship/filter_student', 'FeeScholarshipController@filter_student')->name('fee-scholarship.filter_student');
     Route::post('fee-scholarship/view', 'FeeScholarshipController@view')->name('fee-scholarship.view');
     Route::post('fee-scholarship/edit', 'FeeScholarshipController@edit')->name('fee-scholarship.edit');
     Route::post('fee-scholarship/delete', 'FeeScholarshipController@destroy')->name('fee-scholarship.delete');
@@ -1860,6 +1882,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('inactive_teaching_or_nonteach', 'InactiveStaffsListController@inactive_teaching_or_nonteach')->name('inactive_teaching_or_nonteach');
     Route::resource('Staff_status', 'StaffStatusController');
 
+    //Staffs
+    Route::resource('staffs', 'StaffsController');
+    Route::delete('staffs/destroy', 'StaffsController@massDestroy')->name('staffs.massDestroy');
+
+    // Route::get('staffs', 'StaffsController@index')->name('staffs.index');
+    // Route::post('staffs/view', 'StaffsController@view')->name('staffs.view');
+    // Route::post('staffs/edit', 'StaffsController@edit')->name('staffs.edit');
+    // Route::post('staffs/store', 'StaffsController@store')->name('staffs.store');
+    // Route::post('staffs/delete', 'StaffsController@destroy')->name('staffs.delete');
+    // Route::delete('staffs/destroy', 'StaffsController@massDestroy')->name('staffs.massDestroy');
+
+
     // Grade Master
     Route::get('grade-master/index', 'GradeMasterController@index')->name('grade-master.index');
     Route::post('grade-master/view', 'GradeMasterController@view')->name('grade-master.view');
@@ -2175,6 +2209,8 @@ Route::group(['as' => 'frontend.', 'namespace' => 'Frontend', 'middleware' => ['
     Route::post('semesters/delete', 'SemesterController@destroy')->name('semesters.delete');
     Route::post('semesters/change-status', 'SemesterController@changeStatus')->name('semesters.change-status');
     Route::delete('semesters/destroy', 'SemesterController@massDestroy')->name('semesters.massDestroy');
+
+
 
     // Course Enroll Master
     Route::post('course_enroll_masters/enroll_index', 'CourseEnrollMasterController@enroll_index')->name('course_enroll_masters.enroll_index');

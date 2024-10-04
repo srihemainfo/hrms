@@ -21,6 +21,7 @@ class Scholarship extends Model
     protected $fillable = [
         'name',
         'foundation_name',
+        'scholarship_type',
         'remarks',
         'amount',
         'percentage',

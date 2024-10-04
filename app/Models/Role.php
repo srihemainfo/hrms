@@ -33,10 +33,10 @@ class Role extends Model
         return $date->format('Y-m-d H:i:s');
     }
 
-    public function type()
-    {
-        return $this->belongsTo(TeachingType::class, 'type_id');
-    }
+    // public function type()
+    // {
+    //     return $this->belongsTo(TeachingType::class, 'type_id');
+    // }
 
     public function permissions()
     {

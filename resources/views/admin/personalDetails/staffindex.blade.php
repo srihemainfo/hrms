@@ -89,9 +89,10 @@
                                     </div>
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
-                                            <label for="StaffCode">Staff Code</label>
-                                            <input type="text" class="form-control" id="StaffCode" name="StaffCode"
-                                                placeholder="Enter Staff Code" value="{{ $staff->StaffCode }}">
+                                            <label for="employee_id">Employee ID</label>
+                                            <input type="text" class="form-control" id="employee_id"
+                                                name="employee_id" placeholder="Enter Staff Code"
+                                                value="{{ $staff->employee_id }}">
                                         </div>
                                     </div>
 
@@ -99,22 +100,16 @@
                                 </div>
                             @endif
                             <span>
-                                <strong class="text-primary">Supported Formats :</strong>  JPG, PNG, JPEG (Max Size: 2MB)
+                                <strong class="text-primary">Supported Formats :</strong> JPG, PNG, JPEG (Max Size: 2MB)
                             </span>
                             <div class="row gutters">
 
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="name">First Name</label>
-                                        <input type="text" style="text-transform:uppercase;" class="form-control" name="name"
-                                            placeholder="Enter First Name" value="{{ $staff->first_name }}" required>
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="last_name">Last Name</label>
-                                        <input type="text" style="text-transform:uppercase;" class="form-control" name="last_name"
-                                            placeholder="Enter Last Name" value="{{ $staff->last_name }}">
+                                        <input type="text" style="text-transform:uppercase;" class="form-control"
+                                            name="name" placeholder="Enter First Name"
+                                            value="{{ $staff->first_name }}" required>
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -134,10 +129,10 @@
                             </div> --}}
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="mobile_number">Mobile</label>
-                                        <input type="number" class="form-control" id="mobile_number"
-                                            name="mobile_number" placeholder="Enter Phone Number"
-                                            value="{{ $staff->mobile_number }}" maxlength="10">
+                                        <label for="phone_number">Mobile</label>
+                                        <input type="number" class="form-control" id="phone_number"
+                                            name="phone_number" placeholder="Enter Phone Number"
+                                            value="{{ $staff->phone_number }}" maxlength="10">
                                     </div>
                                 </div>
                                 {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -147,7 +142,7 @@
                                             value="{{ $staff->Dept }}" readonly>
                                     </div>
                                 </div> --}}
-                                @if ($staff->department != '')
+                                {{-- @if ($staff->department != '')
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="department_id">Department</label>
@@ -156,7 +151,7 @@
                                             name="department_id" id="department_id">
                                             @foreach ($staff->departmentss as $id => $entry)
                                                 <option value="{{ $id }}"
-                                                {{-- {{ dd($staff->department_id) }} --}}
+
                                                     {{ (old('department') ? old('department') : $staff->department ?? '') == $id ? 'selected' : '' }}>
                                                     {{ $entry }}</option>
                                             @endforeach
@@ -179,7 +174,7 @@
                                         </select>
                                     </div>
                                 </div>
-                            @endif
+                            @endif --}}
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="aadhar_number">Aadhar Number</label>
@@ -205,9 +200,9 @@
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="PanNo">Pan No</label>
-                                        <input type="text" class="form-control" name="PanNo"
-                                            placeholder="Enter Pan No" value="{{ $staff->PanNo }}">
+                                        <label for="pan_number">Pan No</label>
+                                        <input type="text" class="form-control" name="pan_number"
+                                            placeholder="Enter Pan No" value="{{ $staff->pan_number }}">
                                     </div>
                                 </div>
                                 {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -232,20 +227,20 @@
                                         placeholder="Enter Anna University Code" value="{{ $staff->au_card_no }}">
                                 </div>
                             </div> --}}
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="COECode">COE Code</label>
                                         <input type="text" class="form-control" name="COECode"
                                             placeholder="Enter COE Code" value="{{ $staff->COECode }}">
                                     </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                </div> --}}
+                                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="PassportNo">Passport No</label>
                                         <input type="text" class="form-control" name="PassportNo"
                                             placeholder="Enter Passport No" value="{{ $staff->PassportNo }}">
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="father_name">Father Name</label>
@@ -404,9 +399,12 @@
                                     <div class="form-group">
                                         <label for="gender">GENDER</label>
                                         <select class="form-control select2 " name="gender">
-                                            <option value="" {{ $staff->gender == '' ? 'selected' : '' }}>Please Select</option>
-                                            <option value="MALE" {{ $staff->gender == 'MALE' ? 'selected' : '' }}>MALE</option>
-                                            <option value="FEMALE" {{ $staff->gender == 'FEMALE' ? 'selected' : '' }}>FEMALE</option>
+                                            <option value="" {{ $staff->gender == '' ? 'selected' : '' }}>Please
+                                                Select</option>
+                                            <option value="MALE" {{ $staff->gender == 'MALE' ? 'selected' : '' }}>
+                                                MALE</option>
+                                            <option value="FEMALE" {{ $staff->gender == 'FEMALE' ? 'selected' : '' }}>
+                                                FEMALE</option>
                                         </select>
                                     </div>
                                 </div>
@@ -417,7 +415,8 @@
                                         <label for="marital_status">Marital Status</label>
                                         <select class="form-control select2" name="marital_status"
                                             id="marital_status">
-                                            <option value="" {{ $staff->marital_status == '' ? 'selected' : '' }}>
+                                            <option value=""
+                                                {{ $staff->marital_status == '' ? 'selected' : '' }}>
                                                 Please Select</option>
                                             <option value="MARRIED"
                                                 {{ $staff->marital_status == 'MARRIED' ? 'selected' : '' }}>MARRIED
@@ -429,26 +428,84 @@
                                                 {{ $staff->marital_status == 'DIVORCE' ? 'selected' : '' }}>DIVORCE
                                             </option>
                                             <option value="WIDOW"
-                                                {{ $staff->marital_status == 'WIDOW' ? 'selected' : '' }}>WIDOW</option>
+                                                {{ $staff->marital_status == 'WIDOW' ? 'selected' : '' }}>WIDOW
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="state">State</label>
-                                        <input type="text" class="form-control" name="state"
-                                            placeholder="Enter State" value="{{ $staff->state }}">
+                                @if ($staff->state != '')
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="state_id">State</label>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('state') ? 'is-invalid' : '' }}"
+                                                name="state_id" id="state_id">
+                                                @foreach ($staff->state as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ (old('religion_id') ? old('religion_id') : $staff->state_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                @else
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="state_id">State</label>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('state') ? 'is-invalid' : '' }}"
+                                                name="state_id" id="state_id">
+                                                @foreach ($staff->state_id as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ old('state_id') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                @endif
+                                @if ($staff->nationality != '')
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="nationality_id">Nationality</label>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('nationality') ? 'is-invalid' : '' }}"
+                                                name="nationality_id" id="nationality_id">
+                                                @foreach ($staff->nationality as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ (old('religion_id') ? old('religion_id') : $staff->nationality_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="nationality_id">Nationality</label>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('nationality') ? 'is-invalid' : '' }}"
+                                                name="nationality_id" id="nationality_id">
+                                                @foreach ($staff->nationality_id as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ old('nationality_id') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                @endif
+                                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="country">Nationality</label>
                                         <input type="text" class="form-control" name="country"
                                             placeholder="Enter Country" value="{{ $staff->country }}">
                                     </div>
-                                </div>
+                                </div> --}}
 
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="known_languages">Languages Known</label>
                                         <select
@@ -473,7 +530,7 @@
 
                                         </select>
                                     </div>
-                                </div>
+                                </div> --}}
 
 
                             </div>
@@ -549,9 +606,9 @@
                                 </div> --}}
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="mobile_number">Mobile</label>
-                                        <input type="text" class="form-control" id="mobile_number"
-                                            name="mobile_number" value="{{ $staff->mobile_number }}" readonly>
+                                        <label for="phone_number">Mobile</label>
+                                        <input type="text" class="form-control" id="phone_number"
+                                            name="phone_number" value="{{ $staff->phone_number }}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -575,18 +632,11 @@
                                             value="{{ $staff->total_experience }}" readonly>
                                     </div>
                                 </div>
-                                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="AICTE">AICTE</label>
-                                        <input type="text" class="form-control" name="AICTE"
-                                            value="{{ $staff->AICTE }}">
-                                    </div>
-                                </div> --}}
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="PanNo">Pan No</label>
-                                        <input type="text" class="form-control" name="PanNo"
-                                            value="{{ $staff->PanNo }}" readonly>
+                                        <label for="pan_number">Pan No</label>
+                                        <input type="text" class="form-control" name="pan_number"
+                                            value="{{ $staff->pan_number }}" readonly>
                                     </div>
                                 </div>
                                 {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -611,20 +661,20 @@
                                             value="{{ $staff->au_card_no }}">
                                     </div>
                                 </div> --}}
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="COECode">COE Code</label>
                                         <input type="text" class="form-control" name="COECode"
                                             value="{{ $staff->COECode }}" readonly>
                                     </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                </div> --}}
+                                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="PassportNo">Passport No</label>
                                         <input type="text" class="form-control" name="PassportNo"
                                             value="{{ $staff->PassportNo }}" readonly>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="father_name">Father Name</label>
@@ -735,13 +785,26 @@
                                         </div>
                                     </div>
                                 @endif
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="state">State</label>
-                                        <input type="text" class="form-control" name="state"
-                                            value="{{ $staff->state }}" readonly>
+                                @if ($staff->state_id != '')
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="blood_group_id">State</label>
+                                            @foreach ($staff->state as $id => $entry)
+                                                @if ($staff->state_id == $id)
+                                                    <input type="text" class="form-control"
+                                                        value="{{ $entry }}" readonly>
+                                                @endif
+                                            @endforeach
+                                        </div>
                                     </div>
-                                </div>
+                                @else
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="blood_group_id">State</label>
+                                            <input type="text" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                @endif
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="marital_status">Marital Status</label>
@@ -777,24 +840,26 @@
                                             value="{{ $staff->country }}">
                                     </div>
                                 </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="phone">Department</label>
                                         <input type="text" class="form-control" id="phone" placeholder=""
                                             value="{{ $staff->Dept }}" readonly>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="gender">GENDER</label>
                                         <select class="form-control select2 " name="gender">
-                                            <option value="" {{ $staff->gender == '' ? 'selected' : '' }}>Please Select</option>
-                                            <option value="MALE" {{ $staff->gender == 'MALE' ? 'selected' : '' }}>MALE</option>
-                                            <option value="FEMALE" {{ $staff->gender == 'FEMALE' ? 'selected' : '' }}>FEMALE</option>
+                                            <option value="" {{ $staff->gender == '' ? 'selected' : '' }}>Please
+                                                Select</option>
+                                            <option value="MALE" {{ $staff->gender == 'MALE' ? 'selected' : '' }}>
+                                                MALE</option>
+                                            <option value="FEMALE" {{ $staff->gender == 'FEMALE' ? 'selected' : '' }}>
+                                                FEMALE</option>
                                         </select>
                                     </div>
                                 </div>
-
                             </div>
                         </form>
                     </div>

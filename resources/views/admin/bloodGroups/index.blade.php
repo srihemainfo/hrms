@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-    @can('blood_group_create')
+
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
                 <button class="btn btn-outline-success" onclick="openModal()">
@@ -8,7 +8,6 @@
                 </button>
             </div>
         </div>
-    @endcan
     <div class="card">
         <div class="card-header">
             {{ trans('cruds.bloodGroup.title_singular') }} {{ trans('global.list') }}

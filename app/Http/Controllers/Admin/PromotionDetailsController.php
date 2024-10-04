@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\NonTeachingStaff;
 use App\Models\PromotionDetails;
 use App\Models\Role;
+use App\Models\Staffs;
 use App\Models\TeachingStaff;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -37,19 +38,24 @@ class PromotionDetailsController extends Controller
 
             $query = PromotionDetails::where(['user_name_id' => $request->user_name_id])->get();
 
-            $teaching_staff = TeachingStaff::where(['user_name_id' => $request->user_name_id])->first();
+            $teaching_staff = Staffs::where(['user_name_id' => $request->user_name_id])->first();
 
-            if (empty($teaching_staff)) {
-                $teaching_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->first();
+            $role_name = Role::where('id', $teaching_staff->role_id)->value('title');
 
-            }
+
+
+            // if (empty($teaching_staff)) {
+            //     $teaching_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->first();
+
+            // }
+            
 // dd($query);
 
             if ($query->count() <= 0) {
                 $query->user_name_id = $request->user_name_id;
                 $query->name = $request->name;
                 $query->id = '';
-                $query->current_designation = $teaching_staff->Designation;
+                $query->current_designation = $role_name;
                 $query->promoted_designation = '';
                 $query->designation = $designation;
                 $query->promotion_date = '';
@@ -62,9 +68,7 @@ class PromotionDetailsController extends Controller
             } else {
 
                 $query[0]['user_name_id'] = $request->user_name_id;
-
                 $query[0]['name'] = $request->name;
-
                 $staff = $query[0];
 
                 for ($i = 0; $i < count($query); $i++) {
@@ -76,7 +80,7 @@ class PromotionDetailsController extends Controller
                 $staff_edit = new PromotionDetails;
                 $staff_edit->add = 'Add';
                 $staff_edit->id = '';
-                $staff_edit->current_designation = $teaching_staff->Designation;
+                $staff_edit->current_designation = $role_name;
                 $staff_edit->promoted_designation = '';
                 $staff_edit->designation = $designation;
                 $staff_edit->promotion_date = '';
@@ -117,7 +121,7 @@ class PromotionDetailsController extends Controller
         $roles = Role::pluck('title', 'id');
         // dd($roles);
         $check = 'promotion_details';
-        $check_staff_1 = TeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
+        $check_staff_1 = Staffs::where(['user_name_id' => $request->user_name_id])->get();
 
         if (count($check_staff_1) > 0) {
             return view('admin.StaffProfile.staff', compact('staff', 'check', 'list', 'staff_edit', 'roles'));
@@ -147,7 +151,7 @@ class PromotionDetailsController extends Controller
                     'status' => 1,
                 ]);
 
-                $teach_staff = TeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
+                $teach_staff = Staffs::where(['user_name_id' => $request->user_name_id])->get();
             } else {
                 $phd_check = false;
             }
@@ -155,18 +159,18 @@ class PromotionDetailsController extends Controller
             if ($phd_check) {
 
                 if (count($teach_staff) > 0) {
-                    $update_teach_staff = TeachingStaff::where(['user_name_id' => $request->user_name_id])->update([
-                        'Designation' => $promoted_role->title,
+                    $update_teach_staff = Staffs::where(['user_name_id' => $request->user_name_id])->update([
+                        'role_id' => $promoted_role->id,
                     ]);
                 }
 
-                $non_teach_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
+                // $non_teach_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
 
-                if (count($non_teach_staff) > 0) {
-                    $update_teach_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->update([
-                        'Designation' => $promoted_role->title,
-                    ]);
-                }
+                // if (count($non_teach_staff) > 0) {
+                //     $update_teach_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->update([
+                //         'Designation' => $promoted_role->title,
+                //     ]);
+                // }
 
                 if($user){
                     $user->roles()->sync($request->input('roles', $promoted_role->id));
@@ -186,21 +190,21 @@ class PromotionDetailsController extends Controller
                 $phd->save();
 
                 if ($phd) {
-                    $teach_staff = TeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
+                    $teach_staff = Staffs::where(['user_name_id' => $request->user_name_id])->get();
 
                     if (count($teach_staff) > 0) {
-                        $update_teach_staff = TeachingStaff::where(['user_name_id' => $request->user_name_id])->update([
-                            'Designation' => $promoted_role->title,
+                        $update_teach_staff = Staffs::where(['user_name_id' => $request->user_name_id])->update([
+                            'role_id' => $promoted_role->id,
                         ]);
                     }
 
-                    $non_teach_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
+                    // $non_teach_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->get();
 
-                    if (count($non_teach_staff) > 0) {
-                        $update_teach_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->update([
-                            'Designation' => $promoted_role->title,
-                        ]);
-                    }
+                    // if (count($non_teach_staff) > 0) {
+                    //     $update_teach_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->update([
+                    //         'Designation' => $promoted_role->title,
+                    //     ]);
+                    // }
 
                     if($user){
                         $user->roles()->sync($request->input('roles', $promoted_role->id));

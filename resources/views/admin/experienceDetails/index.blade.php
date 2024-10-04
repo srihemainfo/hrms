@@ -37,9 +37,9 @@
                     <th>
                         {{ trans('cruds.experienceDetail.fields.worked_place') }}
                     </th>
-                    <th>
+                    {{-- <th>
                         {{ trans('cruds.experienceDetail.fields.taken_subjects') }}
-                    </th>
+                    </th> --}}
                     <th>
                         {{ trans('cruds.experienceDetail.fields.from_date') }}
                     </th>
@@ -107,7 +107,7 @@
 { data: 'designation', name: 'designation' },
 { data: 'years_of_experience', name: 'years_of_experience' },
 { data: 'worked_place', name: 'worked_place' },
-{ data: 'taken_subjects', name: 'taken_subjects' },
+// { data: 'taken_subjects', name: 'taken_subjects' },
 { data: 'from_date', name: 'from_date' },
 { data: 'to_date', name: 'to_date' },
 { data: 'name_name', name: 'name.name' },

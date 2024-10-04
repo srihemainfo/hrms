@@ -111,37 +111,64 @@
                                         </div>
                                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div class="form-group">
-                                                <label for="">Staff Code</label>
+                                                <label for="">Employee ID</label>
                                                 <input type="text" class="form-control" id=""
-                                                    placeholder="Enter email ID" value="{{ $staff->StaffCode }}" readonly>
+                                                    value="{{ $staff->employee_id }}" readonly>
                                             </div>
                                         </div>
                                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div class="form-group">
-                                                <label for="phone">Designation</label>
-                                                <input type="text" class="form-control" id="phone" placeholder=""
-                                                    value="{{ $staff->Designation }}" readonly>
+                                                <label for="designation_id">Designation</label>
+                                                <select class="form-control select2" id="designation_id"
+                                                    name="designation_id" disabled>
+                                                    <option value="">Select Designation</option>
+                                                    @foreach ($designations as $id => $designation)
+                                                        <option value="{{ $id }}"
+                                                            {{ $staff->designation_id == $id ? 'selected' : '' }}>
+                                                            {{ $designation }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
+
                                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                            <div class="form-group">
+                                                <label for="role_id">Role</label>
+                                                <select class="form-control select2" id="role_id" name="role_id" disabled>
+                                                    <option value="">Select Role</option>
+                                                    @foreach ($roles as $id => $role)
+                                                        <option value="{{ $id }}"
+                                                            {{ $staff->role_id == $id ? 'selected' : '' }}>
+                                                            {{ $role }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div class="form-group">
                                                 <label for="phone">Department</label>
                                                 <input type="text" class="form-control" id="phone" placeholder=""
                                                     value="{{ $staff->Dept }}" readonly>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div class="form-group">
                                                 <label for="phone">Email</label>
-                                                <input type="text" class="form-control" id="phone" placeholder=""
-                                                    value="{{ $staff->EmailIDOffical }}" readonly>
+                                                <input type="text" class="form-control" id="phone"
+                                                    value="{{ $staff->EmailIDOffical ? $staff->EmailIDOffical : $staff->email }}"
+                                                    readonly>
                                             </div>
                                         </div>
                                         <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                             <div class="form-group">
                                                 <label for="phone">Phone</label>
-                                                <input type="text" class="form-control" id="phone" placeholder=""
-                                                    value="{{ $staff->ContactNo }}" readonly>
+                                                <input type="text" class="form-control" id="phone"
+                                                    value="{{ $staff->ContactNo ? $staff->ContactNo : $staff->phone_number }}"
+                                                    readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -313,7 +340,7 @@
         <div class="col-3">
 
             <ul class="nav nav-pills nav-sidebar flex-column">
-                @can('personal_detail_access')
+                {{-- @can('personal_detail_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.personal-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
                             class="nav-link {{ request()->is('admin/personal-details') || request()->is('admin/personal-details/*') ? 'active' : '' }}">
@@ -325,22 +352,9 @@
                             </p>
                         </a>
                     </li>
-                @endcan
-                {{-- @can('academic_detail_access')
-                    <li class="nav-item">
-                        <a href="{{ route('admin.academic-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
-                            class="nav-link {{ request()->is('admin/academic-details') || request()->is('admin/academic-details/*') ? 'active' : '' }}">
+                {{-- @endcan --}}
 
-                            <i class="fa-fw nav-icon fas fa-graduation-cap">
-
-                            </i>
-                            <p>
-                                {{ trans('cruds.academicDetail.title') }}
-                            </p>
-                        </a>
-                    </li>
-                @endcan --}}
-                @can('employment_detail_access')
+                {{-- @can('employment_detail_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.employment-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
                             class="nav-link {{ request()->is('admin/employment-details') || request()->is('admin/employment-details/*') ? 'active' : '' }}">
@@ -352,8 +366,8 @@
                             </p>
                         </a>
                     </li>
-                @endcan
-                @can('experience_detail_access')
+                {{-- @endcan --}}
+                {{-- @can('experience_detail_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.experience-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
                             class="nav-link {{ request()->is('admin/experience-details') || request()->is('admin/experience-details/*') ? 'active' : '' }}">
@@ -365,8 +379,8 @@
                             </p>
                         </a>
                     </li>
-                @endcan
-                @can('staff_promotion_access')
+                {{-- @endcan --}}
+                {{-- @can('staff_promotion_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.promotion-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
                             class="nav-link {{ request()->is('admin/promotion-details') || request()->is('admin/promotion-details/*') ? 'active' : '' }}">
@@ -378,8 +392,8 @@
                             </p>
                         </a>
                     </li>
-                @endcan
-                @can('educational_detail_access')
+                {{-- @endcan --}}
+                {{-- @can('educational_detail_access') --}}
                     <li class="nav-item">
 
                         <a href="{{ route('admin.educational-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
@@ -393,7 +407,7 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
                 @can('phd_detail_access')
                     <li class="nav-item">
                         <a href="{{ route('admin.phd-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
@@ -408,7 +422,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('address_access')
+                {{-- @can('address_access') --}}
                     <li class="nav-item">
 
                         <a href="{{ route('admin.addresses.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
@@ -422,7 +436,7 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
                 @can('staff_salary_access')
                     <li class="nav-item">
                         <a href="{{ route('admin.staff-salaries.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
@@ -436,7 +450,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('bank_account_detail_access')
+                {{-- @can('bank_account_detail_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.bank-account-details.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
                             class="nav-link {{ request()->is('admin/bank-account-details') || request()->is('admin/bank-account-details/*') ? 'active' : '' }}">
@@ -448,7 +462,7 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
                 {{-- @can('add_leave_access')
                     <li class="nav-item">
                         <a href="{{ route('admin.staff-request-leaves.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
@@ -580,7 +594,7 @@
                         </a>
                     </li>
                 @endcan
-                @can('document_access')
+                {{-- @can('document_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.documents.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
                             class="nav-link {{ request()->is('admin/documents') || request()->is('admin/documents/*') ? 'active' : '' }}">
@@ -592,7 +606,7 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
                 @can('patent_access')
                     <li class="nav-item">
                         <a href="{{ route('admin.patents.staff_index', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
