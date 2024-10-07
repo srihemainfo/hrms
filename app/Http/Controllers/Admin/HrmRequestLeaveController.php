@@ -6,13 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Http\Requests\MassDestroyHrmRequestLeafRequest;
 use App\Http\Requests\UpdateHrmRequestLeafRequest;
-use App\Models\AcademicDetail;
 use App\Models\AcademicYear;
 use App\Models\ClassTimeTableOne;
 use App\Models\ClassTimeTableTwo;
 use App\Models\CourseEnrollMaster;
 use App\Models\Document;
-use App\Models\ExperienceDetail;
 use App\Models\HrmRequestLeaf;
 use App\Models\LeaveImplement;
 use App\Models\LeaveType;
@@ -70,7 +68,6 @@ class HrmRequestLeaveController extends Controller
             //     $query1 = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 0])->whereIn('leave_type', [1, 5])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
             //     // dd($query);
             // }
-
 
             $list = $query;
         } elseif ($status == 'Approved') {
@@ -194,20 +191,21 @@ class HrmRequestLeaveController extends Controller
                 }
             } else {
                 for ($i = 0; $i < count($list); $i++) {
-                    $staff = TeachingStaff::where(['user_name_id' => $list[$i]->user_id])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
+                    $staff = Staffs::where(['user_name_id' => $list[$i]->user_id])->first();
 
                     if ($staff) {
                         $list[$i]->name = $staff->name;
-                        $list[$i]->dept = $staff->Dept;
-                        $list[$i]->staff_code = $staff->StaffCode;
+                        // $list[$i]->dept = $staff->Dept;
+                        $list[$i]->staff_code = $staff->employee_id;
                         $list[$i]->url = 'teaching-staff-edge';
-                    } else {
-                        $n_staff = NonTeachingStaff::where(['user_name_id' => $list[$i]->user_id])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
-                        $list[$i]->name = $n_staff->name;
-                        $list[$i]->dept = $n_staff->Dept;
-                        $list[$i]->staff_code = $n_staff->StaffCode;
-                        $list[$i]->url = 'non-teaching-staff-edge';
                     }
+                    // else {
+                    //     $n_staff = NonTeachingStaff::where(['user_name_id' => $list[$i]->user_id])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
+                    //     $list[$i]->name = $n_staff->name;
+                    //     $list[$i]->dept = $n_staff->Dept;
+                    //     $list[$i]->staff_code = $n_staff->StaffCode;
+                    //     $list[$i]->url = 'non-teaching-staff-edge';
+                    // }
                     // dd($staff);
                 }
             }
@@ -344,14 +342,13 @@ class HrmRequestLeaveController extends Controller
         $department = $staffName->Dept;
         $users = Staffs::where('user_name_id', '!=', $user_id)->select('name', 'user_name_id')->get();
 
-
         return view('admin.addLeave.staff_leaveindex', compact('staff', 'check', 'list', 'staff_edit', 'users'));
 
     }
 
     public function alter_staff(Request $request)
     {
-        // dd($request);
+        dd($request);
         if ($request->data != '') {
             $form_data = $request->data;
             $alter_data = [];
@@ -456,7 +453,7 @@ class HrmRequestLeaveController extends Controller
 
     public function staff_update(UpdateHrmRequestLeafRequest $request, HrmRequestLeaf $hrmRequestLeaf, Document $document)
     {
-        // dd($request);
+        // dd($request, 'hii');
         $role = DB::table('role_user')->where(['user_id' => $request->user_name_id])->first();
         $level = 0;
 
@@ -484,6 +481,7 @@ class HrmRequestLeaveController extends Controller
             $from_date_month = Carbon::parse($request->from_date)->month;
             $to_date_month = Carbon::parse($request->to_date)->month;
 
+            // dd($from_date_month, $to_date_month, $from_date_month != $to_date_month);
             if ($from_date_month != $to_date_month) {
 
                 $f_date = Carbon::parse($request->from_date);
@@ -499,7 +497,6 @@ class HrmRequestLeaveController extends Controller
                 $diffInDays_f_month = $remainingDays;
 
                 $diffInDays_t_month = $t_daysInMonth;
-                dd($diffInDays_f_month, $t_daysInMonth);
             } else {
                 $date1 = Carbon::parse($request->from_date);
                 $date2 = Carbon::parse($request->to_date);
@@ -775,19 +772,19 @@ class HrmRequestLeaveController extends Controller
                         $from_id = null;
                     }
 
-                    if ($from_id != null) {
-                        $get_alterData = StaffAlteration::where(['from_id' => $from_id, 'from_date' => $from_date, 'to_date' => $to_date])->get();
-                        //    dd($get_alterData);
-                        foreach ($get_alterData as $data) {
+                    // if ($from_id != null) {
+                    //     $get_alterData = StaffAlteration::where(['from_id' => $from_id, 'from_date' => $from_date, 'to_date' => $to_date])->get();
+                    //     //    dd($get_alterData);
+                    //     foreach ($get_alterData as $data) {
 
-                            $updateAlteration = StaffAlteration::where(['id' => $data['id']])->update(['status' => '2', 'approval' => '2']);
-                            $updateAlterRegister = StaffAlterationRegister::where(['from_date' => $data['from_date'], 'to_date' => $data['to_date'], 'staff_id' => $data['from_id'], 'alter_staffid' => $data['to_id'], 'period' => $data['period'], 'day' => $data['day'], 'class_name' => $data['classname']])->update([
-                                'deleted_at' => Carbon::now(),
-                            ]);
-                        }
-                    } else {
-                        return response()->json(['status' => 'Technical Error']);
-                    }
+                    //         $updateAlteration = StaffAlteration::where(['id' => $data['id']])->update(['status' => '2', 'approval' => '2']);
+                    //         $updateAlterRegister = StaffAlterationRegister::where(['from_date' => $data['from_date'], 'to_date' => $data['to_date'], 'staff_id' => $data['from_id'], 'alter_staffid' => $data['to_id'], 'period' => $data['period'], 'day' => $data['day'], 'class_name' => $data['classname']])->update([
+                    //             'deleted_at' => Carbon::now(),
+                    //         ]);
+                    //     }
+                    // } else {
+                    //     return response()->json(['status' => 'Technical Error']);
+                    // }
                 }
 
                 if (!isset($mannualClarification)) {
@@ -835,7 +832,8 @@ class HrmRequestLeaveController extends Controller
                         $first_date = $get->from_date;
                         $last_date = $get->to_date;
                         $isHalfDay = $get->half_day_leave == null ? false : true;
-                        if ($get->leave_type == 1) {
+
+                        if ($get->leave_type == 1) { //Casual Leave
                             if ($isHalfDay) {
                                 $currentDates = [];
                                 $first_date = $get->half_day_leave;
@@ -850,7 +848,7 @@ class HrmRequestLeaveController extends Controller
                                 $currentDates = [];
                                 $date1 = Carbon::parse($get->from_date);
                                 $date2 = Carbon::parse($get->to_date);
-
+                                $halfDay = false;
                                 $diffInDays = $date1->diffInDays($date2) + 1;
                                 $dates = Carbon::parse($first_date)->daysUntil($last_date);
                                 $cl_deduct = 1;
@@ -858,20 +856,19 @@ class HrmRequestLeaveController extends Controller
                                     array_push($currentDates, $date->format('Y-m-d'));
                                 }
                             }
-
                             if ($teaching_staff_get->casual_leave > 0) {
 
                                 if ($halfDay == false) {
                                     // Full Day Leave Request.
                                     foreach ($currentDates as $date) {
-                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->select('id', 'details', 'update_status', 'status')->first();
+                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
                                         $check_cl = Staffs::where(['user_name_id' => $get->user_id])->first();
                                         if ($staff_biometric != '') {
                                             if ($check_cl->casual_leave > 0) {
                                                 $staff_biometric->details = 'Casual Leave (CL Provided)';
                                                 $staff_biometric->update_status = 1;
                                                 $staff_biometric->updated_at = Carbon::now();
-                                                $staff_biometric->balance_cl = $staff_biometric->balance_cl - $cl_deduct;
+                                                $staff_biometric->status = 'Absent';
                                                 $staff_biometric->save();
 
                                                 $check_cl->casual_leave = $check_cl->casual_leave - $cl_deduct;
@@ -880,6 +877,7 @@ class HrmRequestLeaveController extends Controller
                                                 $staff_biometric->details = 'Casual Leave';
                                                 $staff_biometric->update_status = 1;
                                                 $staff_biometric->updated_at = Carbon::now();
+                                                $staff_biometric->status = 'Absent';
                                                 $staff_biometric->save();
                                             }
                                         }
@@ -887,13 +885,13 @@ class HrmRequestLeaveController extends Controller
                                 } else {
                                     //Half Day Leave.
                                     foreach ($currentDates as $date) {
-                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->select('id', 'details', 'update_status', 'status')->first();
+                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
                                         $check_cl = Staffs::where(['user_name_id' => $get->user_id])->first();
                                         if ($staff_biometric != '') {
                                             if ($check_cl->casual_leave > 0) {
                                                 $staff_biometric->details = $get->noon . ' Casual Leave (CL Provided)';
                                                 $staff_biometric->update_status = 1;
-                                                $staff_biometric->balance_cl = $staff_biometric->balance_cl - $cl_deduct;
+                                                $staff_biometric->status = $get->noon . ' Absent';
                                                 $staff_biometric->updated_at = Carbon::now();
                                                 $staff_biometric->save();
 
@@ -903,6 +901,7 @@ class HrmRequestLeaveController extends Controller
                                                 $staff_biometric->details = $get->noon . ' Casual Leave';
                                                 $staff_biometric->update_status = 1;
                                                 $staff_biometric->updated_at = Carbon::now();
+                                                $staff_biometric->status = $get->noon . ' Absent';
                                                 $staff_biometric->save();
                                             }
                                         }
@@ -913,28 +912,35 @@ class HrmRequestLeaveController extends Controller
                                 if ($halfDay == false) {
                                     // Full Day Leave Request.
                                     foreach ($currentDates as $date) {
-                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->select('id', 'details', 'update_status', 'status')->first();
+                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
                                         if ($staff_biometric != '') {
                                             $staff_biometric->details = 'Casual Leave';
                                             $staff_biometric->update_status = 1;
                                             $staff_biometric->updated_at = Carbon::now();
+                                            $staff_biometric->status = 'Absent';
                                             $staff_biometric->save();
+                                        } else {
+                                            \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
                                         }
                                     }
                                 } else {
                                     //Half Day Leave.
                                     foreach ($currentDates as $date) {
-                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->select('id', 'details', 'update_status', 'status')->first();
+                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
                                         if ($staff_biometric != '') {
                                             $staff_biometric->details = $get->noon . ' Casual Leave';
                                             $staff_biometric->update_status = 1;
                                             $staff_biometric->updated_at = Carbon::now();
+                                            $staff_biometric->status = $get->noon . ' Absent';
                                             $staff_biometric->save();
+                                        } else {
+                                            \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
                                         }
                                     }
                                 }
                             }
-                        } elseif ($get->leave_type == 2) {
+                        } elseif ($get->leave_type == 2) { //Sick Leave
+
                             if ($isHalfDay) {
                                 $currentDates = [];
                                 $first_date = $get->half_day_leave;
@@ -949,7 +955,7 @@ class HrmRequestLeaveController extends Controller
                                 $currentDates = [];
                                 $date1 = Carbon::parse($get->from_date);
                                 $date2 = Carbon::parse($get->to_date);
-
+                                $halfDay = false;
                                 $diffInDays = $date1->diffInDays($date2) + 1;
                                 $dates = Carbon::parse($first_date)->daysUntil($last_date);
                                 $cl_deduct = 1;
@@ -958,18 +964,20 @@ class HrmRequestLeaveController extends Controller
                                 }
                             }
 
-                            if ($teaching_staff_get->casual_leave > 0) {
+                            if ($teaching_staff_get->sick_leave > 0) {
 
                                 if ($halfDay == false) {
                                     // Full Day Leave Request.
                                     foreach ($currentDates as $date) {
-                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->select('id', 'details', 'update_status', 'status')->first();
+                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
                                         $check_cl = Staffs::where(['user_name_id' => $get->user_id])->first();
+                                        // dd($cl_deduct, $halfDay, $check_cl->sick_leave - $cl_deduct);
                                         if ($staff_biometric != '') {
                                             if ($check_cl->sick_leave > 0) {
-                                                $staff_biometric->details = 'Sick Leave (CL Provided)';
+                                                $staff_biometric->details = 'Sick Leave (SL Provided)';
                                                 $staff_biometric->update_status = 1;
                                                 $staff_biometric->updated_at = Carbon::now();
+                                                $staff_biometric->status = 'Absent';
                                                 $staff_biometric->save();
 
                                                 $check_cl->sick_leave = $check_cl->sick_leave - $cl_deduct;
@@ -978,30 +986,38 @@ class HrmRequestLeaveController extends Controller
                                                 $staff_biometric->details = 'Sick Leave';
                                                 $staff_biometric->update_status = 1;
                                                 $staff_biometric->updated_at = Carbon::now();
+                                                $staff_biometric->status = 'Absent';
                                                 $staff_biometric->save();
                                             }
+                                        } else {
+                                            \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
                                         }
                                     }
                                 } else {
                                     //Half Day Leave.
                                     foreach ($currentDates as $date) {
-                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->select('id', 'details', 'update_status', 'status')->first();
+                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
                                         $check_cl = Staffs::where(['user_name_id' => $get->user_id])->first();
+                                        // dd($cl_deduct, $halfDay, $check_cl->sick_leave - $cl_deduct, $staff_biometric);
                                         if ($staff_biometric != '') {
                                             if ($check_cl->sick_leave > 0) {
-                                                $staff_biometric->details = $get->noon . 'Sick Leave (CL Provided)';
+                                                $staff_biometric->details = $get->noon . ' Sick Leave (SL Provided)';
                                                 $staff_biometric->update_status = 1;
                                                 $staff_biometric->updated_at = Carbon::now();
+                                                $staff_biometric->status = $get->noon .' Absent';
                                                 $staff_biometric->save();
 
                                                 $check_cl->sick_leave = $check_cl->sick_leave - $cl_deduct;
                                                 $check_cl->save();
                                             } else {
-                                                $staff_biometric->details = $get->noon . 'Sick Leave';
+                                                $staff_biometric->details = $get->noon . ' Sick Leave';
                                                 $staff_biometric->update_status = 1;
                                                 $staff_biometric->updated_at = Carbon::now();
+                                                $staff_biometric->status = $get->noon .' Absent';
                                                 $staff_biometric->save();
                                             }
+                                        } else {
+                                            \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
                                         }
                                     }
                                 }
@@ -1010,24 +1026,89 @@ class HrmRequestLeaveController extends Controller
                                 if ($halfDay == false) {
                                     // Full Day Leave Request.
                                     foreach ($currentDates as $date) {
-                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->select('id', 'details', 'update_status', 'status')->first();
+                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
                                         if ($staff_biometric != '') {
                                             $staff_biometric->details = 'Sick Leave';
                                             $staff_biometric->update_status = 1;
                                             $staff_biometric->updated_at = Carbon::now();
+                                            $staff_biometric->status = 'Absent';
                                             $staff_biometric->save();
+                                        } else {
+                                            \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
                                         }
                                     }
                                 } else {
                                     //Half Day Leave.
                                     foreach ($currentDates as $date) {
-                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->select('id', 'details', 'update_status', 'status')->first();
+                                        $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
                                         if ($staff_biometric != '') {
-                                            $staff_biometric->details = $get->noon . 'Sick Leave';
+                                            $staff_biometric->details = $get->noon . ' Sick Leave';
                                             $staff_biometric->update_status = 1;
                                             $staff_biometric->updated_at = Carbon::now();
+                                            $staff_biometric->status = $get->noon .' Absent';
                                             $staff_biometric->save();
+                                        } else {
+                                            \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
                                         }
+                                    }
+                                }
+                            }
+
+                        }elseif($get->leave_type == 3){ // OD
+
+                            if ($isHalfDay) {
+                                $currentDates = [];
+                                $first_date = $get->half_day_leave;
+                                $last_date = $get->half_day_leave;
+                                $halfDay = true;
+                                // $cl_deduct = 0.5;
+                                $dates = Carbon::parse($first_date)->daysUntil($last_date);
+                                foreach ($dates as $date) {
+                                    array_push($currentDates, $date->format('Y-m-d'));
+                                }
+                            } else {
+                                $currentDates = [];
+                                $date1 = Carbon::parse($get->from_date);
+                                $date2 = Carbon::parse($get->to_date);
+                                $halfDay = false;
+                                $diffInDays = $date1->diffInDays($date2) + 1;
+                                $dates = Carbon::parse($first_date)->daysUntil($last_date);
+                                // $cl_deduct = 1;
+                                foreach ($dates as $date) {
+                                    array_push($currentDates, $date->format('Y-m-d'));
+                                }
+                            }
+
+
+                            if ($halfDay == false) {
+                                // Full Day Leave Request.
+                                foreach ($currentDates as $date) {
+                                    $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
+                                    $check_cl = Staffs::where(['user_name_id' => $get->user_id])->first();
+                                    // dd($cl_deduct, $halfDay, $check_cl->sick_leave - $cl_deduct);
+                                    if ($staff_biometric != '') {
+                                        $staff_biometric->details = 'On Duty';
+                                        $staff_biometric->update_status = 1;
+                                        $staff_biometric->updated_at = Carbon::now();
+                                        $staff_biometric->status = 'Present';
+                                        $staff_biometric->save();
+                                    } else {
+                                        \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
+                                    }
+                                }
+                            } else {
+                                //Half Day Leave.
+                                foreach ($currentDates as $date) {
+                                    $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
+                                    $check_cl = Staffs::where(['user_name_id' => $get->user_id])->first();
+                                    if ($staff_biometric != '') {
+                                        $staff_biometric->details = $get->noon . ' On Duty';
+                                        $staff_biometric->update_status = 1;
+                                        $staff_biometric->updated_at = Carbon::now();
+                                        $staff_biometric->status = $get->noon .' Present';
+                                        $staff_biometric->save();
+                                    } else {
+                                        \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
                                     }
                                 }
                             }
@@ -1324,7 +1405,7 @@ class HrmRequestLeaveController extends Controller
                                         ->whereNull('deleted_at')
                                         ->first();
                                     if ($nextDayCheck->dayorder == 4) {
-                                        if ($interval >= 20 && $checkDateInCalen->dayorder == 10) {
+                                        if ($interval >= 15 && $checkDateInCalen->dayorder == 10) {
                                             $currentStatus = true;
                                         } else {
                                             return response()->json(['status' => false, 'data' => 'Weekend leave must be requested at least 20 days in advance.']);
@@ -1334,11 +1415,11 @@ class HrmRequestLeaveController extends Controller
                                     }
                                 } else {
                                     // dd($interval);
-                                    if (($interval >= 20 && $checkDateInCalen->dayorder == 11) || ($interval >= 20 && $checkDateInCalen->dayorder == 20) || ($interval >= 20 && $checkDateInCalen->dayorder == 10)) {
+                                    if (($interval >= 15 && $checkDateInCalen->dayorder == 11) || ($interval >= 15 && $checkDateInCalen->dayorder == 20) || ($interval >= 15 && $checkDateInCalen->dayorder == 10)) {
                                         $currentStatus = true;
-                                    } elseif (($interval < 20 && $checkDateInCalen->dayorder == 20) || ($interval < 20 && $checkDateInCalen->dayorder == 10) || ($interval < 20 && $checkDateInCalen->dayorder == 11)) {
-                                        return response()->json(['status' => false, 'data' => 'Weekend leave must be requested at least 20 days in advance.']);
-                                    } elseif (($interval < 20 && $checkDateInCalen->dayorder != 20) || ($interval < 20 && $checkDateInCalen->dayorder != 10) || ($interval < 20 && $checkDateInCalen->dayorder != 11)) {
+                                    } elseif (($interval < 15 && $checkDateInCalen->dayorder == 20) || ($interval < 15 && $checkDateInCalen->dayorder == 10) || ($interval < 15 && $checkDateInCalen->dayorder == 11)) {
+                                        return response()->json(['status' => false, 'data' => 'Weekend leave must be requested at least 15 days in advance.']);
+                                    } elseif (($interval < 15 && $checkDateInCalen->dayorder != 20) || ($interval < 15 && $checkDateInCalen->dayorder != 10) || ($interval < 15 && $checkDateInCalen->dayorder != 11)) {
                                         $currentStatus = true;
                                     }
                                 }

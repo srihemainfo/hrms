@@ -7,44 +7,14 @@
             <h5 class="mb-2 text-primary">Leave Request</h5>
 
         </div>
-        {{-- {{dd($hrmRequestLeaf->status)}} --}}
-        {{-- @if ($hrmRequestLeaf->level == 0 && $hrmRequestLeaf->status == 'Pending')
-            @if (count($staffs) > 0)
-                <div class="card-header">
-                    <div class="row text-center">
-                        @foreach ($staffs as $staff)
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 mb-2 text-center">
-                                <div
-                                    class="manual_bn {{ $staff['status'] == 0 || $staff['status'] == 2 ? 'bg-danger' : 'bg-success' }}">
-                                    @if ($staff['status'] == 0)
-                                        {{ $staff['staff_name'] }} ({{ $staff['staff_code'] }}) Not Responded to the
-                                        Alteration
-                                        Request
-                                    @elseif ($staff['status'] == 1)
-                                        {{ $staff['staff_name'] }} ({{ $staff['staff_code'] }}) Accepted the Alteration
-                                        Request
-                                    @elseif ($staff['status'] == 2)
-                                        {{ $staff['staff_name'] }} ({{ $staff['staff_code'] }}) Rejected the Alteration
-                                        Request
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-
-                    </div>
-                </div>
-            @endif
-        @endif --}}
-
         <div class="card-body">
 
-            {{-- {{ dd($hrmRequestLeaf->user) }} --}}
             <div class="row gutters">
                 <div class="col-xl-5 col-lg-5 col-md-6 col-sm-6 col-12">
                     <div class="form-group">
                         <label for="">Staff Name</label>
                         <input type="text" class="form-control"
-                            value="{{ $hrmRequestLeaf->user->name }} ({{ $hrmRequestLeaf->user->employID }})"readonly>
+                            value="{{ $hrmRequestLeaf->user->name }} ({{ $hrmRequestLeaf->user->employee_id }})"readonly>
                     </div>
                 </div>
                 <div class="col-xl-5 col-lg-5 col-md-4 col-sm-4 col-10">

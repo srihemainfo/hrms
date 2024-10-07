@@ -74,11 +74,10 @@
                         class="nav-item has-treeview {{ request()->is('admin/permissions*') ? 'menu-open' : '' }} {{ request()->is('admin/roles*') ? 'menu-open' : '' }} {{ request()->is('admin/users*') ? 'menu-open' : '' }} {{ request()->is('admin/audit-logs*') ? 'menu-open' : '' }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/permissions*') ? 'active' : '' }} {{ request()->is('admin/roles*') ? 'active' : '' }} {{ request()->is('admin/users*') ? 'active' : '' }} {{ request()->is('admin/audit-logs*') ? 'active' : '' }}"
                             href="#">
-                            <i class="fas nav-icon fas fa-address-card">
-
+                            <i class="fas nav-icon fas fa-user-lock">
                             </i>
                             <p>
-                                User Management
+                                Authentication
                                 <i class="right fa fa-fw fa-angle-left nav-icon"></i>
                             </p>
                         </a>
@@ -121,7 +120,7 @@
                                 </a>
                             </li>
 
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.audit-logs.index') }}"
                                     class="nav-link {{ request()->is('admin/audit-logs') || request()->is('admin/audit-logs/*') ? 'active' : '' }}">
                                     <i class="fa-fw nav-icon fas fa-file-alt">
@@ -131,7 +130,7 @@
                                         {{ trans('cruds.auditLog.title') }}
                                     </p>
                                 </a>
-                            </li>
+                            </li> --}}
 
                         </ul>
                     </li>
@@ -166,18 +165,6 @@
                                 </a>
                             </li>
 
-                            {{-- <li class="nav-item">
-                                <a href="{{ route('admin.teaching-staffs.index') }}"
-                                    class="nav-link {{ request()->is('admin/teaching-staffs') || request()->is('admin/teaching-staffs*') ? 'active' : '' }}">
-                                    <i class="fas nav-icon fa-chalkboard-teacher">
-                                    </i>
-                                    <p>
-                                        {{ trans('cruds.teachingStaff.title') }}
-                                    </p>
-                                </a>
-                            </li> --}}
-
-
                             <li class="nav-item">
                                 <a href="{{ route('admin.inactive_staff.index') }}"
                                     class="nav-link {{ request()->is('admin/inactive_staff') || request()->is('admin/inactive_staff/*') ? 'active' : '' }}">
@@ -206,6 +193,11 @@
                         </a>
                         <ul class="nav nav-treeview " style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
 
+                            @can('staff_biometric_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.staff-biometrics.index') }}"
+                                        class="nav-link {{ request()->is('admin/staff-biometrics') || request()->is('admin/staff-biometrics/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-fingerprint">
 
                                         </i>
                                         <p>
@@ -325,7 +317,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            {{-- @can('leave_implement_access')
+                            @can('leave_implement_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.leave-implementation.index') }}"
                                         class="nav-link {{ request()->is('admin/leave-implementation*') ? 'active' : '' }}">
@@ -333,7 +325,7 @@
                                         <p>Leave Implementation</p>
                                     </a>
                                 </li>
-                            @endcan --}}
+                            @endcan
                             @can('employee_salary_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.employee-salary.index') }}"

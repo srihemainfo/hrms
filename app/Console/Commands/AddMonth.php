@@ -32,63 +32,31 @@ class AddMonth extends Command
 
         $year = Carbon::now()->format('Y');
 
-        $month = \Carbon\Carbon::now()->format('m');
+        $month = Carbon::now()->format('m');
 
         $numDays = Carbon::createFromDate($year, $month, 1)->daysInMonth;
 
         $check = DB::table('staff_biometrics')->where('date', 'like', $year . '-' . $month . '%')->get();
-
+        // dd($check);
         if ($check->count() <= 0) {
 
-            $teach_staffs = DB::table('teaching_staffs')->whereNull('deleted_at')->select('user_name_id','name','BiometricID','StaffCode')->get();
+            $teach_staffs = DB::table('staffs')->whereNull('deleted_at')->get();
 
             $count = $numDays;
 
             foreach ($teach_staffs as $value) {
 
                 for ($i = 01; $i <= $count; $i++) {
-
                     $get_day = \Carbon\Carbon::parse($year . '-' . $month . '-' . $i);
-
+                    $calender = DB::table('college_calenders_preview')->WhereNull('deleted_at')->where(['date' => $get_day, 'dayorder' => 4])->exists();
                     $dayOfWeek = $get_day->format('l');
 
                     if ($dayOfWeek == 'Sunday') {
                         $details = 'Sunday';
-                    } else {
-                        $details = null;
-                    }
-
-                    DB::table('staff_biometrics')->insert([
-                        'date' => $year . '-' . $month . '-' . $i,
-                        'day' => $dayOfWeek,
-                        'user_name_id' => $value->user_name_id,
-                        'employee_name' => $value->name,
-                        'employee_code' => $value->BiometricID,
-                        'staff_code' => $value->StaffCode,
-                        'shift' => 1,
-                        'details' => $details,
-                    ]);
-                }
-            }
-            $non_teach_staffs = DB::table('non_teaching_staffs')->whereNull('deleted_at')->select('user_name_id','name','BiometricID','StaffCode','Dept')->get();
-
-            foreach ($non_teach_staffs as $value) {
-
-                for ($i = 01; $i <= $count; $i++) {
-
-                    $get_day = \Carbon\Carbon::parse($year . '-' . $month . '-' . $i);
-
-                    $dayOfWeek = $get_day->format('l');
-
-                    if ($dayOfWeek == 'Sunday') {
-                        $details = 'Sunday';
-                    } else {
-                        $details = null;
-                    }
-                    if($value->Dept != 'CIVIL' && $value->Dept != 'ADMIN'){
-                        $shift = 1;
+                    } elseif ($calender) {
+                        $details = 'Holiday';
                     }else{
-                        $shift = 2;
+                        $details = null;
                     }
 
                     DB::table('staff_biometrics')->insert([
@@ -96,13 +64,46 @@ class AddMonth extends Command
                         'day' => $dayOfWeek,
                         'user_name_id' => $value->user_name_id,
                         'employee_name' => $value->name,
-                        'employee_code' => $value->BiometricID,
-                        'staff_code' => $value->StaffCode,
-                        'shift' => $shift,
+                        'employee_code' => $value->biometric,
+                        'staff_code' => $value->employee_id,
+                        'shift' => $value->shift,
                         'details' => $details,
                     ]);
                 }
             }
+            // $non_teach_staffs = DB::table('non_teaching_staffs')->whereNull('deleted_at')->select('user_name_id','name','BiometricID','StaffCode','Dept')->get();
+
+            // foreach ($non_teach_staffs as $value) {
+
+            //     for ($i = 01; $i <= $count; $i++) {
+
+            //         $get_day = \Carbon\Carbon::parse($year . '-' . $month . '-' . $i);
+
+            //         $dayOfWeek = $get_day->format('l');
+
+            //         if ($dayOfWeek == 'Sunday') {
+            //             $details = 'Sunday';
+            //         } else {
+            //             $details = null;
+            //         }
+            //         if($value->Dept != 'CIVIL' && $value->Dept != 'ADMIN'){
+            //             $shift = 1;
+            //         }else{
+            //             $shift = 2;
+            //         }
+
+            //         DB::table('staff_biometrics')->insert([
+            //             'date' => $year . '-' . $month . '-' . $i,
+            //             'day' => $dayOfWeek,
+            //             'user_name_id' => $value->user_name_id,
+            //             'employee_name' => $value->name,
+            //             'employee_code' => $value->BiometricID,
+            //             'staff_code' => $value->StaffCode,
+            //             'shift' => $shift,
+            //             'details' => $details,
+            //         ]);
+            //     }
+            // }
         }
 
         \Log::info("Month Added For Biometric");

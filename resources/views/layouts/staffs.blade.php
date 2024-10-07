@@ -41,6 +41,9 @@
             overflow-y: scroll;
         }
 
+        * {
+            font-size: 0.9rem;
+        }
 
 
         /* Absolute Center Spinner */
@@ -257,7 +260,7 @@
         </nav>
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="min-height: 917px;">
-  
+
             <a href="#" class="brand-link" style="background-color: rgb(255, 255, 255)">
                 <span class="brand-text font-weight-light">
                     <img src="{{ asset('adminlogo/school_menu_logo.png') }}" alt="" width="100%">

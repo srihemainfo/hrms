@@ -14,13 +14,14 @@ use App\Models\ExamResultPublish;
 use App\Models\ExamTimetableCreation;
 use App\Models\GradeBook;
 use App\Models\GradeMaster;
+use App\Models\HrmRequestLeaf;
 use App\Models\NonTeachingStaff;
-use App\Models\PermissionRequest;
 use App\Models\PersonalDetail;
 use App\Models\Role;
 use App\Models\Scholarship;
 use App\Models\Semester;
 use App\Models\StaffBiometric;
+use App\Models\Staffs;
 use App\Models\Student;
 use App\Models\Subject;
 use App\Models\SubjectAllotment;
@@ -618,51 +619,70 @@ trait CsvImportTrait
                 $balance_row = $rows;
 
                 foreach ($for_insert[0] as $insert) {
-
+                    // dd($insert);
                     if ((isset($insert['date']) && isset($insert['staff_code'])) && ($insert['date'] != '' && $insert['staff_code'])) {
                         $staff_code = preg_replace('/\s+/', '', $insert['staff_code']);
-                        $user = User::where(['employID' => $staff_code])->value('id');
+                        $user = Staffs::where(['biometric' => $staff_code])->value('user_name_id');
+                        // dd($user, $staff_code);
                         if ($user != null) {
                             $in_time = '00:00:00';
                             $out_time = '00:00:00';
 
-                            if(isset($insert['in_time'])){
+                            if (isset($insert['in_time'])) {
                                 $insert['in_time'] = str_replace(' ', '', $insert['in_time']);
-                                $in_time = $insert['in_time'] != '' ? $insert['in_time'] :'00:00:00' ;
+                                $in_time = $insert['in_time'] != '' ? $insert['in_time'] : '00:00:00';
                             }
-                            if(isset($insert['out_time'])){
+                            if (isset($insert['out_time'])) {
                                 $insert['out_time'] = str_replace(' ', '', $insert['out_time']);
-                                $out_time = $insert['out_time'] != '' ? $insert['out_time'] :'00:00:00' ;
+                                $out_time = $insert['out_time'] != '' ? $insert['out_time'] : '00:00:00';
                             }
 
                             $permission = '';
                             $details = '';
-                            if ($in_time != '00:00:00' && $out_time != '00:00:00') {
-                                $in = strtotime($in_time);
-                                $out = strtotime($out_time);
+                            if ($insert['shift'] == 'General') {
+                                if ($in_time != '00:00:00' && $out_time != '00:00:00') {
+                                    $in = strtotime($in_time);
+                                    $out = strtotime($out_time);
 
-                                $duration_seconds = $out - $in;
+                                    $duration_seconds = $out - $in;
 
-                                $total_hours = gmdate('H:i:s', $duration_seconds);
-
-                                if (strtotime($in_time) > strtotime('08:00:00') && strtotime($in_time) <= strtotime('08:15:00')) {
-                                    if ($details == '') {
-                                        $details .= 'Late';
-                                    } else {
-                                        $details .= ',Late';
+                                    $total_hours = gmdate('H:i:s', $duration_seconds);
+                                    $isLate = 0;
+                                    $early = 0;
+                                    if (strtotime($in_time) > strtotime('10:10:59')) {
+                                        $isLate = 1;
                                     }
-                                } else if (strtotime($in_time) > strtotime('08:15:00')) {
-                                    if ($details == '') {
-                                        $details .= 'Too Late';
-                                    } else {
-                                        $details .= ',Too Late';
+                                    if (strtotime($in_time) < strtotime('19:00:00')) {
+                                        $early = 1;
                                     }
-
+                                    $status = 'Present';
+                                } else {
+                                    $total_hours = '00:00:00';
+                                    $status = 'Absent';
                                 }
-                                $status = 'Present';
-                            } else {
-                                $total_hours = '00:00:00';
-                                $status = 'Absent';
+                            } elseif ($insert['shift'] == '2') {
+                                if ($in_time != '00:00:00' && $out_time != '00:00:00') {
+                                    $in = strtotime($in_time);
+                                    $out = strtotime($out_time);
+
+                                    $duration_seconds = $out - $in;
+
+                                    $total_hours = gmdate('H:i:s', $duration_seconds);
+                                    $isLate = 0;
+                                    $early = 0;
+
+                                    if (strtotime($in_time) > strtotime('09:40:59')) {
+                                        $isLate = 1;
+                                    }
+                                    if (strtotime($in_time) < strtotime('18:30:00')) {
+                                        $early = 1;
+                                    }
+
+                                    $status = 'Present';
+                                } else {
+                                    $total_hours = '00:00:00';
+                                    $status = 'Absent';
+                                }
                             }
 
                             $day_punches = $insert['day_punches'] == '' ? null : $insert['day_punches'];
@@ -680,33 +700,77 @@ trait CsvImportTrait
                             foreach ($formats as $i => $format) {
                                 try {
                                     $the_date = Carbon::createFromFormat($format, $given_date);
-
-                                    // Extract only the date part
                                     $dateOnly = $the_date->format('Y-m-d');
-                                    //   echo 'no: '.$i;
                                     if ($dateOnly != '') {
                                         $formattedDate = $dateOnly;
                                         break;
                                     }
                                 } catch (Exception $e) {
-                                    // Do nothing, just continue to the next format
                                 }
                             }
-
+                            // dd($formattedDate);
                             if ($formattedDate != null) {
-
-                                $staff_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->select('id', 'details', 'update_status', 'shift', 'status', 'in_time', 'out_time', 'total_hours', 'day_punches', 'updated_at', 'permission', 'import')->first();
-
+                                $staff_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->first();
+                                // dd($staff_biometric, $isLate);
                                 if ($staff_biometric != '') {
                                     if ($staff_biometric->import != 1) {
                                         // if (strpos($staff_biometric->details, 'Sunday') === false && $staff_biometric->details != 'Holiday') {
                                         if ($staff_biometric->details != 'Sunday' && $staff_biometric->details != 'Sunday,Admin OD' && $staff_biometric->details != 'Sunday,Exam OD' && $staff_biometric->details != 'Sunday,Training OD' && $staff_biometric->details != 'Admin OD,Sunday' && $staff_biometric->details != 'Exam OD,Sunday' && $staff_biometric->details != 'Training OD,Sunday' && $staff_biometric->details != 'Holiday' && $staff_biometric->details != 'Holiday,Admin OD' && $staff_biometric->details != 'Holiday,Exam OD' && $staff_biometric->details != 'Holiday,Training OD' && $staff_biometric->details != 'Admin OD,Holiday' && $staff_biometric->details != 'Exam OD,Holiday' && $staff_biometric->details != 'Training OD,Holiday') {
-                                            $get = PermissionRequest::where(['user_name_id' => $user, 'date' => $formattedDate, 'Permission' => 'On Duty', 'status' => 2])->select('from_time', 'to_time')->first();
-                                            if ($get == '' && $staff_biometric->permission != 'OD Permission') {
-                                                if ($staff_biometric->permission == 'FN Permission') {
-                                                    $details = '';
-                                                } else if ($staff_biometric->permission != 'AN Permission') {
+                                            // $get = PermissionRequest::where(['user_name_id' => $user, 'date' => $formattedDate, 'Permission' => 'On Duty', 'status' => 2])->select('from_time', 'to_time')->first();
+                                            $get = 1;
 
+                                            $get_leaves = HrmRequestLeaf::where(['half_day_leave' => $formattedDate, 'user_id' => $user])->first();
+                                            // dd($get_leaves);
+                                            if($insert['shift'] == 'General'){
+                                                if ($get_leaves == 'Fore Noon') {
+                                                    if (strtotime($in_time) > strtotime('14:00:59')) {
+                                                        $isLate = 1;
+                                                    } else {
+                                                        $isLate = 0;
+                                                    }
+
+                                                    if (strtotime($out_time) < strtotime('19:00:00')) {
+                                                        $early = 1;
+                                                    } else {
+                                                        $early = 0;
+                                                    }
+
+                                                } elseif ($get_leaves == 'After Noon') {
+                                                    if (strtotime($out_time) < strtotime('14:00:59')) {
+                                                        $early = 1;
+                                                    } else {
+                                                        $early = 0;
+                                                    }
+                                                }
+                                            }elseif($insert['shift'] == '2'){
+                                                if ($get_leaves == 'Fore Noon') {
+                                                    if (strtotime($in_time) > strtotime('14:00:59')) {
+                                                        $isLate = 1;
+                                                    } else {
+                                                        $isLate = 0;
+                                                    }
+
+                                                    if (strtotime($out_time) < strtotime('18:30:00')) {
+                                                        $early = 1;
+                                                    } else {
+                                                        $early = 0;
+                                                    }
+
+                                                } elseif ($get_leaves == 'After Noon') {
+                                                    if (strtotime($out_time) < strtotime('14:00:59')) {
+                                                        $early = 1;
+                                                    } else {
+                                                        $early = 0;
+                                                    }
+                                                }
+                                            }
+
+
+
+                                            if ($get == null && $staff_biometric->permission != 'OD Permission') {
+                                                if ($staff_biometric->permission == 'FN Permission') {
+                                                    $permission = '';
+                                                } else if ($staff_biometric->permission != 'AN Permission') {
                                                     if ($staff_biometric->shift == 1) {
                                                         if ($out_time != '00:00:00') {
                                                             if (strtotime($out_time) < strtotime('16:00:00')) {
@@ -758,22 +822,27 @@ trait CsvImportTrait
                                                         $details = '';
                                                     }
                                                 }
-                                            } else {
-                                                if (($details == 'Late' || $details == 'Too Late') && (strtotime($in_time) >= strtotime($get->from_time) && strtotime($in_time) <= strtotime($get->to_time))) {
-                                                    $details = '';
-                                                } else if (strtotime($out_time) <= strtotime($get->to_time)) {
-                                                    $details = '';
-                                                }
                                             }
-                                            if ($staff_biometric->details != null) {
-                                                if ($details != '') {
-                                                    $tempDetail = $staff_biometric->details . ',' . $details;
-                                                } else {
-                                                    $tempDetail = $staff_biometric->details;
-                                                }
-                                            } else {
-                                                $tempDetail = $details != '' ? $details : null;
-                                            }
+
+                                            // else {
+                                            //     if (($isLate == 1) && (strtotime($in_time) >= strtotime($get->from_time) && strtotime($in_time) <= strtotime($get->to_time))) {
+                                            //         $isLate = 0;
+                                            //     } else if (strtotime($out_time) <= strtotime($get->to_time)) {
+                                            //         $early = 0;
+                                            //     }
+                                            // }
+
+                                            // if ($staff_biometric->details != null) {
+                                            //     if ($details != '' && $isLate != 0) {
+                                            //         $tempDetail = $staff_biometric->details . ',' . 'Late';
+                                            //     } else {
+                                            //         $tempDetail = $staff_biometric->details;
+                                            //     }
+                                            // } else {
+                                            //     $tempDetail = $isLate != 0 ? 'Late' : null;
+                                            // }
+
+                                            $tempDetail = $staff_biometric->details;
                                         } else {
                                             $tempDetail = $staff_biometric->details;
                                         }
@@ -784,6 +853,8 @@ trait CsvImportTrait
                                         $staff_biometric->status = $status;
                                         $staff_biometric->details = $tempDetail;
                                         $staff_biometric->day_punches = $day_punches;
+                                        $staff_biometric->isLate = $isLate;
+                                        $staff_biometric->earlyOut = $early;
                                         $staff_biometric->import = 1;
                                         $staff_biometric->updated_at = Carbon::now();
                                         $staff_biometric->save();
@@ -2128,7 +2199,7 @@ trait CsvImportTrait
                                             //     }
                                             //     $balance_row--;
                                             // } else
-                                            if($checkGradeBook == 0) {
+                                            if ($checkGradeBook == 0) {
 
                                                 $store = GradeBook::create([
                                                     'user_name_id' => $theStudent,
@@ -2154,7 +2225,7 @@ trait CsvImportTrait
                                         throw new Exception('Grade Not Found');
                                     }
                                 } else {
-                                    throw new Exception("Subject (".$insert['subject_code'].") Not Found For This Regulation (".$insert['regulation'].") On Row No " . ($rows - $balance_row) + 1);
+                                    throw new Exception("Subject (" . $insert['subject_code'] . ") Not Found For This Regulation (" . $insert['regulation'] . ") On Row No " . ($rows - $balance_row) + 1);
                                 }
                             } else {
                                 throw new Exception("Not a Valid Date On Row No " . ($rows - $balance_row) + 1);
@@ -2728,7 +2799,7 @@ trait CsvImportTrait
                                         $registration->enroll_master = $enroll_master;
                                         $registration->category = $insert['category'];
                                         $registration->subject_id = $get_subject->id;
-                                        $registration->status = 2;   
+                                        $registration->status = 2;
                                         $registration->save();
 
                                         $userAlert = new UserAlert;

@@ -20,6 +20,7 @@ class AddMonthForNewbie extends Command
      *
      * @var string
      */
+    
     protected $description = 'Adding Month In Staff Biometric For Newbie';
 
     /**
