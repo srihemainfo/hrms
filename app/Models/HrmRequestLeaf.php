@@ -42,7 +42,7 @@ class HrmRequestLeaf extends Model
         'clarification_reason',
         'created_at',
         'updated_at',
-        'deleted_at',
+        'deleted_at',           
     ];
 
     protected function serializeDate(DateTimeInterface $date)

@@ -334,9 +334,9 @@
 
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="marial_status">Marital Status</label>
+                                        <label for="marial_status">Marial Status</label>
                                         <input type="text" class="form-control" name="marial_status"
-                                            value="{{ $detail->marital_status }}" readonly>
+                                            value="{{ $detail->marial_status }}" readonly>
                                     </div>
                                 </div>
 

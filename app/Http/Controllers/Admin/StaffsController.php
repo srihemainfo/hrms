@@ -171,14 +171,13 @@ class StaffsController extends Controller
         } else {
 
             $user_name_id = $staff->user_name_id;
-            // dd($user_name_id);
-            $document = Document::where(['nameofuser_id' => $user_name_id, 'fileName' => 'Profile'])->get();
+            // $document = Document::where(['nameofuser_id' => $user_name_id, 'fileName' => 'Profile'])->get();
 
-            if ($document->count() <= 0) {
-                $staff->filePath = '';
-            } else {
-                $staff->filePath = $document[0]->filePath;
-            }
+            // if ($document->count() <= 0) {
+            //     $staff->filePath = '';
+            // } else {
+            //     $staff->filePath = $document[0]->filePath;
+            // }
 
             $personal = PersonalDetail::where(['user_name_id' => $user_name_id])->get();
             $blood_groups = BloodGroup::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
@@ -252,7 +251,7 @@ class StaffsController extends Controller
                 // $personal[0]->known_languages = $known_languages;
                 // $personal[0]->BiometricID = $staff->BiometricID;
                 // $personal[0]->gender = $staff->gender;
-                // $personal[0]->known_languages = $known_languages;
+                $personal[0]->known_languages = $known_languages;
                 $staff->gender = $personal[0]->gender;
 
                 $detail = $personal[0];
@@ -298,20 +297,20 @@ class StaffsController extends Controller
                 $experience_list = $experience_details;
             }
 
-            $address_details = Address::where(['name_id' => $user_name_id, 'status' => 1])->get();
+            // $address_details = Address::where(['name_id' => $user_name_id, 'status' => 1])->get();
 
-            if ($address_details->count() <= 0) {
-                $address_list = [];
-            } else {
-                $address_list = $address_details;
-            }
+            // if ($address_details->count() <= 0) {
+            //     $address_list = [];
+            // } else {
+            //     $address_list = $address_details;
+            // }
 
-            $bank_details = BankAccountDetail::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
-            if ($bank_details->count() <= 0) {
-                $bank_list = [];
-            } else {
-                $bank_list = $bank_details;
-            }
+            // $bank_details = BankAccountDetail::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($bank_details->count() <= 0) {
+            //     $bank_list = [];
+            // } else {
+            //     $bank_list = $bank_details;
+            // }
 
             // $salary_details = StaffSalary::where(['user_name_id' => $user_name_id])->get();
             // if ($salary_details->count() <= 0) {
@@ -409,13 +408,13 @@ class StaffsController extends Controller
             //     $online_course_list = $online_course;
             // }
 
-            $document = Document::where(['nameofuser_id' => $user_name_id, 'status' => 1])->get();
-            if ($document->count() <= 0) {
+            // $document = Document::where(['nameofuser_id' => $user_name_id, 'status' => 1])->get();
+            // if ($document->count() <= 0) {
 
-                $document_list = [];
-            } else {
-                $document_list = $document;
-            }
+            //     $document_list = [];
+            // } else {
+            //     $document_list = $document;
+            // }
 
             // // $seminar_details = Seminar::where(['user_name_id' => $user_name_id])->get();
 
@@ -579,18 +578,10 @@ class StaffsController extends Controller
             $query = Staffs::where(['user_name_id' => $request])->get();
             // $document = Document::where(['nameofuser_id' => $request, 'fileName' => 'Profile'])->get();
             $query_one = PersonalDetail::where(['user_name_id' => $request])->get();
-
-            $designations = Designation::pluck('name', 'id');
-            $roles = Role::pluck('title', 'id');
-
-            // $designations = Designation::get();
         }
-        // dd($query);
 
         if ($query->count() <= 0) {
             $query->user_name_id = $request;
-
-            // $query->designation_id = '';
 
             // if ($document->count() <= 0) {
             //     $query->filePath = '';
@@ -604,8 +595,6 @@ class StaffsController extends Controller
 
             $staff = $query;
         } else {
-
-            // $query[0]->designation = $designations;
 
             // if ($document->count() <= 0) {
             //     $query[0]->filePath = '';

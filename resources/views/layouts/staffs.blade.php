@@ -41,6 +41,9 @@
             overflow-y: scroll;
         }
 
+        * {
+            font-size: 0.9rem;
+        }
 
 
         /* Absolute Center Spinner */

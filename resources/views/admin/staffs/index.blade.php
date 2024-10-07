@@ -172,8 +172,9 @@
         <div class="card-header">
             Staffs List
         </div>
-
         <div class="card-body">
+            <table
+                class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Staffs text-center">
             <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Staffs text-center">
                 <thead>
                     <tr>
@@ -363,7 +364,7 @@
 
                     {
                         data: 'actions',
-                        name: '{{ trans('global.actions') }}'
+                        name: 'actions'
                     }
                 ],
                 orderCellsTop: true,
