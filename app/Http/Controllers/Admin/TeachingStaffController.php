@@ -34,6 +34,9 @@ use App\Models\NonTeachingStaff;
 use App\Models\OnlineCourse;
 use App\Models\Patent;
 use App\Models\PermissionRequest;
+use App\Models\Designation;
+use App\Models\State;
+use App\Models\Nationality;
 use App\Models\PersonalDetail;
 use App\Models\PhdDetail;
 use App\Models\PromotionDetails;
@@ -403,7 +406,7 @@ class TeachingStaffController extends Controller
         // abort_if(Gate::denies('teaching_staff_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //  dd($request);
         if (is_numeric($request)) {
-            $staff = TeachingStaff::where('user_name_id', $request)->first();
+            $staff = Staffs::where('user_name_id', $request)->first();
             $name = '';
             $who = 'tech';
         } else if (filter_var($request, FILTER_SANITIZE_NUMBER_INT)) {
@@ -415,13 +418,6 @@ class TeachingStaffController extends Controller
             $explode = explode('(', $request);
             $staff_code = trim(substr($explode[1], 0, -1));
 
-            $staff = TeachingStaff::where('StaffCode', $staff_code)->first();
-            $who = 'tech';
-
-            if (empty($staff)) {
-                $staff = NonTeachingStaff::where('StaffCode', $staff_code)->first();
-                $who = 'non_tech';
-            }
             $name = $request;
         } else {
             $staff = '';
@@ -432,6 +428,7 @@ class TeachingStaffController extends Controller
         } else {
 
             $user_name_id = $staff->user_name_id;
+            // dd($user_name_id);
             $document = Document::where(['nameofuser_id' => $user_name_id, 'fileName' => 'Profile'])->get();
 
             if ($document->count() <= 0) {
@@ -441,42 +438,47 @@ class TeachingStaffController extends Controller
             }
 
             $personal = PersonalDetail::where(['user_name_id' => $user_name_id])->get();
-
             $blood_groups = BloodGroup::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-            $mother_tongues = MotherTongue::pluck('mother_tongue', 'id')->prepend(trans('global.pleaseSelect'), '');
-
+            $roles = Role::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+            $designations = Designation::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
             $religions = Religion::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
+            $states = State::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+            $nationalities = Nationality::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
             $communities = Community::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+            $mother_tongues = MotherTongue::pluck('mother_tongue', 'id')->prepend(trans('global.pleaseSelect'), '');
 
             if ($personal->count() <= 0) {
                 $personal->id = '';
                 $personal->age = '';
                 $personal->dob = '';
                 $personal->email = '';
-                $personal->mobile_number = '';
+                $personal->phone_number = '';
                 $personal->aadhar_number = '';
                 $personal->state = '';
+                $personal->state_id = '';
                 $personal->country = '';
+                $personal->employee_id = '';
                 $personal->user_name_id = '';
                 $personal->blood_group_id = '';
                 $personal->blood_group = '';
+                $personal->designation_id = '';
                 $personal->mother_tongue_id = '';
                 $personal->mother_tongue = '';
                 $personal->community_id = '';
                 $personal->community = '';
+                $personal->marital_status = '';
                 $personal->religion_id = '';
+                $personal->nationality_id = '';
                 $personal->religion = '';
+                $personal->role_id = '';
                 $personal->father_name = '';
                 $personal->last_name = '';
                 $personal->spouse_name = '';
-                $personal->StaffCode = '';
+                $personal->employee_id = '';
                 $personal->BiometricID = '';
                 $personal->AICTE = '';
-                $personal->PanNo = '';
+                $personal->pan_number = '';
                 $personal->PassportNo = '';
-                $personal->COECode = '';
                 $personal->emergency_contact_no = '';
                 $personal->known_languages = '';
                 $personal->au_card_no = '';
@@ -488,7 +490,6 @@ class TeachingStaffController extends Controller
                 $personal->future_tech_membership = '';
                 $personal->future_tech_membership_type = '';
                 $personal->known_languages = '';
-                $personal->emergency_contact_no = '';
                 $personal->gender = '';
                 $staff->gender = $personal->gender;
                 $detail = $personal;
@@ -498,13 +499,17 @@ class TeachingStaffController extends Controller
 
                 $personal[0]->first_name = $personal[0]->name;
                 $personal[0]->blood_group = $blood_groups;
+                $personal[0]->role = $roles;
+                $personal[0]->designation = $designations;
+                $personal[0]->nationality = $nationalities;
+                $personal[0]->state = $states;
                 $personal[0]->mother_tongue = $mother_tongues;
                 $personal[0]->community = $communities;
                 $personal[0]->religion = $religions;
-                $personal[0]->known_languages = $known_languages;
+                // $personal[0]->known_languages = $known_languages;
                 // $personal[0]->BiometricID = $staff->BiometricID;
                 // $personal[0]->gender = $staff->gender;
-                $personal[0]->known_languages = $known_languages;
+                // $personal[0]->known_languages = $known_languages;
                 $staff->gender = $personal[0]->gender;
 
                 $detail = $personal[0];
@@ -534,13 +539,13 @@ class TeachingStaffController extends Controller
                 $education_list = $education_details;
             }
 
-            $phd_details = PhdDetail::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            // $phd_details = PhdDetail::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
 
-            if ($phd_details->count() <= 0) {
-                $phd_list = [];
-            } else {
-                $phd_list = $phd_details;
-            }
+            // if ($phd_details->count() <= 0) {
+            //     $phd_list = [];
+            // } else {
+            //     $phd_list = $phd_details;
+            // }
 
             $experience_details = ExperienceDetail::where(['user_name_id' => $user_name_id])->get();
 
@@ -565,101 +570,101 @@ class TeachingStaffController extends Controller
                 $bank_list = $bank_details;
             }
 
-            $salary_details = StaffSalary::where(['user_name_id' => $user_name_id])->get();
-            if ($salary_details->count() <= 0) {
-                $salary_list = [];
-            } else {
-                $salary_list = $salary_details;
-            }
-
-            $leave_types = LeaveType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-            $leave_details = HrmRequestLeaf::where(['user_id' => $user_name_id, 'status' => 'Approved'])->get();
-
-            if ($leave_details->count() <= 0) {
-
-                $leave_list = [];
-            } else {
-                for ($i = 0; $i < count($leave_details); $i++) {
-
-                    $leave_details[$i]->leave_types = $leave_types;
-                }
-
-                $leave_list = $leave_details;
-            }
-
-            // $conference_details = AddConference::where(['user_name_id' => $user_name_id])->get();
-
-            // if ($conference_details->count() <= 0) {
-            $conference_list = [];
+            // $salary_details = StaffSalary::where(['user_name_id' => $user_name_id])->get();
+            // if ($salary_details->count() <= 0) {
+            //     $salary_list = [];
             // } else {
-            //     $conference_list = $conference_details;
+            //     $salary_list = $salary_details;
             // }
 
-            $exam_types = Examstaff::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+            // $leave_types = LeaveType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-            $exam_details = EntranceExam::where(['name_id' => $user_name_id, 'status' => 1])->get();
+            // $leave_details = HrmRequestLeaf::where(['user_id' => $user_name_id, 'status' => 'Approved'])->get();
 
-            if ($exam_details->count() <= 0) {
-                $exam_details->exam_types = $exam_types;
-                $exam_list = [];
-            } else {
-                // $exam_details[0]['exam_types'] = $exam_types;
-                for ($i = 0; $i < count($exam_details); $i++) {
+            // if ($leave_details->count() <= 0) {
 
-                    $exam_details[$i]->exam_types = $exam_types;
-                }
-                $exam_list = $exam_details;
-            }
-
-            // $guest_lecture = GuestLecture::where(['user_name_id' => $user_name_id])->get();
-
-            // if ($guest_lecture->count() <= 0) {
-            $guest_lecture_list = [];
+            //     $leave_list = [];
             // } else {
-            //     $guest_lecture_list = $guest_lecture;
+            //     for ($i = 0; $i < count($leave_details); $i++) {
+
+            //         $leave_details[$i]->leave_types = $leave_types;
+            //     }
+
+            //     $leave_list = $leave_details;
             // }
 
-            $industrial_training = IndustrialTraining::where(['name_id' => $user_name_id, 'status' => 1])->get();
+            // // $conference_details = AddConference::where(['user_name_id' => $user_name_id])->get();
 
-            if ($industrial_training->count() <= 0) {
+            // // if ($conference_details->count() <= 0) {
+            // $conference_list = [];
+            // // } else {
+            // //     $conference_list = $conference_details;
+            // // }
 
-                $industrial_training_list = [];
-            } else {
-                $industrial_training_list = $industrial_training;
-            }
+            // $exam_types = Examstaff::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-            $intern_details = Intern::where(['name_id' => $user_name_id, 'status' => 1])->get();
-            if ($intern_details->count() <= 0) {
+            // $exam_details = EntranceExam::where(['name_id' => $user_name_id, 'status' => 1])->get();
 
-                $intern_details_list = [];
-            } else {
-                $intern_details_list = $intern_details;
-            }
+            // if ($exam_details->count() <= 0) {
+            //     $exam_details->exam_types = $exam_types;
+            //     $exam_list = [];
+            // } else {
+            //     // $exam_details[0]['exam_types'] = $exam_types;
+            //     for ($i = 0; $i < count($exam_details); $i++) {
 
-            $indus_exp_details = IndustrialExperience::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
-            if ($indus_exp_details->count() <= 0) {
+            //         $exam_details[$i]->exam_types = $exam_types;
+            //     }
+            //     $exam_list = $exam_details;
+            // }
 
-                $indus_exp_list = [];
-            } else {
-                $indus_exp_list = $indus_exp_details;
-            }
+            // // $guest_lecture = GuestLecture::where(['user_name_id' => $user_name_id])->get();
 
-            $iv_details = Iv::where(['name_id' => $user_name_id, 'status' => 1])->get();
-            if ($iv_details->count() <= 0) {
+            // // if ($guest_lecture->count() <= 0) {
+            // $guest_lecture_list = [];
+            // // } else {
+            // //     $guest_lecture_list = $guest_lecture;
+            // // }
 
-                $iv_details_list = [];
-            } else {
-                $iv_details_list = $iv_details;
-            }
+            // $industrial_training = IndustrialTraining::where(['name_id' => $user_name_id, 'status' => 1])->get();
 
-            $online_course = OnlineCourse::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
-            if ($online_course->count() <= 0) {
+            // if ($industrial_training->count() <= 0) {
 
-                $online_course_list = [];
-            } else {
-                $online_course_list = $online_course;
-            }
+            //     $industrial_training_list = [];
+            // } else {
+            //     $industrial_training_list = $industrial_training;
+            // }
+
+            // $intern_details = Intern::where(['name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($intern_details->count() <= 0) {
+
+            //     $intern_details_list = [];
+            // } else {
+            //     $intern_details_list = $intern_details;
+            // }
+
+            // $indus_exp_details = IndustrialExperience::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($indus_exp_details->count() <= 0) {
+
+            //     $indus_exp_list = [];
+            // } else {
+            //     $indus_exp_list = $indus_exp_details;
+            // }
+
+            // $iv_details = Iv::where(['name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($iv_details->count() <= 0) {
+
+            //     $iv_details_list = [];
+            // } else {
+            //     $iv_details_list = $iv_details;
+            // }
+
+            // $online_course = OnlineCourse::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($online_course->count() <= 0) {
+
+            //     $online_course_list = [];
+            // } else {
+            //     $online_course_list = $online_course;
+            // }
 
             $document = Document::where(['nameofuser_id' => $user_name_id, 'status' => 1])->get();
             if ($document->count() <= 0) {
@@ -669,129 +674,128 @@ class TeachingStaffController extends Controller
                 $document_list = $document;
             }
 
-            // $seminar_details = Seminar::where(['user_name_id' => $user_name_id])->get();
+            // // $seminar_details = Seminar::where(['user_name_id' => $user_name_id])->get();
 
-            // if ($seminar_details->count() <= 0) {
+            // // if ($seminar_details->count() <= 0) {
 
-            $seminar_details_list = [];
+            // $seminar_details_list = [];
+            // // } else {
+            // //     $seminar_details_list = $seminar_details;
+            // // }
+
+            // $sabotical_details = Sabotical::where(['name_id' => $user_name_id, 'status' => 1])->get();
+
+            // if ($sabotical_details->count() <= 0) {
+
+            //     $sabotical_details_list = [];
             // } else {
-            //     $seminar_details_list = $seminar_details;
+            //     $sabotical_details_list = $sabotical_details;
             // }
 
-            $sabotical_details = Sabotical::where(['name_id' => $user_name_id, 'status' => 1])->get();
+            // $sponser_details = Sponser::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
 
-            if ($sabotical_details->count() <= 0) {
+            // if ($sponser_details->count() <= 0) {
 
-                $sabotical_details_list = [];
-            } else {
-                $sabotical_details_list = $sabotical_details;
-            }
+            //     $sponser_details_list = [];
+            // } else {
+            //     $sponser_details_list = $sponser_details;
+            // }
 
-            $sponser_details = Sponser::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            // $sttp_details = Sttp::where(['name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($sttp_details->count() <= 0) {
 
-            if ($sponser_details->count() <= 0) {
+            //     $sttp_details_list = [];
+            // } else {
+            //     $sttp_details_list = $sttp_details;
+            // }
 
-                $sponser_details_list = [];
-            } else {
-                $sponser_details_list = $sponser_details;
-            }
+            // $workshop_details = Workshop::where(['user_name_id' => $user_name_id])->get();
+            // if ($workshop_details->count() <= 0) {
 
-            $sttp_details = Sttp::where(['name_id' => $user_name_id, 'status' => 1])->get();
-            if ($sttp_details->count() <= 0) {
+            //     $workshop_details_list = [];
+            // } else {
+            //     $workshop_details_list = $workshop_details;
+            // }
+            // $patent_details = Patent::where(['name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($patent_details->count() <= 0) {
 
-                $sttp_details_list = [];
-            } else {
-                $sttp_details_list = $sttp_details;
-            }
+            //     $patent_details_list = [];
+            // } else {
+            //     $patent_details_list = $patent_details;
+            // }
 
-            $workshop_details = Workshop::where(['user_name_id' => $user_name_id])->get();
-            if ($workshop_details->count() <= 0) {
+            // $award_details = Award::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($award_details->count() <= 0) {
 
-                $workshop_details_list = [];
-            } else {
-                $workshop_details_list = $workshop_details;
-            }
-            $patent_details = Patent::where(['name_id' => $user_name_id, 'status' => 1])->get();
-            if ($patent_details->count() <= 0) {
+            //     $award_details_list = [];
+            // } else {
+            //     $award_details_list = $award_details;
+            // }
 
-                $patent_details_list = [];
-            } else {
-                $patent_details_list = $patent_details;
-            }
+            // $event = Events::pluck('event', 'id')->prepend(trans('global.pleaseSelect'), '');
+            // $event_organized_details = EventOrganized::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
 
-            $award_details = Award::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
-            if ($award_details->count() <= 0) {
+            // if ($event_organized_details->count() <= 0) {
 
-                $award_details_list = [];
-            } else {
-                $award_details_list = $award_details;
-            }
+            //     $event_organized_details_list = [];
+            // } else {
 
-            $event = Events::pluck('event', 'id')->prepend(trans('global.pleaseSelect'), '');
-            $event_organized_details = EventOrganized::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            //     for ($i = 0; $i < count($event_organized_details); $i++) {
 
-            if ($event_organized_details->count() <= 0) {
+            //         $event_organized_details[$i]->event = $event;
+            //     }
 
-                $event_organized_details_list = [];
-            } else {
+            //     $event_organized_details_list = $event_organized_details;
+            // }
 
-                for ($i = 0; $i < count($event_organized_details); $i++) {
+            // $event_participation_details = EventParticipation::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
 
-                    $event_organized_details[$i]->event = $event;
-                }
+            // if ($event_participation_details->count() <= 0) {
 
-                $event_organized_details_list = $event_organized_details;
-            }
+            //     $event_participation_details_list = [];
+            // } else {
 
-            $event_participation_details = EventParticipation::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            //     for ($i = 0; $i < count($event_participation_details); $i++) {
 
-            if ($event_participation_details->count() <= 0) {
+            //         $event_participation_details[$i]->event = $event;
+            //     }
 
-                $event_participation_details_list = [];
-            } else {
+            //     $event_participation_details_list = $event_participation_details;
+            // }
 
-                for ($i = 0; $i < count($event_participation_details); $i++) {
+            // $publication_details = PublicationDetail::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($publication_details->count() <= 0) {
 
-                    $event_participation_details[$i]->event = $event;
-                }
+            //     $publication_details_list = [];
+            // } else {
+            //     $publication_details_list = $publication_details;
+            // }
+            // $permissionrequest = PermissionRequest::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
+            // if ($permissionrequest->count() <= 0) {
 
-                $event_participation_details_list = $event_participation_details;
-            }
+            //     $permissionrequest_list = [];
+            // } else {
+            //     $permissionrequest_list = $permissionrequest;
+            // }
 
-            $publication_details = PublicationDetail::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
-            if ($publication_details->count() <= 0) {
+            // $promotiondetails = PromotionDetails::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
 
-                $publication_details_list = [];
-            } else {
-                $publication_details_list = $publication_details;
-            }
-            $permissionrequest = PermissionRequest::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
-            if ($permissionrequest->count() <= 0) {
+            // if ($promotiondetails->count() <= 0) {
 
-                $permissionrequest_list = [];
-            } else {
-                $permissionrequest_list = $permissionrequest;
-            }
-
-            $promotiondetails = PromotionDetails::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
-
-            if ($promotiondetails->count() <= 0) {
-
-                $promotiondetails_list = [];
-            } else {
-                $promotiondetails_list = $promotiondetails;
-            }
-            $roles = Role::pluck('title', 'id');
-            $first_entry = 'data';
+            //     $promotiondetails_list = [];
+            // } else {
+            //     $promotiondetails_list = $promotiondetails;
+            // }
+            // $roles = Role::pluck('title', 'id');
+            // $first_entry = 'data';
 
             if (is_numeric($request)) {
-                return view('admin.teachingStaffs.staffshow', compact('staff', 'detail', 'phd_list', 'education_types', 'education_list', 'experience_list', 'address_list', 'bank_list', 'salary_list', 'leave_list', 'conference_list', 'exam_list', 'guest_lecture_list', 'industrial_training_list', 'intern_details_list', 'indus_exp_list', 'iv_details_list', 'online_course_list', 'document_list', 'seminar_details_list', 'sabotical_details_list', 'sponser_details_list', 'sttp_details_list', 'workshop_details_list', 'patent_details_list', 'award_details_list', 'event_organized_details_list', 'event_participation_details_list', 'publication_details_list', 'permissionrequest_list', 'promotiondetails_list', 'roles'));
+                return view('admin.Staffs.staffshow', compact('staff', 'detail', 'experience_list', 'education_list', 'document_list'));
             } else {
-                // dd($who);
                 if ($who == 'tech') {
-                    return view('admin.edges.staff', compact('first_entry', 'name', 'staff', 'detail', 'phd_list', 'education_types', 'education_list', 'experience_list', 'address_list', 'bank_list', 'salary_list', 'leave_list', 'conference_list', 'exam_list', 'guest_lecture_list', 'industrial_training_list', 'intern_details_list', 'indus_exp_list', 'iv_details_list', 'online_course_list', 'document_list', 'seminar_details_list', 'sabotical_details_list', 'sponser_details_list', 'sttp_details_list', 'workshop_details_list', 'patent_details_list', 'award_details_list', 'event_organized_details_list', 'event_participation_details_list', 'publication_details_list', 'permissionrequest_list', 'promotiondetails_list', 'roles'));
+                    return view('admin.edges.staff', compact('first_entry', 'name', 'staff', 'detail', 'experience_list', 'education_list'));
                 } elseif ($who == 'non_tech') {
-                    return view('admin.edges.staff', compact('first_entry', 'name', 'staff', 'detail', 'phd_list', 'education_types', 'education_list', 'experience_list', 'address_list', 'bank_list', 'salary_list', 'leave_list', 'conference_list', 'exam_list', 'guest_lecture_list', 'industrial_training_list', 'intern_details_list', 'indus_exp_list', 'iv_details_list', 'online_course_list', 'document_list', 'seminar_details_list', 'sabotical_details_list', 'sponser_details_list', 'sttp_details_list', 'workshop_details_list', 'patent_details_list', 'award_details_list', 'event_organized_details_list', 'event_participation_details_list', 'publication_details_list', 'permissionrequest_list', 'promotiondetails_list', 'roles'));
+                    return view('admin.edges.staff', compact('first_entry', 'name', 'staff', 'detail', 'experience_list', 'education_list'));
                 }
             }
         }

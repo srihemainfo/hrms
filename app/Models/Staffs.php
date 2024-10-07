@@ -27,6 +27,7 @@ class Staffs extends Model
         'phone_number',
         'gender',
         'designation_id',
+        'edit_access',
         'status',
         'biometric',
         'employee_id',

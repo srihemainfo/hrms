@@ -113,6 +113,60 @@
         .toggle input[type="checkbox"]:checked+label:after {
             left: 38px;
         }
+
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #4CAF50;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(14px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
     </style>
     <div class="card">
         <div class="card-header">
@@ -146,6 +200,9 @@
                         </th>
                         <th>
                             Contact Number
+                        </th>
+                        <th>
+                            Profile Edit Access
                         </th>
                         <th>
                             Status
@@ -262,6 +319,19 @@
                         name: 'phone_number'
                     },
                     {
+                        data: 'edit_access',
+                        name: 'edit_access',
+                        render: function(data, type, row) {
+                            var checked = data ? 'checked' : '';
+                            return `
+                <label class="switch">
+                    <input type="checkbox" class="toggle-edit-access" data-id="${row.id}" ${checked}>
+                    <span class="slider round"></span>
+                </label>`;
+                        },
+                        className: 'text-center'
+                    },
+                    {
                         data: 'active_status',
                         name: 'active_status',
                         render: function(data, type, row) {
@@ -309,5 +379,33 @@
             });
 
         };
+
+
+        $(document).on('change', '.toggle-edit-access', function() {
+            $(".secondLoader").show();
+            var userId = $(this).data('id');
+            var editAccess = $(this).is(':checked') ? 1 : 0;
+
+            $.ajax({
+                url: "{{ route('admin.staffs.updateEditAccess') }}",
+                type: 'POST',
+                headers: {
+                    'x-csrf-token': _token
+                },
+                data: {
+                    id: userId,
+                    edit_access: editAccess
+                },
+                success: function(response) {
+                    Swal.fire('', response.data, 'success');
+                    $(".secondLoader").hide();
+                },
+                error: function(response) {
+                    Swal.fire('Error', 'An error occurred', 'error');
+                    $(".secondLoader").hide();
+
+                }
+            });
+        });
     </script>
 @endsection

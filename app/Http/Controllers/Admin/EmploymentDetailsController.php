@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\NonTeachingStaff;
 use App\Models\PersonalDetail;
 use App\Models\Staffs;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class EmploymentDetailsController extends Controller
@@ -64,15 +65,9 @@ class EmploymentDetailsController extends Controller
 
         $personal = $personalDetail->where('user_name_id', $request->user_name_id)->update([
             'BiometricID' => $request->BiometricID,
-            // 'AICTE' => $request->AICTE,
             'DOJ' => $request->DOJ,
             'DOR' => $request->DOR,
-            // 'au_card_no' => $request->au_card_no,
-            // 'employment_type' => $request->employment_type,
             'employment_status' => $request->employment_status,
-            // 'rit_club_incharge' => $request->rit_club_incharge,
-            // 'future_tech_membership' => $request->future_tech_membership,
-            // 'future_tech_membership_type' => $request->future_tech_membership_type,
         ]);
 
         $teach_staff_update = Staffs::where('user_name_id', $request->user_name_id)->update([
@@ -87,19 +82,16 @@ class EmploymentDetailsController extends Controller
             $staff = ['user_name_id' => $request->user_name_id, 'name' => $request->name];
         } else {
 
+            $roles_number = Staffs::where('user_name_id' , $request->user_name_id)->first();
+
             $personalDetail = PersonalDetail::create([
-                'name' => $request->name,
                 'BiometricID' => $request->BiometricID,
-                // 'AICTE' => $request->AICTE,
                 'DOJ' => $request->DOJ,
                 'DOR' => $request->DOR,
-                // 'au_card_no' => $request->au_card_no,
-                // 'employment_type' => $request->employment_type,
                 'employment_status' => $request->employment_status,
-                // 'rit_club_incharge' => $request->rit_club_incharge,
-                // 'future_tech_membership' => $request->future_tech_membership,
-                // 'future_tech_membership_type' => $request->future_tech_membership_type,
                 'user_name_id' => $request->user_name_id,
+                'role_id' => $roles_number->role_id,
+                'designation_id' =>$roles_number->roles_number,
             ]);
 
             $teach_staff_update = Staffs::where('user_name_id', $request->user_name_id)->update([

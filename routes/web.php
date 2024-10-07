@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\FeeDataController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\StaffsController;
 
 Auth::routes(['register' => false]);
 
@@ -710,6 +711,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('feedback-faculty/report', 'FeedbackReportController@facultyReport')->name('feedback-faculty.report');
     Route::post('feedback-faculty/view', 'FeedbackReportController@facultyView')->name('feedback-faculty.view');
     Route::post('feedback-faculty/download', 'FeedbackReportController@facultyDownload')->name('feedback-faculty.download');
+
+
+
+    Route::get('employee-profile', 'EmployeeProfileController@Index')->name('employee-profile.index');
+
+
+
 
     //External Feedback
     Route::get('feedReport-external', 'FeedbackReportController@externalIndex')->name('feedReport-external.index');
@@ -1705,6 +1713,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('staff-request-leaves/reject', 'HrmRequestLeaveController@reject')->name('staff-request-leaves.reject');
     Route::post('staff-request-leaves/alter_staff', 'HrmRequestLeaveController@alter_staff')->name('staff-request-leaves.alter_staff');
 
+
     // staff indudual Alteration Requests
     Route::get('staff-alteration-requests/index/{status2}/{status}', 'staffRequestsController@index')->name('staff-alteration-requests.index');
     Route::resource('staff-alteration-requests', 'staffRequestsController');
@@ -1880,6 +1889,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     //Staffs
     Route::resource('staffs', 'StaffsController');
     Route::delete('staffs/destroy', 'StaffsController@massDestroy')->name('staffs.massDestroy');
+    Route::get('staffs/{id}/Profile-view', 'StaffsController@show')->name('staffs.Profile-view');
+    Route::get('staffs/{id}/Profile-edit', 'StaffsController@edit')->name('staffs.Profile-edit');
+    Route::post('staffs/edit_access', 'StaffsController@edit_access')->name('staffs.updateEditAccess');
 
     // Route::get('staffs', 'StaffsController@index')->name('staffs.index');
     // Route::post('staffs/view', 'StaffsController@view')->name('staffs.view');

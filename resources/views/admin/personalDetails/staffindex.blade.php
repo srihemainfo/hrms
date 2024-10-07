@@ -91,12 +91,10 @@
                                         <div class="form-group">
                                             <label for="employee_id">Employee ID</label>
                                             <input type="text" class="form-control" id="employee_id"
-                                                name="employee_id" placeholder="Enter Staff Code"
+                                                name="employee_id" placeholder="Enter Employee ID"
                                                 value="{{ $staff->employee_id }}">
                                         </div>
                                     </div>
-
-
                                 </div>
                             @endif
                             <span>
@@ -119,20 +117,12 @@
                                             placeholder="Enter email ID" value="{{ $staff->email }}">
                                     </div>
                                 </div>
-
-                                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label for="BiometricID">Biometric ID</label>
-                                    <input type="text" class="form-control" id="BiometricID" name="BiometricID"
-                                        placeholder="Enter Biometric ID" value="{{ $staff->BiometricID }}">
-                                </div>
-                            </div> --}}
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="phone_number">Mobile</label>
-                                        <input type="number" class="form-control" id="phone_number"
-                                            name="phone_number" placeholder="Enter Phone Number"
-                                            value="{{ $staff->phone_number }}" maxlength="10">
+                                        <input type="number" class="form-control" id="phone_number" name="phone_number"
+                                            placeholder="Enter Phone Number" value="{{ $staff->phone_number }}"
+                                            maxlength="10">
                                     </div>
                                 </div>
                                 {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -363,7 +353,7 @@
                                         </div>
                                     </div>
                                 @endif
-                                @if ($staff->religion != '')
+                                @if ($staff->community != '')
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="community_id">Community</label>
@@ -372,7 +362,7 @@
                                                 name="community_id" id="community_id">
                                                 @foreach ($staff->community as $id => $entry)
                                                     <option value="{{ $id }}"
-                                                        {{ (old('religion_id') ? old('religion_id') : $staff->community_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ (old('community_id') ? old('community_id') : $staff->community_id ?? '') == $id ? 'selected' : '' }}>
                                                         {{ $entry }}</option>
                                                 @endforeach
                                             </select>
@@ -442,7 +432,7 @@
                                                 name="state_id" id="state_id">
                                                 @foreach ($staff->state as $id => $entry)
                                                     <option value="{{ $id }}"
-                                                        {{ (old('religion_id') ? old('religion_id') : $staff->state_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ (old('state_id') ? old('state_id') : $staff->state_id ?? '') == $id ? 'selected' : '' }}>
                                                         {{ $entry }}</option>
                                                 @endforeach
                                             </select>
@@ -474,7 +464,7 @@
                                                 name="nationality_id" id="nationality_id">
                                                 @foreach ($staff->nationality as $id => $entry)
                                                     <option value="{{ $id }}"
-                                                        {{ (old('religion_id') ? old('religion_id') : $staff->nationality_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ (old('nationality_id') ? old('nationality_id') : $staff->nationality_id ?? '') == $id ? 'selected' : '' }}>
                                                         {{ $entry }}</option>
                                                 @endforeach
                                             </select>
@@ -566,77 +556,75 @@
                         </div>
                     </div>
                     <div class="card-body view_more">
-                        <form method="POST" action="" enctype="multipart/form-data">
+                        <form method="POST"
+                            action="{{ route('admin.personal-details.staff_update', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name]) }}"
+                            enctype="multipart/form-data">
                             @csrf
                             <div class="row gutters">
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="name">First Name</label>
-                                        <input type="text" class="form-control" name="name"
-                                            value="{{ $staff->first_name }}" readonly>
+                                        <label for="filePath">Upload Profile Image</label>
+                                        <input type="hidden" name="fileName" value="Profile">
+                                        <input type="file" class="form-control" name="filePath" value="">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
-                                        <label for="last_name">Last Name</label>
-                                        <input type="text" class="form-control" name="last_name"
-                                            value="{{ $staff->last_name }}" readonly>
+                                        <label for="employee_id">Employee ID</label>
+                                        <input type="text" class="form-control" id="employee_id"
+                                            name="employee_id" placeholder="Enter Employee ID"
+                                            value="{{ $staff->employee_id }} " readonly>
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="name">First Name</label>
+                                        <input type="text" style="text-transform:uppercase;" class="form-control"
+                                            name="name" placeholder="Enter First Name"
+                                            value="{{ $staff->first_name }}" required>
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="email">Email</label>
                                         <input type="email" class="form-control" id="email" name="email"
-                                            value="{{ $staff->email }}" readonly>
+                                            placeholder="Enter email ID" value="{{ $staff->email }}">
                                     </div>
                                 </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="StaffCode">Staff Code</label>
-                                        <input type="text" class="form-control" id="StaffCode" name="StaffCode"
-                                            value="{{ $staff->StaffCode }}" readonly>
-                                    </div>
-                                </div>
-                                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="BiometricID">Biometric ID</label>
-                                        <input type="text" class="form-control" id="BiometricID"
-                                            name="BiometricID" value="{{ $staff->BiometricID }}">
-                                    </div>
-                                </div> --}}
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="phone_number">Mobile</label>
-                                        <input type="text" class="form-control" id="phone_number"
-                                            name="phone_number" value="{{ $staff->phone_number }}" readonly>
+                                        <input type="number" class="form-control" id="phone_number"
+                                            name="phone_number" placeholder="Enter Phone Number"
+                                            value="{{ $staff->phone_number }}" maxlength="10">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="aadhar_number">Aadhar Number</label>
                                         <input type="text" class="form-control" name="aadhar_number"
-                                            value="{{ $staff->aadhar_number }}" readonly>
+                                            placeholder="Enter Aadhar Number" value="{{ $staff->aadhar_number }}">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="emergency_contact_no">Emergency Contact Number</label>
                                         <input type="text" class="form-control" name="emergency_contact_no"
-                                            value="{{ $staff->emergency_contact_no }}" readonly>
+                                            value="{{ $staff->emergency_contact_no }}">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="total_experience">Total Experience</label>
                                         <input type="text" class="form-control" name="total_experience"
-                                            value="{{ $staff->total_experience }}" readonly>
+                                            value="{{ $staff->total_experience }}">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="pan_number">Pan No</label>
                                         <input type="text" class="form-control" name="pan_number"
-                                            value="{{ $staff->pan_number }}" readonly>
+                                            value="{{ $staff->pan_number }}">
                                     </div>
                                 </div>
                                 {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -679,167 +667,259 @@
                                     <div class="form-group">
                                         <label for="father_name">Father Name</label>
                                         <input type="text" class="form-control" name="father_name"
-                                            value="{{ $staff->father_name }}" readonly>
+                                            value="{{ $staff->father_name }}">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="spouse_name">Spouse Name</label>
                                         <input type="text" class="form-control" name="spouse_name"
-                                            value="{{ $staff->spouse_name }}" readonly>
+                                            value="{{ $staff->spouse_name }}">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="dob">Date of Birth</label>
                                         <input class="form-control date" type="text" name="dob"
-                                            id="dob" value="{{ $staff->dob }}" readonly>
+                                            id="dob" value="{{ $staff->dob }}">
                                     </div>
                                 </div>
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="age">Age</label>
                                         <input type="text" class="form-control" name="age"
-                                            value="{{ $staff->age }}" readonly>
+                                            value="{{ $staff->age }}">
                                     </div>
                                 </div>
-                                @if ($staff->blood_group_id != '')
+                                @if ($staff->blood_group != '')
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="blood_group_id">Blood Group</label>
-                                            @foreach ($staff->blood_group as $id => $entry)
-                                                @if ($staff->blood_group_id == $id)
-                                                    <input type="text" class="form-control"
-                                                        value="{{ $entry }}" readonly>
-                                                @endif
-                                            @endforeach
+                                            <select
+                                                class="form-control select2 {{ $errors->has('blood_group') ? 'is-invalid' : '' }}"
+                                                name="blood_group_id" id="blood_group_id">
+                                                @foreach ($staff->blood_group as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ (old('blood_group_id') ? old('blood_group_id') : $staff->blood_group_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @else
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="blood_group_id">Blood Group</label>
-                                            <input type="text" class="form-control" readonly>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('blood_group') ? 'is-invalid' : '' }}"
+                                                name="blood_group_id" id="blood_group_id">
+                                                @foreach ($staff->blood_group_id as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ old('blood_group_id') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @endif
-                                @if ($staff->mother_tongue_id != '')
+                                @if ($staff->mother_tongue != '')
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="mother_tongue_id">Mother Tongue</label>
-                                            @foreach ($staff->mother_tongue as $id => $entry)
-                                                @if ($staff->mother_tongue_id == $id)
-                                                    <input type="text" class="form-control"
-                                                        value="{{ $entry }}" readonly>
-                                                @endif
-                                            @endforeach
+                                            <select
+                                                class="form-control select2 kk {{ $errors->has('mother_tongue') ? 'is-invalid' : '' }}"
+                                                name="mother_tongue_id" id="mother_tongue_id">
+                                                @foreach ($staff->mother_tongue as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ (old('mother_tongue_id') ? old('mother_tongue_id') : $staff->mother_tongue_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @else
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="mother_tongue_id">Mother Tongue</label>
-                                            <input type="text" class="form-control" readonly>
+                                            <select
+                                                class="form-control select2 ll {{ $errors->has('mother_tongue') ? 'is-invalid' : '' }}"
+                                                name="mother_tongue_id" id="mother_tongue_id">
+                                                @foreach ($staff->mother_tongue_id as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ old('mother_tongue_id') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @endif
-                                @if ($staff->religion_id != '')
+                                @if ($staff->religion != '')
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="religion_id">Religion</label>
-                                            @foreach ($staff->religion as $id => $entry)
-                                                @if ($staff->religion_id == $id)
-                                                    <input type="text" class="form-control"
-                                                        value="{{ $entry }}" readonly>
-                                                @endif
-                                            @endforeach
+                                            <select
+                                                class="form-control select2 {{ $errors->has('religion') ? 'is-invalid' : '' }}"
+                                                name="religion_id" id="religion_id">
+                                                @foreach ($staff->religion as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ (old('religion_id') ? old('religion_id') : $staff->religion_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @else
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="religion_id">Religion</label>
-                                            <input type="text" class="form-control" readonly>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('religion') ? 'is-invalid' : '' }}"
+                                                name="religion_id" id="religion_id">
+                                                @foreach ($staff->religion_id as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ old('religion_id') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @endif
-                                @if ($staff->community_id != '')
+                                @if ($staff->community != '')
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="community_id">Community</label>
-
-                                            @foreach ($staff->community as $id => $entry)
-                                                @if ($staff->community_id == $id)
-                                                    <input type="text" class="form-control"
-                                                        value="{{ $entry }}" readonly>
-                                                @endif
-                                            @endforeach
-
+                                            <select
+                                                class="form-control select2 {{ $errors->has('community') ? 'is-invalid' : '' }}"
+                                                name="community_id" id="community_id">
+                                                @foreach ($staff->community as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ (old('community_id') ? old('community_id') : $staff->community_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @else
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
                                             <label for="community_id">Community</label>
-                                            <input type="text" class="form-control" readonly>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('community') ? 'is-invalid' : '' }}"
+                                                name="community_id" id="community_id">
+                                                @foreach ($staff->community_id as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ old('community_id') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @endif
-                                @if ($staff->state_id != '')
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label for="gender">GENDER</label>
+                                        <select class="form-control select2 " name="gender">
+                                            <option value="" {{ $staff->gender == '' ? 'selected' : '' }}>
+                                                Please
+                                                Select</option>
+                                            <option value="MALE" {{ $staff->gender == 'MALE' ? 'selected' : '' }}>
+                                                MALE</option>
+                                            <option value="FEMALE"
+                                                {{ $staff->gender == 'FEMALE' ? 'selected' : '' }}>
+                                                FEMALE</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                @if ($staff->state != '')
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
-                                            <label for="blood_group_id">State</label>
-                                            @foreach ($staff->state as $id => $entry)
-                                                @if ($staff->state_id == $id)
-                                                    <input type="text" class="form-control"
-                                                        value="{{ $entry }}" readonly>
-                                                @endif
-                                            @endforeach
+                                            <label for="state_id">State</label>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('state') ? 'is-invalid' : '' }}"
+                                                name="state_id" id="state_id">
+                                                @foreach ($staff->state as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ (old('state_id') ? old('state_id') : $staff->state_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}</option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @else
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
-                                            <label for="blood_group_id">State</label>
-                                            <input type="text" class="form-control" readonly>
+                                            <label for="state_id">State</label>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('state') ? 'is-invalid' : '' }}"
+                                                name="state_id" id="state_id">
+                                                @foreach ($staff->state_id as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ old('state_id') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </div>
                                     </div>
                                 @endif
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="marital_status">Marital Status</label>
-                                        <input type="text" class="form-control" name="state"
-                                            value="{{ $staff->marital_status }}" readonly>
-
+                                        <select class="form-control select2" name="marital_status"
+                                            id="marital_status">
+                                            <option value=""
+                                                {{ $staff->marital_status == '' ? 'selected' : '' }}>
+                                                Please Select</option>
+                                            <option value="MARRIED"
+                                                {{ $staff->marital_status == 'MARRIED' ? 'selected' : '' }}>MARRIED
+                                            </option>
+                                            <option value="UNMARRIED"
+                                                {{ $staff->marital_status == 'UNMARRIED' ? 'selected' : '' }}>
+                                                UNMARRIED
+                                            </option>
+                                            <option value="DIVORCE"
+                                                {{ $staff->marital_status == 'DIVORCE' ? 'selected' : '' }}>DIVORCE
+                                            </option>
+                                            <option value="WIDOW"
+                                                {{ $staff->marital_status == 'WIDOW' ? 'selected' : '' }}>WIDOW
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="known_languages">Languages Known</label>
-
-                                        @if ($staff->known_languages != '')
-                                            @php
-                                                $languages = '';
-
-                                                foreach ($staff->known_languages as $key => $value) {
-                                                    $languages .= ucfirst($value) . ',';
-                                                }
-                                            @endphp
-                                            <input type="text" class="form-control" value="{{ $languages }}"
-                                                readonly>
-                                        @elseif($staff->known_languages == '')
-                                            <input type="text" class="form-control" readonly>
-                                        @endif
-
+                                @if ($staff->nationality != '')
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="nationality_id">Nationality</label>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('nationality') ? 'is-invalid' : '' }}"
+                                                name="nationality_id" id="nationality_id">
+                                                @foreach ($staff->nationality as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ (old('nationality_id') ? old('nationality_id') : $staff->nationality_id ?? '') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="country">Country</label>
-                                        <input type="text" class="form-control" name="country"
-                                            value="{{ $staff->country }}">
+                                @else
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="nationality_id">Nationality</label>
+                                            <select
+                                                class="form-control select2 {{ $errors->has('nationality') ? 'is-invalid' : '' }}"
+                                                name="nationality_id" id="nationality_id">
+                                                @foreach ($staff->nationality_id as $id => $entry)
+                                                    <option value="{{ $id }}"
+                                                        {{ old('nationality_id') == $id ? 'selected' : '' }}>
+                                                        {{ $entry }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                                 {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                     <div class="form-group">
                                         <label for="phone">Department</label>
@@ -847,17 +927,14 @@
                                             value="{{ $staff->Dept }}" readonly>
                                     </div>
                                 </div> --}}
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="gender">GENDER</label>
-                                        <select class="form-control select2 " name="gender">
-                                            <option value="" {{ $staff->gender == '' ? 'selected' : '' }}>Please
-                                                Select</option>
-                                            <option value="MALE" {{ $staff->gender == 'MALE' ? 'selected' : '' }}>
-                                                MALE</option>
-                                            <option value="FEMALE" {{ $staff->gender == 'FEMALE' ? 'selected' : '' }}>
-                                                FEMALE</option>
-                                        </select>
+                            </div>
+                            <div class="row gutters">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                    <div class="text-right">
+                                        {{-- <button type="button" id="cancel" name="cancel"
+                                        class="btn btn-secondary">Cancel</button> --}}
+                                        <button type="submit" id="submit" name="submit"
+                                            class="btn btn-primary">{{ $staff->add }}</button>
                                     </div>
                                 </div>
                             </div>

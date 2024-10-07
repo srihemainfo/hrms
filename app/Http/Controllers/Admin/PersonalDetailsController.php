@@ -485,7 +485,6 @@ class PersonalDetailsController extends Controller
         // dd($request);
         if (isset($request->filePath)) {
 
-
             $request->validate([
                 'filePath' => 'required|image|mimes:jpg,JPG,jpeg,png,PNG,JPEG|max:2048',
             ]);
@@ -495,12 +494,9 @@ class PersonalDetailsController extends Controller
             $fileName = time() . '.' . $extension;
             $destinationPath = public_path('uploads'); // Set the destination path
 
-
             $file->move($destinationPath, $fileName);
 
-
             $path = 'uploads/' . $fileName;
-
 
             $document = Document::where('fileName', $request->fileName)
                 ->where('nameofuser_id', $request->user_name_id)
@@ -513,7 +509,6 @@ class PersonalDetailsController extends Controller
                 $document->fileName = $request->fileName;
                 $document->status = '0';
                 $document->save();
-
 
                 if (file_exists($filePath)) {
                     unlink($filePath);
@@ -554,25 +549,18 @@ class PersonalDetailsController extends Controller
 
         $personal = $personalDetail->where('user_name_id', $request->user_name_id)->update([
             'name' => strtoupper($request->name),
-            // 'last_name' => strtoupper($request->last_name),
             'email' => $request->email,
             'employee_id' => $request->employee_id,
-            // 'BiometricID' => $request->BiometricID,
             'phone_number' => $request->phone_number,
             'aadhar_number' => $request->aadhar_number,
-            // 'AICTE' => $request->AICTE,
             'pan_number' => $request->pan_number,
             'emergency_contact_no' => $request->emergency_contact_no,
             'marital_status' => $request->marital_status,
-            // 'known_languages' => $known_languages,
-            // 'COECode' => $request->COECode,
-            // 'PassportNo' => $request->PassportNo,
             'father_name' => $request->father_name,
             'spouse_name' => $request->spouse_name,
             'dob' => $request->dob,
             'age' => $request->age,
             'gender' => $request->gender,
-            // 'department' => $request->department_id,
             'blood_group_id' => $request->blood_group_id,
             'mother_tongue_id' => $request->mother_tongue_id,
             'community_id' => $request->community_id,
@@ -581,91 +569,66 @@ class PersonalDetailsController extends Controller
             'nationality_id' => $request->nationality_id,
             'total_experience' => $request->total_experience,
         ]);
-        // dd($personal);
-        // $departments=ToolsDepartment::find($request->department_id);
-        // if($departments){
-        //     $user=User::where('id', $request->user_name_id)->update(['dept'=>$departments->name]);
-        //     $Teaching_Staff=TeachingStaff::where('user_name_id',$request->user_name_id)->update(['Dept'=>$departments->name]);
 
-        // }
-        // dd($personal);
+        if ($personal) {
 
-        // if ($personal) {
+            $staff = ['user_name_id' => $request->user_name_id, 'name' => $request->name];
 
-        //     $staff = ['user_name_id' => $request->user_name_id, 'name' => $request->name . '' . $request->last_name];
+        } else {
 
-        // } else {
 
-        //     $personalDetail = PersonalDetail::create([
-        //         'name' => strtoupper($request->name),
-        //         'last_name' => strtoupper($request->last_name),
-        //         'email' => $request->email,
-        //         'StaffCode' => $request->StaffCode,
-        //         // 'BiometricID' => $request->BiometricID,
-        //         'mobile_number' => $request->mobile_number,
-        //         'aadhar_number' => $request->aadhar_number,
-        //         // 'AICTE' => $request->AICTE,
-        //         'PanNo' => $request->PanNo,
-        //         'emergency_contact_no' => $request->emergency_contact_no,
-        //         'marital_status' => $request->marital_status,
-        //         'known_languages' => $known_languages,
-        //         'COECode' => $request->COECode,
-        //         'PassportNo' => $request->PassportNo,
-        //         'father_name' => $request->father_name,
-        //         'spouse_name' => $request->spouse_name,
-        //         'dob' => $request->dob,
-        //         'age' => $request->age,
-        //         'department' => $request->department_id,
-        //         'blood_group_id' => $request->blood_group_id,
-        //         'mother_tongue_id' => $request->mother_tongue_id,
-        //         'community_id' => $request->community_id,
-        //         'religion_id' => $request->religion_id,
-        //         'state' => $request->state,
-        //         'country' => $request->country,
-        //         'total_experience' => $request->total_experience,
-        //         'user_name_id' => $request->user_name_id,
-        //     ]);
+            $roles_number = Staffs::where('user_name_id' , $request->user_name_id)->first();
 
-        //     if ($personalDetail) {
-        //         $staff = ['user_name_id' => $request->user_name_id, 'name' => $request->name . '' . $request->last_name];
-        //     } else {
-        //         dd('Error');
-        //     }
+            $personalDetail = PersonalDetail::create([
+                'name' => strtoupper($request->name),
+                'email' => $request->email,
+                'BiometricID' => $request->biometric,
+                'employee_id' => $request->employee_id,
+                'phone_number' => $request->phone_number,
+                'aadhar_number' => $request->aadhar_number,
+                'pan_number' => $request->pan_number,
+                'emergency_contact_no' => $request->emergency_contact_no,
+                'marital_status' => $request->marital_status,
+                'father_name' => $request->father_name,
+                'spouse_name' => $request->spouse_name,
+                'dob' => $request->dob,
+                'age' => $request->age,
+                'gender' => $request->gender,
+                'blood_group_id' => $request->blood_group_id,
+                'mother_tongue_id' => $request->mother_tongue_id,
+                'community_id' => $request->community_id,
+                'religion_id' => $request->religion_id,
+                'state_id' => $request->state_id,
+                'nationality_id' => $request->nationality_id,
+                'total_experience' => $request->total_experience,
+                'user_name_id' => $request->user_name_id,
+                'role_id' =>$roles_number->role_id,
+                'designation_id' => $roles_number->designation_id,
 
-        // }
+            ]);
 
-        // $teach_staff_update = TeachingStaff::where('user_name_id', $request->user_name_id)->update([
-        //     'StaffCode' => $request->StaffCode,
-        //     'name' => strtoupper($request->name . ' ' . $request->last_name),
-        //     'last_name' => strtoupper($request->last_name),
-        //     'PanNo' => $request->PanNo,
-        //     'ContactNo' => $request->mobile_number,
-        //     'COECode' => $request->COECode,
-        //     'PassportNo' => $request->PassportNo,
-        //     'EmailIDOffical' => $request->email,
-        // ]);
-        // $non_teach_staff_update = NonTeachingStaff::where('user_name_id', $request->user_name_id)->update([
-        //     'StaffCode' => $request->StaffCode,
-        //     'name' => strtoupper($request->name . ' ' . $request->last_name),
-        //     'last_name' => strtoupper($request->last_name),
-        //     'PanNo' => $request->PanNo,
-        //     'phone' => $request->mobile_number,
-        //     'COECode' => $request->COECode,
-        //     'PassportNo' => $request->PassportNo,
-        //     'email' => $request->email,
-        // ]);
+            if ($personalDetail) {
+                $staff = ['user_name_id' => $request->user_name_id, 'name' => $request->name];
+            } else {
+                dd('Error');
+            }
+
+        }
+
+        $teach_staff_update = Staffs::where('user_name_id', $request->user_name_id)->update([
+            'name' => strtoupper($request->name . ' ' . $request->last_name),
+            'phone_number' => $request->phone_number,
+            'employee_id' => $request->employee_id,
+            'email' => $request->email,
+            'gender' => $request->gender,
+        ]);
+
 
         $user = User::where('id', $request->user_name_id)->update([
             'name' => strtoupper($request->name . ' ' . $request->last_name),
             'email' => $request->email,
             'employee_id' => $request->employee_id,
         ]);
-
-        $staffss = Staffs::where('user_name_id', $request->user_name_id)->update([
-            'employee_id' => $request->employee_id,
-        ]);
-
-        // dd($staff);
         return redirect()->route('admin.personal-details.staff_index', $staff);
     }
 

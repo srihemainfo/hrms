@@ -66,8 +66,8 @@
                     <label for="gender" class="required">Gender</label>
                     <select name="gender" id="gender" class="form-control select2">
                         <option value="">Select Gender</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
+                        <option value="MALE">Male</option>
+                        <option value="FEMALE">Female</option>
                     </select>
                     <span id="gender_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
                 </div>

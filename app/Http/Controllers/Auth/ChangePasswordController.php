@@ -13,25 +13,25 @@ class ChangePasswordController extends Controller
 {
     public function edit()
     {
-        abort_if(Gate::denies('profile_password_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('profile_password_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('auth.passwords.edit');
     }
     public function Staff_edit()
     {
-        abort_if(Gate::denies('profile_password_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('profile_password_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.staffPassword.delete');
     }
 
-    public function update(UpdatePasswordRequest $request)
+    public function update(Request $request)
     {
         auth()->user()->update($request->validated());
 
         return back()->with('message', __('global.change_password_success'));
     }
 
-    public function updateProfile(UpdateProfileRequest $request)
+    public function updateProfile(Request $request)
     {
         $user = auth()->user();
 

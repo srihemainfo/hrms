@@ -40,7 +40,7 @@ class StaffsController extends Controller
                         ->orWhereNull('personal_details.employment_status');
                 })
                 ->orderBy('personal_details.user_name_id', 'asc')
-                ->select('staffs.id', 'staffs.email', 'staffs.phone_number', 'staffs.status', 'staffs.name', 'staffs.user_name_id', 'staffs.employee_id', 'roles.title as roled', 'designation.name as des')
+                ->select('staffs.id', 'staffs.email', 'staffs.phone_number', 'staffs.status', 'staffs.edit_access', 'staffs.name', 'staffs.user_name_id', 'staffs.employee_id', 'roles.title as roled', 'designation.name as des')
                 ->get();
 // dd($query);
             $table = DataTables::of($query);
@@ -83,10 +83,6 @@ class StaffsController extends Controller
                 return $row->roled ? $row->roled : '';
             });
 
-            // $table->editColumn('status', function ($row) {
-            //     return $row->status ? $row->status : '';
-            // });
-
             $table->editColumn('email', function ($row) {
                 return $row->email ? $row->email : '';
             });
@@ -97,6 +93,10 @@ class StaffsController extends Controller
 
             $table->editColumn('designation', function ($row) {
                 return $row->des ? $row->des : '';
+            });
+
+            $table->editColumn('edit_access', function ($row) {
+                return $row->edit_access ? $row->edit_access : '';
             });
 
             $table->editColumn('active_status', function ($row) {
@@ -122,6 +122,16 @@ class StaffsController extends Controller
         $role = Role::pluck('title', 'id');
 
         return view('admin.staffs.index', compact('role'));
+    }
+
+    public function edit_access(Request $request)
+    {
+        // dd($request->id);
+        $staffs = Staffs::where('user_name_id', $request->id)->update([
+            'edit_access' => $request->edit_access,
+        ]);
+
+        return response()->json(['status' => 'success', 'data' => 'Edit Request Updated Successfully']);
     }
 
     public function destroy($request)
@@ -522,8 +532,24 @@ class StaffsController extends Controller
             // $roles = Role::pluck('title', 'id');
             // $first_entry = 'data';
 
+            $userId = auth()->user()->id;
+            // dd($userId);
+
+            // Fetch the edit access level from the 'staffs' table
+            $canEdit = DB::table('staffs')
+                ->where('user_name_id', $userId)
+                ->value('edit_access');
+                if($canEdit == 1)
+                {
+                    return redirect()->route('admin.staffs.Profile-edit', ['id' => $userId]);
+                }
+                else
+                {
+                    return redirect()->route('admin.staffs.Profile-view', ['id' => $userId]);
+                }
+
             if (is_numeric($request)) {
-                return view('admin.Staffs.staffshow', compact('staff', 'detail', 'experience_list', 'education_list', 'document_list'));
+                return view('admin.Staffs.staffshow', compact('staff', 'detail', 'experience_list', 'education_list', 'document_list', 'canEdit'));
             } else {
                 if ($who == 'tech') {
                     return view('admin.edges.staff', compact('first_entry', 'name', 'staff', 'detail', 'experience_list', 'education_list'));
@@ -596,9 +622,14 @@ class StaffsController extends Controller
 
         $check = "entry";
 
+        $userId = auth()->user()->id;
+        $canEdit = DB::table('staffs')
+            ->where('user_name_id', $userId)
+            ->value('edit_access');
+
         // dd($staff);
 
-        return view('admin.StaffProfile.staff', compact('check', 'staff', 'designations', 'roles'));
+        return view('admin.StaffProfile.staff', compact('check', 'staff', 'designations', 'roles','canEdit'));
     }
 
     public function update(Request $request, Staffs $staffs)
@@ -608,4 +639,5 @@ class StaffsController extends Controller
 
         return redirect()->route('admin.staffs.index');
     }
+
 }

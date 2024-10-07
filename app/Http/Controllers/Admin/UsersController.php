@@ -125,7 +125,7 @@ class UsersController extends Controller
 
             if ($user->id != '') {
 
-                $staffs->user_id = $user->id;
+                $staffs->user_name_id = $user->id;
                 $staffs->name = $request->name;
                 $staffs->email = $request->email;
                 $staffs->phone_number = $request->phone_number;
