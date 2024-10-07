@@ -41,9 +41,6 @@
             overflow-y: scroll;
         }
 
-        * {
-            font-size: 0.9rem;
-        }
 
 
         /* Absolute Center Spinner */
@@ -163,6 +160,9 @@
                     <a class="nav-link" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
                 </li>
             </ul>
+
+
+            <!-- Right navbar links -->
             @if (count(config('panel.available_languages', [])) > 1)
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item dropdown">
@@ -235,8 +235,6 @@
 
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <ul style="list-style-type:none;padding:0;">
-                            <li> <a href="{{ url('admin/staffs/' . auth()->user()->id . '/Profile-view') }}"
-                                    class="dropdown-item"> My Profile </a></li>
                             {{-- <li>
                                 @if ($canEdit == 1)
                                     <a href="{{ url('admin/staffs/' . auth()->user()->id . '/Profile-edit') }}"
@@ -246,6 +244,9 @@
                                         class="dropdown-item"> My Profile </a>
                                 @endif
                             </li> --}}
+
+                            <li> <a href="{{ url('admin/staffs/' . auth()->user()->id . '/Profile-view') }}"
+                                    class="dropdown-item"> My Profile </a></li>
                             @if (file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
                                 {{-- @can('profile_password_edit') --}}
                                 <li class="nav-item">
@@ -266,18 +267,31 @@
                     </div>
                 </li>
             </ul>
+            {{-- <ul>
+                <div class="nav-item full-screen fullscreen-button pl-2">
+                    <button class="full-screen-button" onclick="toggleFullScreen()">
+                        <i class="fe fe-maximize"></i>
+                    </button>
+                </div>
+            </ul> --}}
+            {{-- <a href="" style="margin:0px 5px 0px;color:rgb(97, 97, 97)"> <i class="fa fa-user"></i> </a> --}}
         </nav>
 
         <aside class="main-sidebar sidebar-dark-primary elevation-4" style="min-height: 917px;">
-
+            <!-- Brand Logo -->
             <a href="#" class="brand-link" style="background-color: rgb(255, 255, 255)">
                 <span class="brand-text font-weight-light">
                     <img src="{{ asset('adminlogo/school_menu_logo.png') }}" alt="" width="100%">
                 </span>
             </a>
 
+            <!-- Sidebar -->
             <div class="sidebar">
+                <!-- Sidebar user (optional) -->
+
+                <!-- Sidebar Menu -->
                 <nav class="mt-2">
+
                     <style>
                         .search-input-container {
                             position: relative;
@@ -302,6 +316,7 @@
                             outline: none;
                         }
                     </style>
+
                     <div id="demo-2">
                         <div class="search-input-container">
                             <input type="search" id="searchInput" placeholder="Search..." class="menu_searcher "
@@ -321,7 +336,80 @@
                                 </p>
                             </a>
                         </li>
-                        {{-- @can('student_daily_attendance_staff_access')
+                        {{-- @can('teaching_staff_access')
+                            <li class="nav-item">
+                                <a href="{{ url('admin/teaching-staff/' . auth()->user()->id .'/Profile-view') }}"
+                        class="nav-link {{ request()->is('admin/teaching-staff') || request()->is('admin/teaching-staff/*') ? 'active' : '' }}">
+                        <i class="fa-fw nav-icon fas fa-cogs">
+
+                        </i>
+                        <p>
+                            My Profile
+                        </p>
+                        </a>
+                        </li>
+                        @endcan --}}
+                        {{-- @can('academic_detail_access')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.academic-details.staff_index', ['user_name_id' => auth()->user()->id, 'name' => auth()->user()->name]) }}"
+                        class="nav-link {{ request()->is('admin/academic-details') || request()->is('admin/academic-details/*') ? 'active' : '' }}">
+
+                        <i class="fa-fw nav-icon fas fa-graduation-cap">
+
+                        </i>
+                        <p>
+                            {{ trans('cruds.academicDetail.title') }}
+                        </p>
+                        </a>
+                        </li>
+                        @endcan --}}
+                        {{-- <li class="nav-item">
+                            <a href="{{ route('admin.staff-time-table.index') }}"
+                                class="nav-link {{ request()->is('admin/staff-time-table') || request()->is('admin/staff-time-table/*') ? 'active' : '' }}">
+                                <i class="fa-fw nav-icon fas fa-calendar-alt">
+
+                                </i>
+                                <p>
+                                    My Time Table
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.staff-subjects.index') }}"
+                                class="nav-link {{ request()->is('admin/staff-subjects/index') || request()->is('admin/staff-subjects/index/*') ? 'active' : '' }}">
+                                <i class="fa-fw nav-icon fas fa-book-open">
+
+                                </i>
+                                <p>
+                                    My Subjects
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('admin.staff-subjects.lesson-plan') }}"
+                                class="nav-link {{ request()->is('admin/staff-subjects/lesson-plan') || request()->is('admin/staff-subjects/lesson-plan/*') ? 'active' : '' }}">
+                                <i class="fa-fw nav-icon fas fa-chart-bar">
+
+                                </i>
+                                <p>
+                                    My Lesson Plans
+                                </p>
+                            </a>
+                        </li> --}}
+                        @can('staff_edge_access')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.staff-edge.index') }}"
+                                    class="nav-link {{ request()->is('admin/staff-edge') || request()->is('admin/teaching-staff-edge/*') || request()->is('admin/staff-edge/*') || request()->is('admin/staff-edge-hr*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-id-card-alt">
+
+                                    </i>
+                                    <p>
+                                        Staff Edge
+                                    </p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('student_daily_attendance_staff_access')
                             <li class="nav-item">
                                 <a href="{{ route('admin.student-period-attendance.index') }}"
                                     class="nav-link {{ request()->is('admin/student-period-attendance') || request()->is('admin/student-period-attendance/*') || request()->is('admin/get-staff-day-period/*') ? 'active' : '' }}">
@@ -333,8 +421,8 @@
                                     </p>
                                 </a>
                             </li>
-                        @endcan --}}
-                        {{-- @can('student_daily_attendance_staff_summary_access')
+                        @endcan
+                        @can('student_daily_attendance_staff_summary_access')
                             <li class="nav-item">
                                 <a href="{{ route('admin.day_student_attendance_summary.index') }}"
                                     class="nav-link {{ request()->is('admin/day_student-attendance-summary*') ? 'active' : '' }}">
@@ -342,20 +430,31 @@
                                     <p>Day Attendance Summary</p>
                                 </a>
                             </li>
-                        @endcan --}}
-
+                        @endcan
                         {{-- <li class="nav-item">
-                                <a href="{{ route('admin.employee-profile.index') }}"
-                                    class="nav-link {{ request()->is('admin/employee-profile') || request()->is('admin/employee-profile/*') ? 'active' : '' }}">
-                                    <i class="fa-fw nav-icon fas fa-user"></i>
+                            <a href="{{ route('admin.student-marks.index') }}"
+                                class="nav-link {{ request()->is('admin/student-marks') || request()->is('admin/student-marks/*') ? 'active' : '' }}">
+                                <i class="fa-fw nav-icon fas fa-user-check">
+
+                                </i>
+                                <p>
+                                    Student Marks
+                                </p>
+                            </a>
+                        </li> --}}
+                        @can('student_edge_access')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.student-edge.index') }}"
+                                    class="nav-link {{ request()->is('admin/student-edge') || request()->is('admin/students-edge/*') || request()->is('admin/student-edge/*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-id-card">
 
                                     </i>
                                     <p>
-                                        Profile
+                                        Student Edge
                                     </p>
                                 </a>
-                            </li> --}}
-
+                            </li>
+                        @endcan
                         @can('add_leave_access')
                             <li class="nav-item">
                                 <a href="{{ route('admin.staff-request-leaves.staff_index') }}"
@@ -369,6 +468,45 @@
                                 </a>
                             </li>
                         @endcan
+                        @can('subject_attendance_report_access')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.subject-attendance-report.staff_index') }}"
+                                    class="nav-link {{ request()->is('admin/subject-attendance-report*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-file-invoice"></i>
+                                    <p>Subject Attendance Report</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('staff_alteration_requests')
+                            <style>
+                                span.num-text {
+                                    background: #ff0433;
+                                    color: #fff;
+                                    padding: 1px 5px;
+                                    text-align: center;
+                                    border-radius: 38%;
+                                    width: 24px;
+                                    font-size: 12px;
+                                    border: 1px solid #ff0433;
+                                    height: 24px;
+                                }
+                            </style>
+                            <li class="nav-item">
+                                <a href="{{ route('admin.staff-alteration-requests.index', ['status2' => 'Sent', 'status' => 'Pending']) }}"
+                                    class="nav-link {{ request()->is('admin/staff-alteration-requests') || request()->is('admin/staff-alteration-requests/*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-user-clock"></i>
+                                    <p>Alteration Requests</p>
+
+                                    {{-- @php($staffAlter = App\Models\StaffAlteration::where(['status' => '0', 'to_id' => auth()->user()->id])->get())
+
+                                    @if (count($staffAlter) > 0)
+                                        <span class="num-text mx-2">{{ count($staffAlter) }}</span>
+                                @endif --}}
+
+                                </a>
+                            </li>
+                        @endcan
+
                         @can('permission_request')
                             <li class="nav-item">
                                 <a href="{{ route('admin.staff-permissionsreq.staff_index') }}"
@@ -395,7 +533,7 @@
                                 </a>
                             </li>
                         @endcan
-                        @can('staff_leave_request')
+                        @can('student_leave_request')
                             <li class="nav-item">
                                 <a href="{{ route('admin.student-leave-requests.stu_index') }}"
                                     class="nav-link {{ request()->is('admin/student-leave-requests') || request()->is('admin/student-leave-requests/*') ? 'active' : '' }}">
@@ -403,12 +541,30 @@
 
                                     </i>
                                     <p>
-                                        Leave Requests
+                                        Student Leave Request
                                     </p>
                                 </a>
                             </li>
                         @endcan
-                        {{-- @can('staff_feedback_forms')
+                        @can('my_subject_registration_access')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.subjectRegistration.index') }}"
+                                    class="nav-link {{ request()->is('admin/subject-registration/index*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-envelope-open"></i>
+                                    <p>Subject Reg Requests</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('syllabus_completion_dep_wise')
+                            <li class="nav-item">
+                                <a href="{{ route('admin.Syllabus-Completion.index') }}"
+                                    class="nav-link {{ request()->is('admin/Syllabus-Completion*') ? 'active' : '' }}">
+                                    <i class="fa-fw nav-icon fas fa-file-alt"></i>
+                                    <p>Syllabus Completion Report</p>
+                                </a>
+                            </li>
+                        @endcan
+                        @can('staff_feedback_forms')
                             <li
                                 class="nav-item has-treeview {{ request()->is('admin/feedback-forms*') ? 'menu-open' : '' }}">
                                 <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/feedback-forms*') ? 'active' : '' }}"
@@ -436,7 +592,118 @@
                                     @endcan
                                 </ul>
                             </li>
-                        @endcan --}}
+                        @endcan
+
+                        @can('mark_entry_menu_access')
+                            <li
+                                class="nav-item has-treeview {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Class_Wise*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/*') || request()->is('admin/assignment/Exam-Mark/staff') || request()->is('admin/assignment/Mark/staff/*') || request()->is('admin/assignment/MarkEntry/staff/*') || request()->is('admin/assignment/Mark/*') ? 'menu-open' : '' }}">
+                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/*') || request()->is('admin/assignment/Exam-Mark/staff') || request()->is('admin/assignment/Exam-Mark/staff/*') || request()->is('admin/assignment/MarkEntry/staff/*') || request()->is('admin/assignment/Mark/*') ? 'active' : '' }}"
+                                    href="#">
+                                    <i class="fa-fw nav-icon fas fa-user-edit"></i>
+                                    <p>
+                                        Marks Entry
+                                        <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview"
+                                    style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
+                                    @can('cat_mark_entry_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.Exam-Mark.staff') }}"
+                                                class="nav-link {{ request()->is('admin/Exam-Mark/staff') || request()->is('admin/Exam-Mark/*') ? 'active' : '' }}">
+                                                <i class="fa-fw nav-icon fas fa-user-check">
+                                                </i>
+                                                <p>
+                                                    CAT Mark Entry
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+
+                                    @can('lab_mark_entry_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.lab_Exam-Mark.staff') }}"
+                                                class="nav-link {{ request()->is('admin/lab_Exam-Mark/staff') || request()->is('admin/lab_Exam-Mark/*') ? 'active' : '' }}">
+                                                <i class="fa-fw nav-icon fas fa-user-check">
+
+                                                </i>
+                                                <p>
+                                                    LAB Mark Entry
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                    @can('assignment_mark_entry_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.assignment_Exam_Mark_entry_staff.index') }}"
+                                                class="nav-link {{ request()->is('admin/assignment/MarkEntry/staff/*') || request()->is('admin/assignment/Mark/Enter/*') ? 'active' : '' }}">
+                                                <i class="fa-fw nav-icon fas fa-user-check">
+                                                </i>
+                                                <p>
+                                                    Assignment Mark Entry
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                </ul>
+                            </li>
+                        @endcan
+                        @can('mark_view_menu_access')
+
+                            <li
+                                class="nav-item has-treeview {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Class_Wise*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark-Result/*') || request()->is('admin/lab_Exam-Mark-Result') || request()->is('admin/lab_Exam-Mark-Result/*') || request()->is('admin/assignment_Exam_Mark_Result') || request()->is('admin/assignment_Exam_Mark_Result/*') || request()->is('admin/assignment/MarkView/*') || request()->is('admin/assignment/Mark/view/*') ? 'menu-open' : '' }}">
+                                <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/Exam-Cell-Coordinators*') || request()->is('admin/Exam-time-table.*') || request()->is('admin/Exam-Attendance/*') || request()->is('admin/examTimetable.*') || request()->is('admin/Exam-Mark-master/*') || request()->is('admin/Exam-Attendance-summary-report*') || request()->is('admin/Result_Analysis_Staff_Wise*') || request()->is('admin/Exam-Mark-Result/*') || request()->is('admin/lab_Exam-Mark-Result') || request()->is('admin/lab_Exam-Mark-Result/*') || request()->is('admin/assignment_Exam_Mark_Result') || request()->is('admin/assignment_Exam_Mark_Result/*') || request()->is('admin/assignment/MarkView/*') || request()->is('admin/assignment/Mark/view/*') ? 'active' : '' }}"
+                                    href="#">
+                                    <i class="fa-fw nav-icon fas fa-clipboard-list"></i>
+                                    <p>
+                                        View Marks
+                                        <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview"
+                                    style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
+                                    @can('cat_mark_view_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.Exam-Mark-Result.index') }}"
+                                                class="nav-link {{ request()->is('admin/Exam-Mark-Result') || request()->is('admin/Exam-Mark-Result/*') ? 'active' : '' }}">
+                                                <i class="fa nav-icon fas fa-file-invoice">
+                                                </i>
+                                                <p>
+                                                    CAT Marks
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                    @can('lab_mark_view_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.lab_Exam-Mark-Result.index') }}"
+                                                class="nav-link {{ request()->is('admin/lab_Exam-Mark-Result') || request()->is('admin/lab_Exam-Mark-Result/*') ? 'active' : '' }}">
+                                                <i class="fa nav-icon fas fa-file-invoice">
+                                                </i>
+                                                <p>
+                                                    LAB Marks
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+                                    @can('assignment_mark_view_access')
+                                        <li class="nav-item">
+                                            <a href="{{ route('admin.assignment_Exam_Mark_Result.index') }}"
+                                                class="nav-link {{ request()->is('admin/assignment/MarkView/*') || request()->is('admin/assignment/Mark/view/*') ? 'active' : '' }}">
+                                                <i class="fa nav-icon fas fa-file-invoice">
+                                                </i>
+                                                <p>
+                                                    Assignment Marks
+                                                </p>
+                                            </a>
+                                        </li>
+                                    @endcan
+
+
+
+                                </ul>
+                            </li>
+                        @endcan
                         @php($unread = \App\Models\QaTopic::unreadCount())
                         <li class="nav-item">
                             <a href="{{ route('admin.messenger.index') }}"
