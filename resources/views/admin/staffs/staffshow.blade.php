@@ -132,7 +132,8 @@
                                 <div class="form-group">
                                     <label for="phone">Phone</label>
                                     <input type="text" class="form-control" id="phone"
-                                        value="{{ $staff->ContactNo ? $staff->ContactNo : $staff->phone_number }}" readonly>
+                                        value="{{ $staff->ContactNo ? $staff->ContactNo : $staff->phone_number }}"
+                                        readonly>
                                 </div>
                             </div>
                         </div>
@@ -165,7 +166,7 @@
                                     <div class="form-group">
                                         <label for="name">Full Name</label>
                                         <input type="text" class="form-control" name="name"
-                                            value="{{ $detail->first_name }}" readonly>
+                                            value="{{ $detail->name }}" readonly>
                                     </div>
                                 </div>
                                 {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
@@ -332,13 +333,16 @@
                                     </div>
                                 @endif
 
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="marial_status">Marial Status</label>
-                                        <input type="text" class="form-control" name="marial_status"
-                                            value="{{ $detail->marial_status }}" readonly>
+                                @if (isset($detail->marial_status) && $detail->marial_status != null)
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="marial_status">Marial Status</label>
+                                            <input type="text" class="form-control" name="marial_status"
+                                                value="{{ $detail->marial_status }}" readonly>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
+
 
                                 @if ($detail->mother_tongue_id != '')
                                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">

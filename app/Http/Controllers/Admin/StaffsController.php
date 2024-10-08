@@ -225,6 +225,7 @@ class StaffsController extends Controller
                 $personal->known_languages = '';
                 $personal->au_card_no = '';
                 $personal->first_name = '';
+                $personal->name = '';
                 $personal->total_experience = '';
                 $personal->employment_type = '';
                 $personal->employment_status = '';
@@ -239,7 +240,7 @@ class StaffsController extends Controller
 
                 $known_languages = unserialize($personal[0]->known_languages);
 
-                $personal[0]->first_name = $personal[0]->name;
+                $personal[0]->name = $personal[0]->name;
                 $personal[0]->blood_group = $blood_groups;
                 $personal[0]->role = $roles;
                 $personal[0]->designation = $designations;
@@ -408,13 +409,13 @@ class StaffsController extends Controller
             //     $online_course_list = $online_course;
             // }
 
-            // $document = Document::where(['nameofuser_id' => $user_name_id, 'status' => 1])->get();
-            // if ($document->count() <= 0) {
+            $document = Document::where(['nameofuser_id' => $user_name_id, 'status' => 1])->get();
+            if ($document->count() <= 0) {
 
-            //     $document_list = [];
-            // } else {
-            //     $document_list = $document;
-            // }
+                $document_list = [];
+            } else {
+                $document_list = $document;
+            }
 
             // // $seminar_details = Seminar::where(['user_name_id' => $user_name_id])->get();
 
@@ -532,9 +533,8 @@ class StaffsController extends Controller
             // $first_entry = 'data';
 
             $userId = auth()->user()->id;
-            // dd($userId);
 
-            // Fetch the edit access level from the 'staffs' table
+
             $canEdit = DB::table('staffs')
                 ->where('user_name_id', $userId)
                 ->value('edit_access');
@@ -542,11 +542,6 @@ class StaffsController extends Controller
                 {
                     return redirect()->route('admin.staffs.Profile-edit', ['id' => $userId]);
                 }
-                else
-                {
-                    return redirect()->route('admin.staffs.Profile-view', ['id' => $userId]);
-                }
-
             if (is_numeric($request)) {
                 return view('admin.Staffs.staffshow', compact('staff', 'detail', 'experience_list', 'education_list', 'document_list', 'canEdit'));
             } else {
@@ -574,6 +569,8 @@ class StaffsController extends Controller
             //     dd($request);
             //     $req = $request;
             // }
+            $roles = Role::pluck('title', 'id')->prepend(trans('global.pleaseSelect'), '');
+            $designations = Designation::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
             $query = Staffs::where(['user_name_id' => $request])->get();
             // $document = Document::where(['nameofuser_id' => $request, 'fileName' => 'Profile'])->get();

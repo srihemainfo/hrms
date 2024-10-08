@@ -55,7 +55,6 @@
                                 </div>
                             </div>
 
-
                             @if (
                                 (isset($staff->filePath) ? $staff->filePath : '') != '' ||
                                     (isset($staff->filePath) ? $staff->filePath : '') != null)

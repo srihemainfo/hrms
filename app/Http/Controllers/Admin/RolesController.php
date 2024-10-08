@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MassDestroyRoleRequest;
-use App\Http\Requests\StoreRoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
 use App\Models\Permission;
 use App\Models\Role;
-use App\Models\TeachingType;
+use App\Models\RoleType;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,7 +16,7 @@ class RolesController extends Controller
     {
         // abort_if(Gate::denies('role_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $roles = Role::with(['permissions'])->get();
+        $roles = Role::with(['type', 'permissions'])->get();
 
         return view('admin.roles.index', compact('roles'));
     }
@@ -27,17 +25,19 @@ class RolesController extends Controller
     {
         // abort_if(Gate::denies('role_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        // $types = TeachingType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $types = RoleType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $permissions = Permission::pluck('title', 'id');
 
-        return view('admin.roles.create', compact('permissions'));
+        return view('admin.roles.create', compact('permissions', 'types'));
     }
 
     public function store(Request $request)
     {
 
-        $existingRecord = Role::where('title', $request->title)->first();
+        $existingRecord = Role::where('type_id', $request->type_id)
+            ->where('title', $request->title)
+            ->first();
 
         if ($existingRecord) {
             return back()->withInput()->with('error', 'Combination already exists.');
@@ -54,16 +54,16 @@ class RolesController extends Controller
     {
         // abort_if(Gate::denies('role_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        // $types = TeachingType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $types = RoleType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $permissions = Permission::pluck('title', 'id');
 
-        $role->load( 'permissions');
+        $role->load('permissions');
 
         return view('admin.roles.edit', compact('permissions', 'role'));
     }
 
-    public function update(UpdateRoleRequest $request, Role $role)
+    public function update(Request $request, Role $role)
     {
         $id = $role->id;
         $record = Role::findOrFail($id);
@@ -79,7 +79,8 @@ class RolesController extends Controller
 
             return redirect()->route('admin.roles.index');
         } else {
-            $existingRecord = Role::where('title', $request->title)
+            $existingRecord = Role::where('type_id', $request->type_id)
+                ->where('title', $request->title)
                 ->where('id', '!=', $id) // Exclude the current ID
                 ->first();
 
@@ -101,7 +102,7 @@ class RolesController extends Controller
     {
         // abort_if(Gate::denies('role_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $role->load( 'permissions');
+        $role->load('permissions');
 
         return view('admin.roles.show', compact('role'));
     }

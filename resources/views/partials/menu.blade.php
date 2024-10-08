@@ -69,7 +69,7 @@
                     </a>
                 </li>
 
-                @can('user_management_access')
+                {{-- @can('user_management_access') --}}
                     <li
                         class="nav-item has-treeview {{ request()->is('admin/permissions*') ? 'menu-open' : '' }} {{ request()->is('admin/roles*') ? 'menu-open' : '' }} {{ request()->is('admin/users*') ? 'menu-open' : '' }} {{ request()->is('admin/audit-logs*') ? 'menu-open' : '' }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/permissions*') ? 'active' : '' }} {{ request()->is('admin/roles*') ? 'active' : '' }} {{ request()->is('admin/users*') ? 'active' : '' }} {{ request()->is('admin/audit-logs*') ? 'active' : '' }}"
@@ -134,12 +134,12 @@
 
                         </ul>
                     </li>
-                @endcan
+                {{-- @endcan --}}
 
 
 
 
-                @can('staff_management_access')
+                {{-- @can('staff_management_access') --}}
                     <li
                         class="nav-item has-treeview {{ request()->is('admin/staff_details*') ? 'menu-open' : '' }} {{ request()->is('admin/Staff_status*') ? 'menu-open' : '' }} {{ request()->is('admin/inactive_staff*') ? 'menu-open' : '' }} {{ request()->is('admin/teaching-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/non-teaching-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/rd-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/staff-edge*') ? 'menu-open' : '' }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/staff_details*') ? 'active' : '' }} {{ request()->is('admin/Staff_status*') ? 'active' : '' }} {{ request()->is('admin/inactive_staff*') ? 'active' : '' }} {{ request()->is('admin/teaching-staffs*') ? 'active' : '' }} {{ request()->is('admin/non-teaching-staffs*') ? 'active' : '' }} {{ request()->is('admin/rd-staffs*') ? 'active' : '' }} {{ request()->is('admin/staff-edge*') ? 'active' : '' }}"
@@ -177,9 +177,9 @@
 
                         </ul>
                     </li>
-                @endcan
+                {{-- @endcan --}}
 
-                @can('hrm_access')
+                {{-- @can('hrm_access') --}}
                     <li
                         class="nav-item has-treeview {{ request()->is('admin/staff/*') ||request()->is('admin/staff') ||request()->is('admin/hrm-request-permissions*') ||request()->is('admin/staff_leave_report*') ||request()->is('admin/salary-statement*') ||request()->is('admin/permission-register*') ||request()->is('admin/PaySlip*') ||request()->is('admin/staff-attend-register*') ||request()->is('admin/employee-salary*') ||request()->is('admin/staff-biometrics*') ||request()->is('admin/hrm-request-leaves*') ||request()->is('admin/leave-staff-allocations*') ||request()->is('admin/od-masters*') ||request()->is('admin/take-attentance-students*') ||request()->is('admin/od-requests*') ||request()->is('admin/internship-requests*') ||request()->is('admin/hrm-request-permissions*') ||request()->is('admin/staff-transfer-infos*') ||request()->is('admin/hrm-request-leaves*') ||request()->is('admin/staff_leave_register*') ||request()->is('admin/Staff-Relieving-Report*') ||request()->is('admin/leave-implementation*') ||request()->is('admin/staff-daily-attendance*')? 'menu-open': '' }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/staff/*') || request()->is('admin/staff') || request()->is('admin/hrm-request-permissions*') || request()->is('admin/staff_leave_report*') || request()->is('admin/salary-statement*') || request()->is('admin/permission-register*') || request()->is('admin/staff-attend-register*') || request()->is('admin/PaySlip*') || request()->is('admin/employee-salary*') || request()->is('admin/staff-biometrics*') || request()->is('admin/hrm-request-leaves*') || request()->is('admin/leave-staff-allocations*') || request()->is('admin/od-masters*') || request()->is('admin/take-attentance-students*') || request()->is('admin/od-requests*') || request()->is('admin/internship-requests*') || request()->is('admin/hrm-request-permissions*') || request()->is('admin/staff-transfer-infos*') || request()->is('admin/staff_leave_register*') || request()->is('admin/Staff-Relieving-Report*') || request()->is('admin/leave-implementation*') || request()->is('admin/staff-daily-attendance*')? 'active': '' }}"
@@ -447,9 +447,9 @@
 
                         </ul>
                     </li>
-                @endcan
+                {{-- @endcan --}}
 
-                @can('master_tool_access')
+                {{-- @can('master_tool_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.designation.index') }}"
                             class="nav-link {{ request()->is('admin/master-tools') ||
@@ -512,9 +512,9 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
 
-                @can('office_calender_access')
+                {{-- @can('office_calender_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.college-calenders.index') }}"
                             class="nav-link {{ request()->is('admin/college-calenders') || request()->is('admin/college-calenders/*') ? 'active' : '' }}">
@@ -524,7 +524,7 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
 
 
                 {{-- <li class="nav-item">
