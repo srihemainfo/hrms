@@ -135,7 +135,6 @@ class UsersController extends Controller
                 $staffs->status = '';
                 $staffs->employee_id = '';
                 $staffs->biometric = '';
-
                 $staffs->save();
 
                 return response()->json(['status' => true, 'data' => 'User created successfully']);

@@ -423,10 +423,12 @@ class StaffBiometricController extends Controller
     {
         if ($request->ajax()) {
             $query = DB::table('users')
-                ->whereNotNull('users.employID')
-                ->leftJoin('teaching_staffs as teach', 'teach.user_name_id', '=', 'users.id')
-                ->leftJoin('non_teaching_staffs as nonteach', 'nonteach.user_name_id', '=', 'users.id')
-                ->select('users.id', 'users.name', 'teach.StaffCode as t', 'teach.casual_leave', 'teach.personal_permission', 'nonteach.StaffCode as nont', 'nonteach.casual_leave', 'nonteach.personal_permission')
+                ->whereNotNull('users.employee_id')
+                ->whereNull('users.deleted_at')
+                ->leftJoin('staffs', 'staffs.user_name_id', '=', 'users.id')
+                ->where('staffs.role_id', '=', 2)
+                ->whereNull('staffs.deleted_at')
+                ->select('users.id', 'users.name', 'staffs.employee_id', 'staffs.casual_leave', 'staffs.personal_permission', 'staffs.sick_leave')
                 ->get();
             // dd($query[0]);
             $table = DataTables::of($query);
@@ -440,18 +442,16 @@ class StaffBiometricController extends Controller
             });
 
             $table->editColumn('staff_code', function ($row) {
-                if ($row->t == null) {
-                    return $row->nont ? $row->nont : '';
-                } elseif ($row->nont == null) {
-                    return $row->t ? $row->t : '';
-
-                }
+                return $row->employee_id ? $row->employee_id : '';
             });
             $table->editColumn('casual_leave', function ($row) {
                 return $row->casual_leave ? $row->casual_leave : 0;
             });
             $table->editColumn('permission', function ($row) {
                 return $row->personal_permission ? $row->personal_permission : 0;
+            });
+            $table->editColumn('sick', function ($row) {
+                return $row->sick_leave ? $row->sick_leave : 0;
             });
 
             return $table->make(true);

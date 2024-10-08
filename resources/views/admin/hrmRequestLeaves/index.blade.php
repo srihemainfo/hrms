@@ -21,10 +21,6 @@
                         href="{{ route('admin.hrm-request-leaves.index', ['status' => 'Rejected']) }}">Rejected</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link{{ $status === 'Verified' ? ' active' : '' }}"
-                        href="{{ route('admin.hrm-request-leaves.index', ['status' => 'Verified']) }}">Verified</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link{{ $status === 'NeedClarification' ? ' active' : '' }}"
                         href="{{ route('admin.hrm-request-leaves.index', ['status' => 'NeedClarification']) }}">Need
                         Clarification</a>

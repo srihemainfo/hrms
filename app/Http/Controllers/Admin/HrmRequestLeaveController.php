@@ -12,7 +12,6 @@ use App\Models\ClassTimeTableTwo;
 use App\Models\CourseEnrollMaster;
 use App\Models\Document;
 use App\Models\HrmRequestLeaf;
-use App\Models\LeaveImplement;
 use App\Models\LeaveType;
 use App\Models\NonTeachingStaff;
 use App\Models\StaffAlteration;
@@ -55,54 +54,23 @@ class HrmRequestLeaveController extends Controller
         $query1 = [];
         if ($status == 'Pending') {
 
-            if (auth()->user()->roles[0]->id == 1 || auth()->user()->roles[0]->id == 2 || auth()->user()->roles[0]->id == 3) { // HOD || R & D Head
+            if (auth()->user()->roles[0]->id == 1 || auth()->user()->roles[0]->id == 2 || auth()->user()->roles[0]->id == 3) { //ADMIN, MD, HR, Support
                 $query = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 0])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
             }
-            // elseif (auth()->user()->roles[0]->id == 15) { //Pricipal
-            //     $principal = true;
-            //     $query = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 1])->whereIn('leave_type', [2, 3, 4, 6, 7, 8])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
-            // } elseif (auth()->user()->roles[0]->id == 13 || auth()->user()->roles[0]->id == 1) { // Hr || Admin
-            //     // $query = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 0])->get();
-            //     // $query = HrmRequestLeaf::where(['status' => 'Pending'])->whereIn('level', [0,1])->get();
-            //     $query = HrmRequestLeaf::where(['status' => 'Pending'])->whereIn('level', [0, 1])->whereIn('leave_type', [2, 3, 4, 6, 7, 8])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
-            //     $query1 = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 0])->whereIn('leave_type', [1, 5])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
-            //     // dd($query);
-            // }
-
             $list = $query;
         } elseif ($status == 'Approved') {
-            // if (auth()->user()->roles[0]->id == 14 || auth()->user()->roles[0]->id == 42) { // HOD || R & D Head
-            //     $query = HrmRequestLeaf::where('status','Approved')->get();
-            // } elseif (auth()->user()->roles[0]->id == 15) { //Pricipal
-            //     // $query = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 95])->whereIn('leave_type', [2, 3, 4, 6, 7])->get();
-            //     $query1 = HrmRequestLeaf::where(['status' => 'Approved'])->get();
-            // } else {
             $query = HrmRequestLeaf::where(['status' => 'Approved'])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
-            // }
-
             $list = $query;
         } elseif ($status == 'Rejected') {
             $query = HrmRequestLeaf::where(['status' => 'Rejected'])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
 
             $list = $query;
-        } elseif ($status == 'Verified') {
-
-            if (auth()->user()->roles[0]->id == 14 || auth()->user()->roles[0]->id == 42) { // HOD || R & D Head
-                $query = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 1])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
-            } elseif (auth()->user()->roles[0]->id == 15) { //Pricipal
-                $query = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 95])->whereIn('leave_type', [2, 3, 4, 6, 7, 8])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
-                $query1 = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 1])->whereIn('leave_type', [1, 5])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
-            } elseif (auth()->user()->roles[0]->id == 13 || auth()->user()->roles[0]->id == 1) { // Hr || Admin
-                $query = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 95])->whereIn('leave_type', [2, 3, 4, 6, 7, 8])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
-                $query1 = HrmRequestLeaf::where(['status' => 'Pending', 'level' => 1])->whereIn('leave_type', [1, 5])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
-            } else {
-                $query = [];
-            }
-
-            $list = $query;
         } elseif ($status == 'NeedClarification') {
-            $query = HrmRequestLeaf::where(['status' => 'NeedClarification', 'level' => 99])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
-            $list = $query;
+            if ((auth()->user()->roles[0]->id == 1 || auth()->user()->roles[0]->id == 2 || auth()->user()->roles[0]->id == 3) && (auth()->user()->roles[0]->type_id == 1 || auth()->user()->roles[0]->type_id == 3)) { //ADMIN, MD, HR, Support
+
+                $query = HrmRequestLeaf::where(['status' => 'NeedClarification', 'level' => 99])->whereBetween('created_at', [$retrieveDateStart, $retrieveDateEnd])->get();
+                $list = $query;
+            }
         }
 
         $unwanted = [];
@@ -1004,7 +972,7 @@ class HrmRequestLeaveController extends Controller
                                                 $staff_biometric->details = $get->noon . ' Sick Leave (SL Provided)';
                                                 $staff_biometric->update_status = 1;
                                                 $staff_biometric->updated_at = Carbon::now();
-                                                $staff_biometric->status = $get->noon .' Absent';
+                                                $staff_biometric->status = $get->noon . ' Absent';
                                                 $staff_biometric->save();
 
                                                 $check_cl->sick_leave = $check_cl->sick_leave - $cl_deduct;
@@ -1013,7 +981,7 @@ class HrmRequestLeaveController extends Controller
                                                 $staff_biometric->details = $get->noon . ' Sick Leave';
                                                 $staff_biometric->update_status = 1;
                                                 $staff_biometric->updated_at = Carbon::now();
-                                                $staff_biometric->status = $get->noon .' Absent';
+                                                $staff_biometric->status = $get->noon . ' Absent';
                                                 $staff_biometric->save();
                                             }
                                         } else {
@@ -1045,7 +1013,7 @@ class HrmRequestLeaveController extends Controller
                                             $staff_biometric->details = $get->noon . ' Sick Leave';
                                             $staff_biometric->update_status = 1;
                                             $staff_biometric->updated_at = Carbon::now();
-                                            $staff_biometric->status = $get->noon .' Absent';
+                                            $staff_biometric->status = $get->noon . ' Absent';
                                             $staff_biometric->save();
                                         } else {
                                             \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
@@ -1054,7 +1022,7 @@ class HrmRequestLeaveController extends Controller
                                 }
                             }
 
-                        }elseif($get->leave_type == 3){ // OD
+                        } elseif ($get->leave_type == 3) { // OD
 
                             if ($isHalfDay) {
                                 $currentDates = [];
@@ -1078,7 +1046,6 @@ class HrmRequestLeaveController extends Controller
                                     array_push($currentDates, $date->format('Y-m-d'));
                                 }
                             }
-
 
                             if ($halfDay == false) {
                                 // Full Day Leave Request.
@@ -1105,7 +1072,7 @@ class HrmRequestLeaveController extends Controller
                                         $staff_biometric->details = $get->noon . ' On Duty';
                                         $staff_biometric->update_status = 1;
                                         $staff_biometric->updated_at = Carbon::now();
-                                        $staff_biometric->status = $get->noon .' Present';
+                                        $staff_biometric->status = $get->noon . ' Present';
                                         $staff_biometric->save();
                                     } else {
                                         \Log::info('Staff Biometric Not Available for User id' . $get->user_id);

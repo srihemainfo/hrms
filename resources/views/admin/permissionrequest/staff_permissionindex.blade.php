@@ -1,9 +1,4 @@
-@php
-    if ($who == 'tech') {
-        $key = 'layouts.staffs';
-    }
-@endphp
-@extends($key)
+@extends('layouts.staffs')
 @section('content')
     <div class="container">
         <style>
@@ -18,7 +13,6 @@
                         <h5 class="mb-2 text-primary">Permission Request</h5>
                     </div>
                     <div class="card-body">
-
                         <div class="row gutters">
 
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
@@ -32,10 +26,10 @@
                                 <div class="form-group">
                                     <label for="off_date">Permission</label>
                                     <input type="hidden" name="id" id="id" value="{{ $staff_edit->id }}">
-                                    {{-- <input type="hidden" id="pp_availability"
-                                        value="{{ $staff_edit->personal_permission == '' ? 0 : $staff_edit->personal_permission }}"> --}}
                                     <input type="hidden" id="pp_availability"
-                                        value="{{ $staff_edit->personal_permission == '' ? 10 : 10 }}">
+                                        value="{{ $staff_edit->personal_permission == '' ? 0 : $staff_edit->personal_permission }}">
+                                    {{-- <input type="hidden" id="pp_availability"
+                                        value="{{ $staff_edit->personal_permission == '' ? 10 : 10 }}"> --}}
 
                                     <select class="form-control select2" name="Permission" id="Permission"
                                         onchange="checker(this)" required>
@@ -62,107 +56,34 @@
                                         placeholder="Enter  Date" value="{{ $staff_edit->date }}" required>
                                 </div>
                             </div>
-                            @if ($staff_edit->Permission == 'Personal')
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="from_time_div_one">
-                                    <div class="form-group">
-                                        <label for="from_date" style="display:block;">From Time</label>
-                                        <input type="time"
-                                            class="form-control {{ $errors->has('from_time') ? 'is-invalid' : '' }}"
-                                            name="from_time" id="from_time">
-                                    </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="from_date" style="display:block;">From Time</label>
+                                    <input type="time"
+                                        class="form-control {{ $errors->has('from_time') ? 'is-invalid' : '' }}"
+                                        name="from_time" id="from_time">
                                 </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="to_time_div_one">
-                                    <div class="form-group">
-                                        <label for="to_time" style="display:block;">To Time</label>
-                                        {{-- <input type="text" class="form-control" name="to_time" id="to_time"
-                                        value="{{ $staff_edit->to_time }}" readonly> --}}
-                                        <select
-                                            class="form-control select2 {{ $errors->has('from_time') ? 'is-invalid' : '' }}"
-                                            name="to_time" id="to_time">
-                                            <option value="{{ $staff_edit->to_time }}" selected>
-                                                {{ $staff_edit->to_time }}</option>
-                                        </select>
-                                    </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="to_time" style="display:block;">To Time</label>
+                                    <input type="time" class="form-control" name="to_time" id="to_time"
+                                        value="{{ $staff_edit->to_time }}" onblur="time_checker(this)">
                                 </div>
-                            @elseif ($staff_edit->Permission == 'On Duty')
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="from_time_div_two">
-                                    <div class="form-group">
-                                        <label for="from_time_od">From Time</label>
-                                        <input type="time" class="form-control" name="from_time_od" id="from_time_od"
-                                            placeholder="Enter From Time" value="{{ $staff_edit->from_time }}"
-                                            onchange="time_checker(this)">
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="to_time_div_two">
-                                    <div class="form-group">
-                                        <label for="to_time_od">To Time</label>
-                                        <input type="time" class="form-control" name="to_time_od" id="to_time_od"
-                                            placeholder="Enter To Time" value="{{ $staff_edit->to_time }}" readonly>
-                                    </div>
-                                </div>
-                            @elseif ($staff_edit->Permission == '')
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="insert_from_time_one">
-                                    <div class="form-group">
-                                        <label for="from_date" style="display:block;">From Time</label>
-                                        <input type="time"
-                                            class="form-control {{ $errors->has('from_time') ? 'is-invalid' : '' }}"
-                                            name="from_time" id="from_time">
-                                        {{-- <select
-                                            class="form-control select2 {{ $errors->has('from_time') ? 'is-invalid' : '' }}"
-                                            name="from_time" id="from_time">
-                                            <option value="" selected>Please Select</option>
-                                            <option value="08:00:00">08:00:00 AM</option>
-                                            <option value="15:00:00">03:00:00 PM</option>
-                                            <option value="16:00:00">04:00:00 PM</option>
-                                        </select> --}}
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="insert_to_time_one">
-                                    <div class="form-group">
-                                        <label for="to_time" style="display:block;">To Time</label>
-                                        <input type="time" class="form-control" name="to_time" id="to_time"
-                                            value="{{ $staff_edit->to_time }}" readonly>
-                                        {{-- <select
-                                            class="form-control select2 {{ $errors->has('from_time') ? 'is-invalid' : '' }}"
-                                            name="to_time" id="to_time">
-                                            <option value="" selected></option>
-                                        </select> --}}
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" style="display:none;"
-                                    id="insert_from_time_two">
-                                    <div class="form-group">
-                                        <label for="from_time_od">From Time</label>
-                                        <input type="time" class="form-control" name="from_time_od" id="from_time_od"
-                                            placeholder="Enter From Time" value="{{ $staff_edit->from_time }}"
-                                            onchange="time_checker(this)">
-                                    </div>
-                                </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" style="display:none;"
-                                    id="insert_to_time_two">
-                                    <div class="form-group">
-                                        <label for="to_time_od">To Time</label>
-                                        <input type="time" class="form-control" name="to_time_od" id="to_time_od"
-                                            placeholder="Enter To Time" value="{{ $staff_edit->to_time }}" readonly>
-                                    </div>
-                                </div>
-                            @endif
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="alter_date_div">
+                            </div>
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <div class="form-group">
                                     <label for="alter_date">Reason</label>
                                     <textarea type="text" class="form-control" id="reason" name="reason" placeholder="Enter Reason"
                                         value="{{ $staff_edit->reason }}" required>{{ $staff_edit->reason }}</textarea>
                                 </div>
                             </div>
-
-
                         </div>
                         <div class="row gutters">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <div class="text-right">
                                     <button type="submit" id="submit" name="submit" onclick="checkDatas()"
-                                        class="btn btn-primary Edit">{{ $staff_edit->add }}</button>
+                                        class="btn btn-primary Edit" style="display: none;">{{ $staff_edit->add }}</button>
                                 </div>
                                 <div class="text-right text-primary" id="loading_div" style="display:none;">
                                     <b>Processing...</b>
@@ -294,7 +215,7 @@
 
         window.onload = function() {
             $("#loading_div").hide();
-            $("#submit").show();
+            // $("#submit").show();
             callAjax();
         }
 
@@ -325,63 +246,48 @@
 
         function checker(element) {
 
-            if (element.value == 'On Duty') {
-
-                $("#insert_from_time_one").hide();
-                $("#insert_to_time_one").hide();
-                $("#from_time").val('');
-                $("#to_time").val('');
-                $("#insert_from_time_two").show();
-                $("#insert_to_time_two").show();
-                $("#from_time_od").attr('required', true);
-                $("#to_time_od").attr('required', true);
-                $("#from_time").attr('required', false);
-                $("#to_time").attr('required', false);
-
-            } else if (element.value == 'Personal') {
-
+            if (element.value == 'Personal') {
                 let availability = $("#pp_availability").val();
-
-
                 if (availability <= 0) {
-                    Swal.fire('', 'The Permission Exhausted For this Month', 'info');
-                    location.reload();
+                    Swal.fire('',
+                        'Permission exhausted for this month. If you take further permission, it will be considered as LOP (Loss of Pay).',
+                        'warning');
                 }
-
-
-                $("#insert_from_time_one").show();
-                $("#insert_to_time_one").show();
-                $("#insert_from_time_two").hide();
-                $("#insert_to_time_two").hide();
-                $("#from_time_od").val('');
-                $('#from_time').val('');
-                $("#to_time_od").val('');
-                $('#to_time').html(`<option value="" selected></option>`);
-                $("#from_time").attr('required', true);
-                $("#to_time").attr('required', true);
-                $("#from_time_od").attr('required', false);
-                $("#to_time_od").attr('required', false);
             }
-
         }
 
         function time_checker(element) {
-            // console.log(element.value)
-            let from_time = element.value;
+            if ($('#date').val() != '') {
+                if ($('#from_time').val() != '' && $('#to_time').val() != '') {
+                    let from_time = $('#from_time').val();
+                    let to_time = $('#to_time').val();
+                    let fromTime = new Date(`1970-01-01T${from_time}:00`);
+                    let toTime = new Date(`1970-01-01T${to_time}:00`);
+                    let difference = (toTime - fromTime) / (1000 * 60 * 60);
+                    if (difference > 2) {
+                        $('#submit').hide()
+                        Swal.fire('', 'Permission can only be applied for 2 hours.', 'error');
+                    } else if (difference <= 0) {
+                        $('#submit').hide()
+                        Swal.fire('', 'Invalid Time.', 'error');
+                    } else {
+                        $('#submit').show()
+                    }
 
-            let inputHour = from_time.split(":")[0];
-            let inputMin = from_time.split(":")[1];
-
-            let add = parseInt(inputHour) + 2;
-            let to_time;
-            if (add < 10) {
-                to_time = '0' + add + ':' + inputMin;
+                } else {
+                    $('#from_time').val('');
+                    $('#to_time').val('');
+                    $('#submit').hide()
+                    Swal.fire('', 'Select From time and To time properly.', 'error');
+                }
+            } else if ($('#date').val() == '') {
+                $('#submit').hide()
+                Swal.fire('', 'Select Date', 'error');
             } else {
-                to_time = add + ':' + inputMin;
+                $('#submit').show()
             }
-            $("#to_time_od").val(to_time);
-            // console.log(to_time,inputHour,inputMin);
         }
+
 
         function checkDatas() {
             event.preventDefault();
@@ -393,18 +299,22 @@
             if ($("#Permission").val() == 'On Duty') {
                 if ($("#date").val() == '') {
                     Swal.fire('', 'Please Select The Date', 'error');
+                    $('#submit').hide()
                     return false;
                 }
-                if ($("#from_time_od").val() == '') {
+                if ($("#from_time").val() == '') {
                     Swal.fire('', 'Please Select The From Time', 'error');
+                    $('#submit').hide()
                     return false;
                 }
-                if ($("#to_time_od").val() == '') {
+                if ($("#to_time").val() == '') {
                     Swal.fire('', 'Please Select The To Time', 'error');
+                    $('#submit').hide()
                     return false;
                 }
                 if ($("#reason").val() == '') {
                     Swal.fire('', 'Please Select The Date', 'error');
+                    $('#submit').hide()
                     return false;
                 }
 
@@ -412,27 +322,49 @@
                 $("#submit").hide();
 
                 $.ajax({
-                    url: '{{ route('admin.staff-permissionsreq.staff_update') }}',
+                    url: '{{ route('admin.staff-permissionsreq.checkDate') }}',
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        'id': $("#id").val(),
-                        'from_time': $("#from_time_od").val(),
-                        'to_time': $("#to_time_od").val(),
-                        'date': $("#date").val(),
-                        'Permission': 'On Duty',
-                        'reason': $("#reason").val()
+                        'from_time': from_time,
+                        'to_time': to_time,
+                        'date': theDate
                     },
                     success: function(response) {
-                        if (response.status == true) {
-                            Swal.fire('', response.data, 'success');
-                            location.reload();
-                        } else {
+
+                        if (response.status == false) {
                             Swal.fire('', response.data, 'error');
                             $("#loading_div").hide();
                             $("#submit").show();
+
+                        } else {
+                            $.ajax({
+                                url: '{{ route('admin.staff-permissionsreq.staff_update') }}',
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                data: {
+                                    'id': $("#id").val(),
+                                    'from_time': $("#from_time").val(),
+                                    'to_time': $("#to_time").val(),
+                                    'date': $("#date").val(),
+                                    'Permission': 'On Duty',
+                                    'reason': $("#reason").val()
+                                },
+                                success: function(response) {
+                                    if (response.status == true) {
+                                        Swal.fire('', response.data, 'success');
+                                        location.reload();
+                                    } else {
+                                        Swal.fire('', response.data, 'error');
+                                        $("#loading_div").hide();
+                                        $("#submit").show();
+                                    }
+                                }
+                            })
                         }
                     }
                 })
@@ -515,6 +447,10 @@
                     $("#submit").show();
                     return false;
                 }
+            }
+
+            if ($("#Permission").val() == '') {
+                Swal.fire('', 'Select Permission', 'errro');
             }
 
         }

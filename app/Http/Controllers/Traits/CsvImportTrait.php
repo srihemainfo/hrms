@@ -7,6 +7,7 @@ use App\Models\AcademicFee;
 use App\Models\AcademicYear;
 use App\Models\Batch;
 use App\Models\CourseEnrollMaster;
+use App\Models\Designation;
 use App\Models\Examattendance;
 use App\Models\ExamattendanceData;
 use App\Models\ExamRegistration;
@@ -28,7 +29,6 @@ use App\Models\SubjectAllotment;
 use App\Models\SubjectCategory;
 use App\Models\SubjectRegistration;
 use App\Models\SubjectType;
-use App\Models\TeachingStaff;
 use App\Models\ToolsCourse;
 use App\Models\ToolsDepartment;
 use App\Models\ToolssyllabusYear;
@@ -466,134 +466,75 @@ trait CsvImportTrait
                 if ($import_status == null) {
                     session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => $table]));
                 }
-            } elseif ($request->modelName == 'TeachingStaff') {
+            } elseif ($request->modelName == 'Staffs') {
 
                 $import_status = null;
                 $balance_row = $rows;
                 $inserted_rows = $rows - $balance_row;
 
                 foreach ($for_insert[0] as $insert) {
+                    // dd($insert,$insert['sick_leave'] != '' ?$insert['sick_leave']:0);
+                    if ($insert['name'] != '' && $insert['employee_id'] != '' && $insert['email'] != '' && $insert['phone_number'] != '' && $insert['role_id'] != '') {
+                        $check_user = User::where(['employee_id' => $insert['employee_id']])->first();
 
-                    $check_user = User::where(['employID' => $insert['StaffCode']])->first();
-
-                    $get_Dept = ToolsDepartment::where('name', 'LIKE', $insert['Dept'])->get();
-
-                    if (count($get_Dept) > 0) {
-
+                        // $get_Dept = ToolsDepartment::where('name', 'LIKE', $insert['Dept'])->get();
                         if (empty($check_user)) {
 
                             $balance_row--;
 
-                            $user = new User;
-                            $user->name = $insert['name'] . ' ' . $insert['last_name'];
-                            $user->email = $insert['EmailIDOffical'];
-                            $user->employID = $insert['StaffCode'];
-                            $user->password = bcrypt($insert['ContactNo']);
-                            $user->save();
+                            if ($insert['designation_id']) {
 
-                            if ($insert['Designation'] == 'Assistant Professor') {
+                                $designation = Designation::select('id')
+                                    ->where('name', $insert['designation_id'])
+                                    ->first();
+                                // dd($admin);
+                                if ($designation) {
+                                    $designation_id = $designation->id;
+                                } else {
+                                    session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => $table]));
+                                    return redirect($request->input('redirect'))->with('error', 'Designation Not Found For this Employee ID : ' . $insert['employee_id']);
+                                }
 
                                 $admin = Role::select('id')
-                                    ->where('title', 'Assistant Professor')
-                                    ->latest()
+                                    ->where('title', $insert['role_id'])
                                     ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'Professor') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'Professor')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'Sr. Associate Professor') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'Sr. Associate Professor')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'Associate Professor') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'Associate Professor')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'Assistant Professor (SS)') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'Assistant Professor (SS)')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'Professor & Dean - Academics') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'Professor & Dean - Academics')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'Assistant Professor (SG)') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'Assistant Professor (SG)')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'Associate Professor & Head') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'Associate Professor & Head')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'Director') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'Director')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'HOD') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'HOD')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'Principal') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'Principal')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
-                            } elseif ($insert['Designation'] == 'Dean') {
-                                $admin = Role::select('id')
-                                    ->where('title', 'Dean')
-                                    ->latest()
-                                    ->first();
-                                $role_id = $admin->id;
-                                $user->roles()->sync($request->input('roles', $role_id));
+                                // dd($admin);
+                                if ($admin) {
+                                    $role_id = $admin->id;
+                                } else {
+                                    session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => $table]));
+                                    return redirect($request->input('redirect'))->with('error', 'Role Not Found For this Employee ID : ' . $insert['employee_id']);
+                                }
                             }
 
-                            $staffCreate = new TeachingStaff;
-                            $staffCreate->name = $insert['name'] . ' ' . $insert['last_name'];
-                            $staffCreate->StaffCode = $insert['StaffCode'];
-                            $staffCreate->Designation = $insert['Designation'];
-                            $staffCreate->Dept = $insert['Dept'];
-                            $staffCreate->ContactNo = $insert['ContactNo'];
-                            $staffCreate->EmailIDOffical = $insert['EmailIDOffical'];
+                            $user = new User;
+                            $user->name = $insert['name'];
+                            $user->email = $insert['email'];
+                            $user->employee_id = $insert['employee_id'];
+                            $user->password = bcrypt($insert['phone_number']);
+                            $user->save();
+                            $user->roles()->sync($request->input('roles', $role_id));
+
+                            $staffCreate = new Staffs;
+                            $staffCreate->name = $insert['name'];
+                            $staffCreate->employee_id = $insert['employee_id'];
+                            $staffCreate->designation_id = $designation_id;
+                            $staffCreate->role_id = $role_id;
+                            $staffCreate->biometric = $insert['biometric'];
+                            $staffCreate->phone_number = $insert['phone_number'];
+                            $staffCreate->email = $insert['email'];
+                            $staffCreate->status = 'Active';
+                            $staffCreate->casual_leave = $insert['casual_leave'] != '' ? $insert['casual_leave'] : 0;
+                            $staffCreate->sick_leave = $insert['sick_leave'] != '' ? $insert['sick_leave'] : 0;
                             $staffCreate->user_name_id = $user->id;
                             $staffCreate->save();
 
                             $personalDetails = new PersonalDetail();
                             $personalDetails->name = $insert['name'];
-                            $personalDetails->last_name = $insert['last_name'];
-                            $personalDetails->email = $insert['EmailIDOffical'];
-                            $personalDetails->mobile_number = $insert['ContactNo'];
-                            $personalDetails->StaffCode = $insert['StaffCode'];
+                            // $personalDetails->last_name = $insert['last_name'];
+                            $personalDetails->email = $insert['email'];
+                            $personalDetails->phone_number = $insert['phone_number'];
+                            $personalDetails->employee_id = $insert['employee_id'];
                             // $personalDetails->BiometricID = $insert['BiometricID'];
                             $personalDetails->user_name_id = $user->id;
                             $personalDetails->save();
@@ -601,19 +542,15 @@ trait CsvImportTrait
                             $inserted_rows = $rows - $balance_row;
                             $import_status = 'Error';
                             session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => $table]));
-                            return redirect($request->input('redirect'))->with('error', 'Staff Code : ' . $insert['StaffCode'] . ' Already Registered For ' . $check_user->name);
+                            return redirect($request->input('redirect'))->with('error', 'Staff Code : ' . $insert['employee_id'] . ' Already Registered For ' . $check_user->name);
                         }
-                    } else {
-                        $inserted_rows = $rows - $balance_row;
-                        $import_status = 'Error';
-                        session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => $table]));
-                        return redirect($request->input('redirect'))->with('error', $insert['Dept'] . 'Not Found In Deparments For ' . $check_user->name);
                     }
                 }
                 $inserted_rows = $rows - $balance_row;
                 if ($import_status == null) {
                     session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => $table]));
                 }
+
             } elseif ($request->modelName == 'StaffBiometric') {
 
                 $balance_row = $rows;
@@ -721,7 +658,7 @@ trait CsvImportTrait
 
                                             $get_leaves = HrmRequestLeaf::where(['half_day_leave' => $formattedDate, 'user_id' => $user])->first();
                                             // dd($get_leaves);
-                                            if($insert['shift'] == 'General'){
+                                            if ($insert['shift'] == 'General') {
                                                 if ($get_leaves == 'Fore Noon') {
                                                     if (strtotime($in_time) > strtotime('14:00:59')) {
                                                         $isLate = 1;
@@ -742,7 +679,7 @@ trait CsvImportTrait
                                                         $early = 0;
                                                     }
                                                 }
-                                            }elseif($insert['shift'] == '2'){
+                                            } elseif ($insert['shift'] == '2') {
                                                 if ($get_leaves == 'Fore Noon') {
                                                     if (strtotime($in_time) > strtotime('14:00:59')) {
                                                         $isLate = 1;
@@ -764,8 +701,6 @@ trait CsvImportTrait
                                                     }
                                                 }
                                             }
-
-
 
                                             if ($get == null && $staff_biometric->permission != 'OD Permission') {
                                                 if ($staff_biometric->permission == 'FN Permission') {
@@ -1181,7 +1116,7 @@ trait CsvImportTrait
                         $user->password = bcrypt($insert['phone']);
                         $user->save();
 
-                        if ($insert['Designation'] == 'Admin. Executive') {
+                        if ($insert['designation'] == 'Admin. Executive') {
 
                             $admin = Role::select('id')
                                 ->where('title', 'Admin. Executive')
@@ -1189,154 +1124,154 @@ trait CsvImportTrait
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'System Administrator') {
+                        } elseif ($insert['designation'] == 'System Administrator') {
                             $admin = Role::select('id')
                                 ->where('title', 'System Administrator')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Senior Manager - HR') {
+                        } elseif ($insert['designation'] == 'Senior Manager - HR') {
                             $admin = Role::select('id')
                                 ->where('title', 'Senior Manager - HR')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Admin. Assistant') {
+                        } elseif ($insert['designation'] == 'Admin. Assistant') {
                             $admin = Role::select('id')
                                 ->where('title', 'Admin. Assistant')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Librarian') {
+                        } elseif ($insert['designation'] == 'Librarian') {
                             $admin = Role::select('id')
                                 ->where('title', 'Librarian')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'System Administrator') {
+                        } elseif ($insert['designation'] == 'System Administrator') {
                             $admin = Role::select('id')
                                 ->where('title', 'System Administrator')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Accountant') {
+                        } elseif ($insert['designation'] == 'Accountant') {
                             $admin = Role::select('id')
                                 ->where('title', 'Accountant')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Accounts Executive') {
+                        } elseif ($insert['designation'] == 'Accounts Executive') {
                             $admin = Role::select('id')
                                 ->where('title', 'Accounts Executive')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Telecaller') {
+                        } elseif ($insert['designation'] == 'Telecaller') {
                             $admin = Role::select('id')
                                 ->where('title', 'Telecaller')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Administrative Officer') {
+                        } elseif ($insert['designation'] == 'Administrative Officer') {
                             $admin = Role::select('id')
                                 ->where('title', 'Administrative Officer')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Accounts Assistant') {
+                        } elseif ($insert['designation'] == 'Accounts Assistant') {
                             $admin = Role::select('id')
                                 ->where('title', 'Accounts Assistant')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Assistant Librarian') {
+                        } elseif ($insert['designation'] == 'Assistant Librarian') {
                             $admin = Role::select('id')
                                 ->where('title', 'Assistant Librarian')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Hostel Warden') {
+                        } elseif ($insert['designation'] == 'Hostel Warden') {
                             $admin = Role::select('id')
                                 ->where('title', 'Hostel Warden')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Mess Supervisor') {
+                        } elseif ($insert['designation'] == 'Mess Supervisor') {
                             $admin = Role::select('id')
                                 ->where('title', 'Mess Supervisor')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Office Attender') {
+                        } elseif ($insert['designation'] == 'Office Attender') {
                             $admin = Role::select('id')
                                 ->where('title', 'Office Attender')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Physical Director') {
+                        } elseif ($insert['designation'] == 'Physical Director') {
                             $admin = Role::select('id')
                                 ->where('title', 'Physical Director')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Lab Assistant') {
+                        } elseif ($insert['designation'] == 'Lab Assistant') {
                             $admin = Role::select('id')
                                 ->where('title', 'Lab Assistant')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Lab Instructor') {
+                        } elseif ($insert['designation'] == 'Lab Instructor') {
                             $admin = Role::select('id')
                                 ->where('title', 'Lab Instructor')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Site Engineer') {
+                        } elseif ($insert['designation'] == 'Site Engineer') {
                             $admin = Role::select('id')
                                 ->where('title', 'Site Engineer')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Housekeeping In-Charge') {
+                        } elseif ($insert['designation'] == 'Housekeeping In-Charge') {
                             $admin = Role::select('id')
                                 ->where('title', 'Housekeeping In-Charge')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Electrician') {
+                        } elseif ($insert['designation'] == 'Electrician') {
                             $admin = Role::select('id')
                                 ->where('title', 'Electrician')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Garden Supervisor') {
+                        } elseif ($insert['designation'] == 'Garden Supervisor') {
                             $admin = Role::select('id')
                                 ->where('title', 'Garden Supervisor')
                                 ->latest()
                                 ->first();
                             $role_id = $admin->id;
                             $user->roles()->sync($request->input('roles', $role_id));
-                        } elseif ($insert['Designation'] == 'Carpenter') {
+                        } elseif ($insert['designation'] == 'Carpenter') {
                             $admin = Role::select('id')
                                 ->where('title', 'Carpenter')
                                 ->latest()
@@ -1349,7 +1284,7 @@ trait CsvImportTrait
                         $staffCreate->name = $insert['name'] ?? null;
                         $staffCreate->last_name = $insert['last_name'] ?? null;
                         $staffCreate->StaffCode = $insert['StaffCode'] ?? null;
-                        $staffCreate->Designation = $insert['Designation'] ?? null;
+                        $staffCreate->designation = $insert['designation'] ?? null;
                         $staffCreate->Dept = $insert['Dept'] ?? null;
                         $staffCreate->phone = $insert['phone'] ?? null;
                         $staffCreate->email = $insert['email'] ?? null;
