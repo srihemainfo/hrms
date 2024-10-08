@@ -52,7 +52,7 @@
     <div class="card" id="report" style="display:none;">
         <div class="card-header">
             <div class="header_div">
-                <div style="text-align:center;font-size:1.5rem;color:#007bff;">Demo College Of Engineering & Technology
+                <div style="text-align:center;font-size:1.5rem;color:#007bff;">SRI HEMA INFOTECH GROUP OF COMPANIES
                 </div>
                 <div style="text-align:center;font-size:1.2rem;color:rgb(85, 85, 85);" id="month_label"></div>
                 <div style="text-align:center;font-size:1rem;display:flex;justify-content:space-around;"
@@ -136,8 +136,7 @@
                                     title: '<div style="display:flex;justify-content:space-around;"><h5>Employee Name : ' +
                                         staff.name +
                                         '</h5> <h5>  Biometric ID : ' + staff.BiometricID +
-                                        '</h5> <h5>  Staff Code : ' + staff.StaffCode +
-                                        '</h5> <h5>  Department : ' + staff.Dept + '</h5>',
+                                        '</h5> <h5>  Employee ID : ' + staff.employee_id,
                                     className: 'btn-default',
                                     text: 'Print',
                                     customize: function(win) {
@@ -245,10 +244,7 @@
                                 //     "</span> Month");
                                 employee_details.html("<div>Employee Name : " + staff.name +
                                     "</div> <div>  Biometric ID : " + staff.BiometricID +
-                                    " </div> <div>  Staff Code : " + staff.StaffCode +
-                                    " </div> <div>  Department : " + staff.Dept + "</div>");
-
-
+                                    " </div> <div>  Employee ID : " + staff.employee_id);
                                 $("#report").show();
                                 $("#loadig_spin").hide();
 
