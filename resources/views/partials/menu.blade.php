@@ -448,7 +448,7 @@
                     </li>
                 {{-- @endcan --}}
 
-                @can('master_tool_access')
+                {{-- @can('master_tool_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.designation.index') }}"
                             class="nav-link {{ request()->is('admin/master-tools') ||
@@ -511,9 +511,9 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
 
-                @can('office_calender_access')
+                {{-- @can('office_calender_access') --}}
                     <li class="nav-item">
                         <a href="{{ route('admin.college-calenders.index') }}"
                             class="nav-link {{ request()->is('admin/college-calenders') || request()->is('admin/college-calenders/*') ? 'active' : '' }}">
@@ -523,7 +523,7 @@
                             </p>
                         </a>
                     </li>
-                @endcan
+                {{-- @endcan --}}
 
 
                 {{-- <li class="nav-item">

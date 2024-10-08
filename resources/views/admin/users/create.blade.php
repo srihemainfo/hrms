@@ -4,9 +4,9 @@
         .select2-container {
             width: 100% !important;
         }
-        #loading
-        {
-            z-index:999;
+
+        #loading {
+            z-index: 999;
         }
     </style>
     <div class="loading" id='loading' style='display:none'>Loading&#8230;</div>
@@ -18,7 +18,28 @@
             <div class="row gutters">
 
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
+                    <label class="required" for="roles">Role Type</label>
+                    <select id="role_type" class="form-control select2" name="role_type" required>
+                        <option value="">Select Role Type</option>
+                        @foreach ($RoleTypes as $i => $type)
+                            <option value="{{ $i }}">{{ $type }}</option>
+                        @endforeach
+                    </select>
+
+                </div>
+
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
                     <input type="hidden" name="user_id" id="user_id" value="">
+                    <label class="required" for="roles">{{ trans('cruds.user.fields.roles') }}</label>
+                    <select id="myDropdown" class="form-control select2 {{ $errors->has('roles') ? 'is-invalid' : '' }}"
+                        name="roles" required>
+                        <option value="">Select Role</option>
+                    </select>
+                    <span id="role_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
+                </div>
+
+                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
+
                     <label for="role" class="required">Role</label>
                     <select name="role" id="role" class="form-control select2">
                         <option value="">Select Role</option>
@@ -27,10 +48,10 @@
                         @endforeach
                     </select>
                     <span id="role_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
-                </div>
+                </div> --}}
 
 
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="designation_div">
                     <label for="designation" class="required">Designation</label>
                     <select name="designation" id="designation" class="form-control select2">
                         <option value="">Select Designation</option>
@@ -54,15 +75,25 @@
                     <span id="email_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
                 </div>
 
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="phone_number_div">
                     <label for="phone_number" class="required">Phone Number</label>
                     <input type="number" class="form-control" id="phone_number" name="phone_number">
                     <span id="phone_number_span" class="text-danger text-center"
                         style="display:none;font-size:0.9rem;"></span>
                 </div>
 
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="password_div" style="display: none">
+                    <label class="required" for="password">{{ trans('cruds.user.fields.password') }}</label>
+                    <input class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" type="password"
+                        name="password" id="password">
+                    @if ($errors->has('password'))
+                        <span class="text-danger">{{ $errors->first('password') }}</span>
+                    @endif
+                    <span class="help-block">{{ trans('cruds.user.fields.password_helper') }}</span>
+                </div>
 
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
+
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="gender_div">
                     <label for="gender" class="required">Gender</label>
                     <select name="gender" id="gender" class="form-control select2">
                         <option value="">Select Gender</option>
@@ -85,8 +116,18 @@
     @parent
     <script>
         $("#btnsave").click(function() {
-            // Validate role
-            let role = $("#role").val();
+
+            let role_type = $("#role_type").val();
+            let password = $("#password").val();
+            let designation = $("#designation").val();
+            let phone_number = $("#phone_number").val();
+            let gender = $("#gender").val();
+
+            if (phone_number == '') {
+                phone_number = password;
+            }
+
+            let role = $("#myDropdown").val();
             if (role == '') {
                 $("#role_span").html('Please select role');
                 $("#role_span").show();
@@ -96,18 +137,7 @@
                 $("#role_span").hide();
             }
 
-            // Validate designation
-            let designation = $("#designation").val();
-            if (designation == '') {
-                $("#designation").focus();
-                $("#designation_span").html('Please select designation');
-                $("#designation_span").show();
-                return false;
-            } else {
-                $("#designation_span").hide();
-            }
 
-            // Validate name
             let name = $("#name").val();
             if (name == '') {
                 $("#name").focus();
@@ -133,27 +163,8 @@
                 $("#email_span").hide();
             }
 
-            let phone_number = $("#phone_number").val();
-            if (phone_number == '') {
-                $("#phone_number").focus();
-                $("#phone_number_span").html('Please enter your number');
-                $("#phone_number_span").show();
-                return false;
-            } else {
-                $("#phone_number_span").hide();
-            }
-
-            let gender = $("#gender").val();
-            if (gender == '') {
-                $("#gender").focus();
-                $("#gender_span").html('Please select gender');
-                $("#gender_span").show();
-                return false;
-            } else {
-                $("#gender_span").hide();
-            }
-
             let id = $("#user_id").val();
+
             $("#loading").show();
 
             $.ajax({
@@ -165,6 +176,7 @@
                 data: {
                     'id': id,
                     'role': role,
+                    'role_type': role_type,
                     'name': name,
                     'email': email,
                     'phone_number': phone_number,
@@ -198,5 +210,73 @@
 
             return false;
         });
+
+        $('#role_type').change(function() {
+
+            let role_type = $("#role_type").val();
+            if (role_type == 3 || role_type == 1) {
+                $("#password_div").show();
+                $("#phone_number_div").hide();
+                $("#designation_div").hide();
+                $("#gender_div").hide();
+            } else {
+                $("#password_div").hide();
+                $("#phone_number_div").show();
+                $("#gender_div").show();
+                $("#designation_div").show();
+            }
+
+            $('#namefull').hide();
+            $('.main').hide();
+            $(".staff").hide();
+            $('.phone').hide();
+            $(".dept").hide();
+            $(".doj").hide();
+
+            $('.studentDiv').hide();
+            let type = $(this).val()
+            let roles = $("#myDropdown")
+            roles.empty()
+            roles.html(`<option value="">Loading...</option>`)
+            resetinputs()
+
+            $.ajax({
+                type: "POST",
+                url: "{{ route('admin.users.fetch_role') }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    'type': type
+                },
+
+                success: function(data) {
+                    let roles = $("#myDropdown")
+                    roles.empty()
+                    roles.prepend(`<option value="">Please Select</option>`)
+                    $.each(data, function(index, role) {
+                        roles.append(`<option value="${index}">${role}</option>`)
+                    })
+                },
+                error: function(xhr, status, error) {}
+            });
+        })
+
+        function resetinputs() {
+
+            $('#name').val('')
+            $('#fname').val('')
+            $('#firstname').val('')
+            $('#last_name').val('')
+            $('#Dept').val('')
+            $('#Designation').val('')
+            $('#StaffCode').val('')
+            $('#email').val('')
+            $('#password').val('')
+            $('#register_no').val('')
+            $('#enroll_master_id').val('')
+            $('#rollNumber').val('')
+            $('#phone').val('')
+        }
     </script>
 @endsection

@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
-use DateTimeInterface;
 use App\Traits\Auditable;
+use DateTimeInterface;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Role extends Model
+class RoleType extends Model
 {
-    use SoftDeletes,Auditable, HasFactory;
+    use SoftDeletes, HasFactory;
 
-    public $table = 'roles';
+    public $table = 'role_types';
 
     protected $dates = [
         'created_at',
@@ -21,8 +21,7 @@ class Role extends Model
     ];
 
     protected $fillable = [
-        'type_id',
-        'title',
+        'name',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -31,15 +30,5 @@ class Role extends Model
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');
-    }
-
-    public function type()
-    {
-        return $this->belongsTo(RoleType::class, 'type_id');
-    }
-
-    public function permissions()
-    {
-        return $this->belongsToMany(Permission::class);
     }
 }

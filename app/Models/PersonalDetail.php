@@ -26,10 +26,10 @@ class PersonalDetail extends Model
         'designation_id',
         'name',
         'dob',
-        'employee_id',
         'age',
         'email',
         'phone_number',
+        'employee_id',
         'emergency_contact_no',
         'father_name',
         'spouse_name',
@@ -38,7 +38,7 @@ class PersonalDetail extends Model
         'religion_id',
         'aadhar_number',
         'community_id',
-        'marial_status',
+        'marital_status',
         'pan_number',
         'total_experience',
         'nationality_id',
@@ -50,7 +50,7 @@ class PersonalDetail extends Model
         'employment_status',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
     ];
 
     protected function serializeDate(DateTimeInterface $date)
@@ -97,6 +97,16 @@ class PersonalDetail extends Model
     public function department()
     {
         return $this->belongsTo(ToolsDepartment::class, 'department_id');
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class, 'state_id');
+    }
+
+    public function nationality()
+    {
+        return $this->belongsTo(Nationality::class, 'nationality_id');
     }
 
 }

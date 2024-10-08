@@ -1,64 +1,56 @@
 @extends('layouts.admin')
 @section('content')
-    {{-- @can('user_create') --}}
+    @can('bank_account_detail_create')
         <div style="margin-bottom: 10px;" class="row">
-            <div class="col-lg-10">
-                <a class="btn btn-success" href="{{ route('admin.users.create') }}">
-                    {{ trans('global.add') }} {{ trans('cruds.user.title_singular') }}
+            <div class="col-lg-12">
+                <a class="btn btn-success" href="{{ route('admin.bank-account-details.create') }}">
+                    {{ trans('global.add') }} {{ trans('cruds.bankAccountDetail.title_singular') }}
                 </a>
-                {{-- <a class="btn btn-danger" href="{{ route('admin.users.block') }}">
-                    Block User
-                </a> --}}
-                {{-- <a class="btn btn-info" href="{{ route('admin.users.unblock') }}">
-                Unblock User
-            </a> --}}
-                {{-- <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
+                <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
                     {{ trans('global.app_csvImport') }}
                 </button>
-                @include('csvImport.modal', ['model' => 'User', 'route' => 'admin.users.parseCsvImport']) --}}
-            </div>
-            <div class="col-lg-2" style="text-align:right;">
-                <a class="btn btn-danger" href="{{ route('admin.users.block_list') }}">
-                    Blocked List
-                </a>
+                @include('csvImport.modal', [
+                    'model' => 'BankAccountDetail',
+                    'route' => 'admin.bank-account-details.parseCsvImport',
+                ])
             </div>
         </div>
-    {{-- @endcan --}}
+    @endcan
     <div class="card">
         <div class="card-header">
-            {{ trans('cruds.user.title_singular') }} {{ trans('global.list') }}
+            {{ trans('cruds.bankAccountDetail.title_singular') }} {{ trans('global.list') }}
         </div>
 
         <div class="card-body">
-            <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-User">
+            <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-BankAccountDetail">
                 <thead>
                     <tr>
                         <th width="10">
 
                         </th>
                         <th>
-                            ID
+                            {{ trans('cruds.bankAccountDetail.fields.id') }}
                         </th>
                         <th>
-                            Name
-                        </th>
-                        {{-- <th>
-                            Staff Code / Reg No
-                        </th> --}}
-                        <th>
-                            Email
+                            {{ trans('cruds.bankAccountDetail.fields.account_type') }}
                         </th>
                         <th>
-                            Role Type
+                            {{ trans('cruds.bankAccountDetail.fields.account_no') }}
                         </th>
                         <th>
-                            Created At
+                            {{ trans('cruds.bankAccountDetail.fields.ifsc_code') }}
                         </th>
                         <th>
-                            Roles
+                            {{ trans('cruds.bankAccountDetail.fields.bank_name') }}
                         </th>
                         <th>
-                            Action
+                            {{ trans('cruds.bankAccountDetail.fields.branch_name') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.bankAccountDetail.fields.bank_location') }}
+                        </th>
+                        <th>
+                            &nbsp;
                         </th>
                     </tr>
                 </thead>
@@ -71,11 +63,11 @@
     <script>
         $(function() {
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-
+            @can('bank_account_detail_delete')
                 let deleteButtonTrans = '{{ trans('global.datatables.delete') }}';
                 let deleteButton = {
                     text: deleteButtonTrans,
-                    url: "{{ route('admin.users.massDestroy') }}",
+                    url: "{{ route('admin.bank-account-details.massDestroy') }}",
                     className: 'btn-danger',
                     action: function(e, dt, node, config) {
                         var ids = $.map(dt.rows({
@@ -109,15 +101,13 @@
                     }
                 }
                 dtButtons.push(deleteButton)
-
+            @endcan
 
             let dtOverrideGlobals = {
                 buttons: dtButtons,
-                // processing: true,
-                // serverSide: true,
                 retrieve: true,
                 aaSorting: [],
-                ajax: "{{ route('admin.users.index') }}",
+                ajax: "{{ route('admin.bank-account-details.index') }}",
                 columns: [{
                         data: 'placeholder',
                         name: 'placeholder'
@@ -127,25 +117,28 @@
                         name: 'id'
                     },
                     {
-                        data: 'name',
-                        name: 'name'
-                    },
-
-                    {
-                        data: 'email',
-                        name: 'email'
+                        data: 'account_type',
+                        name: 'account_type'
                     },
                     {
-                        data: 'role_type',
-                        name: 'role_type'
+                        data: 'account_no',
+                        name: 'account_no'
                     },
                     {
-                        data: 'created',
-                        name: 'created'
+                        data: 'ifsc_code',
+                        name: 'ifsc_code'
                     },
                     {
-                        data: 'roles',
-                        name: 'roles.title'
+                        data: 'bank_name',
+                        name: 'bank_name'
+                    },
+                    {
+                        data: 'branch_name',
+                        name: 'branch_name'
+                    },
+                    {
+                        data: 'bank_location',
+                        name: 'bank_location'
                     },
                     {
                         data: 'actions',
@@ -158,7 +151,7 @@
                 ],
                 pageLength: 10,
             };
-            let table = $('.datatable-User').DataTable(dtOverrideGlobals);
+            let table = $('.datatable-BankAccountDetail').DataTable(dtOverrideGlobals);
             $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e) {
                 $($.fn.dataTable.tables(true)).DataTable()
                     .columns.adjust();

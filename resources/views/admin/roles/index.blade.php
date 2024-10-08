@@ -25,9 +25,9 @@
                         <th>
                             {{ trans('cruds.role.fields.id') }}
                         </th>
-                        {{-- <th>
+                        <th>
                             {{ trans('cruds.role.fields.type') }}
-                        </th> --}}
+                        </th>
                         <th>
                             {{ trans('cruds.role.fields.title') }}
                         </th>
@@ -48,9 +48,9 @@
                             <td>
                                 {{ $role->id ?? '' }}
                             </td>
-                            {{-- <td>
+                            <td>
                                 {{ $role->type->name ?? '' }}
-                            </td> --}}
+                            </td>
                             <td>
                                 {{ $role->title ?? '' }}
                             </td>
@@ -76,7 +76,7 @@
                                         <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
                                     </form>
-                               
+
 
                             </td>
 

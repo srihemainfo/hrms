@@ -21,7 +21,6 @@ class HomeController extends SystemCalendarController
                 ->value('edit_access');
             return view('layouts.staffs', compact('canEdit'));
         }
-
     }
 
 }
