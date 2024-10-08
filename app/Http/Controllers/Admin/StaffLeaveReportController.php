@@ -32,7 +32,7 @@ class StaffLeaveReportController extends Controller
     public function index_rep(Request $request)
     {
 
-        abort_if(Gate::denies('staff_leave_report_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('staff_leave_report_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if (!empty($request['data'])) {
 
