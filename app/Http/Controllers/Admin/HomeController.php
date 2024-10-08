@@ -13,7 +13,7 @@ class HomeController extends SystemCalendarController
     {
         $role_id = auth()->user()->id;
         // dd($role_id);
-        if ($role_id != 3) {
+        if ($role_id != 2) {
             return view('layouts.admin');
         } else {
             // return view('layouts.staffs');
