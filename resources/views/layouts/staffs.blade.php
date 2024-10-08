@@ -356,7 +356,7 @@
                                 </a>
                             </li> --}}
 
-                        @can('add_leave_access')
+                        {{-- @can('add_leave_access') --}}
                             <li class="nav-item">
                                 <a href="{{ route('admin.staff-request-leaves.staff_index') }}"
                                     class="nav-link {{ request()->is('admin/staff-request-leaves') || request()->is('admin/staff-request-leaves/*') ? 'active' : '' }}">
@@ -368,8 +368,8 @@
                                     </p>
                                 </a>
                             </li>
-                        @endcan
-                        @can('permission_request')
+                        {{-- @endcan
+                        @can('permission_request') --}}
                             <li class="nav-item">
                                 <a href="{{ route('admin.staff-permissionsreq.staff_index') }}"
                                     class="nav-link {{ request()->is('admin/staff-permissionsreq') || request()->is('admin/staff-permissionsreq/*') ? 'active' : '' }}">
@@ -381,8 +381,8 @@
                                     </p>
                                 </a>
                             </li>
-                        @endcan
-                        @can('Staff_personal_attendence')
+                        {{-- @endcan
+                        @can('Staff_personal_attendence') --}}
                             <li class="nav-item">
                                 <a href="{{ route('admin.Staff-Personal-Attendence.index') }}"
                                     class="nav-link {{ request()->is('admin/Staff-Personal-Attendence') || request()->is('admin/Staff-Personal-Attendence/*') ? 'active' : '' }}">
@@ -394,8 +394,8 @@
                                     </p>
                                 </a>
                             </li>
-                        @endcan
-                        @can('staff_leave_request')
+                        {{-- @endcan
+                        @can('staff_leave_request') --}}
                             <li class="nav-item">
                                 <a href="{{ route('admin.student-leave-requests.stu_index') }}"
                                     class="nav-link {{ request()->is('admin/student-leave-requests') || request()->is('admin/student-leave-requests/*') ? 'active' : '' }}">
@@ -407,7 +407,7 @@
                                     </p>
                                 </a>
                             </li>
-                        @endcan
+                        {{-- @endcan --}}
                         {{-- @can('staff_feedback_forms')
                             <li
                                 class="nav-item has-treeview {{ request()->is('admin/feedback-forms*') ? 'menu-open' : '' }}">

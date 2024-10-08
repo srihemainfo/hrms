@@ -1,5 +1,21 @@
 @extends('layouts.admin')
 @section('content')
+    @can('staff_create')
+        <div style="margin-bottom: 10px;" class="row">
+            <div class="col-lg-12">
+                <a class="btn btn-success" href="{{ route('admin.staffs.create') }}">
+                    Add Staff
+                </a>
+                <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
+                    {{ trans('global.app_csvImport') }}
+                </button>
+                @include('csvImport.modal', [
+                    'model' => 'Staffs',
+                    'route' => 'admin.staffs.parseCsvImport',
+                ])
+            </div>
+        </div>
+    @endcan
     <style>
         .select2 {
             width: 100% !important;
@@ -212,6 +228,7 @@
                     </tr>
                 </thead>
             </table>
+
         </div>
         <div class="secondLoader"></div>
     </div>

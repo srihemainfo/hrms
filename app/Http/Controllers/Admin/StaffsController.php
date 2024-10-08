@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Models\Address;
 use App\Models\BankAccountDetail;
 use App\Models\BloodGroup;
@@ -27,6 +28,8 @@ use Yajra\DataTables\Facades\DataTables;
 
 class StaffsController extends Controller
 {
+    use CsvImportTrait;
+    
     public function index(Request $request)
     {
         if ($request->ajax()) {

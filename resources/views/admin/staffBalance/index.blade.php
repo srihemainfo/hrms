@@ -17,8 +17,9 @@
                 <tr>
                     <th>S.No</th>
                     <th>Staff Name</th>
-                    <th>Staff Code</th>
+                    <th>Employee Code</th>
                     <th>Balance CL</th>
+                    <th>Balance SL</th>
                     <th>Balance Permission</th>
                 </tr>
             </thead>
@@ -59,6 +60,10 @@
                 {
                     data: 'casual_leave',
                     name: 'casual_leave'
+                },
+                {
+                    data: 'sick',
+                    name: 'sick'
                 },
                 {
                     data: 'permission',

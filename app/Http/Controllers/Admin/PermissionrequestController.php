@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\HrmRequestLeaf;
-use App\Models\NonStaffs;
 use App\Models\PermissionRequest;
 use App\Models\Staffs;
 use App\Models\User;
@@ -13,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 class PermissionrequestController extends Controller
@@ -21,7 +21,7 @@ class PermissionrequestController extends Controller
     public function staff_index(Request $request)
     {
         // dd($request);
-        abort_if(Gate::denies('permission_request'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('permission_request'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (isset($request->accept)) {
 
             PermissionRequest::where('id', $request->id)->update(['status' => 1]);
@@ -111,26 +111,36 @@ class PermissionrequestController extends Controller
     public function staff_update(Request $request)
     {
         // dd($request);
-        abort_if(Gate::denies('permission_request'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('permission_request'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'date' => 'required',
             'reason' => 'required',
+            'from_time' => 'required',
+            'to_time' => 'required',
             'Permission' => 'required',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'data' => $validator->errors(),
+                'errors' => $validator->errors(),
+            ]); // 422 Unprocessable Entity
+        }
 
         $user_name_id = auth()->user()->id;
         $from_time = $request->from_time;
         $to_time = $request->to_time;
 
-        $staff = Staffs::where(['user_name_id' => $user_name_id])->select('user_name_id', 'name', 'Dept', 'StaffCode', 'BiometricID', 'personal_permission')->first();
-        if ($staff == '') {
-            $staff = NonStaffs::where(['user_name_id' => $user_name_id])->select('user_name_id', 'name', 'Dept', 'StaffCode', 'BiometricID', 'personal_permission')->first();
-        }
-        $dept = $staff ? $staff->Dept : null;
+        $staff = Staffs::where(['user_name_id' => $user_name_id])->first();
+        // if ($staff == '') {
+        //     $staff = NonStaffs::where(['user_name_id' => $user_name_id])->select('user_name_id', 'name', 'Dept', 'StaffCode', 'BiometricID', 'personal_permission')->first();
+        // }
+        // $dept = $staff ? $staff->Dept : null;
         $name = $staff ? $staff->name : null;
-        $biometric_id = $staff ? $staff->BiometricID : null;
-        $staff_code = $staff ? $staff->StaffCode : null;
+        $biometric_id = $staff ? $staff->biometric : null;
+        $staff_code = $staff ? $staff->employee_id : null;
         $balance_permission = $staff ? $staff->personal_permission : 0;
 
         if ($request->id != 0 && $request->id != '') {
@@ -201,7 +211,7 @@ class PermissionrequestController extends Controller
             $permissionrequest->reason = $request->reason;
             $permissionrequest->status = '0';
             $permissionrequest->Permission = $request->Permission;
-            $permissionrequest->dept = $dept;
+            // $permissionrequest->dept = $dept;
             $permissionrequest->name = $name;
             $permissionrequest->biometric_id = $biometric_id;
             $permissionrequest->staff_code = $staff_code;
@@ -211,14 +221,13 @@ class PermissionrequestController extends Controller
             if ($permissionrequest) {
 
                 $receiverArray = [];
-                $checkDeptOfStaff = Staffs::where(['user_name_id' => $user_name_id])->select('Dept', 'user_name_id')->first();
+                $checkDeptOfStaff = Staffs::where(['user_name_id' => $user_name_id])->first();
                 if ($checkDeptOfStaff != '') {
-                    $dept = $checkDeptOfStaff->Dept;
-                    $getHOD = DB::table('role_user')->where(['role_id' => 14])->get();
-                    if (count($getHOD) > 0) {
-                        foreach ($getHOD as $hod) {
-                            $checkUser = User::where(['id' => $hod->user_id, 'dept' => $dept])->select('id')->get();
-
+                    // $dept = $checkDeptOfStaff->Dept;
+                    $getHR_sup = DB::table('role_user')->whereIn('role_id', [1, 5, 6])->get();
+                    if (count($getHR_sup) > 0) {
+                        foreach ($getHR_sup as $val) {
+                            $checkUser = User::where(['id' => $val->user_id])->select('id')->get();
                             if (count($checkUser) > 0) {
                                 foreach ($checkUser as $user) {
                                     array_push($receiverArray, $user->id);
@@ -228,7 +237,7 @@ class PermissionrequestController extends Controller
                     }
                 }
 
-                $alertReceiver = DB::table('role_user')->whereIn('role_id', [1, 13])->get();
+                $alertReceiver = DB::table('role_user')->whereIn('role_id', [1, 5, 6])->get();
                 if (count($alertReceiver) > 0) {
                     foreach ($alertReceiver as $receiver) {
                         array_push($receiverArray, $receiver->user_id);
@@ -251,85 +260,49 @@ class PermissionrequestController extends Controller
 
     public function checkDate(Request $request)
     {
-
         $checkPermissionReq = PermissionRequest::where(['user_name_id' => auth()->user()->id, 'date' => $request->date])->whereNotIn('status', [3, 4])->select('id')->get();
+        // dd($checkPermissionReq);
         if ($checkPermissionReq->count() > 0) {
-            if ($checkPermissionReq->count() >= 2) {
-                return response()->json(['status' => false, 'data' => 'Already You Have Applied Permission For This Date']);
-            } else {
-                $checkPermissionReq1 = PermissionRequest::where(['user_name_id' => auth()->user()->id, 'date' => $request->date, 'from_time' => $request->from_time, 'to_time' => $request->to_time])->whereNotIn('status', [3, 4])->select('id')->get();
-                if (count($checkPermissionReq1) > 0) {
-                    return response()->json(['status' => false, 'data' => 'Already You Have Applied Permission For This Date And Time']);
-                } else {
-                    return response()->json(['status' => true, 'data' => '']);
-                }
-            }
+            return response()->json(['status' => false, 'data' => 'Already You Have Applied Permission For This Date']);
         } else {
-            $getYear = Carbon::parse($request->date)->year;
-            $getMonth = Carbon::parse($request->date)->month;
-            $getDay = Carbon::parse($request->date)->day;
-            if ($getDay > 25) {
-                if ($getMonth == 12) {
-                    $from_date = $getYear . '-' . $getMonth . '-' . '26';
-                    $to_date = ($getYear + 1) . '-01-25';
-                } else {
-                    $from_date = $getYear . '-' . $getMonth . '-' . '26';
-                    $to_date = $getYear . '-' . ($getMonth + 1) . '-' . '25';
-                }
-            } else {
-                if ($getMonth == 1) {
-                    $from_date = ($getYear - 1) . '-12-26';
-                    $to_date = $getYear . '-01-25';
-                } else {
-                    $from_date = $getYear . '-' . ($getMonth - 1) . '-' . '26';
-                    $to_date = $getYear . '-' . $getMonth . '-' . '25';
-                }
-            }
+            $get_leave_req = HrmRequestLeaf::where(['user_id' => auth()->user()->id])->where('status', '!=', 'Rejected')->get();
+            if (count($get_leave_req) > 0) {
+                $date = $request->date;
+                foreach ($get_leave_req as $leave_req) {
 
-            $checkPermissionReq2 = PermissionRequest::where(['user_name_id' => auth()->user()->id, 'Permission' => 'Personal'])->whereBetween('date', [$from_date, $to_date])->whereNotIn('status', [3, 4])->count();
-            if ($checkPermissionReq2 > 2) {
-                return response()->json(['status' => false, 'data' => 'The Permission Exhausted For The Month']);
-            } else {
-
-                $get_leave_req = HrmRequestLeaf::where(['user_id' => auth()->user()->id])->where('status', '!=', 'Rejected')->get();
-                if (count($get_leave_req) > 0) {
-                    $date = $request->date;
-                    foreach ($get_leave_req as $leave_req) {
-
-                        if ($leave_req->from_date != null) {
-                            $leaveFromDate = Carbon::parse($leave_req->from_date);
-                        } else {
-                            $leaveFromDate = null;
-                        }
-
-                        if ($leave_req->to_date != null) {
-                            $leaveToDate = Carbon::parse($leave_req->to_date);
-                        } else {
-                            $leaveToDate = null;
-                        }
-
-                        if ($leave_req->half_day_leave != null) {
-                            $halfDayLeave = Carbon::parse($leave_req->half_day_leave);
-                        } else {
-                            $halfDayLeave = null;
-                        }
-
-                        if ($date != null) {
-                            $theDate = Carbon::parse($date);
-                        } else {
-                            $theDate = null;
-                        }
-
-                        if ($theDate != null && $leaveFromDate != null && $leaveToDate != null && ($theDate->between($leaveFromDate, $leaveToDate))) {
-                            return response()->json(['status' => false, 'data' => 'Already You Have Applied Leave / OD For This Date']);
-                            break;
-                        }
-
+                    if ($leave_req->from_date != null) {
+                        $leaveFromDate = Carbon::parse($leave_req->from_date);
+                    } else {
+                        $leaveFromDate = null;
                     }
-                    return response()->json(['status' => true, 'data' => '']);
-                } else {
-                    return response()->json(['status' => true, 'data' => '']);
+
+                    if ($leave_req->to_date != null) {
+                        $leaveToDate = Carbon::parse($leave_req->to_date);
+                    } else {
+                        $leaveToDate = null;
+                    }
+
+                    if ($leave_req->half_day_leave != null) {
+                        $halfDayLeave = Carbon::parse($leave_req->half_day_leave);
+                    } else {
+                        $halfDayLeave = null;
+                    }
+
+                    if ($date != null) {
+                        $theDate = Carbon::parse($date);
+                    } else {
+                        $theDate = null;
+                    }
+
+                    if ($theDate != null && $leaveFromDate != null && $leaveToDate != null && ($theDate->between($leaveFromDate, $leaveToDate))) {
+                        return response()->json(['status' => false, 'data' => 'Already You Have Applied Leave / OD For This Date']);
+                        break;
+                    }
+
                 }
+                return response()->json(['status' => true, 'data' => '']);
+            } else {
+                return response()->json(['status' => true, 'data' => '']);
             }
         }
     }
