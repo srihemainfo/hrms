@@ -21,8 +21,7 @@ class EmployeeSalaryController extends Controller
 
     public function index(Request $request)
     {
-        abort_if(Gate::denies('employee_salary_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
+        // abort_if(Gate::denies('employee_salary_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if ($request) {
 
             $staff = StaffBiometric::distinct('staff_code')->pluck('employee_name', 'staff_code');
@@ -49,41 +48,12 @@ class EmployeeSalaryController extends Controller
 
             $day_array = [];
 
-            $previousMonth = Carbon::createFromDate($year, $month, 26)->subMonth();
-
-            if ($previousMonth->month < 10) {
-                $previousmonth = '0' . $previousMonth->month;
-            } else {
-                $previousmonth = $previousMonth->month;
-            }
-            if ($month == 01) {
-                $previousYear = (int) $year - 1;
-            } else {
-                $previousYear = $year;
-            }
-
-            $previousMonthEnd = Carbon::createFromDate($year, $month, 1)->subMonth()->endOfMonth();
-            for ($date = $previousMonth; $date->lte($previousMonthEnd); $date->addDay()) {
-
-                $dayOfWeek = $date->format('l');
-
-                array_push($day_array, [$date->toDateString(), $dayOfWeek]);
-
-            }
-
-            $startDate = Carbon::createFromDate($year, $month, 1);
-            $endDate = Carbon::createFromDate($year, $month, 25);
-
-            for ($date = $startDate; $date->lte($endDate); $date->addDay()) {
-
-                $dayOfWeek = $date->format('l');
-
-                array_push($day_array, [$date->toDateString(), $dayOfWeek]);
-
-            }
-
+            $carbonDate = Carbon::createFromDate($year, $month);
+            $startDate = $carbonDate->startOfMonth();
+            $endDate = $carbonDate->endOfMonth();
+            dd($endDate, $startDate);
             $query = StaffBiometric::where('staff_code', $staff_code)
-                ->whereBetween('date', [$previousYear . '-' . $previousmonth . '-26', $year . '-' . $month . '-25'])
+                ->whereBetween('date', [$startDate, $endDate])
                 ->get();
 
             if (!$query->count() <= 0) {

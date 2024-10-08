@@ -16,7 +16,7 @@ class StaffAttendanceRegisterController extends Controller
 {
     public function index(Request $request)
     {
-        abort_if(Gate::denies('staff_attendance_register_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('staff_attendance_register_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $staff = [];
         if ($request) {
             // dd($request);
