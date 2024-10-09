@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Gate;
-use Illuminate\Http\Request;
-use App\Models\TeachingStaff;
-use App\Events\StaffInsertEvent;
-use App\Models\NonTeachingStaff;
-use App\Models\BankAccountDetail;
-use App\Models\Staffs;
 use App\Http\Controllers\Controller;
-use Yajra\DataTables\Facades\DataTables;
-use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\Traits\CsvImportTrait;
-use App\Http\Requests\StoreBankAccountDetailRequest;
-use App\Http\Requests\UpdateBankAccountDetailRequest;
-use App\Http\Requests\MassDestroyBankAccountDetailRequest;
+use App\Models\BankAccountDetail;
+use App\Models\NonTeachingStaff;
+use App\Models\Staffs;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
+use Yajra\DataTables\Facades\DataTables;
 
 class BankAccountDetailsController extends Controller
 {
@@ -23,7 +18,7 @@ class BankAccountDetailsController extends Controller
 
     public function index(Request $request)
     {
-        // abort_if(Gate::denies('bank_account_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('bank_account_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = BankAccountDetail::query()->select(sprintf('%s.*', (new BankAccountDetail)->table));
@@ -83,12 +78,11 @@ class BankAccountDetailsController extends Controller
     public function staff_index(Request $request)
     {
 
-        // abort_if(Gate::denies('bank_account_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('bank_account_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if (isset($request->accept)) {
             BankAccountDetail::where('id', $request->id)->update(['status' => 1]);
         }
-
 
         if (!$request->updater) {
             $query = BankAccountDetail::where(['user_name_id' => $request->user_name_id])->get();
@@ -130,7 +124,6 @@ class BankAccountDetailsController extends Controller
                 $staff_edit->branch_name = '';
                 $staff_edit->bank_location = '';
 
-
             }
 
         } else {
@@ -151,7 +144,7 @@ class BankAccountDetailsController extends Controller
                 $list = $query_one;
                 $staff_edit = $query_two[0];
             } else {
-               return back();
+                return back();
             }
         }
 
@@ -171,6 +164,9 @@ class BankAccountDetailsController extends Controller
 
     public function staff_update(Request $request, BankAccountDetail $bankAccountDetail)
     {
+
+        abort_if(Gate::denies('bank_account_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         if (!$request->id == 0 || $request->id != '') {
 
             $bankAccount = $bankAccountDetail->where(['user_name_id' => $request->user_name_id, 'id' => $request->id])->update(request()->except(['_token', 'submit', 'id', 'name', 'user_name_id']));
@@ -199,10 +195,6 @@ class BankAccountDetailsController extends Controller
 
             $user = auth()->user();
 
-
-
-
-
             if ($staff_bankAccount) {
                 $staff = ['user_name_id' => $request->user_name_id, 'name' => $request->name];
             } else {
@@ -228,7 +220,7 @@ class BankAccountDetailsController extends Controller
 
     public function edit(BankAccountDetail $bankAccountDetail)
     {
-        // abort_if(Gate::denies('bank_account_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('bank_account_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.bankAccountDetails.edit', compact('bankAccountDetail'));
     }
@@ -242,14 +234,14 @@ class BankAccountDetailsController extends Controller
 
     public function show(BankAccountDetail $bankAccountDetail)
     {
-        // abort_if(Gate::denies('bank_account_detail_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('bank_account_detail_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         return view('admin.bankAccountDetails.show', compact('bankAccountDetail'));
     }
 
     public function destroy(BankAccountDetail $bankAccountDetail)
     {
-        // abort_if(Gate::denies('bank_account_detail_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('bank_account_detail_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $bankAccountDetail->delete();
 

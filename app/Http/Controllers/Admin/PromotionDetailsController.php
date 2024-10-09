@@ -10,6 +10,7 @@ use App\Models\Staffs;
 use App\Models\TeachingStaff;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class PromotionDetailsController extends Controller
@@ -17,6 +18,8 @@ class PromotionDetailsController extends Controller
 
     public function staff_index(Request $request)
     {
+
+        abort_if(Gate::denies('promotion_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if (isset($request->accept)) {
 
@@ -29,7 +32,6 @@ class PromotionDetailsController extends Controller
         }
 
         $titlesToExclude = ['Admin', 'User', 'Sub-Admin', 'student', 'Hr', 'Principal','HOD','Librarian','Admission'];
-
         // Fetch all roles except for titles to exclude
         $designation = Role::whereNotIn('title', $titlesToExclude)
             ->pluck('title', 'id')
@@ -48,7 +50,7 @@ class PromotionDetailsController extends Controller
             //     $teaching_staff = NonTeachingStaff::where(['user_name_id' => $request->user_name_id])->first();
 
             // }
-            
+
 // dd($query);
 
             if ($query->count() <= 0) {
@@ -136,6 +138,7 @@ class PromotionDetailsController extends Controller
 
     public function staff_update(Request $request)
     {
+        abort_if(Gate::denies('promotion_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         // dd($request);
         $promoted_role = Role::where(['id' => $request->promoted_designation])->first();
         $current_role = Role::where(['id' => $request->current_designation])->first();

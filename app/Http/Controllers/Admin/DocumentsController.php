@@ -14,7 +14,7 @@ use App\Models\Staffs;
 use App\Models\NonTeachingStaff;
 use App\Models\TeachingStaff;
 use App\Models\User;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +26,7 @@ class DocumentsController extends Controller
 
     public function index(Request $request)
     {
-        // abort_if(Gate::denies('document_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('document_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = Document::with(['nameofuser'])->select(sprintf('%s.*', (new Document)->table));
@@ -172,7 +172,7 @@ class DocumentsController extends Controller
     public function staff_index(Request $request)
     {
 
-        // abort_if(Gate::denies('document_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('document_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request) {
             $query = Document::where(['nameofuser_id' => $request->user_name_id])->get();
@@ -215,6 +215,8 @@ class DocumentsController extends Controller
     }
     public function staff_update(Request $request, Document $document)
     {
+        abort_if(Gate::denies('document_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $request->validate([
             'filePath' => 'required|image|mimes:jpg,JPG,jpeg,png,PNG,JPEG|max:2048',
         ]);
@@ -279,7 +281,7 @@ class DocumentsController extends Controller
 
     public function create()
     {
-        // abort_if(Gate::denies('document_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('document_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $nameofusers = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -303,7 +305,7 @@ class DocumentsController extends Controller
 
     public function edit(Document $document)
     {
-        // abort_if(Gate::denies('document_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('document_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $nameofusers = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -335,7 +337,7 @@ class DocumentsController extends Controller
 
     public function show(Document $document)
     {
-        // abort_if(Gate::denies('document_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('document_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $document->load('nameofuser');
 
@@ -344,7 +346,7 @@ class DocumentsController extends Controller
 
     public function destroy(Document $document)
     {
-        // abort_if(Gate::denies('document_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('document_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $document->delete();
 
@@ -364,9 +366,9 @@ class DocumentsController extends Controller
 
     public function storeCKEditorImages(Request $request)
     {
-        // abort_if(Gate::denies('document_create') && Gate::denies('document_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('document_create') && Gate::denies('document_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        
+
         $model = new Document();
         $model->id = $request->input('crud_id', 0);
         $model->exists = true;
