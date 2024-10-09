@@ -12,9 +12,7 @@ use App\Models\Staffs;
 use App\Models\ToolsDepartment;
 use App\Models\Year;
 use Carbon\Carbon;
-use Gate;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class EmployeeSalaryController extends Controller
 {
@@ -22,6 +20,7 @@ class EmployeeSalaryController extends Controller
     public function index(Request $request)
     {
         // abort_if(Gate::denies('employee_salary_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         if ($request) {
 
             $staff = StaffBiometric::distinct('staff_code')->pluck('employee_name', 'staff_code');
@@ -48,12 +47,15 @@ class EmployeeSalaryController extends Controller
 
             $day_array = [];
 
-            $carbonDate = Carbon::createFromDate($year, $month);
-            $startDate = $carbonDate->startOfMonth();
-            $endDate = $carbonDate->endOfMonth();
-            dd($endDate, $startDate);
+            $MonthStart = Carbon::createFromDate($year, $month)->startOfMonth();
+            $MonthEnd = Carbon::createFromDate($year, $month)->endOfMonth();
+            for ($date = $MonthStart->copy(); $date->lte($MonthEnd); $date->addDay()) {
+                $dayOfWeek = $date->format('l');
+                array_push($day_array, [$date->toDateString(), $dayOfWeek]);
+            }
+            // dd($day_array);
             $query = StaffBiometric::where('staff_code', $staff_code)
-                ->whereBetween('date', [$startDate, $endDate])
+                ->whereBetween('date', [$MonthStart, $MonthEnd])
                 ->get();
 
             if (!$query->count() <= 0) {
@@ -111,7 +113,6 @@ class EmployeeSalaryController extends Controller
                                 $bank = $bank_details_1[0];
 
                             } else {
-
                                 $bank = '';
                             }
                         } else {
@@ -120,7 +121,6 @@ class EmployeeSalaryController extends Controller
 
                     }
                 } else {
-
                     $bank = '';
                 }
 
@@ -134,43 +134,74 @@ class EmployeeSalaryController extends Controller
             $staff = StaffBiometric::distinct('staff_code')->pluck('employee_name', 'staff_code');
 
             $leave = 0;
+            $late = 0;
             $half_day_leave = 0;
             $too_late = 0;
             if ($attend_rep != '') {
                 $len = count($attend_rep);
                 if ($len > 0) {
                     for ($i = 0; $i < $len; $i++) {
-                        if (strpos($attend_rep[$i]->details, '(CL Provided)') === false && (strpos($attend_rep[$i]->details, 'Fore Noon Casual Leave') !== false || strpos($attend_rep[$i]->details, 'After Noon Casual Leave') !== false)) {
+                        // dd($attend_rep[$i]);
+                        if (strpos($attend_rep[$i]->details, '(CL Provided)') === false && strpos($attend_rep[$i]->details, '(SL Provided)') === false && (strpos($attend_rep[$i]->details, 'Fore Noon Casual Leave') !== false || strpos($attend_rep[$i]->details, 'After Noon Casual Leave') !== false) && (strpos($attend_rep[$i]->details, 'Fore Noon Sick Leave') !== false || strpos($attend_rep[$i]->details, 'After Noon Sick Leave') !== false)) {
                             $half_day_leave += 0.5;
                         }
-                        if (strpos($attend_rep[$i]->details, 'Early Out') !== false) {
-                            if ($attend_rep[$i]->shift == 1 && strtotime($attend_rep[$i]->out_time) < strtotime('11:00:00')) {
-                                $leave += 1;
-                            } else if ($attend_rep[$i]->shift == 1 && strtotime($attend_rep[$i]->out_time) < strtotime('16:00:00')) {
-                                $half_day_leave += 0.5;
-                            }
-                            if ($attend_rep[$i]->shift == 2 && strtotime($attend_rep[$i]->out_time) < strtotime('11:00:00')) {
-                                $leave += 1;
-                            } else if ($attend_rep[$i]->shift == 2 && strtotime($attend_rep[$i]->out_time) < strtotime('17:00:00')) {
-                                $half_day_leave += 0.5;
-                            }
+                        if ($attend_rep[$i]->isLate == 1) {
+                            $late += 1;
+                            // if ($attend_rep[$i]->shift == 1 && strtotime($attend_rep[$i]->out_time) < strtotime('11:00:00')) {
+                            // } else if ($attend_rep[$i]->shift == 1 && strtotime($attend_rep[$i]->out_time) < strtotime('16:00:00')) {
+                            //     $half_day_leave += 0.5;
+                            // }
+                            // if ($attend_rep[$i]->shift == 2 && strtotime($attend_rep[$i]->out_time) < strtotime('11:00:00')) {
+                            //     $leave += 1;
+                            // } else if ($attend_rep[$i]->shift == 2 && strtotime($attend_rep[$i]->out_time) < strtotime('17:00:00')) {
+                            //     $half_day_leave += 0.5;
+                            // }
                         }
                     }
 
                     for ($j = 0; $j < $len; $j++) {
 
                         //Casual Leave
-                        if ($attend_rep[$j]->day != 'Sunday' && ($attend_rep[$j]->status == 'Absent' || $attend_rep[$j]->status == null) && (strpos($attend_rep[$j]->details, 'Holiday') === false && strpos($attend_rep[$j]->details, '(CL Provided)') === false && strpos($attend_rep[$j]->details, 'Admin OD') === false && strpos($attend_rep[$j]->details, 'Exam OD') === false && strpos($attend_rep[$j]->details, 'Training OD') === false && strpos($attend_rep[$j]->details, 'Compensation Leave') === false && strpos($attend_rep[$j]->details, 'Winter Vacation') === false && strpos($attend_rep[$j]->details, 'Summer Vacation') === false) && (strpos($attend_rep[$j]->details, 'Casual Leave') !== false || $attend_rep[$j]->details == null)) {
+                        if (
+                            $attend_rep[$j]->day != 'Sunday' &&
+                            ($attend_rep[$j]->status == 'Absent' || $attend_rep[$j]->status == null) &&
+                            (strpos($attend_rep[$j]->details, 'Holiday') === false &&
+                                strpos($attend_rep[$j]->details, '(CL Provided)') === false &&
+                                strpos($attend_rep[$j]->details, '(SL Provided)') === false &&
+                                strpos($attend_rep[$j]->details, 'On Duty') === false &&
+                                // strpos($attend_rep[$j]->details, 'Fore Noon On Duty') === false &&
+                                // strpos($attend_rep[$j]->details, 'After Noon On Duty') === false &&
+                                strpos($attend_rep[$j]->details, 'Compensation Leave') === false &&
+                                strpos($attend_rep[$j]->details, 'Winter Vacation') === false &&
+                                strpos($attend_rep[$j]->details, 'Summer Vacation') === false) &&
+                            (strpos($attend_rep[$j]->details, 'Casual Leave') !== false || $attend_rep[$j]->details == null)
+
+                        ) {
                             $leave++;
                         }
 
-                        if ($attend_rep[$j]->day != 'Sunday' && ($attend_rep[$j]->status == 'Absent' || $attend_rep[$j]->status == 'Present') && strpos($attend_rep[$j]->details, 'Too Late') !== false) {
+                        if ($attend_rep[$j]->day != 'Sunday' &&
+                            ($attend_rep[$j]->status == 'Absent' || $attend_rep[$j]->status == 'Present') &&
+                            $attend_rep[$j]->isTooLate == 1
+                        ) {
                             $too_late += 0.5;
                         }
+
                         //Sunday
                         $temStatus = false;
 
-                        if ($attend_rep[$j]->day == 'Sunday' && ($attend_rep[$j]->status == 'Absent' || $attend_rep[$j]->status == null) && strpos($attend_rep[$j]->details, 'Holiday') === false && strpos($attend_rep[$j]->details, '(CL Provided)') === false && strpos($attend_rep[$j]->details, 'Admin OD') === false && strpos($attend_rep[$j]->details, 'Exam OD') === false && strpos($attend_rep[$j]->details, 'Training OD') === false && strpos($attend_rep[$j]->details, 'Compensation Leave') === false && strpos($attend_rep[$j]->details, 'Winter Vacation') === false && strpos($attend_rep[$j]->details, 'Summer Vacation') === false && strpos($attend_rep[$j]->details, 'Too Late') === false && strpos($attend_rep[$j]->details, 'Casual Leave') === false) {
+                        if ($attend_rep[$j]->day == 'Sunday' &&
+                            ($attend_rep[$j]->status == 'Absent' || $attend_rep[$j]->status == null) &&
+                            strpos($attend_rep[$j]->details, 'Holiday') === false &&
+                            strpos($attend_rep[$j]->details, '(CL Provided)') === false &&
+                            strpos($attend_rep[$j]->details, 'On Duty') === false &&
+                            // strpos($attend_rep[$j]->details, 'Exam OD') === false &&
+                            // strpos($attend_rep[$j]->details, 'Training OD') === false &&
+                            strpos($attend_rep[$j]->details, 'Compensation Leave') === false &&
+                            strpos($attend_rep[$j]->details, 'Winter Vacation') === false &&
+                            strpos($attend_rep[$j]->details, 'Summer Vacation') === false &&
+                            $attend_rep[$j]->isTooLate == 0 &&
+                            strpos($attend_rep[$j]->details, 'Casual Leave') === false) {
 
                             if ($j > 0 && $j < $len) {
 

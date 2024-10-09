@@ -12,6 +12,7 @@ class HomeController extends SystemCalendarController
     public function index()
     {
         $role_id = auth()->user()->id;
+        // dd($role_id);
         if ($role_id != 2) {
             return view('layouts.admin');
         } else {

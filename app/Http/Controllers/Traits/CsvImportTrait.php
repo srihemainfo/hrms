@@ -589,9 +589,10 @@ trait CsvImportTrait
                                     if (strtotime($in_time) > strtotime('10:10:59')) {
                                         $isLate = 1;
                                     }
-                                    if (strtotime($in_time) < strtotime('19:00:00')) {
+                                    if (strtotime($out_time) < strtotime('18:59:00')) {
                                         $early = 1;
                                     }
+                                    // dd($early);
                                     $status = 'Present';
                                 } else {
                                     $total_hours = '00:00:00';
@@ -652,9 +653,8 @@ trait CsvImportTrait
                                 if ($staff_biometric != '') {
                                     if ($staff_biometric->import != 1) {
                                         // if (strpos($staff_biometric->details, 'Sunday') === false && $staff_biometric->details != 'Holiday') {
-                                        if ($staff_biometric->details != 'Sunday' && $staff_biometric->details != 'Sunday,Admin OD' && $staff_biometric->details != 'Sunday,Exam OD' && $staff_biometric->details != 'Sunday,Training OD' && $staff_biometric->details != 'Admin OD,Sunday' && $staff_biometric->details != 'Exam OD,Sunday' && $staff_biometric->details != 'Training OD,Sunday' && $staff_biometric->details != 'Holiday' && $staff_biometric->details != 'Holiday,Admin OD' && $staff_biometric->details != 'Holiday,Exam OD' && $staff_biometric->details != 'Holiday,Training OD' && $staff_biometric->details != 'Admin OD,Holiday' && $staff_biometric->details != 'Exam OD,Holiday' && $staff_biometric->details != 'Training OD,Holiday') {
+                                        if ($staff_biometric->status != 'Absent' && $staff_biometric->details != 'Sunday' && $staff_biometric->details != 'On Duty' && $staff_biometric->details != 'Holiday') {
                                             // $get = PermissionRequest::where(['user_name_id' => $user, 'date' => $formattedDate, 'Permission' => 'On Duty', 'status' => 2])->select('from_time', 'to_time')->first();
-                                            $get = 1;
 
                                             $get_leaves = HrmRequestLeaf::where(['half_day_leave' => $formattedDate, 'user_id' => $user])->first();
                                             // dd($get_leaves);
@@ -701,84 +701,112 @@ trait CsvImportTrait
                                                     }
                                                 }
                                             }
-
-                                            if ($get == null && $staff_biometric->permission != 'OD Permission') {
-                                                if ($staff_biometric->permission == 'FN Permission') {
-                                                    $permission = '';
-                                                } else if ($staff_biometric->permission != 'AN Permission') {
-                                                    if ($staff_biometric->shift == 1) {
-                                                        if ($out_time != '00:00:00') {
-                                                            if (strtotime($out_time) < strtotime('16:00:00')) {
-                                                                if ($details == '') {
-                                                                    if ($staff_biometric->details != null && strpos($staff_biometric->details, 'After Noon') === false) {
-                                                                        $status = 'Absent';
-                                                                        $details = 'Early Out';
-                                                                    } else if ($staff_biometric->details == null) {
-                                                                        $status = 'Absent';
-                                                                        $details = 'Early Out';
-                                                                    }
-                                                                } else {
-                                                                    if ($staff_biometric->details != null && strpos($staff_biometric->details, 'After Noon') === false) {
-                                                                        $status = 'Absent';
-                                                                        $details .= ',Early Out';
-                                                                    } else if ($staff_biometric->details == null) {
-                                                                        $status = 'Absent';
-                                                                        $details .= ',Early Out';
-                                                                    }
+                                            if ($staff_biometric->permission != null) {
+                                                // dd('hii', strpos($staff_biometric->permission, '(Provided)') == true);
+                                                if (strpos($staff_biometric->permission, 'OD Permission') == false) {
+                                                    if (strpos($staff_biometric->permission, 'Personal Permission (Provided)') == true) {
+                                                        $explode = explode(' ', $staff_biometric->permission);
+                                                        $times = substr($explode[4], 1, -1);
+                                                        $time = explode('-', $times);
+                                                        if ($staff_biometric->shift == 'General') {
+                                                            if ($out_time != '00:00:00') {
+                                                                if (strtotime($out_time) < strtotime('18:59:00') && strtotime($out_time) < strtotime($time[0])) {
+                                                                    $early = 1;
+                                                                } elseif (strtotime($out_time) < strtotime('18:59:00') && strtotime($out_time) >= strtotime($time[0])) {
+                                                                    $early = 0;
                                                                 }
 
+                                                                if (strtotime($in_time) > strtotime('10:10:59') && strtotime($in_time) > strtotime($time[1])) {
+                                                                    $isLate = 1;
+                                                                } elseif (strtotime($in_time) > strtotime('10:10:59') && strtotime($in_time) <= strtotime($time[1])) {
+                                                                    $isLate = 0;
+                                                                }
                                                             }
+                                                        } else if ($staff_biometric->shift == 2) {
+                                                            if ($out_time != '00:00:00') {
+                                                                if (strtotime($out_time) < strtotime('18:29:00') && strtotime($out_time) < strtotime($time[0])) {
+                                                                    $early = 1;
+                                                                } elseif (strtotime($out_time) < strtotime('18:29:00') && strtotime($out_time) >= strtotime($time[0])) {
+                                                                    $early = 0;
+                                                                }
+
+                                                                if (strtotime($in_time) > strtotime('09:39:59') && strtotime($in_time) > strtotime($time[1])) {
+                                                                    $isLate = 1;
+                                                                } elseif (strtotime($in_time) > strtotime('09:39:59') && strtotime($in_time) <= strtotime($time[1])) {
+                                                                    $isLate = 0;
+                                                                }
+                                                            }
+                                                        }
+                                                        $status = 'Present';
+                                                    } elseif (strpos($staff_biometric->permission, '(Provided)') == false && strpos($staff_biometric->permission, 'Personal Permission') == true) {
+                                                        // dd($staff_biometric, strpos($staff_biometric->permission, 'Personal Permission (Provided)') == false && strpos($staff_biometric->permission, 'Personal Permission') == true);
+                                                        if ($staff_biometric->shift == 'General') {
+                                                            if ($out_time != '00:00:00') {
+                                                                if (strtotime($out_time) < strtotime('18:59:00')) {
+                                                                    $early = 1;
+                                                                }
+
+                                                                if (strtotime($in_time) > strtotime('10:10:59')) {
+                                                                    $isLate = 1;
+                                                                }
+                                                            }
+                                                        } else if ($staff_biometric->shift == 2) {
+                                                            if ($out_time != '00:00:00') {
+                                                                if (strtotime($out_time) < strtotime('18:29:00')) {
+                                                                    $early = 1;
+                                                                }
+
+                                                                if (strtotime($in_time) > strtotime('09:39:59')) {
+                                                                    $isLate = 1;
+                                                                }
+                                                            }
+                                                        }
+                                                        $status = 'Present';
+                                                    }
+                                                } else {
+
+                                                    $explode = explode(' ', $staff_biometric->permission);
+                                                    $times = substr($explode[3], 1, -1);
+                                                    $time = explode('-', $times);
+                                                    if ($staff_biometric->shift == 1) {
+                                                        if ($out_time != '00:00:00') {
+                                                            if (strtotime($out_time) < strtotime('18:59:00') && strtotime($out_time) < strtotime($time[0])) {
+                                                                $early = 1;
+                                                            } elseif (strtotime($out_time) < strtotime('18:59:00') && strtotime($out_time) >= strtotime($time[0])) {
+                                                                $early = 0;
+                                                            }
+
+                                                            if (strtotime($in_time) > strtotime('10:10:59') && strtotime($in_time) > strtotime($time[1])) {
+                                                                $isLate = 1;
+                                                            } elseif (strtotime($in_time) > strtotime('10:10:59') && strtotime($in_time) <= strtotime($time[1])) {
+                                                                $isLate = 0;
+                                                            }
+                                                            $status = 'Present';
                                                         }
                                                     } else if ($staff_biometric->shift == 2) {
                                                         if ($out_time != '00:00:00') {
-                                                            if (strtotime($out_time) < strtotime('17:00:00')) {
-                                                                if ($details == '') {
-                                                                    if ($staff_biometric->details != null && strpos($staff_biometric->details, 'After Noon') === false) {
-                                                                        $status = 'Absent';
-                                                                        $details = 'Early Out';
-                                                                    } else if ($staff_biometric->details == null) {
-                                                                        $status = 'Absent';
-                                                                        $details = 'Early Out';
-                                                                    }
-                                                                } else {
-                                                                    if ($staff_biometric->details != null && strpos($staff_biometric->details, 'After Noon') === false) {
-                                                                        $status = 'Absent';
-                                                                        $details .= ',Early Out';
-                                                                    } else if ($staff_biometric->details == null) {
-                                                                        $status = 'Absent';
-                                                                        $details .= ',Early Out';
-                                                                    }
-                                                                }
+                                                            if (strtotime($out_time) < strtotime('18:29:00') && strtotime($out_time) < strtotime($time[0])) {
+                                                                $early = 1;
+                                                            } elseif (strtotime($out_time) < strtotime('18:29:00') && strtotime($out_time) >= strtotime($time[0])) {
+                                                                $early = 0;
                                                             }
+
+                                                            if (strtotime($in_time) > strtotime('09:39:59') && strtotime($in_time) > strtotime($time[1])) {
+                                                                $isLate = 1;
+                                                            } elseif (strtotime($in_time) > strtotime('09:39:59') && strtotime($in_time) <= strtotime($time[1])) {
+                                                                $isLate = 0;
+                                                            }
+                                                            $status = 'Present';
                                                         }
-                                                    }
-                                                } else {
-                                                    if ($staff_biometric->details != null && strpos($staff_biometric->details, 'Fore Noon') !== false) {
-                                                        $details = '';
                                                     }
                                                 }
                                             }
 
-                                            // else {
-                                            //     if (($isLate == 1) && (strtotime($in_time) >= strtotime($get->from_time) && strtotime($in_time) <= strtotime($get->to_time))) {
-                                            //         $isLate = 0;
-                                            //     } else if (strtotime($out_time) <= strtotime($get->to_time)) {
-                                            //         $early = 0;
-                                            //     }
-                                            // }
-
-                                            // if ($staff_biometric->details != null) {
-                                            //     if ($details != '' && $isLate != 0) {
-                                            //         $tempDetail = $staff_biometric->details . ',' . 'Late';
-                                            //     } else {
-                                            //         $tempDetail = $staff_biometric->details;
-                                            //     }
-                                            // } else {
-                                            //     $tempDetail = $isLate != 0 ? 'Late' : null;
-                                            // }
-
                                             $tempDetail = $staff_biometric->details;
                                         } else {
+                                            $early = 0;
+                                            $isLate = 0;
+                                            $status = 'Absent';
                                             $tempDetail = $staff_biometric->details;
                                         }
 
