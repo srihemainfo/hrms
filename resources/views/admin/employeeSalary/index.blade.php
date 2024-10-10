@@ -90,7 +90,7 @@
                 <div class="card-body">
                     @php
 
-                        $late = 0;
+                        // $late = 0;
                         $permission_shift_1 = 0;
                         $permission_shift_2 = 0;
 
@@ -108,236 +108,97 @@
                             <th>Details</th>
                             <th>Updated By</th>
                         </tr>
-                        {{-- {{ dd($attend_rep[28]) }} --}}
-                        {{-- Loop through the dates in $day_array --}}
                         @foreach ($attend_rep as $day)
-                            {{-- {{  dd($day); }} --}}
-                            {{-- Check if there is an attendance record for this date in $attend_rep --}}
                             @php
+                                // dd($day->day);
                                 $user_name_id = $attend_rep[0]->user_name_id;
+                                $detailsss = $day['details'];
+                                if ($day['isLate'] == 1) {
+                                    if ($detailsss != '' || $detailsss != null) {
+                                        $detailsss .= ', Late';
+                                    } else {
+                                        $detailsss = 'Late';
+                                    }
+                                }
+
+                                if ($day['earlyOut'] == 1) {
+                                    if ($detailsss != '' || $detailsss != null) {
+                                        $detailsss .= ', Early Out';
+                                    } else {
+                                        $detailsss = 'Early Out';
+                                    }
+                                }
                             @endphp
+                            @if ($day['details'] == 'Sunday' || $day['details'] == 'Holiday')
+                                <tr style="background-color: rgb(253, 198, 198)">
+                                    <td class="date">{{ $day['date'] }}</td>
+                                    <td>{{ $day['day'] }}</td>
+                                    <td>{{ $day['day_punches'] }}</td>
+                                    <td>
+                                        <input type="hidden" name="user_name_id" value="{{ $user_name_id }}">
+                                        <input type="hidden" class="form-control in_time" name="in_time" value="">
+                                    </td>
+                                    <td>
+                                        <input type="hidden" class="form-control out_time" name="out_time" value="">
+                                    </td>
+                                    <td class="total_hours">{{ $day['total_hours'] }}</td>
+                                    <td class="permission">
+                                        {{ isset($day['permission']) ? ($day['permission'] != '' ? $day['permission'] : '') : '' }}
+                                    </td>
+                                    <td>
+                                        <select name="status" class="status_attend">
+                                            <option value="Present"
+                                                {{ isset($day['status']) ? ($day['status'] == 'Present' ? 'selected' : '') : '' }}>
+                                                Present</option>
+                                            <option value="Absent"
+                                                {{ is_null($day['status']) || $day['status'] == 'Absent' ? 'selected' : '' }}>
+                                                Absent</option>
 
-                            {{-- @if ($attendance = $attend_rep->where('date', $day[0])->first()) --}}
-                            @if ($attendance = $day)
-                                {{-- {{ dd($attendance) }} --}}
-                                @php
-
-                                    if (
-                                        strpos($attendance->details, 'Late') !== false &&
-                                        strpos($attendance->details, 'Too Late') === false
-                                    ) {
-                                        $late++;
-                                    }
-
-                                    if ($attendance->shift == '1') {
-                                        if (
-                                            $attendance->permission == 'FN Permission' &&
-                                            $attendance->permission == 'AN Permission'
-                                        ) {
-                                            $permission_shift_1 += 2;
-                                        } elseif ($attendance->permission == 'FN Permission') {
-                                            $permission_shift_1++;
-                                        } elseif ($attendance->permission == 'AN Permission') {
-                                            $permission_shift_1++;
-                                        } else {
-                                        }
-                                    } elseif ($attendance->shift == '2') {
-                                        if (
-                                            $attendance->permission == 'FN Permission' &&
-                                            $attendance->permission == 'AN Permission'
-                                        ) {
-                                            $permission_shift_2 += 2;
-                                        } elseif ($attendance->permission == 'FN Permission') {
-                                            $permission_shift_2++;
-                                        } elseif ($attendance->permission == 'AN Permission') {
-                                            $permission_shift_2++;
-                                        } else {
-                                        }
-                                    }
-
-                                @endphp
-                                {{-- Create a row with attendance data --}}
-                                @if ($attendance['day'] == 'Sunday')
-                                    @if ($attendance->total_hours == '')
-                                        <tr style="background-color: rgb(253, 198, 198)">
-
-                                            <td class="date">{{ $attendance['date'] }}</td>
-                                            <td>{{ $attendance['day'] }}</td>
-                                            <td>{{ $attendance['day_punches'] }}</td>
-                                            <td>
-                                                <input type="hidden" name="user_name_id" value="{{ $user_name_id }}">
-                                                <input type="hidden" class="form-control in_time" name="in_time"
-                                                    value="">
-                                            </td>
-                                            <td>
-                                                <input type="hidden" class="form-control out_time" name="out_time"
-                                                    value="">
-                                            </td>
-                                            <td class="total_hours">{{ $attendance['total_hours'] }}</td>
-                                            <td class="permission">
-                                                {{ isset($attendance->permission) ? ($attendance->permission != '' ? $attendance->permission : '') : '' }}
-                                            </td>
-                                            <td>
-                                                <select name="status" class="status_attend">
-                                                    <option value="Present"
-                                                        {{ isset($attendance->status) ? ($attendance->status == 'Present' ? 'selected' : '') : '' }}>
-                                                        Present</option>
-                                                    <option value="Absent"
-                                                        {{ is_null($attendance->status) || $attendance->status == 'Absent' ? 'selected' : '' }}>
-                                                        Absent</option>
-
-                                                </select>
-                                            </td>
-                                            <td class="details">
-                                                {{ $attendance->details != '' ? $attendance->details : 'Holiday' }}
-                                            </td>
-                                            <td class="up_status">
-                                                {{ isset($attendance->updated_by) ? ($attendance->updated_by != '' ? $attendance->updated_by : '') : '' }}
-                                            </td>
-                                        </tr>
-                                    @else
-                                        <tr>
-                                            <td class="date">{{ $attendance['date'] }}</td>
-                                            <td>{{ $attendance['day'] }}</td>
-                                            <td>{{ $attendance['day_punches'] }}</td>
-                                            <td>
-                                                <input type="hidden" name="user_name_id" value="{{ $user_name_id }}">
-                                                <input class="form-control table_inp in_time " type="text" name="in_time"
-                                                    value="{{ $attendance->in_time }}">
-                                            </td>
-                                            <td>
-                                                <input type="text" class="form-control table_inp out_time "
-                                                    name="out_time" value="{{ $attendance->out_time }}">
-                                            </td>
-                                            <td class="total_hours">{{ $attendance['total_hours'] }}</td>
-                                            <td class="permission">
-                                                {{ isset($attendance->permission) ? ($attendance->permission != '' ? $attendance->permission : '') : '' }}
-                                            </td>
-                                            <td>
-                                                <select name="status" class="status_attend">
-                                                    <option value="Present"
-                                                        {{ $attendance->status == 'Present' ? 'selected' : '' }}>
-                                                        Present</option>
-
-                                                    <option value="Absent"
-                                                        {{ is_null($attendance->status) || $attendance->status == 'Absent' ? 'selected' : '' }}>
-                                                        Absent</option>
-
-                                                </select>
-                                            </td>
-                                            @if (strpos($attendance->details, 'Late') !== false || strpos($attendance->details, 'Early Out') !== false)
-                                                <td class="details" style="color:red;">
-                                                    {{ $attendance->details }}
-                                                </td>
-                                            @else
-                                                <td class="details">
-                                                    {{ $attendance->details != '' ? $attendance->details : '' }}
-                                                </td>
-                                            @endif
-
-                                            <td class="up_status">
-                                                {{ isset($attendance->updated_by) ? ($attendance->updated_by != '' ? $attendance->updated_by : '') : '' }}
-                                            </td>
-                                        </tr>
-                                    @endif
-                                @elseif (
-                                    ($attendance->total_hours == '' || $attendance->total_hours == '00:00:00') &&
-                                        strpos($attendance->details, 'Holiday') === false &&
-                                        strpos($attendance->details, 'Winter Vacation') === false &&
-                                        strpos($attendance->details, 'Summer Vacation') === false &&
-                                        strpos($attendance->details, 'Exam OD') === false &&
-                                        strpos($attendance->details, 'Admin OD') === false &&
-                                        strpos($attendance->details, 'Training OD') === false &&
-                                        strpos($attendance->details, 'Compensation Leave') === false &&
-                                        strpos($attendance->details, '(CL Provided)') === false)
-                                    <tr style="background-color: rgb(172, 252, 255)">
-                                        <td class="date">{{ $attendance['date'] }}</td>
-                                        <td>{{ $attendance['day'] }}</td>
-                                        <td>{{ $attendance['day_punches'] }}</td>
-                                        <td>
-                                            <input type="hidden" name="user_name_id" value="{{ $user_name_id }}">
-                                            <input class="form-control table_inp in_time " type="text" name="in_time"
-                                                value="{{ $attendance->in_time }}">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control table_inp out_time "
-                                                name="out_time" value="{{ $attendance->out_time }}">
-                                        </td>
-                                        <td class="total_hours">{{ $attendance['total_hours'] }}</td>
-                                        <td class="permission">
-                                            {{ isset($attendance->permission) ? ($attendance->permission != '' ? $attendance->permission : '') : '' }}
-                                        </td>
-                                        <td>
-                                            <select name="status" class="status_attend">
-                                                <option value="Present"
-                                                    {{ $attendance->status == 'Present' ? 'selected' : '' }}>
-                                                    Present</option>
-
-                                                <option value="Absent"
-                                                    {{ is_null($attendance->status) || $attendance->status == 'Absent' ? 'selected' : '' }}>
-                                                    Absent</option>
-
-                                            </select>
-                                        </td>
-                                        @if (strpos($attendance->details, 'Late') !== false || strpos($attendance->details, 'Early Out') !== false)
-                                            <td class="details" style="color:red;">
-                                                {{ $attendance->details }}
-                                            </td>
-                                        @else
-                                            <td class="details">
-                                                {{ $attendance->details != '' ? $attendance->details : '' }}
-                                            </td>
-                                        @endif
-
-                                        <td class="up_status">
-                                            {{ isset($attendance->updated_by) ? ($attendance->updated_by != '' ? $attendance->updated_by : '') : '' }}
-                                        </td>
-                                    </tr>
-                                @else
-                                    <tr>
-                                        <td class="date">{{ $attendance['date'] }}</td>
-                                        <td>{{ $attendance['day'] }}</td>
-                                        <td>{{ $attendance['day_punches'] }}</td>
-                                        <td>
-                                            <input type="hidden" name="user_name_id" value="{{ $user_name_id }}">
-                                            <input class="form-control table_inp in_time " type="text" name="in_time"
-                                                value="{{ $attendance->in_time }}">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control table_inp out_time "
-                                                name="out_time" value="{{ $attendance->out_time }}">
-                                        </td>
-                                        <td class="total_hours">{{ $attendance['total_hours'] }}</td>
-                                        <td class="permission">
-                                            {{ isset($attendance->permission) ? ($attendance->permission != '' ? $attendance->permission : '') : '' }}
-                                        </td>
-
-                                        <td>
-                                            <select name="status" class="status_attend">
-                                                <option value="Present"
-                                                    {{ isset($attendance->status) ? ($attendance->status == 'Present' ? 'selected' : '') : '' }}>
-                                                    Present</option>
-                                                <option value="Absent"
-                                                    {{ is_null($attendance->status) || $attendance->status == 'Absent' ? 'selected' : '' }}>
-                                                    Absent</option>
-
-                                            </select>
-                                        </td>
-                                        @if (strpos($attendance->details, 'Late') !== false || strpos($attendance->details, 'Early Out') !== false)
-                                            <td class="details" style="color:red;">
-                                                {{ $attendance->details }}
-                                            </td>
-                                        @else
-                                            <td class="details">
-                                                {{ $attendance->details != '' ? $attendance->details : '' }}
-                                            </td>
-                                        @endif
-
-                                        <td class="up_status">
-                                            {{ isset($attendance->updated_by) ? ($attendance->updated_by != '' ? $attendance->updated_by : '') : '' }}
-                                        </td>
-                                    </tr>
-                                @endif
+                                        </select>
+                                    </td>
+                                    <td class="details">
+                                        {{ $detailsss ?? '' }}
+                                    </td>
+                                    <td class="up_status">
+                                        {{ isset($day['updated_by']) ? ($day['updated_by'] != '' ? $day['updated_by'] : '') : '' }}
+                                    </td>
+                                </tr>
+                            @elseif ($day['details'] != 'Sunday' || $day['details'] != 'Holiday')
+                                <tr>
+                                    <td class="date">{{ $day['date'] }}</td>
+                                    <td>{{ $day['day'] }}</td>
+                                    <td>{{ $day['day_punches'] }}</td>
+                                    <td>
+                                        <input type="hidden" name="user_name_id" value="{{ $user_name_id }}">
+                                        <input type="hidden" class="form-control in_time" name="in_time" value="">
+                                        {{ isset($day['in_time']) ? ($day['in_time'] != '' ? $day['in_time'] : '') : '' }}
+                                    </td>
+                                    <td>
+                                        <input type="hidden" class="form-control out_time" name="out_time"
+                                            value="">
+                                        {{ isset($day['out_time']) ? ($day['out_time'] != '' ? $day['out_time'] : '') : '' }}
+                                    </td>
+                                    <td class="total_hours">{{ $day['total_hours'] }}</td>
+                                    <td class="permission">
+                                        {{ isset($day['permission']) ? ($day['permission'] != '' ? $day['permission'] : '') : '' }}
+                                    </td>
+                                    <td>
+                                        <select name="status" class="status_attend">
+                                            <option value="Present"
+                                                {{ isset($day['status']) ? ($day['status'] == 'Present' ? 'selected' : '') : '' }}>
+                                                Present</option>
+                                            <option value="Absent"
+                                                {{ is_null($day['status']) || $day['status'] == 'Absent' ? 'selected' : '' }}>
+                                                Absent</option>
+                                        </select>
+                                    </td>
+                                    <td class="details">
+                                        {{ $detailsss ?? '' }}
+                                    </td>
+                                    <td class="up_status">
+                                        {{ isset($day['updated_by']) ? ($day['updated_by'] != '' ? $day['updated_by'] : '') : '' }}
+                                    </td>
+                                </tr>
                             @endif
                         @endforeach
                     </table>
@@ -362,51 +223,51 @@
                     </div>
                 </div>
                 @php
-                    if ($late > 3) {
-                        $m_total_paid_days = count($day_array) - ($leave + $half_day_leave + $too_late + 0.5);
-                    } else {
-                        $m_total_paid_days = count($day_array) - ($leave + $half_day_leave + $too_late);
-                    }
-
+                    $m_total_late_hours = 0;
+                    $m_total_paid_days = count($day_array);
                     $m_total_working_days = count($day_array);
-
+                    $lop_late_amt = 0;
+                    $lop_leave_amt = 0;
+                    $lop_half_leave_amt = 0;
+                    $lop = 0;
+                    $basic_pay = 0;
+                    $m_basic_pay = 0;
+                    
                     // Basic Pay Calculation
                     if (isset($salary->basicPay) && !empty($salary->basicPay && !is_nan($salary->basicPay))) {
+                        $basic_pay = $salary->basicPay;
                         $m_per_day_basic_pay = $salary->basicPay / $m_total_working_days;
-
+                        $m_per_hour_basic_pay = $m_per_day_basic_pay / 8;
                         $m_half_day_basic_pay = $m_per_day_basic_pay / 2;
+                        foreach ($late_times as $key => $value) {
+                            $office_time = '10:00:00';
+                            $user_time_timestamp = strtotime($value);
+                            $office_time_timestamp = strtotime($office_time);
 
-                        if ($permission_shift_1 != 0 && $permission_shift_1 > 2) {
-                            $basic_pay_permis_deduct = ($m_per_day_basic_pay / 7) * ($permission_shift_1 - 2);
-                        } elseif ($permission_shift_2 != 0 && $permission_shift_2 > 2) {
-                            $basic_pay_permis_deduct = ($m_per_day_basic_pay / 9) * ($permission_shift_2 - 2);
-                        } else {
-                            $basic_pay_permis_deduct = 0;
+                            $time_diff_in_seconds = $user_time_timestamp - $office_time_timestamp;
+
+                            if ($time_diff_in_seconds > 0) {
+                                $exact_hours_late = $time_diff_in_seconds / 3600;
+                                if ($m_total_late_hours == 0) {
+                                    $m_total_late_hours = ceil($exact_hours_late);
+                                } else {
+                                    $m_total_late_hours += ceil($exact_hours_late);
+                                }
+                            }
                         }
-
-                        if ($late > 3) {
-                            $deduct_basic_pay = $late - 3;
-
-                            $late_deduct_basic_pay = $m_half_day_basic_pay * $deduct_basic_pay;
-                        } else {
-                            $late_deduct_basic_pay = 0;
-                        }
-
-                        if ($too_late > 0) {
-                            $too_late_deduct_basic_pay = $m_half_day_basic_pay * $too_late;
-                        } else {
-                            $too_late_deduct_basic_pay = 0;
-                        }
-
-                        $m_basic_pay = round(
-                            $salary->basicPay * ($m_total_paid_days / $m_total_working_days) -
-                                ($basic_pay_permis_deduct + $late_deduct_basic_pay + $too_late_deduct_basic_pay),
-                            2,
-                        );
-                        $m_basic_pay_loss = $salary->basicPay - $m_basic_pay;
+                        // dd($m_total_late_hours);
+                        $lop_late_amt = (int) $m_per_hour_basic_pay * $m_total_late_hours;
+                        $lop_leave_amt = ceil($m_per_day_basic_pay) * $leave;
+                        $lop_half_leave_amt = (int) $m_half_day_basic_pay * $half_day_leave;
+                        $lop = $lop_late_amt + $lop_leave_amt + $lop_half_leave_amt;
+                        $m_basic_pay = $salary->basicPay - $lop;
+                        // dd($m_basic_pay, $lop_late_amt, $lop_leave_amt, $lop_half_leave_amt);
                     } else {
                         $m_basic_pay = 0;
-                        $m_basic_pay_loss = 0;
+                        $lop_late_amt = 0;
+                        $lop_leave_amt = 0;
+                        $lop_half_leave_amt = 0;
+                        $lop = 0;
                     }
 
                     // AGP Calculation
@@ -423,19 +284,19 @@
                             $agp_permis_deduct = 0;
                         }
 
-                        if ($late > 3) {
-                            $deduct_agp = $late - 3;
+                        // if ($late > 3) {
+                        //     $deduct_agp = $late - 3;
 
-                            $late_deduct_agp = $m_half_day_agp * $deduct_agp;
-                        } else {
-                            $late_deduct_agp = 0;
-                        }
-                        if ($too_late > 0) {
-                            $too_late_deduct_agp = $m_half_day_agp * $too_late;
-                        } else {
-                            $too_late_deduct_agp = 0;
-                        }
+                        //     $late_deduct_agp = $m_half_day_agp * $deduct_agp;
+                        // } else {
+                        //     $late_deduct_agp = 0;
+                        // }
+                        // if ($too_late > 0) {
+                        //     $too_late_deduct_agp = $m_half_day_agp * $too_late;
+                        // } else {
+                        // }
 
+                        $too_late_deduct_agp = 0;
                         $m_agp = round(
                             $salary->agp * ($m_total_paid_days / $m_total_working_days) -
                                 ($agp_permis_deduct + $late_deduct_agp + $too_late_deduct_agp),
@@ -447,166 +308,159 @@
                         $m_agp_loss = 0;
                     }
 
-                    // DA Calculation
-                    $m_da = round(($m_basic_pay + $m_agp) * 0.55, 2);
-                    $m_da_loss = $salary->da - $m_da;
+                    // // DA Calculation
+                    // $m_da = round(($m_basic_pay + $m_agp) * 0.55, 2);
+                    // $m_da_loss = $salary->da - $m_da;
                     // $m_da = (14594+5613)*0.55;
 
-                    // HRA Calculation
-                    if ($salary->hra == '' || $salary->hra == null) {
-                        $salary_hra = 0;
-                    } else {
-                        $salary_hra = $salary->hra;
-                    }
-                    $m_hra = round(($m_agp + $m_da) * ($salary_hra / 100), 2);
+                    // // HRA Calculation
+                    // if ($salary->hra == '' || $salary->hra == null) {
+                    //     $salary_hra = 0;
+                    // } else {
+                    //     $salary_hra = $salary->hra;
+                    // }
 
-                    $m_hra_loss = $salary->hra_amount - $m_hra;
+                    // $m_hra = round(($m_agp + $m_da) * ($salary_hra / 100), 2);
+
+                    // $m_hra_loss = $salary->hra_amount - $m_hra;
 
                     // dd($m_hra,$m_hra_loss);
                     // $m_hra = (1000+2300)*10 / 100;
                     // dd($m_agp,$m_da,$salary_hra,$m_hra);
                     // dd($m_da_loss);
                     // SpecialFee Calculation
-                    if (isset($salary->specialFee) && !empty($salary->specialFee && !is_nan($salary->specialFee))) {
-                        $m_per_day_specialFee = $salary->specialFee / $m_total_working_days;
+                    // if (isset($salary->specialFee) && !empty($salary->specialFee && !is_nan($salary->specialFee))) {
+                    //     $m_per_day_specialFee = $salary->specialFee / $m_total_working_days;
 
-                        $m_half_day_specialFee = $m_per_day_specialFee / 2;
+                    //     $m_half_day_specialFee = $m_per_day_specialFee / 2;
 
-                        if ($permission_shift_1 != 0 && $permission_shift_1 > 2) {
-                            $specialFee_permis_deduct = ($m_per_day_specialFee / 7) * ($permission_shift_1 - 2);
-                        } elseif ($permission_shift_2 != 0 && $permission_shift_2 > 2) {
-                            $specialFee_permis_deduct = ($m_per_day_specialFee / 9) * ($permission_shift_2 - 2);
-                        } else {
-                            $specialFee_permis_deduct = 0;
-                        }
+                    //     if ($permission_shift_1 != 0 && $permission_shift_1 > 2) {
+                    //         $specialFee_permis_deduct = ($m_per_day_specialFee / 7) * ($permission_shift_1 - 2);
+                    //     } elseif ($permission_shift_2 != 0 && $permission_shift_2 > 2) {
+                    //         $specialFee_permis_deduct = ($m_per_day_specialFee / 9) * ($permission_shift_2 - 2);
+                    //     } else {
+                    //         $specialFee_permis_deduct = 0;
+                    //     }
 
-                        if ($late > 3) {
-                            $deduct_specialFee = $late - 3;
+                    //     // if ($late > 3) {
+                    //     //     $deduct_specialFee = $late - 3;
 
-                            $late_deduct_specialFee = $m_half_day_specialFee * $deduct_specialFee;
-                        } else {
-                            $late_deduct_specialFee = 0;
-                        }
+                    //     //     $late_deduct_specialFee = $m_half_day_specialFee * $deduct_specialFee;
+                    //     // } else {
+                    //     //     $late_deduct_specialFee = 0;
+                    //     // }
 
-                        if ($too_late > 0) {
-                            $too_late_deduct_specialFee = $m_half_day_specialFee * $too_late;
-                        } else {
-                            $too_late_deduct_specialFee = 0;
-                        }
+                    //     // if ($too_late > 0) {
+                    //     //     $too_late_deduct_specialFee = $m_half_day_specialFee * $too_late;
+                    //     // } else {
+                    //     // }
 
-                        $m_specialFee = round(
-                            $salary->specialFee * ($m_total_paid_days / $m_total_working_days) -
-                                ($specialFee_permis_deduct + $late_deduct_specialFee + $too_late_deduct_specialFee),
-                            2,
-                        );
-                        $m_specialFee_loss = $salary->specialFee - $m_specialFee;
-                    } else {
-                        $m_specialFee = 0;
-                        $m_specialFee_loss = 0;
-                    }
+                    //     $too_late_deduct_specialFee = 0;
+                    //     $m_specialFee = round(
+                    //         $salary->specialFee * ($m_total_paid_days / $m_total_working_days) -
+                    //             ($specialFee_permis_deduct + $late_deduct_specialFee + $too_late_deduct_specialFee),
+                    //         2,
+                    //     );
+                    //     $m_specialFee_loss = $salary->specialFee - $m_specialFee;
+                    // } else {
+                    //     $m_specialFee = 0;
+                    //     $m_specialFee_loss = 0;
+                    // }
 
                     // Phd Allowance Calculation
-                    if (
-                        isset($salary->phdAllowance) &&
-                        !empty($salary->phdAllowance && !is_nan($salary->phdAllowance))
-                    ) {
-                        $m_per_day_phdAllowance = $salary->phdAllowance / $m_total_working_days;
+                    // if (
+                    //     isset($salary->phdAllowance) &&
+                    //     !empty($salary->phdAllowance && !is_nan($salary->phdAllowance))
+                    // ) {
+                    //     $m_per_day_phdAllowance = $salary->phdAllowance / $m_total_working_days;
 
-                        $m_half_day_phdAllowance = $m_per_day_phdAllowance / 2;
-                        // dd($m_total_paid_days,$m_total_working_days);
-                        if ($permission_shift_1 != 0 && $permission_shift_1 > 2) {
-                            $phdAllowance_permis_deduct = ($m_per_day_phdAllowance / 7) * ($permission_shift_1 - 2);
-                        } elseif ($permission_shift_2 != 0 && $permission_shift_2 > 2) {
-                            $phdAllowance_permis_deduct = ($m_per_day_phdAllowance / 9) * ($permission_shift_2 - 2);
-                        } else {
-                            $phdAllowance_permis_deduct = 0;
-                        }
+                    //     $m_half_day_phdAllowance = $m_per_day_phdAllowance / 2;
+                    //     // dd($m_total_paid_days,$m_total_working_days);
+                    //     if ($permission_shift_1 != 0 && $permission_shift_1 > 2) {
+                    //         $phdAllowance_permis_deduct = ($m_per_day_phdAllowance / 7) * ($permission_shift_1 - 2);
+                    //     } elseif ($permission_shift_2 != 0 && $permission_shift_2 > 2) {
+                    //         $phdAllowance_permis_deduct = ($m_per_day_phdAllowance / 9) * ($permission_shift_2 - 2);
+                    //     } else {
+                    //         $phdAllowance_permis_deduct = 0;
+                    //     }
 
-                        if ($late > 3) {
-                            $deduct_phdAllowance = $late - 3;
+                    //     // if ($late > 3) {
+                    //     //     $deduct_phdAllowance = $late - 3;
 
-                            $late_deduct_phdAllowance = $m_half_day_phdAllowance * $deduct_phdAllowance;
-                        } else {
-                            $late_deduct_phdAllowance = 0;
-                        }
+                    //     //     $late_deduct_phdAllowance = $m_half_day_phdAllowance * $deduct_phdAllowance;
+                    //     // } else {
+                    //     //     $late_deduct_phdAllowance = 0;
+                    //     // }
 
-                        if ($too_late > 0) {
-                            $too_late_deduct_phdAllowance = $m_half_day_phdAllowance * $too_late;
-                        } else {
-                            $too_late_deduct_phdAllowance = 0;
-                        }
+                    //     // if ($too_late > 0) {
+                    //     //     $too_late_deduct_phdAllowance = $m_half_day_phdAllowance * $too_late;
+                    //     // } else {
+                    //     // }
+                    //     $too_late_deduct_phdAllowance = 0;
 
-                        $m_phdAllowance = round(
-                            $salary->phdAllowance * ($m_total_paid_days / $m_total_working_days) -
-                                ($phdAllowance_permis_deduct +
-                                    $late_deduct_phdAllowance +
-                                    $too_late_deduct_phdAllowance),
-                            2,
-                        );
-                        $m_phdAllowance_loss = $salary->phdAllowance - $m_phdAllowance;
-                    } else {
-                        $m_phdAllowance = 0;
-                        $m_phdAllowance_loss = 0;
-                    }
+                    //     $m_phdAllowance = round(
+                    //         $salary->phdAllowance * ($m_total_paid_days / $m_total_working_days) -
+                    //             ($phdAllowance_permis_deduct +
+                    //                 $late_deduct_phdAllowance +
+                    //                 $too_late_deduct_phdAllowance),
+                    //         2,
+                    //     );
+                    //     $m_phdAllowance_loss = $salary->phdAllowance - $m_phdAllowance;
+                    // } else {
+                    //     $m_phdAllowance = 0;
+                    //     $m_phdAllowance_loss = 0;
+                    // }
 
                     // Other Allowance Calculation
-                    if (
-                        isset($salary->otherAllowence) &&
-                        !empty($salary->otherAllowence && !is_nan($salary->otherAllowence))
-                    ) {
-                        $m_per_day_otherAllowence = $salary->otherAllowence / $m_total_working_days;
+                    // if (
+                    //     isset($salary->otherAllowence) &&
+                    //     !empty($salary->otherAllowence && !is_nan($salary->otherAllowence))
+                    // ) {
+                    //     $m_per_day_otherAllowence = $salary->otherAllowence / $m_total_working_days;
 
-                        $m_half_day_otherAllowence = $m_per_day_otherAllowence / 2;
-                        // dd($m_total_paid_days,$m_total_working_days);
-                        if ($permission_shift_1 != 0 && $permission_shift_1 > 2) {
-                            $otherAllowence_permis_deduct = ($m_per_day_otherAllowence / 7) * ($permission_shift_1 - 2);
-                        } elseif ($permission_shift_2 != 0 && $permission_shift_2 > 2) {
-                            $otherAllowence_permis_deduct = ($m_per_day_otherAllowence / 9) * ($permission_shift_2 - 2);
-                        } else {
-                            $otherAllowence_permis_deduct = 0;
-                        }
+                    //     $m_half_day_otherAllowence = $m_per_day_otherAllowence / 2;
+                    //     // dd($m_total_paid_days,$m_total_working_days);
+                    //     if ($permission_shift_1 != 0 && $permission_shift_1 > 2) {
+                    //         $otherAllowence_permis_deduct = ($m_per_day_otherAllowence / 7) * ($permission_shift_1 - 2);
+                    //     } elseif ($permission_shift_2 != 0 && $permission_shift_2 > 2) {
+                    //         $otherAllowence_permis_deduct = ($m_per_day_otherAllowence / 9) * ($permission_shift_2 - 2);
+                    //     } else {
+                    //         $otherAllowence_permis_deduct = 0;
+                    //     }
 
-                        if ($late > 3) {
-                            $deduct_otherAllowence = $late - 3;
+                    //     // if ($late > 3) {
+                    //     //     $deduct_otherAllowence = $late - 3;
 
-                            $late_deduct_otherAllowence = $m_half_day_otherAllowence * $deduct_otherAllowence;
-                        } else {
-                            $late_deduct_otherAllowence = 0;
-                        }
+                    //     //     $late_deduct_otherAllowence = $m_half_day_otherAllowence * $deduct_otherAllowence;
+                    //     // } else {
+                    //     //     $late_deduct_otherAllowence = 0;
+                    //     // }
 
-                        if ($too_late > 0) {
-                            $too_late_deduct_otherAllowence = $m_half_day_otherAllowence * $too_late;
-                        } else {
-                            $too_late_deduct_otherAllowence = 0;
-                        }
+                    //     // if ($too_late > 0) {
+                    //     //     $too_late_deduct_otherAllowence = $m_half_day_otherAllowence * $too_late;
+                    //     // } else {
+                    //     // }
+                    //     $too_late_deduct_otherAllowence = 0;
 
-                        $m_otherAllowence = round(
-                            $salary->otherAllowence * ($m_total_paid_days / $m_total_working_days) -
-                                ($otherAllowence_permis_deduct + $too_late_deduct_otherAllowence),
-                            2,
-                        );
-                        $m_otherAllowence_loss = $salary->otherAllowence - $m_otherAllowence;
-                    } else {
-                        $m_otherAllowence = 0;
-                        $m_otherAllowence_loss = 0;
-                    }
+                    //     $m_otherAllowence = round(
+                    //         $salary->otherAllowence * ($m_total_paid_days / $m_total_working_days) -
+                    //             ($otherAllowence_permis_deduct + $too_late_deduct_otherAllowence),
+                    //         2,
+                    //     );
+                    //     $m_otherAllowence_loss = $salary->otherAllowence - $m_otherAllowence;
+                    // } else {
+                    //     $m_otherAllowence = 0;
+                    //     $m_otherAllowence_loss = 0;
+                    // }
                     // dd($m_agp, $m_da, $m_hra);
 
-                    $deduction = round(
-                        $m_basic_pay_loss +
-                            $m_agp_loss +
-                            $m_da_loss +
-                            $m_hra_loss +
-                            $m_specialFee_loss +
-                            $m_phdAllowance_loss +
-                            $m_otherAllowence_loss,
-                        2,
-                    );
-                    $gross_salary = round(
-                        $m_basic_pay + $m_agp + $m_da + $m_hra + $m_specialFee + $m_phdAllowance + $m_otherAllowence,
-                        2,
-                    );
-                    $net_salary = round($gross_salary - $deduction, 2);
+                    $deduction = $lop;
+                    // $gross_salary = round(
+                    //     $m_basic_pay + $m_agp + $m_da + $m_hra + $m_specialFee + $m_phdAllowance + $m_otherAllowence,
+                    //     2,
+                    // );
+                    // $net_salary = round($gross_salary - $deduction, 2);
+                    $net_salary = $m_basic_pay;
                     if ($net_salary <= 0) {
                         $net_salary = 0;
                     }
@@ -634,14 +488,14 @@
                                                 readonly>
                                         </div>
                                     </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Department : </label>
                                             <input type="text" class="pay_input" name="department"
                                                 value="{{ isset($salary->Dept) ? ($salary->Dept != '' ? $salary->Dept : '') : '' }}"
                                                 readonly>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Bank Name : </label>
@@ -692,7 +546,6 @@
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Total Working Days : </label>
-
                                             <input type="text" class="pay_input"
                                                 name=""value="{{ count($day_array) }}" readonly>
                                         </div>
@@ -715,32 +568,28 @@
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Total Leave : </label>
-                                            @php
+                                            {{-- @php
                                                 if ($late > 3) {
                                                     $late_lop = 0.5;
                                                 } else {
                                                     $late_lop = 0;
                                                 }
-                                                if ($leave + $half_day_leave + $too_late + $late_lop > 0) {
-                                                    $total_leave_days =
-                                                        $leave + $half_day_leave + $too_late + $late_lop;
+                                                if ($leave + $half_day_leave + $late_lop > 0) {
+                                                    $total_leave_days = $leave + $half_day_leave + $late_lop;
                                                 } else {
                                                     $total_leave_days = 0;
                                                 }
                                                 // dd($total_leave_days);
-                                            @endphp
+                                            @endphp --}}
                                             <input type="text" class="pay_input"
-                                                name="leave"value="{{ $total_leave_days }}" readonly>
+                                                name="leave"value="{{ $leave + $half_day }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Total Paid Days : </label>
                                             @php
-
-                                                $paid_days =
-                                                    count($day_array) -
-                                                    ($leave + $half_day_leave + $too_late + $late_lop);
+                                                $paid_days = count($day_array) - $leave - $half_day;
                                             @endphp
                                             <input type="text" class="pay_input"
                                                 name="paid_days"value="{{ $paid_days }}" readonly>
@@ -748,77 +597,92 @@
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
-                                            <label>Total Permission : </label>
+                                            <label>Total Non-Permission : </label>
                                             <input type="text" class="pay_input"
-                                                name="permission"value="{{ $permission_shift_1 != 0 ? $permission_shift_1 : ($permission_shift_2 != 0 ? $permission_shift_2 : 0) }}"
-                                                readonly>
+                                                name="permission"value="{{ $permission ?? 0 }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                        <div class="form-group">
+                                            <label>Total Paid Leave : </label>
+                                            <input type="text" class="pay_input"
+                                                name="permission"value="{{ $cl_pro + $sl_pro }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                        <div class="form-group">
+                                            <label>Total Paid Permission : </label>
+                                            <input type="text" class="pay_input"
+                                                name="permission"value="{{ $permission_pro ?? 0 }}" readonly>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card add_color">
+                        {{-- <div class="card add_color">
                             <div class="card-body">
                                 <div class="row gutters">
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Actual Gross Salary : </label>
                                             <input type="number" class="pay_input" name="gross_salary"
                                                 value="{{ isset($salary->TotalSalary) ? ($salary->TotalSalary != '' ? $salary->TotalSalary : 0) : 0 }}"
                                                 readonly>
                                         </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    </div> --}}
+                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Basic Pay : </label>
                                             <input type="number" class="pay_input" name="basicpay"
-                                                value="{{ $m_basic_pay }}" readonly>
+                                                value="{{ $basic_pay }}" readonly>
                                         </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    </div> --}}
+                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>AGP : </label>
                                             <input type="number" class="pay_input" name="agp"
                                                 value="{{ $m_agp }}" readonly>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>DA : </label>
                                             <input type="number" class="pay_input" name="da"
                                                 value="{{ $m_da }}" readonly>
                                         </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    </div> --}}
+                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>HRA : </label>
                                             <input type="number" class="pay_input" name="hra"
                                                 value="{{ $m_hra }}" readonly>
                                         </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    </div> --}}
+                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Special Pay : </label>
                                             <input type="number" class="pay_input" name="specialpay"
                                                 value="{{ $m_specialFee }}" readonly>
                                         </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    </div> --}}
+                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>PHD Allowance : </label>
                                             <input type="number" class="pay_input" name="phdallowance"
                                                 value="{{ $m_phdAllowance }}" readonly>
                                         </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    </div> --}}
+                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Other Allowance : </label>
                                             <input type="number" class="pay_input" name="otherAllowence"
                                                 value="{{ $m_otherAllowence }}" readonly>
+                                            <input type="number" class="pay_input" name="otherAllowence" value=""
+                                                readonly>
                                         </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    </div> --}}
+                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Gross Salary : </label>
                                             <input type="number" class="pay_input" name="earnings"
@@ -827,7 +691,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="card add_color">
                             <div class="card-body">
                                 <div class="row gutters">
@@ -852,32 +716,39 @@
                                                 value="">
                                         </div>
                                     </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>PT</label>
                                             <input type="number" class="form-control deduct" name="pt"
                                                 value="">
                                         </div>
                                     </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Salary In Advance</label>
                                             <input type="number" class="form-control deduct" name="salaryadvance"
                                                 value="">
                                         </div>
                                     </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Other Deductions</label>
                                             <input type="number" class="form-control deduct" name="otherdeduction"
                                                 value="">
                                         </div>
                                     </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Total Deductions</label>
                                             <input type="number" class="form-control" id="total_deduct"
                                                 name="totaldeductions" value="" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                        <div class="form-group">
+                                            <label>Basic Pay</label>
+                                            <input type="number" class="form-control" name="basicpay"
+                                                value="{{ $basic_pay }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">

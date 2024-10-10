@@ -37,7 +37,7 @@ class HrmRequestLeaveController extends Controller
 
     public function index(Request $request)
     {
-        abort_if(Gate::denies('hrm_request_leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('hrm_request_leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $leave_types = LeaveType::pluck('name', 'id');
         $retrieveDateStart = [Carbon::now()->subMonths(2)->startOfMonth()];
@@ -201,7 +201,7 @@ class HrmRequestLeaveController extends Controller
 
     public function create()
     {
-        abort_if(Gate::denies('hrm_request_leaf_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('hrm_request_leaf_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -210,7 +210,7 @@ class HrmRequestLeaveController extends Controller
 
     public function staff_index(Request $request)
     {
-        abort_if(Gate::denies('add_leave_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('add_leave_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $user_name_id = auth()->user()->id;
         $leave_type = LeaveType::pluck('name', 'id');
 
@@ -316,7 +316,7 @@ class HrmRequestLeaveController extends Controller
 
     public function alter_staff(Request $request)
     {
-        dd($request);
+        // dd($request);
         if ($request->data != '') {
             $form_data = $request->data;
             $alter_data = [];
@@ -1089,7 +1089,7 @@ class HrmRequestLeaveController extends Controller
 
     public function edit($id)
     {
-        abort_if(Gate::denies('hrm_request_leaf_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('hrm_request_leaf_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $hrmRequestLeaf = HrmRequestLeaf::findOrFail($id);
 
@@ -1109,7 +1109,7 @@ class HrmRequestLeaveController extends Controller
 
     public function show($id)
     {
-        abort_if(Gate::denies('hrm_request_leaf_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('hrm_request_leaf_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $hrmRequestLeaf = HrmRequestLeaf::find($id);
         $odAction = false;

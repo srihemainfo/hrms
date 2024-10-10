@@ -16,7 +16,7 @@ class staff_leave_register extends Controller
     public function index(Request $request)
     {
 
-        abort_if(Gate::denies('staff_leave_report_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        // abort_if(Gate::denies('staff_leave_report_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request) {
             $staff = StaffBiometric::distinct('staff_code')->pluck('employee_name', 'staff_code');
