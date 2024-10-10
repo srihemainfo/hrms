@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Carbon\Carbon;
+use App\Http\Controllers\Controller;
+use App\Models\BankAccountDetail;
+use App\Models\NonTeachingStaff;
+use App\Models\PersonalDetail;
+use App\Models\salarystatement;
+use App\Models\StaffBiometric;
+use App\Models\Staffs;
+use App\Models\ToolsDepartment;
 use App\Models\User;
 use App\Models\Year;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\TeachingStaff;
-use App\Models\PersonalDetail;
-use App\Models\StaffBiometric;
-use App\Models\salarystatement;
-use App\Models\ToolsDepartment;
-use App\Models\NonTeachingStaff;
-use App\Models\BankAccountDetail;
-use App\Http\Controllers\Controller;
-use Yajra\DataTables\Facades\DataTables;
 use Symfony\Component\HttpFoundation\Response;
+use Yajra\DataTables\Facades\DataTables;
 
 class SalarystatementController extends Controller
 {
@@ -34,27 +34,29 @@ class SalarystatementController extends Controller
     {
         // dd($request);
 
-        $department = $request->department;
+        // $department = $request->department;
         $month = $request->month;
         $year = $request->year;
 
-        if ($department != '' && $month != '' && $year != '') {
+        if ( $month != '' && $year != '') {
 
-            $statements = salarystatement::where(['department' => $department, 'month' => $month, 'year' => $year])->get();
+            $statements = salarystatement::where([ 'month' => $month, 'year' => $year])->get();
 
-        } elseif ($department == '' && $month != '') {
+        } elseif ( $month != '') {
 
             $statements = salarystatement::where(['month' => $month, 'year' => $year])->get();
 
-        } elseif ($department != '' && $month == '') {
+        } elseif ( $month == '') {
 
-            $statements = salarystatement::where(['department' => $department, 'year' => $year])->get();
+            $statements = salarystatement::where([ 'year' => $year])->get();
 
-        } elseif ($department == '' && $month == '') {
+        } elseif ( $month == '') {
 
             $statements = salarystatement::where(['year' => $year])->get();
 
         }
+
+        // dd($statements);
 
         if ($request->ajax()) {
 
@@ -89,12 +91,9 @@ class SalarystatementController extends Controller
 
             $table->editColumn('staff_code', function ($row) {
                 if (isset($row->user_name_id)) {
-                    $get_staff = TeachingStaff::where(['user_name_id' => $row->user_name_id])->select('StaffCode')->first();
+                    $get_staff = Staffs::where(['user_name_id' => $row->user_name_id])->select('employee_id')->first();
                     if ($get_staff != '') {
-                        return $get_staff->StaffCode;
-                    } else {
-                        $get_staff = NonTeachingStaff::where(['user_name_id' => $row->user_name_id])->select('StaffCode')->first();
-                        return $get_staff->StaffCode;
+                        return $get_staff->employee_id;
                     }
 
                 }
@@ -201,9 +200,10 @@ class SalarystatementController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request);
         if ($request->user_name_id != '' && $request->month != '' && $request->year != '') {
             $check = salarystatement::where(['user_name_id' => $request->user_name_id, 'month' => $request->month, 'year' => $request->year])->get();
-            //    dd($check);
+            // dd($check);
             $DOJ = null;
             if ($request->doj != '') {
                 $DOJ = date('Y-m-d', strtotime($request->doj));
@@ -212,28 +212,16 @@ class SalarystatementController extends Controller
             if (count($check) > 0) {
                 $update = salarystatement::where(['user_name_id' => $request->user_name_id, 'month' => $request->month, 'year' => $request->year])->update([
                     'name' => $request->name,
-                    'department' => $request->department,
+                    // 'department' => $request->department,
+                    // 'chequeno' => $request->chequeno,
                     'designation' => $request->designation,
-                    'chequeno' => $request->chequeno,
                     'bankname' => $request->bankname,
                     'doj' => $DOJ,
                     'total_working_days' => $request->total_days,
                     'total_payable_days' => $request->paid_days,
                     'total_lop_days' => $request->leave,
                     'basicpay' => $request->basicpay,
-                    'agp' => $request->agp,
-                    'hra' => $request->hra,
-                    'da' => $request->da,
-                    'conveyance' => $request->conveyance,
-                    'specialpay' => $request->specialpay,
-                    'gross_salary' => $request->gross_salary,
-                    'arrears' => $request->arrears,
-                    'otherall' => $request->otherAllowence,
-                    'abi' => $request->abi,
-                    'earnings' => $request->earnings,
-                    'phdallowance' => $request->phdallowance,
-                    'it' => $request->it,
-                    'pt' => $request->pt,
+                    'gross_salary' => $request->basicpay,
                     'salaryadvance' => $request->salaryadvance,
                     'epf' => $request->epf,
                     'esi' => $request->esi,
@@ -243,46 +231,81 @@ class SalarystatementController extends Controller
                     'netpay' => $request->netpay,
                     'updatedby' => auth()->user()->name,
                     'updated_at' => now(),
+                    // 'agp' => $request->agp,
+                    // 'hra' => $request->hra,
+                    // 'da' => $request->da,
+                    // 'conveyance' => $request->conveyance,
+                    // 'specialpay' => $request->specialpay,
+                    // 'arrears' => $request->arrears,
+                    // 'otherall' => $request->otherAllowence,
+                    // 'abi' => $request->abi,
+                    // 'earnings' => $request->earnings,
+                    // 'phdallowance' => $request->phdallowance,
+                    // 'it' => $request->it,
+                    // 'pt' => $request->pt,
                 ]);
             } else {
                 // dd($request);
-                $insert = new salarystatement;
-                $insert->month = $request->month;
-                $insert->year = $request->year;
-                $insert->user_name_id = $request->user_name_id;
-                $insert->name = $request->name;
-                $insert->department = $request->department;
-                $insert->designation = $request->designation;
-                $insert->doj = $DOJ;
-                $insert->total_working_days = $request->total_days;
-                $insert->total_payable_days = $request->paid_days;
-                $insert->total_lop_days = $request->leave;
-                $insert->chequeno = $request->chequeno;
-                $insert->bankname = $request->bankname;
-                $insert->basicpay = $request->basicpay;
-                $insert->agp = $request->agp;
-                $insert->hra = $request->hra;
-                $insert->da = $request->da;
-                $insert->conveyance = $request->conveyance;
-                $insert->specialpay = $request->specialpay;
-                $insert->gross_salary = $request->gross_salary;
-                $insert->arrears = $request->arrears;
-                $insert->otherall = $request->otherAllowence;
-                $insert->abi = $request->abi;
-                $insert->earnings = $request->earnings;
-                $insert->phdallowance = $request->phdallowance;
-                $insert->it = $request->it;
-                $insert->pt = $request->pt;
-                $insert->salaryadvance = $request->salaryadvance;
-                $insert->epf = $request->epf;
-                $insert->esi = $request->esi;
-                $insert->lop = $request->lop;
-                $insert->otherdeduction = $request->otherdeduction;
-                $insert->totaldeductions = $request->totaldeductions;
-                $insert->netpay = $request->netpay;
-                $insert->updatedby = auth()->user()->name;
-                $insert->created_at = now();
-                $insert->save();
+                // $insert = new salarystatement;
+                // $insert->month = $request->month;
+                // $insert->year = $request->year;
+                // $insert->user_name_id = $request->user_name_id;
+                // $insert->name = $request->name;
+                // $insert->department = $request->department;
+                // $insert->designation = $request->designation;
+                // $insert->doj = $DOJ;
+                // $insert->total_working_days = $request->total_days;
+                // $insert->total_payable_days = $request->paid_days;
+                // $insert->total_lop_days = $request->leave;
+                // $insert->chequeno = $request->chequeno;
+                // $insert->bankname = $request->bankname;
+                // $insert->basicpay = $request->basicpay;
+                // $insert->agp = $request->agp;
+                // $insert->hra = $request->hra;
+                // $insert->da = $request->da;
+                // $insert->conveyance = $request->conveyance;
+                // $insert->specialpay = $request->specialpay;
+                // $insert->gross_salary = $request->gross_salary;
+                // $insert->arrears = $request->arrears;
+                // $insert->otherall = $request->otherAllowence;
+                // $insert->abi = $request->abi;
+                // $insert->earnings = $request->earnings;
+                // $insert->phdallowance = $request->phdallowance;
+                // $insert->it = $request->it;
+                // $insert->pt = $request->pt;
+                // $insert->salaryadvance = $request->salaryadvance;
+                // $insert->epf = $request->epf;
+                // $insert->esi = $request->esi;
+                // $insert->lop = $request->lop;
+                // $insert->otherdeduction = $request->otherdeduction;
+                // $insert->totaldeductions = $request->totaldeductions;
+                // $insert->netpay = $request->netpay;
+                // $insert->updatedby = auth()->user()->name;
+                // $insert->created_at = now();
+                // $insert->save();
+
+                $create = salarystatement::create([
+                    'name' => $request->name,
+                    'user_name_id' => $request->user_name_id,
+                    'designation' => $request->designation,
+                    'bankname' => $request->bankname,
+                    'month' => $request->month,
+                    'year' => $request->year,
+                    'doj' => $DOJ,
+                    'total_working_days' => $request->total_days,
+                    'total_payable_days' => $request->paid_days,
+                    'total_lop_days' => $request->leave,
+                    'basicpay' => $request->basicpay,
+                    'gross_salary' => $request->basicpay,
+                    'salaryadvance' => $request->salaryadvance,
+                    'epf' => $request->epf,
+                    'esi' => $request->esi,
+                    'lop' => $request->lop,
+                    'otherdeduction' => $request->otherdeduction,
+                    'totaldeductions' => $request->totaldeductions,
+                    'netpay' => $request->netpay,
+                    'updatedby' => auth()->user()->name,
+                ]);
             }
         }
         return redirect()->route('admin.employee-salary.index');
@@ -309,7 +332,7 @@ class SalarystatementController extends Controller
     {
         $get = salarystatement::where(['id' => $id])->first();
         if ($get != '' && $get != null) {
-            $get_staff_code = TeachingStaff::where(['user_name_id' => $get->user_name_id])->first();
+            $get_staff_code = Staffs::where(['user_name_id' => $get->user_name_id])->first();
             if ($get_staff_code == '') {
                 $get_staff_code = NonTeachingStaff::where(['user_name_id' => $get->user_name_id])->first();
             }
@@ -557,7 +580,7 @@ class SalarystatementController extends Controller
 
             }
             $year = Year::select('id', 'year')->get();
-            return view('admin.employeeSalary.index', compact('attend_rep', 'staff', 'day_array', 'salary', 'bank', 'doj', 'half_day_leave', 'leave','too_late','year'));
+            return view('admin.employeeSalary.index', compact('attend_rep', 'staff', 'day_array', 'salary', 'bank', 'doj', 'half_day_leave', 'leave', 'too_late', 'year'));
 
         }
     }

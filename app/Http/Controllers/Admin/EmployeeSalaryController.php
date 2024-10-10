@@ -133,172 +133,80 @@ class EmployeeSalaryController extends Controller
 
             $staff = StaffBiometric::distinct('staff_code')->pluck('employee_name', 'staff_code');
 
-            $leave = 0;
             $late = 0;
+            $earlyOut = 0;
+            $leave = 0;
+            $permission = 0;
             $half_day_leave = 0;
-            $too_late = 0;
+            $half_day = 0;
+            $total_days = count($attend_rep);
+            $cl_pro = 0;
+            $sl_pro = 0;
+            $permission_pro = 0;
+            $late_times = [];
+
             if ($attend_rep != '') {
                 $len = count($attend_rep);
                 if ($len > 0) {
-                    for ($i = 0; $i < $len; $i++) {
-                        // dd($attend_rep[$i]);
-                        if (strpos($attend_rep[$i]->details, '(CL Provided)') === false && strpos($attend_rep[$i]->details, '(SL Provided)') === false && (strpos($attend_rep[$i]->details, 'Fore Noon Casual Leave') !== false || strpos($attend_rep[$i]->details, 'After Noon Casual Leave') !== false) && (strpos($attend_rep[$i]->details, 'Fore Noon Sick Leave') !== false || strpos($attend_rep[$i]->details, 'After Noon Sick Leave') !== false)) {
-                            $half_day_leave += 0.5;
+                    foreach ($attend_rep as $id => $value) {
+                        if(strpos($value->details, '(CL Provided)') === false && strpos($value->details, '(SL Provided)') === false && (strpos($value->details, 'Fore Noon') !== false || strpos($value->details, 'After Noon') !== false) && $value->details != null){
+                            $half_day_leave += 1;
+                            $half_day += 0.5;
                         }
-                        if ($attend_rep[$i]->isLate == 1) {
+                        // Late
+                        if ($value->isLate == 1) {
                             $late += 1;
-                            // if ($attend_rep[$i]->shift == 1 && strtotime($attend_rep[$i]->out_time) < strtotime('11:00:00')) {
-                            // } else if ($attend_rep[$i]->shift == 1 && strtotime($attend_rep[$i]->out_time) < strtotime('16:00:00')) {
-                            //     $half_day_leave += 0.5;
-                            // }
-                            // if ($attend_rep[$i]->shift == 2 && strtotime($attend_rep[$i]->out_time) < strtotime('11:00:00')) {
-                            //     $leave += 1;
-                            // } else if ($attend_rep[$i]->shift == 2 && strtotime($attend_rep[$i]->out_time) < strtotime('17:00:00')) {
-                            //     $half_day_leave += 0.5;
-                            // }
-                        }
-                    }
-
-                    for ($j = 0; $j < $len; $j++) {
-
-                        //Casual Leave
-                        if (
-                            $attend_rep[$j]->day != 'Sunday' &&
-                            ($attend_rep[$j]->status == 'Absent' || $attend_rep[$j]->status == null) &&
-                            (strpos($attend_rep[$j]->details, 'Holiday') === false &&
-                                strpos($attend_rep[$j]->details, '(CL Provided)') === false &&
-                                strpos($attend_rep[$j]->details, '(SL Provided)') === false &&
-                                strpos($attend_rep[$j]->details, 'On Duty') === false &&
-                                // strpos($attend_rep[$j]->details, 'Fore Noon On Duty') === false &&
-                                // strpos($attend_rep[$j]->details, 'After Noon On Duty') === false &&
-                                strpos($attend_rep[$j]->details, 'Compensation Leave') === false &&
-                                strpos($attend_rep[$j]->details, 'Winter Vacation') === false &&
-                                strpos($attend_rep[$j]->details, 'Summer Vacation') === false) &&
-                            (strpos($attend_rep[$j]->details, 'Casual Leave') !== false || $attend_rep[$j]->details == null)
-
-                        ) {
-                            $leave++;
-                        }
-
-                        if ($attend_rep[$j]->day != 'Sunday' &&
-                            ($attend_rep[$j]->status == 'Absent' || $attend_rep[$j]->status == 'Present') &&
-                            $attend_rep[$j]->isTooLate == 1
-                        ) {
-                            $too_late += 0.5;
-                        }
-
-                        //Sunday
-                        $temStatus = false;
-
-                        if ($attend_rep[$j]->day == 'Sunday' &&
-                            ($attend_rep[$j]->status == 'Absent' || $attend_rep[$j]->status == null) &&
-                            strpos($attend_rep[$j]->details, 'Holiday') === false &&
-                            strpos($attend_rep[$j]->details, '(CL Provided)') === false &&
-                            strpos($attend_rep[$j]->details, 'On Duty') === false &&
-                            // strpos($attend_rep[$j]->details, 'Exam OD') === false &&
-                            // strpos($attend_rep[$j]->details, 'Training OD') === false &&
-                            strpos($attend_rep[$j]->details, 'Compensation Leave') === false &&
-                            strpos($attend_rep[$j]->details, 'Winter Vacation') === false &&
-                            strpos($attend_rep[$j]->details, 'Summer Vacation') === false &&
-                            $attend_rep[$j]->isTooLate == 0 &&
-                            strpos($attend_rep[$j]->details, 'Casual Leave') === false) {
-
-                            if ($j > 0 && $j < $len) {
-
-                                if ($attend_rep[$j - 1]->day != 'Sunday' && ($attend_rep[$j - 1]->status == 'Absent' || $attend_rep[$j - 1]->status == null) && strpos($attend_rep[$j - 1]->details, 'Holiday') === false && strpos($attend_rep[$j - 1]->details, '(CL Provided)') === false && strpos($attend_rep[$j - 1]->details, 'Admin OD') === false && strpos($attend_rep[$j - 1]->details, 'Exam OD') === false && strpos($attend_rep[$j - 1]->details, 'Training OD') === false && strpos($attend_rep[$j - 1]->details, 'Compensation Leave') === false && strpos($attend_rep[$j - 1]->details, 'Winter Vacation') === false && strpos($attend_rep[$j - 1]->details, 'Summer Vacation') === false) {
-                                    for ($m = ($j + 1); $m < $len; $m++) {
-                                        if ($attend_rep[$m]->status == 'Present') {
-                                            break;
-                                        } elseif (($attend_rep[$m]->status == 'Absent' || $attend_rep[$m]->status == null) && strpos($attend_rep[$m]->details, 'Holiday') === false && strpos($attend_rep[$m]->details, '(CL Provided)') === false && strpos($attend_rep[$m]->details, 'Admin OD') === false && strpos($attend_rep[$m]->details, 'Exam OD') === false && strpos($attend_rep[$m]->details, 'Training OD') === false && strpos($attend_rep[$m]->details, 'Compensation Leave') === false && strpos($attend_rep[$m]->details, 'Winter Vacation') === false && strpos($attend_rep[$m]->details, 'Summer Vacation') === false) {
-                                            $leave++;
-                                            break;
-                                        }
-                                    }
-                                } else if (strpos($attend_rep[$j - 1]->details, 'Holiday') !== false) {
-                                    for ($k = ($j - 2); $k > 0; $k--) {
-                                        if ($attend_rep[$k]->status == 'Present') {
-                                            break;
-                                        } elseif (($attend_rep[$k]->status == 'Absent' || $attend_rep[$k]->status == null) && strpos($attend_rep[$k]->details, 'Holiday') === false && strpos($attend_rep[$k]->details, '(CL Provided)') === false && strpos($attend_rep[$k]->details, 'Admin OD') === false && strpos($attend_rep[$k]->details, 'Exam OD') === false && strpos($attend_rep[$k]->details, 'Training OD') === false && strpos($attend_rep[$k]->details, 'Compensation Leave') === false && strpos($attend_rep[$k]->details, 'Winter Vacation') === false && strpos($attend_rep[$k]->details, 'Summer Vacation') === false) {
-                                            for ($m = ($j + 1); $m < $len; $m++) {
-                                                if ($attend_rep[$m]->status == 'Present') {
-                                                    break;
-                                                } elseif (($attend_rep[$m]->status == 'Absent' || $attend_rep[$m]->status == null) && strpos($attend_rep[$m]->details, 'Holiday') === false && strpos($attend_rep[$m]->details, '(CL Provided)') === false && strpos($attend_rep[$m]->details, 'Admin OD') === false && strpos($attend_rep[$m]->details, 'Exam OD') === false && strpos($attend_rep[$m]->details, 'Training OD') === false && strpos($attend_rep[$m]->details, 'Compensation Leave') === false && strpos($attend_rep[$m]->details, 'Winter Vacation') === false && strpos($attend_rep[$m]->details, 'Summer Vacation') === false) {
-                                                    $leave++;
-                                                    $temStatus = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                        if ($temStatus == true) {
-                                            break;
-                                        }
-                                    }
-                                    // if ($temStatus == true) {
-                                    //     break;
-                                    // }
-                                }
+                            if(count($late_times) > 0){
+                                $late_times[] = $value->in_time;
+                            }else{
+                                $late_times = [$value->in_time];
                             }
                         }
 
-                        // Holiday
-                        $temStatus = false;
-                        if ($attend_rep[$j]->day != 'Sunday' && ($attend_rep[$j]->status == 'Absent' || $attend_rep[$j]->status == null) && strpos($attend_rep[$j]->details, 'Holiday') !== false) {
-                            if ($j > 0 && $j < $len) {
+                        // Early Out
+                        if ($value->earlyOut == 1) {
+                            $earlyOut += 1;
+                        }
 
-                                if ($attend_rep[$j - 1]->day != 'Sunday' && ($attend_rep[$j - 1]->status == 'Absent' || $attend_rep[$j - 1]->status == null) && strpos($attend_rep[$j - 1]->details, 'Holiday') === false && strpos($attend_rep[$j - 1]->details, '(CL Provided)') === false && strpos($attend_rep[$j - 1]->details, 'Admin OD') === false && strpos($attend_rep[$j - 1]->details, 'Exam OD') === false && strpos($attend_rep[$j - 1]->details, 'Training OD') === false && strpos($attend_rep[$j - 1]->details, 'Compensation Leave') === false && strpos($attend_rep[$j - 1]->details, 'Winter Vacation') === false && strpos($attend_rep[$j - 1]->details, 'Summer Vacation') === false) {
-                                    for ($m = ($j + 1); $m < $len; $m++) {
-                                        if ($attend_rep[$m]->status == 'Present') {
-                                            break;
-                                        } elseif (($attend_rep[$m]->status == 'Absent' || $attend_rep[$m]->status == null) && strpos($attend_rep[$m]->details, 'Holiday') === false && strpos($attend_rep[$m]->details, '(CL Provided)') === false && strpos($attend_rep[$m]->details, 'Admin OD') === false && strpos($attend_rep[$m]->details, 'Exam OD') === false && strpos($attend_rep[$m]->details, 'Training OD') === false && strpos($attend_rep[$m]->details, 'Compensation Leave') === false && strpos($attend_rep[$m]->details, 'Winter Vacation') === false && strpos($attend_rep[$m]->details, 'Summer Vacation') === false) {
-                                            $leave++;
-                                            break;
-                                        }
-                                    }
-                                    if ($j == ($len - 1)) {
-                                        $takeDate = Carbon::parse($attend_rep[$j]->date);
-                                        $nextDate = $takeDate->addDay();
+                        // Permission
+                        if (strpos($value->permission, '(Provided)') == false && $value->permission != null && $value->permission != '') {
+                            $permission += 1;
+                        }
 
-                                        $getNextDay = StaffBiometric::where(['user_name_id' => $attend_rep[$j]->user_name_id, 'date' => $nextDate->toDateString()])->select('day', 'details', 'status')->first();
-                                        if (($getNextDay->day != 'Sunday' || strpos($getNextDay->details, 'Holiday') === false)) {
-                                            if (($getNextDay->status == 'Absent' || $getNextDay->status == null) && strpos($getNextDay->details, 'Holiday') === false && strpos($getNextDay->details, '(CL Provided)') === false && strpos($getNextDay->details, 'Admin OD') === false && strpos($getNextDay->details, 'Exam OD') === false && strpos($getNextDay->details, 'Training OD') === false && strpos($getNextDay->details, 'Compensation Leave') === false && strpos($getNextDay->details, 'Winter Vacation') === false && strpos($getNextDay->details, 'Summer Vacation') === false) {
-                                                $leave++;
-                                            }
-                                        } else {
-                                            $leave++;
-                                        }
-                                    }
-                                } else if (strpos($attend_rep[$j - 1]->details, 'Holiday') !== false || $attend_rep[$j - 1]->day == 'Sunday') {
+                        // Leave
+                        if(($value->details == 'Casual Leave' && $value->status == 'Absent') || (($value->details == '' || $value->details == null) && $value->status == 'Absent')){
+                            $leave += 1;
+                        }
 
-                                    for ($k = ($j - 2); $k > 0; $k--) {
-                                        if ($attend_rep[$k]->status == 'Present') {
-                                            break;
-                                        } elseif (($attend_rep[$k]->status == 'Absent' || $attend_rep[$k]->status == null) && $attend_rep[$k]->day != 'Sunday' && strpos($attend_rep[$k]->details, 'Holiday') === false && strpos($attend_rep[$k]->details, '(CL Provided)') === false && strpos($attend_rep[$k]->details, 'Admin OD') === false && strpos($attend_rep[$k]->details, 'Exam OD') === false && strpos($attend_rep[$k]->details, 'Training OD') === false && strpos($attend_rep[$k]->details, 'Compensation Leave') === false && strpos($attend_rep[$k]->details, 'Winter Vacation') === false && strpos($attend_rep[$k]->details, 'Summer Vacation') === false) {
-                                            for ($m = ($j + 1); $m < $len; $m++) {
-                                                if ($attend_rep[$m]->status == 'Present') {
-                                                    break;
-                                                } elseif (($attend_rep[$m]->status == 'Absent' || $attend_rep[$m]->status == null) && strpos($attend_rep[$m]->details, 'Holiday') === false && strpos($attend_rep[$m]->details, '(CL Provided)') === false && strpos($attend_rep[$m]->details, 'Admin OD') === false && strpos($attend_rep[$m]->details, 'Exam OD') === false && strpos($attend_rep[$m]->details, 'Training OD') === false && strpos($attend_rep[$m]->details, 'Compensation Leave') === false && strpos($attend_rep[$m]->details, 'Winter Vacation') === false && strpos($attend_rep[$m]->details, 'Summer Vacation') === false) {
-                                                    $leave++;
-                                                    $temStatus = true;
-                                                    break;
-                                                }
-                                            }
-                                            if ($temStatus == true) {
-                                                break;
-                                            }
-                                        }
-                                        if ($temStatus == true) {
-                                            break;
-                                        }
-                                    }
-                                }
+                        //CL & SL & Permission Provided
+                        if (strpos($value->details, '(CL Provided)') !== false) {
+                            if(strpos($value->details, 'Fore Noon') !== false || strpos($value->details, 'After Noon') !== false){
+                                $cl_pro += 0.5;
+                            }elseif(strpos($value->details, 'Casual') !== false){
+                                $cl_pro += 1;
                             }
+                        }
+
+                        if (strpos($value->details, '(SL Provided)') !== false) {
+                            if(strpos($value->details, 'Fore Noon') !== false || strpos($value->details, 'After Noon') !== false){
+                                $sl_pro += 0.5;
+                            }elseif(strpos($value->details, 'Sick') !== false){
+                                $sl_pro += 1;
+                            }
+                        }
+
+                        if (strpos($value->permission, '(Provided)') !== false) {
+                            $permission_pro += 1;
                         }
                     }
                 }
             }
         }
+        // $test = '10:10:00';
+        // dd($cl_pro);
+        // dd($late, $leave, $cl_pro, $sl_pro, $permission_pro, $total_days, $permission);
         // $year = Year::select('id', 'year')->get();
-        return view('admin.employeeSalary.index', compact('attend_rep', 'staff', 'day_array', 'salary', 'bank', 'doj', 'half_day_leave', 'leave', 'too_late'));
+        return view('admin.employeeSalary.index', compact('permission','half_day','cl_pro', 'sl_pro', 'permission_pro', 'attend_rep', 'staff', 'day_array', 'salary', 'bank', 'doj', 'earlyOut', 'leave', 'late', 'total_days', 'late_times', 'half_day_leave'));
     }
 
     public function salary_stmt_gen(Request $request)
