@@ -14,6 +14,7 @@ use App\Models\RoleType;
 use App\Models\Staffs;
 use App\Models\Student;
 use App\Models\User;
+use App\Models\WorkType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -96,13 +97,15 @@ class UsersController extends Controller
         $roles = Role::pluck('title', 'id');
         $working_as = Role::pluck('title', 'id');
         $designations = Designation::pluck('name', 'id');
+        $worktypes = WorkType::pluck('name', 'id');
         $RoleTypes = RoleType::pluck('name', 'id');
 
-        return view('admin.users.create', compact('roles', 'working_as', 'designations', 'RoleTypes'));
+        return view('admin.users.create', compact('roles', 'working_as', 'designations', 'RoleTypes', 'worktypes'));
     }
 
     public function store(Request $request)
     {
+
         // dd($request);
         if (isset($request->role)) {
             $user = new User();
@@ -126,10 +129,11 @@ class UsersController extends Controller
                     $staffs->gender = $request->gender;
                     $staffs->designation_id = $request->designation;
                     $staffs->role_id = $request->role;
+                    $staffs->worktype_id = $request->worktype;
+                    $staffs->hybrid_working_days = $request->daysJson;
                     $staffs->status = '';
                     $staffs->employee_id = '';
                     $staffs->biometric = '';
-
                     $staffs->save();
 
                     $personalDetails->user_name_id = $user->id;
@@ -138,12 +142,13 @@ class UsersController extends Controller
                     $personalDetails->phone_number = $request->phone_number;
                     $personalDetails->role_id = $request->role;
                     $personalDetails->designation_id = $request->designation;
+                    $personalDetails->worktype_id = $request->worktype;
                     $personalDetails->gender = $request->gender;
 
                     $personalDetails->save();
                 }
 
-                return response()->json(['status' => true, 'data' => 'User created successfully']);
+                return response()->json(['status' => true, 'data' => 'User created Successfully']);
             } else {
                 return response()->json(['status' => false, 'data' => 'User creation failed']);
             }
@@ -156,7 +161,7 @@ class UsersController extends Controller
 
         $roles = Role::pluck('title', 'id');
         $user->load('roles');
-        // $role_type = TeachingType::pluck('name', 'id')->prepend('Select Type', '');
+        $role_type = RoleType::pluck('name', 'id')->prepend('Select Type', '');
         return view('admin.users.edit', compact('role_type', 'user', 'roles'));
     }
 
@@ -204,7 +209,24 @@ class UsersController extends Controller
                     // 'shift_id' => $request->shift,
                 ]);
             }
-        } elseif ($request->role_type == 2 || $request->role_type == 4 || $request->role_type == 5) {
+        } else if ($request->role_type == 2) {
+            // dd($request->role_type);
+            $staffs = Staffs::where('user_name_id', $user->id)->get();
+            if (count($staffs) > 0) {
+                $staffsData = $staffs->toArray();
+
+                unset($staffsData['id']);
+                unset($staffsData['created_at']);
+                unset($staffsData['updated_at']);
+
+                dd($staffsData);
+
+            } else {
+                dd($request->role_type);
+
+            }
+
+        } elseif ($request->role_type == 22222 || $request->role_type == 4 || $request->role_type == 5) {
 
             $nonteach = NonTeachingStaff::where('user_name_id', $user->id)->get();
             if (count($nonteach) <= 0) {

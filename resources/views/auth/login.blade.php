@@ -101,7 +101,7 @@
 
     .col-left {
         width: 60%;
-        background: #2a5792;
+        background: linear-gradient(to right, #9facbd, #4b87d2);
         -webkit-clip-path: polygon(98% 17%, 100% 34%, 98% 51%, 100% 68%, 98% 84%, 100% 100%, 0 100%, 0 0, 100% 0);
         clip-path: polygon(98% 17%, 100% 34%, 98% 51%, 100% 68%, 98% 84%, 100% 100%, 0 100%, 0 0, 100% 0);
         /* filter: drop-shadow(-1px 6px 3px rgba(50, 50, 0, 0.5)); */
@@ -217,10 +217,9 @@
         <div class="col-left">
             <div class="login-text -MB2">
                 <a href="{{ route('admin.home') }}">
-                    <img src="{{ asset('adminlogo/school_favicon.png') }}" alt="" height="65%" width="100%">
+                    <img src="{{ asset('adminlogo/school_menu_logo-removebg-preview.png') }}" alt="" height="65%" width="100%">
                 </a>
-                <p><br>
-                    College of Engineering and Technology.</p>
+                <p><br>Human Resource Management Software</p>
             </div>
         </div>
         <div class="col-right">

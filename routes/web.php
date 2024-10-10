@@ -327,6 +327,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('state/delete', 'StateController@destroy')->name('state.delete');
     Route::delete('state/destroy', 'StateController@massDestroy')->name('state.massDestroy');
 
+    //WorkType
+    Route::get('worktype', 'WorkTypeController@index')->name('worktype.index');
+    Route::post('worktype/view', 'WorkTypeController@view')->name('worktype.view');
+    Route::post('worktype/edit', 'WorkTypeController@edit')->name('worktype.edit');
+    Route::post('worktype/store', 'WorkTypeController@store')->name('worktype.store');
+    Route::post('worktype/delete', 'WorkTypeController@destroy')->name('worktype.delete');
+    Route::delete('worktype/destroy', 'WorkTypeController@massDestroy')->name('worktype.massDestroy');
+
     // Community
     Route::get('communities', 'CommunityController@index')->name('communities.index');
     Route::post('communities/view', 'CommunityController@view')->name('communities.view');

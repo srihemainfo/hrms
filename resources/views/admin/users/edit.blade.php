@@ -37,7 +37,6 @@
                     <span class="help-block">{{ trans('cruds.user.fields.password_helper') }}</span>
                 </div>
 
-
                 <div class="form-group">
                     <label class="required" for="roles">Role Type</label>
                     <select class="form-control select2" name="role_type" id="role_type" required>
@@ -60,7 +59,6 @@
                         @endforeach
                     </select>
                 </div>
-
 
                 <div class="form-group">
                     <button class="btn btn-danger" type="submit">

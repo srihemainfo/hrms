@@ -8,7 +8,7 @@ use App\Models\LeaveType;
 use App\Models\NonTeachingStaff;
 use App\Models\Staffs;
 use App\Models\TeachingStaff;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,7 +18,7 @@ class StaffLeaveReportController extends Controller
     public function index(Request $request)
     {
 
-        // abort_if(Gate::denies('staff_leave_report_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('staff_leave_report_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request) {
             $leave_type = LeaveType::pluck('name', 'id');

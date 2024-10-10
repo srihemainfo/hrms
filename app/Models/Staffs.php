@@ -19,6 +19,8 @@ class Staffs extends Model
         'user_name_id',
         'shift',
         'employee_id',
+        'worktype_id',
+        'hybrid_working_days',
         'phone_number',
         'gender',
         'designation_id',

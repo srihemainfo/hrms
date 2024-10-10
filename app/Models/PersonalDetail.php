@@ -40,6 +40,7 @@ class PersonalDetail extends Model
         'community_id',
         'marital_status',
         'pan_number',
+        'worktype_id',
         'total_experience',
         'nationality_id',
         'state_id',

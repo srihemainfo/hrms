@@ -423,6 +423,7 @@
                 @endif
 
 
+
                 @if (request()->is('admin/master-tools') ||
                 request()->is('admin/tools*') ||
                 request()->is('admin/batches*') ||
@@ -435,6 +436,7 @@
                 request()->is('admin/lab_title*') ||
                 request()->is('admin/nationalities*') ||
                 request()->is('admin/religions*') ||
+                request()->is('admin/worktype*') ||
                 request()->is('admin/blood-groups*') ||
                 request()->is('admin/state*') ||
                 request()->is('admin/communities*') ||

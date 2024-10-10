@@ -21,7 +21,8 @@ class PermissionrequestController extends Controller
     public function staff_index(Request $request)
     {
         // dd($request);
-        // abort_if(Gate::denies('permission_request'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('permission_request'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         if (isset($request->accept)) {
 
             PermissionRequest::where('id', $request->id)->update(['status' => 1]);
@@ -111,7 +112,7 @@ class PermissionrequestController extends Controller
     public function staff_update(Request $request)
     {
         // dd($request);
-        // abort_if(Gate::denies('permission_request'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('permission_request'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $validator = Validator::make($request->all(), [
             'date' => 'required',

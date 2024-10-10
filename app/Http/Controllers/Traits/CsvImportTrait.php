@@ -569,6 +569,8 @@ trait CsvImportTrait
                                 $insert['in_time'] = str_replace(' ', '', $insert['in_time']);
                                 $in_time = $insert['in_time'] != '' ? $insert['in_time'] : '00:00:00';
                             }
+
+                            
                             if (isset($insert['out_time'])) {
                                 $insert['out_time'] = str_replace(' ', '', $insert['out_time']);
                                 $out_time = $insert['out_time'] != '' ? $insert['out_time'] : '00:00:00';
