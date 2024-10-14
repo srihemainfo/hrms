@@ -114,6 +114,18 @@
         </li>
     @endcan
 
+    @can('project_access')
+        <li class="nav-item">
+            <a href="{{ route('admin.projects.index') }}"
+                class="nav-link {{ request()->is('admin/projects') || request()->is('admin/projects/*') ? 'active' : '' }}">
+                <i class="fa-fw nav-icon fas fa-cubes"></i>
+                <p>
+                    Projects
+                </p>
+            </a>
+        </li>
+    @endcan
+
 
     @can('state_access')
         <li class="nav-item">
@@ -127,7 +139,7 @@
         </li>
     @endcan
 
-    @can('state_access')
+    @can('work_acceess')
         <li class="nav-item">
             <a href="{{ route('admin.worktype.index') }}"
                 class="nav-link {{ request()->is('admin/worktype') || request()->is('admin/worktype/*') ? 'active' : '' }}">

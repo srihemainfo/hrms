@@ -327,6 +327,17 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('state/delete', 'StateController@destroy')->name('state.delete');
     Route::delete('state/destroy', 'StateController@massDestroy')->name('state.massDestroy');
 
+     //Projects
+     Route::get('projects', 'ProjectsController@index')->name('projects.index');
+     Route::post('projects/view', 'ProjectsController@view')->name('projects.view');
+     Route::post('projects/edit', 'ProjectsController@edit')->name('projects.edit');
+     Route::post('projects/store', 'ProjectsController@store')->name('projects.store');
+     Route::post('projects/delete', 'ProjectsController@destroy')->name('projects.delete');
+     Route::delete('projects/destroy', 'ProjectsController@massDestroy')->name('projects.massDestroy');
+
+    // Route::get('tdashboard', 'TdashboardController@index')->name('tdashboard.index');
+
+
     //WorkType
     Route::get('worktype', 'WorkTypeController@index')->name('worktype.index');
     Route::post('worktype/view', 'WorkTypeController@view')->name('worktype.view');

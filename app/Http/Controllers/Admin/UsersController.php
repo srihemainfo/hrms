@@ -210,19 +210,10 @@ class UsersController extends Controller
                 ]);
             }
         } else if ($request->role_type == 2) {
-            // dd($request->role_type);
+            dd($request->role_type);
             $staffs = Staffs::where('user_name_id', $user->id)->get();
             if (count($staffs) > 0) {
-                $staffsData = $staffs->toArray();
 
-                unset($staffsData['id']);
-                unset($staffsData['created_at']);
-                unset($staffsData['updated_at']);
-
-                dd($staffsData);
-
-            } else {
-                dd($request->role_type);
 
             }
 
