@@ -232,7 +232,7 @@
                     $lop = 0;
                     $basic_pay = 0;
                     $m_basic_pay = 0;
-                    
+
                     // Basic Pay Calculation
                     if (isset($salary->basicPay) && !empty($salary->basicPay && !is_nan($salary->basicPay))) {
                         $basic_pay = $salary->basicPay;
@@ -259,8 +259,9 @@
                         $lop_late_amt = (int) $m_per_hour_basic_pay * $m_total_late_hours;
                         $lop_leave_amt = ceil($m_per_day_basic_pay) * $leave;
                         $lop_half_leave_amt = (int) $m_half_day_basic_pay * $half_day_leave;
-                        $lop = $lop_late_amt + $lop_leave_amt + $lop_half_leave_amt;
-                        $m_basic_pay = $salary->basicPay - $lop;
+                        // $lop = $lop_late_amt + $lop_leave_amt + $lop_half_leave_amt;
+                        $lop = $lop_leave_amt + $lop_half_leave_amt;
+                        $m_basic_pay = $salary->basicPay - $lop - $lop_late_amt;
                         // dd($m_basic_pay, $lop_late_amt, $lop_leave_amt, $lop_half_leave_amt);
                     } else {
                         $m_basic_pay = 0;
@@ -271,42 +272,42 @@
                     }
 
                     // AGP Calculation
-                    if (isset($salary->agp) && !empty($salary->agp && !is_nan($salary->agp))) {
-                        $m_per_day_agp = $salary->agp / $m_total_working_days;
+                    // if (isset($salary->agp) && !empty($salary->agp && !is_nan($salary->agp))) {
+                    //     $m_per_day_agp = $salary->agp / $m_total_working_days;
 
-                        $m_half_day_agp = $m_per_day_agp / 2;
+                    //     $m_half_day_agp = $m_per_day_agp / 2;
 
-                        if ($permission_shift_1 != 0 && $permission_shift_1 > 2) {
-                            $agp_permis_deduct = ($m_per_day_agp / 7) * ($permission_shift_1 - 2);
-                        } elseif ($permission_shift_2 != 0 && $permission_shift_2 > 2) {
-                            $agp_permis_deduct = ($m_per_day_agp / 9) * ($permission_shift_2 - 2);
-                        } else {
-                            $agp_permis_deduct = 0;
-                        }
+                    //     if ($permission_shift_1 != 0 && $permission_shift_1 > 2) {
+                    //         $agp_permis_deduct = ($m_per_day_agp / 7) * ($permission_shift_1 - 2);
+                    //     } elseif ($permission_shift_2 != 0 && $permission_shift_2 > 2) {
+                    //         $agp_permis_deduct = ($m_per_day_agp / 9) * ($permission_shift_2 - 2);
+                    //     } else {
+                    //         $agp_permis_deduct = 0;
+                    //     }
 
-                        // if ($late > 3) {
-                        //     $deduct_agp = $late - 3;
+                    //     // if ($late > 3) {
+                    //     //     $deduct_agp = $late - 3;
 
-                        //     $late_deduct_agp = $m_half_day_agp * $deduct_agp;
-                        // } else {
-                        //     $late_deduct_agp = 0;
-                        // }
-                        // if ($too_late > 0) {
-                        //     $too_late_deduct_agp = $m_half_day_agp * $too_late;
-                        // } else {
-                        // }
+                    //     //     $late_deduct_agp = $m_half_day_agp * $deduct_agp;
+                    //     // } else {
+                    //     //     $late_deduct_agp = 0;
+                    //     // }
+                    //     // if ($too_late > 0) {
+                    //     //     $too_late_deduct_agp = $m_half_day_agp * $too_late;
+                    //     // } else {
+                    //     // }
 
-                        $too_late_deduct_agp = 0;
-                        $m_agp = round(
-                            $salary->agp * ($m_total_paid_days / $m_total_working_days) -
-                                ($agp_permis_deduct + $late_deduct_agp + $too_late_deduct_agp),
-                            2,
-                        );
-                        $m_agp_loss = $salary->agp - $m_agp;
-                    } else {
-                        $m_agp = 0;
-                        $m_agp_loss = 0;
-                    }
+                    //     $too_late_deduct_agp = 0;
+                    //     $m_agp = round(
+                    //         $salary->agp * ($m_total_paid_days / $m_total_working_days) -
+                    //             ($agp_permis_deduct + $late_deduct_agp + $too_late_deduct_agp),
+                    //         2,
+                    //     );
+                    //     $m_agp_loss = $salary->agp - $m_agp;
+                    // } else {
+                    //     $m_agp = 0;
+                    //     $m_agp_loss = 0;
+                    // }
 
                     // // DA Calculation
                     // $m_da = round(($m_basic_pay + $m_agp) * 0.55, 2);
@@ -556,35 +557,7 @@
 
                                     </div>
                                 </div> --}}
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                        <div class="form-group">
-                                            <label>Total Late : </label>
-                                            <input type="text" class="pay_input"
-                                                name="late"value="{{ $late }}" readonly>
-                                            <input type="hidden" class="pay_input"
-                                                name=""value="{{ $late }}" readonly>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
-                                        <div class="form-group">
-                                            <label>Total Leave : </label>
-                                            {{-- @php
-                                                if ($late > 3) {
-                                                    $late_lop = 0.5;
-                                                } else {
-                                                    $late_lop = 0;
-                                                }
-                                                if ($leave + $half_day_leave + $late_lop > 0) {
-                                                    $total_leave_days = $leave + $half_day_leave + $late_lop;
-                                                } else {
-                                                    $total_leave_days = 0;
-                                                }
-                                                // dd($total_leave_days);
-                                            @endphp --}}
-                                            <input type="text" class="pay_input"
-                                                name="leave"value="{{ $leave + $half_day }}" readonly>
-                                        </div>
-                                    </div>
+
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Total Paid Days : </label>
@@ -597,9 +570,25 @@
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
-                                            <label>Total Non-Permission : </label>
+                                            <label>Total Non-Paid Leave : </label>
+                                            <input type="text" class="pay_input"
+                                                name="leave"value="{{ $leave + $half_day }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                        <div class="form-group">
+                                            <label>Total Non-Paid Permission : </label>
                                             <input type="text" class="pay_input"
                                                 name="permission"value="{{ $permission ?? 0 }}" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                                        <div class="form-group">
+                                            <label>Total Late : </label>
+                                            <input type="text" class="pay_input"
+                                                name="late"value="{{ $late }}" readonly>
+                                            <input type="hidden" class="pay_input"
+                                                name=""value="{{ $late }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
@@ -616,6 +605,7 @@
                                                 name="permission"value="{{ $permission_pro ?? 0 }}" readonly>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -755,7 +745,9 @@
                                         <div class="form-group">
                                             <label>Loss Of Pay</label>
                                             <input type="number" class="form-control" name="lop"
-                                                value="{{ $deduction }}" readonly>
+                                                value="{{ $lop }}" readonly>
+                                            <input type="hidden" class="form-control" name="late_amt"
+                                                value="{{ $lop_late_amt }}" readonly>
                                         </div>
                                     </div>
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">

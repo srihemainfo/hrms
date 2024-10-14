@@ -2,11 +2,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\NonTeachingStaff;
 use App\Models\salarystatement;
 use App\Models\StaffBiometric;
 use App\Models\Staffs;
-use App\Models\ToolsDepartment;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,9 +36,9 @@ class paySlipcontroller extends Controller
             // }
             if (request()->has('staff_code') && $request->staff_code != 'null') {
                 $get_staff = Staffs::where(['employee_id' => request()->input('staff_code')])->first();
-                    if (!empty($get_staff)) {
-                        $user_name_id = $get_staff->user_name_id;
-                    }
+                if (!empty($get_staff)) {
+                    $user_name_id = $get_staff->user_name_id;
+                }
 
             } else {
                 $user_name_id = 'null';
@@ -68,17 +66,17 @@ class paySlipcontroller extends Controller
                     }
                 }
                 // $data = DB::table('payslip')->select('*');
-            } elseif ( $user_name_id != 'null' && $month == 'null') {
+            } elseif ($user_name_id != 'null' && $month == 'null') {
                 $data = DB::table('payslip')->select('*')->where(['user_name_id' => $user_name_id, 'year' => $year])->get();
-            } elseif ( $user_name_id == 'null' && $month != 'null') {
+            } elseif ($user_name_id == 'null' && $month != 'null') {
                 $data = DB::table('payslip')->select('*')->where(['month' => $month, 'year' => $year])->get();
-            } elseif ( $user_name_id != 'null' && $month == 'null') {
+            } elseif ($user_name_id != 'null' && $month == 'null') {
 
                 $data = DB::table('payslip')->where(['user_name_id' => $user_name_id, 'year' => $year])->get();
 
-            } elseif ( $user_name_id != 'null' && $month != 'null') {
+            } elseif ($user_name_id != 'null' && $month != 'null') {
                 $data = DB::table('payslip')->select('*')->where(['user_name_id' => $user_name_id, 'month' => $month, 'year' => $year])->get();
-            } elseif ( $user_name_id == 'null' && $month != 'null') {
+            } elseif ($user_name_id == 'null' && $month != 'null') {
                 $tech_staff = Staffs::get();
                 $data = [];
                 if (count($tech_staff) > 0) {
@@ -93,7 +91,7 @@ class paySlipcontroller extends Controller
                         }
                     }
                 }
-            } elseif ( $user_name_id != 'null' && $month != 'null') {
+            } elseif ($user_name_id != 'null' && $month != 'null') {
                 $tech_staff = Staffs::get();
                 $data = [];
                 if (count($tech_staff) > 0) {
@@ -191,8 +189,7 @@ class paySlipcontroller extends Controller
 
         // }
 
-
-        return view('admin.paySlip.index', compact('data', 'staff','cse', 'mech', 'ece', 'sh', 'ai', 'cce', 'csbs', 'aiml', 'admin', 'civil'));
+        return view('admin.paySlip.index', compact('data', 'staff', 'cse', 'mech', 'ece', 'sh', 'ai', 'cce', 'csbs', 'aiml', 'admin', 'civil'));
 
     }
 
@@ -237,7 +234,19 @@ class paySlipcontroller extends Controller
     public function pdf($id)
     {
         // dd($id);
-        $results = DB::table('payslip')->where(['id' => $id])->get();
+        $results = DB::table('payslip')
+            ->where('payslip.id', $id)
+            ->leftJoin('salarystatements', function ($join) {
+                $join->on('salarystatements.user_name_id', '=', 'payslip.user_name_id')
+                    ->where('salarystatements.month', '=', DB::raw('payslip.month'))
+                    ->where('salarystatements.year', '=', DB::raw('payslip.year'));
+            })
+            ->leftJoin('staffs', 'staffs.user_name_id', 'payslip.user_name_id')
+            ->leftJoin('designation', 'staffs.designation_id', 'designation.id')
+            ->select('payslip.*', 'salarystatements.total_lop_days', 'salarystatements.total_working_days', 'salarystatements.total_payable_days', 'staffs.DOJ', 'designation.name as designation')
+            ->get();
+
+        // dd($results);
         if (count($results) > 0) {
             $staff = Staffs::where(['user_name_id' => $results[0]->user_name_id])->select('employee_id')->first();
 
@@ -431,6 +440,7 @@ class paySlipcontroller extends Controller
                                 'epf' => $get_statements->epf,
                                 'esi' => $get_statements->esi,
                                 'lop' => $get_statements->lop,
+                                'late_amt' => $get_statements->late_amt,
                                 'otherdeduction' => $get_statements->otherdeduction,
                                 'totaldeductions' => $get_statements->totaldeductions,
                                 'netpay' => $get_statements->netpay,
@@ -468,6 +478,7 @@ class paySlipcontroller extends Controller
                                 'epf' => $get_statements->epf,
                                 'esi' => $get_statements->esi,
                                 'lop' => $get_statements->lop,
+                                'late_amt' => $get_statements->late_amt,
                                 'otherdeduction' => $get_statements->otherdeduction,
                                 'totaldeductions' => $get_statements->totaldeductions,
                                 'netpay' => $get_statements->netpay,
@@ -501,7 +512,6 @@ class paySlipcontroller extends Controller
             $month = $request->month;
             $year = $request->year;
 
-
             if ($staff_code != 'null') {
                 $get_staff = Staffs::where(['employee_id' => $staff_code])->first();
                 $user_name_id = $get_staff->user_name_id;
@@ -511,9 +521,9 @@ class paySlipcontroller extends Controller
 
             if ($user_name_id == 'error') {
                 $data = [];
-            } elseif ( $user_name_id == 'null' && $month == 'null') {
+            } elseif ($user_name_id == 'null' && $month == 'null') {
                 $data = DB::table('payslip')->where(['year' => $year])->get();
-            } elseif ( $user_name_id == 'null' && $month == 'null') {
+            } elseif ($user_name_id == 'null' && $month == 'null') {
                 $tech_staff = Staffs::get();
                 $data = [];
                 if (count($tech_staff) > 0) {
@@ -529,17 +539,17 @@ class paySlipcontroller extends Controller
                     }
                 }
                 // $data = DB::table('payslip')->select('*');
-            } elseif ( $user_name_id != 'null' && $month == 'null') {
+            } elseif ($user_name_id != 'null' && $month == 'null') {
                 $data = DB::table('payslip')->select('*')->where(['user_name_id' => $user_name_id, 'year' => $year])->get();
-            } elseif ( $user_name_id == 'null' && $month != 'null') {
+            } elseif ($user_name_id == 'null' && $month != 'null') {
                 $data = DB::table('payslip')->select('*')->where(['month' => $month, 'year' => $year])->get();
-            } elseif ( $user_name_id != 'null' && $month == 'null') {
+            } elseif ($user_name_id != 'null' && $month == 'null') {
 
                 $data = DB::table('payslip')->where(['user_name_id' => $user_name_id, 'year' => $year])->get();
 
-            } elseif ( $user_name_id != 'null' && $month != 'null') {
+            } elseif ($user_name_id != 'null' && $month != 'null') {
                 $data = DB::table('payslip')->select('*')->where(['user_name_id' => $user_name_id, 'month' => $month, 'year' => $year])->get();
-            } elseif ( $user_name_id == 'null' && $month != 'null') {
+            } elseif ($user_name_id == 'null' && $month != 'null') {
                 $tech_staff = Staffs::get();
                 $data = [];
                 if (count($tech_staff) > 0) {
@@ -554,7 +564,7 @@ class paySlipcontroller extends Controller
                         }
                     }
                 }
-            } elseif ( $user_name_id != 'null' && $month != 'null') {
+            } elseif ($user_name_id != 'null' && $month != 'null') {
                 $tech_staff = Staffs::get();
                 $data = [];
                 if (count($tech_staff) > 0) {

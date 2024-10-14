@@ -83,6 +83,7 @@ class EmployeeSalaryController extends Controller
                 // }
 
                 $doj_query = PersonalDetail::where('user_name_id', $query[0]->user_name_id)->get();
+                // dd($doj_query);
                 if ($doj_query) {
                     if (!$doj_query->count() <= 0) {
 
@@ -101,9 +102,7 @@ class EmployeeSalaryController extends Controller
 
                 if ($bank_details) {
                     if (!$bank_details->count() <= 0) {
-
                         $bank = $bank_details[0];
-
                     } else {
 
                         $bank_details_1 = BankAccountDetail::where('user_name_id', $query[0]->user_name_id)->first();

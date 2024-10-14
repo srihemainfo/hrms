@@ -656,13 +656,22 @@ trait CsvImportTrait
                                         if($insert['permission'] != '' || $insert['permission'] != null){
                                             $update_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->update([
                                                 'permission' => $insert['permission'],
+                                                'status' => 'Present',
                                             ]);
                                         }
 
                                         if($insert['details'] != '' || $insert['details'] != null){
-                                            $update_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->update([
-                                                'details' => $insert['details'],
-                                            ]);
+                                            if($insert['details'] == 'On Duty'){
+                                                $update_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->update([
+                                                    'details' => $insert['details'],
+                                                    'status' => 'Present',
+                                                ]);
+                                            }else{
+                                                $update_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->update([
+                                                    'details' => $insert['details'],
+                                                ]);
+                                            }
+
                                         }
 
                                     }
