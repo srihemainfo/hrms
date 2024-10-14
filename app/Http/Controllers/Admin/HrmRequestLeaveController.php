@@ -1079,7 +1079,7 @@ class HrmRequestLeaveController extends Controller
                                 }
                             }
                         } else if ($get->leave_type == 4) {
-                            dd($get->leave_type);
+                            // dd($get->leave_type);
                             if ($isHalfDay) {
                                 $currentDates = [];
                                 $first_date = $get->half_day_leave;

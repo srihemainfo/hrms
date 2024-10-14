@@ -39,7 +39,7 @@
 
                 <div class="form-group">
                     <label class="required" for="roles">Role Type</label>
-                    <select class="form-control select2" name="role_type" id="role_type" required>
+                    <select class="form-control select2" name="role_type" id="role_type" required disabled>
                         @foreach ($role_type as $id => $type)
                             <option value="{{ $id }}" {{ $user->roles[0]->type_id == $id ? 'selected' : '' }}>
                                 {{ $type }}
@@ -50,7 +50,7 @@
 
                 <div class="form-group">
                     <label class="required" for="roles">Roles</label>
-                    <select class="form-control select2" name="roles" id="roles" required>
+                    <select class="form-control select2" name="roles" id="roles" required disabled>
                         <option value="">Select Role</option>
                         @foreach ($roles as $id => $role)
                             <option value="{{ $id }}" {{ $user->roles[0]->id == $id ? 'selected' : '' }}>
@@ -102,4 +102,4 @@
             }
         })
     </script>
-@endsection('script')
+@endsection
