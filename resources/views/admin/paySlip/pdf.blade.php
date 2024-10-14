@@ -2,213 +2,218 @@
 <html lang="en">
 
 <head>
-    <style>
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            /* background-color: rgb(235, 249, 255); */
-        }
-
-        .header_div {
-            text-align: center;
-            margin-top: -10px;
-        }
-
-        .header_div p:first-child {
-            font-family: 'Merriweather', serif;
-            font-size: 1.7rem;
-            font-style: italic;
-            font-weight: bold;
-        }
-
-        .header_div p {
-            /* margin-top: -20px; */
-            text-align: center;
-            font-family: 'Merriweather', serif;
-            font-weight: 500;
-            font-style: italic;
-        }
-
-        /* #body_div{
-            position: relative;
-        } */
-        .table_one,
-        .table_four {
-            /* position: absolute;
-            left: 0; */
-            float: left;
-            font-size: 0.7rem;
-        }
-
-        .table_two,
-        .table_five {
-            /* position: absolute;
-            right: 0; */
-            float: right;
-            font-size: 0.7rem;
-        }
-
-        .table_three {
-            clear: both;
-            width: 100%;
-            border: 1px solid rgb(110, 110, 110);
-            border-radius: 2px;
-            text-align: center;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
-            /* border-collapse: collapse; */
-        }
-
-        .table_three td,
-        .table_three th {
-            border: 1px solid rgb(110, 110, 110);
-
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Pay Slip</title>
 </head>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        height: 100%;
+        width: 100%;
+        font-family: "DejaVu Sans", sans-serif;
+        /* font-family: sans-serif; */
+        font-size: 0.8rem;
+        background-image: url('{{ public_path('upload/payslip_bg.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+    }
+
+    .container {
+        width: 80%;
+        z-index: 999;
+        /* border: 1px solid black; */
+        position: absolute;
+        top: 200px;
+        left: 80px;
+    }
+
+    .tbl {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid black;
+        margin-top: 50px;
+    }
+
+    .tbl_tr {
+        border: 1px solid black;
+        /* Borders for each row */
+    }
+
+    .tbl_td,
+    .tbl_th {
+        border: 1px solid black;
+        padding: 5px;
+        text-align: left;
+    }
+
+    /* .tbl_td:nth-child(odd){
+        font-weight: 90;
+    } */
+
+    .tbl_th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    .footer {
+        margin-top: 50px;
+    }
+</style>
 
 <body>
-    {{-- {{ dd($results) }} --}}
     @if (count($data) > 0)
         @foreach ($data as $results)
+        {{-- {{ dd($results) }} --}}
             <div class="container">
-                <div class="header_div">
-                    <p>SRI HEMA INFOTECH</p>
-                    <p style="margin-top:-30px;">No: 1A, 2nd Floor, Paper Mills Road, Perambur, Chennai, Tamil Nadu 600082</p>
-                    <p style="margin-top:-15px;font-weight:bold;"> Payment Slip for the month of <span>{{ $results->month }}  {{ $results->year }}</span>
-                    </p>
-                    <hr style="border:0.2px solid rgb(97, 97, 97);margin-top:-10px;">
-                </div>
-                <table style="padding-left:1rem;margin-top:-5px;" class="table_one">
+                <h3 style="text-align: center; margin-bottom: 50px;">Pay Slip For The Month {{ $results->month }} {{ $results->year }}</h3>
+
+                <table>
                     <tr>
-                        <td>Employee ID</td>
-                        <td style="padding-left:1.5rem;"><span
-                                style="padding-right:1rem;">:</span>{{ $results->employee_id }}</td>
+                        <td>Emp. ID</td>
+                        <td>: {{ $results->employee_id }}</td>
+                        <td>Salary for the Month of</td>
+                        <td>: {{ $results->month }}</td>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>: {{ $results->name }}</td>
+                        <td>LOP Days</td>
+                        <td>: {{ $results->total_lop_days }}</td>
                     </tr>
                     <tr>
                         <td>Designation</td>
-                        <td style="padding-left:1.5rem;"><span
-                                style="padding-right:1rem;">:</span>{{ $results->designation }}</td>
+                        <td>: {{ $results->designation }}</td>
+                        <td>LOP Amount</td>
+                        <td>: &#8377; {{ $results->lop }}</td>
                     </tr>
                     <tr>
-                        <td>PF Number</td>
-                        <td style="padding-left:1.5rem;"><span style="padding-right:1rem;">:</span>-</td>
+                        <td>Date of Joining</td>
+                        <td>: </td>
+                        <td>UAN Number</td>
+                        <td>: </td>
                     </tr>
                     <tr>
-                        <td>Cheque No</td>
-                        <td style="padding-left:1.5rem;"><span style="padding-right:1rem;">:</span>-</td>
+                        <td>HDFC Bank A/C no.</td>
+                        <td>: </td>
+                        <td>ESIC Number</td>
+                        <td>: </td>
+                    </tr>
+                    <tr>
+                        <td>No. of Working Days</td>
+                        <td>: {{ $results->total_working_days }}</td>
+                        <td>No. of Days Worked</td>
+                        <td>: {{ $results->total_payable_days }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"></td>
                     </tr>
                 </table>
-                <table style="padding-right:1rem;margin-top:-5px;" class="table_two">
-                    <tr>
-                        <td>Employee Name</td>
-                        <td style="padding-left:1.5rem;"><span style="padding-right:1rem;">:</span>{{ $results->name }}
+
+
+                <table class="tbl">
+                    <tr class="tbl_tr">
+                        <th class="tbl_th">EARNINGS</th>
+                        <th class="tbl_th">INR</th>
+                        <th class="tbl_th">DEDUCTIONS</th>
+                        <th class="tbl_th">INR</th>
+                    </tr>
+                    {{-- <tr class="tbl_tr">
+                        <td class="tbl_td">Basic Pay</td>
+                        <td class="tbl_td">&#8377; {{ $results->basicpay }}</td>
+                        <td class="tbl_td">Employee Contribution PF</td>
+                        <td class="tbl_td"></td>
+                    </tr> --}}
+                    {{-- <tr class="tbl_tr">
+                        <td class="tbl_td">House Rent Alowances</td>
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td">Employee Contribution ESI</td>
+                        <td class="tbl_td"></td>
+                    </tr> --}}
+                    <tr class="tbl_tr">
+                        <td class="tbl_td">Basic Pay</td>
+                        <td class="tbl_td">&#8377; {{ $results->basicpay }}</td>
+                        <td class="tbl_td">Non-Payable Late / Permission</td>
+                        <td class="tbl_td"></td>
+                    </tr>
+                    <tr class="tbl_tr">
+                        <td class="tbl_td">Allowances</td>
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td">Advance</td>
+                        <td class="tbl_td"></td>
+                    </tr>
+                    <tr class="tbl_tr">
+                        <td class="tbl_td">Over Time</td>
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td"></td>
+                    </tr>
+                    {{-- <tr class="tbl_tr">
+                        <td class="tbl_td">Dearness Alowances</td>
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td">Deductions / Advance</td>
+                        <td class="tbl_td"></td>
+                    </tr> --}}
+                    {{-- <tr class="tbl_tr">
+                        <td class="tbl_td">Travel Allowances</td>
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td">Professional Tax / LWF</td>
+                        <td class="tbl_td"></td>
+                    </tr> --}}
+                    <tr class="tbl_tr">
+                        {{-- <td class="tbl_td">Medical Allowances</td> --}}
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td">Total Deductions</td>
+                        <td class="tbl_td">
+                            &#8377; {{ !isset($results->totaldeductions) ? 0 : $results->totaldeductions }}
                         </td>
                     </tr>
-                    <tr>
-                        <td>Bank Name</td>
-                        <td style="padding-left:1.5rem;"><span
-                                style="padding-right:1rem;">:</span>{{ $results->bankname }}</td>
+                    <tr class="tbl_tr">
+                        <td colspan="4" class="tbl_td"></td>
                     </tr>
-                    {{-- <tr>
-                        <td>DOJ</td>
-                        <td style="padding-left:1.5rem;"><span style="padding-right:1rem;">:</span>-</td>
+                    <tr class="tbl_tr">
+                        <td class="tbl_td">Gross Salary</td>
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td"></td>
                     </tr>
-                    <tr>
-                        <td>Bank Name</td>
-                        <td style="padding-left:1.5rem;"><span
-                                style="padding-right:1rem;">:</span>{{ $results->bankname }}</td>
-                    </tr> --}}
+                    <tr class="tbl_tr">
+                        <td class="tbl_td">CTC</td>
+                        <td class="tbl_td"></td>
+                        <td class="tbl_td">Net Pay</td>
+                        <td class="tbl_td">&#8377; {{ $results->netpay }}</td>
+                    </tr>
                 </table>
-                <table class="table_three">
-                    <thead>
-                        <tr>
-                            <th>Earnings</th>
-                            <th>Amount</th>
-                            <th>Deductions</th>
-                            <th>Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="font-weight:100;">Basic</td>
-                            <td>{{ $results->basicpay }}</td>
-                            <td style="font-weight:100;">EPF</td>
-                            <td>{{ $results->epf }}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:100;">AGP</td>
-                            <td>{{ $results->agp }}</td>
-                            <td style="font-weight:100;">ESI</td>
-                            <td>{{ $results->esi }}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:100;">DA</td>
-                            <td>{{ $results->da }}</td>
-                            <td style="font-weight:100;">IT</td>
-                            <td>{{ $results->it }}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:100;">Conveyance</td>
-                            <td>{{ $results->conveyance }}</td>
-                            <td style="font-weight:100;">PT</td>
-                            <td>{{ $results->pt }}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:100;">Special Pay</td>
-                            <td>{{ $results->specialpay }}</td>
-                            <td style="font-weight:100;">Salary Advance</td>
-                            <td>{{ $results->salaryadvance }}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:100;">Arrears</td>
-                            <td>{{ $results->arrears }}</td>
-                            <td style="font-weight:100;">Other Deductions</td>
-                            <td>{{ $results->otherdeduction }}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:100;">Other Allowance</td>
-                            <td>{{ $results->otherall }}</td>
-                            <td style="font-weight:100;">Total Deduction</td>
-                            <td>{{ $results->totaldeductions }}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:100;">ABI</td>
-                            <td>{{ $results->abi }}</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:100;">Ph.D Allowance</td>
-                            <td>{{ $results->phdallowance }}</td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:100;">Total Earnings</td>
-                            <td>{{ $results->earnings }}</td>
-                            <td style="font-weight:100;">LOP</td>
-                            <td>{{ $results->lop }}</td>
-                        </tr>
-                        <tr>
-                            <td style="font-weight:100;">Date</td>
-                            <td>{{ $results->date }}</td>
-                            <td style="font-weight:100;">Netpay</td>
-                            <td>{{ $results->netpay }}</td>
-                        </tr>
 
-                    </tbody>
-                </table>
-                <table style="padding-left:1rem;padding-top:1.5rem;padding-bottom:1rem;" class="table_four">
-                    <tr>
-                        <td>Prepared By</td>
-                    </tr>
-                </table>
-                <table style="padding-right:1rem;padding-top:1.5rem;padding-bottom:1rem;" class="table_five">
-                    <tr>
-                        <td>Authorized Signatory</td>
-                    </tr>
-                </table>
-                <div style="clear:both;"></div>
+                <div class="footer">
+                    <table style="width: 100%; border: none; margin-top: 20px;">
+                        <tr>
+                            <td style="width: 50%; text-align: left; padding: 10px; border: none;">Prepared By</td>
+                            <td style="width: 50%; text-align: right; padding: 10px; border: none;">Authorised Signature
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%; text-align: left; padding: 10px; border: none;">
+                                <small style="font-size: 0.9rem;">HR Team</small>
+                            </td>
+                            <td style="width: 50%; text-align: right; padding: 10px; border: none;"></td>
+                        </tr>
+                    </table>
+                </div>
+
             </div>
         @endforeach
     @endif

@@ -382,6 +382,7 @@
         </nav>
 
         @include('partials.menu')
+        
         <div class="content-wrapper" style="min-height: 917px;">
             <!-- Main content -->
 
