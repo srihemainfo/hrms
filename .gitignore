@@ -4,6 +4,7 @@
 /public/studentImages
 /public/tranScripts
 /public/uploads
+/public/adminlogo
 /storage/*.key
 /vendor
 .env
