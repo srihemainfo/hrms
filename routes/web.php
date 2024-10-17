@@ -1378,6 +1378,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     //StaffPayslip
     Route::get('Staff-Payslip', 'StaffPayslip@index')->name('Staff-Payslip.index');
+    Route::get('Staff-Payslip-PreReq', 'StaffPayslip@prereq')->name('Staff-Payslip-PreReq.prereq');
     Route::post('Staff-Payslip-Request', 'StaffPayslip@reqs')->name('Staff-Payslip.reqs');
 
 

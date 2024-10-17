@@ -1,4 +1,4 @@
-@php
+{{-- @php
     $role_id = auth()->user()->roles[0]->id;
     if ($role_id == 1 || $role_id == 3 || $role_id == 2) {
         $key = 'layouts.admin';
@@ -6,7 +6,8 @@
         $key = 'layouts.staffs';
     }
 @endphp
-@extends($key)
+@extends($key) --}}
+@extends('layouts.staffs')
 @section('content')
     <div class="card">
         <div class="card-header">

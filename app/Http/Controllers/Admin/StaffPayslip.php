@@ -16,16 +16,22 @@ class StaffPayslip extends Controller
     {
 
         $user = auth()->user();
+        // dd($user);
         if ($user) {
-            if ($user) {
-                $userId = $user->id;
-                $employeeName = $user->name;
-                $employeeID = $user->employee_id;
-                $biometric = Staffs::where('user_name_id', $userId)
-                    ->first();
+            $userId = $user->id;
+            $employeeName = $user->name;
+            $employeeID = $user->employee_id;
+
+            // Query the biometric record
+            $biometric = Staffs::where('user_name_id', $userId)->first();
+            if ($biometric) {
                 $biometricId = $biometric->biometric;
+            } else {
+                // Handle case where no biometric record is found
+                $biometricId = null;  // or set a default value if needed
             }
         }
+
 
         $previousMonth = Carbon::now()->subMonth()->format('F');
         $currentYear = Carbon::now()->year;
@@ -104,4 +110,13 @@ class StaffPayslip extends Controller
             return response()->json(['status' => false, 'data' => 'Request Failed!']);
         }
     }
+
+    // public function prereq(Request $request)
+    // {
+    //     $user = auth()->user();
+    //     if ($request->ajax())
+    //     {
+
+    //     }
+    // }
 }

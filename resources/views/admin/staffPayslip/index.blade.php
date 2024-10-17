@@ -162,6 +162,7 @@
     <script>
         $(function() {
             callAjax();
+            PrevReqcallAjax();
         });
 
         function callAjax() {
@@ -218,6 +219,69 @@
             };
 
             let table = $('.datatable-Staff-Payslip').DataTable(dtOverrideGlobals);
+
+            table.on('draw', function() {
+                let rowCount = table.rows().count();
+                if (rowCount > 0) {
+                    $('#payslip-note').show();
+                } else {
+                    $('#payslip-note').hide();
+                }
+            });
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e) {
+                $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+            });
+        }
+
+        function PrevReqcallAjax() {
+            let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons);
+
+            dtButtons.splice(2, 2);
+            dtButtons.splice(3, 3);
+
+            if ($.fn.DataTable.isDataTable('.datatable-Staff-Payslip-PreReq')) {
+                $('.datatable-Staff-Payslip-PreReq').DataTable().destroy();
+            }
+
+            let dtOverrideGlobals = {
+                buttons: dtButtons,
+                retrieve: true,
+                aaSorting: [],
+                ajax: "{{ route('admin.Staff-Payslip-PreReq.prereq') }}",
+                columns: [{
+                        data: 'placeholder',
+                        name: 'placeholder'
+                    },
+                    {
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'month',
+                        name: 'month'
+                    },
+                    {
+                        data: 'year',
+                        name: 'year'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status'
+                    },
+                ],
+                orderCellsTop: true,
+                order: [
+                    [1, 'desc']
+                ],
+                pageLength: 10,
+            };
+
+            let table = $('.datatable-Staff-Payslip-PreReq').DataTable(dtOverrideGlobals);
 
             table.on('draw', function() {
                 let rowCount = table.rows().count();

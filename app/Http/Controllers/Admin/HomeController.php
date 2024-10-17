@@ -15,7 +15,7 @@ class HomeController extends SystemCalendarController
     {
         $role_id = auth()->user()->id;
         // dd($role_id);
-        if ($role_id != 2) {
+        if ($role_id == 1) {
 
             $staffsCount = Staffs::whereNull('deleted_at')->count();
             $projectCount = Projects::whereNull('deleted_at')->count();

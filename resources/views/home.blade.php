@@ -29,12 +29,12 @@
             <div class="col-md-3">
                 <div class="card">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-6">
                             <div class="icon-container">
                                 <i class="fas fa-users"></i>
                             </div>
                         </div>
-                        <div class="col-md-6 text-right">
+                        <div class="col-6 text-right">
                             <p id="employee_count" class="counts">{{ $staffsCount }}</p>
                             <p id="employee">SHI Staffs</p>
                         </div>
@@ -44,12 +44,12 @@
             <div class="col-md-3">
                 <div class="card">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-6">
                             <div class="icon-container">
                                 <i class="fas fa-cubes"></i>
                             </div>
                         </div>
-                        <div class="col-md-6 text-right">
+                        <div class="col-6 text-right">
                             <p id="project_count" class="counts">{{ $projectCount }}</p>
                             <p id="projects">Projects</p>
                         </div>
