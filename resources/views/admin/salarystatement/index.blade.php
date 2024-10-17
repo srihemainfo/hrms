@@ -1,5 +1,18 @@
 @extends('layouts.admin')
 @section('content')
+    <div style="margin-bottom: 10px;" class="row">
+        <div class="col-lg-12">
+            {{-- <a class="btn btn-success" href="{{ route('admin.staff-biometrics.create') }}">
+            Add Biometrics</a> --}}
+            <button class="btn btn-warning" data-toggle="modal" data-target="#csvImportModal">
+                {{ trans('global.app_csvImport') }}
+            </button>
+            @include('csvImport.modal', [
+                'model' => 'SalaryStatementImport',
+                'route' => 'admin.salary-statement-imports.parseCsvImport',
+            ])
+        </div>
+    </div>
     <div class="card">
         <div class="card-header">
             Salary Statement
@@ -140,12 +153,14 @@
                             {{ 'LOP' }}
                         </th>
                         <th>
+                            Late Amount
+                        </th>
+                        <th>
                             {{ 'Other Deduction' }}
                         </th>
                         <th>
                             {{ 'Total Deduction' }}
                         </th>
-
                         <th>
                             {{ 'Net Pay' }}
                         </th>
@@ -351,6 +366,10 @@
                             {
                                 data: 'lop',
                                 name: 'lop'
+                            },
+                            {
+                                data: 'late',
+                                name: 'late'
                             },
                             {
                                 data: 'otherdeduction',

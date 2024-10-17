@@ -1535,6 +1535,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('salary-statement/index_rep', 'SalarystatementController@index_rep')->name('salary-statement.index_rep');
     Route::post('salary-statement/get_report', 'SalarystatementController@get_report')->name('salary-statement.get_report');
     Route::get('salary-statement/salarystatement', 'SalarystatementController@salarystatement')->name('salary-statement.salarystatement');
+    Route::post('salary-statement/parse-csv-import', 'SalarystatementController@parseCsvImport')->name('salary-statement-imports.parseCsvImport');
+    Route::post('salary-statement/process-csv-import', 'SalarystatementController@processCsvImport')->name('salary-statement-imports.processCsvImport');
     Route::resource('salary-statement', 'SalarystatementController');
 
     // Shift

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Models\BankAccountDetail;
 use App\Models\NonTeachingStaff;
 use App\Models\PersonalDetail;
@@ -19,6 +20,8 @@ use Yajra\DataTables\Facades\DataTables;
 
 class SalarystatementController extends Controller
 {
+    use CsvImportTrait;
+
     public function index()
     {
         // $department = ToolsDepartment::pluck('name', 'id')->prepend('All Departments', '');
@@ -120,6 +123,9 @@ class SalarystatementController extends Controller
             });
             $table->editColumn('basicpay', function ($row) {
                 return $row->basicpay ? (float) $row->basicpay : 0;
+            });
+            $table->editColumn('late', function ($row) {
+                return $row->late_amt ? (float) $row->late_amt : 0;
             });
             $table->editColumn('agp', function ($row) {
                 return $row->agp ? (float) $row->agp : 0;

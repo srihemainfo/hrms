@@ -14,7 +14,7 @@ class HomeController extends SystemCalendarController
         $role_id = auth()->user()->id;
         // dd($role_id);
         if ($role_id != 2) {
-            return view('layouts.admin');
+            return view('home');
         } else {
             $userId = auth()->user()->id;
             $canEdit = DB::table('staffs')

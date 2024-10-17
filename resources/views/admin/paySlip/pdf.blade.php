@@ -76,14 +76,14 @@
 <body>
     @if (count($data) > 0)
         @foreach ($data as $results)
-        {{-- {{ dd($results) }} --}}
+        {{-- {{ dd($results->employee_id) }} --}}
             <div class="container">
                 <h3 style="text-align: center; margin-bottom: 50px;">Pay Slip For The Month {{ $results->month }} {{ $results->year }}</h3>
 
                 <table>
                     <tr>
                         <td>Emp. ID</td>
-                        <td>: {{ $results->employee_id }}</td>
+                        <td>: {{ !isset($results->employee_id) ? '' : $results->employee_id }}</td>
                         <td>Salary for the Month of</td>
                         <td>: {{ $results->month }}</td>
                     </tr>
@@ -146,7 +146,7 @@
                         <td class="tbl_td">Basic Pay</td>
                         <td class="tbl_td">&#8377; {{ $results->basicpay }}</td>
                         <td class="tbl_td">Non-Payable Late / Permission</td>
-                        <td class="tbl_td"></td>
+                        <td class="tbl_td">&#8377; {{ $results->late_amt }}</td>
                     </tr>
                     <tr class="tbl_tr">
                         <td class="tbl_td">Allowances</td>
@@ -186,7 +186,7 @@
                     </tr>
                     <tr class="tbl_tr">
                         <td class="tbl_td">Gross Salary</td>
-                        <td class="tbl_td"></td>
+                        <td class="tbl_td">&#8377; {{ $results->gross_salary }}</td>
                         <td class="tbl_td"></td>
                         <td class="tbl_td"></td>
                     </tr>
