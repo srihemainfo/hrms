@@ -1375,6 +1375,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('Staff-Personal-Attendence', 'staff_personal_attendence@index')->name('Staff-Personal-Attendence.index');
     Route::post('Staff-Personal-Attendence/search', 'staff_personal_attendence@search')->name('Staff-Personal-Attendence.search');
 
+
+    //StaffPayslip
+    Route::get('Staff-Payslip', 'StaffPayslip@index')->name('Staff-Payslip.index');
+    Route::post('Staff-Payslip-Request', 'StaffPayslip@reqs')->name('Staff-Payslip.reqs');
+
+
     //Staff Relieving report
     Route::get('Staff-Relieving-Report', 'StaffRelievingreport@index')->name('Staff-Relieving-Report.index');
     Route::post('Staff-Relieving-Report/search', 'StaffRelievingreport@search')->name('Staff-Relieving-Report.search');
