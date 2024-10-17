@@ -53,6 +53,7 @@ class salarystatement extends Model
         'otherdeduction',
         'totaldeductions',
         'netpay',
+        'late_amt',
         'updatedby',
     ];
 

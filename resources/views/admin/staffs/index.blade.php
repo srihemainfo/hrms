@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-    @can('staff_create')
+    {{-- @can('staff_create') --}}
         <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
                 <a class="btn btn-success" href="{{ route('admin.staffs.create') }}">
@@ -15,7 +15,7 @@
                 ])
             </div>
         </div>
-    @endcan
+    {{-- @endcan --}}
     <style>
         .select2 {
             width: 100% !important;

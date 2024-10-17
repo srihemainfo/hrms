@@ -19,6 +19,8 @@ use App\Models\HrmRequestLeaf;
 use App\Models\NonTeachingStaff;
 use App\Models\PersonalDetail;
 use App\Models\Role;
+use App\Models\salarystatement;
+use App\Models\SalaryStatementImport;
 use App\Models\Scholarship;
 use App\Models\Semester;
 use App\Models\StaffBiometric;
@@ -35,6 +37,7 @@ use App\Models\ToolssyllabusYear;
 use App\Models\User;
 use App\Models\UserAlert;
 use Carbon\Carbon;
+use DB;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -650,23 +653,23 @@ trait CsvImportTrait
                             }
                             // dd($formattedDate);
                             $staff_work_type = Staffs::where(['employee_id' => $staff_code])->first();
-                            if($staff_work_type->worktype_id = 1){
+                            if ($staff_work_type->worktype_id = 1) {
                                 if ($formattedDate != null) {
-                                    if($insert['permission'] != '' || $insert['details'] != '' || $insert['details'] != null || $insert['permission'] != null){
-                                        if($insert['permission'] != '' || $insert['permission'] != null){
+                                    if ($insert['permission'] != '' || $insert['details'] != '' || $insert['details'] != null || $insert['permission'] != null) {
+                                        if ($insert['permission'] != '' || $insert['permission'] != null) {
                                             $update_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->update([
                                                 'permission' => $insert['permission'],
                                                 'status' => 'Present',
                                             ]);
                                         }
 
-                                        if($insert['details'] != '' || $insert['details'] != null){
-                                            if($insert['details'] == 'On Duty'){
+                                        if ($insert['details'] != '' || $insert['details'] != null) {
+                                            if ($insert['details'] == 'On Duty') {
                                                 $update_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->update([
                                                     'details' => $insert['details'],
                                                     'status' => 'Present',
                                                 ]);
-                                            }else{
+                                            } else {
                                                 $update_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->update([
                                                     'details' => $insert['details'],
                                                 ]);
@@ -912,18 +915,18 @@ trait CsvImportTrait
                                     }
                                     $formattedDate = null;
                                 }
-                            }elseif($staff_work_type->worktype_id = 2){
+                            } elseif ($staff_work_type->worktype_id = 2) {
 
-                            }elseif($staff_work_type->worktype_id = 3){
+                            } elseif ($staff_work_type->worktype_id = 3) {
 
-                            }elseif($staff_work_type->worktype_id = 4){
+                            } elseif ($staff_work_type->worktype_id = 4) {
                                 if ($formattedDate != null) {
                                     $staff_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->first();
                                     if ($staff_biometric != '') {
                                         if ($staff_biometric->import != 1) {
                                             if ($staff_biometric->details == 'Sunday' && $staff_biometric->details == 'Holiday') {
                                                 $status = 'Absent';
-                                            }else{
+                                            } else {
                                                 $status = 'Present';
                                             }
 
@@ -2328,6 +2331,101 @@ trait CsvImportTrait
 
                 $inserted_rows = $rows - $balance_row;
                 session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => 'Grade Book ']));
+            } elseif ($model == "App\Models\SalaryStatementImport") {
+                $balance_row = $rows;
+
+                foreach ($for_insert[0] as $i => $insert) {
+                    // dd($insert);
+                    if ($insert['employee_id'] != '' && $insert['month'] != '' && $insert['year'] != '' && $insert['working_days'] != '') {
+
+                        $staff_id = $insert['employee_id'];
+                        $month = $insert['month'];
+                        $year = $insert['year'];
+                        $working_days = $insert['working_days'];
+                        $allowance = $insert['allowance'] ?? 0;
+                        $ot = $insert['over_time'] ?? 0;
+                        $advance = $insert['advance'] ?? 0;
+                        $one_hour_late = $insert['one_hour_late'] != '' ? $insert['one_hour_late'] : 0;
+                        $two_hour_late = $insert['two_hour_late'] != '' ? $insert['two_hour_late'] : 0;
+                        // dd($two_hour_late, $one_hour_late);
+                        $staff = Staffs::where('employee_id', $insert['employee_id'])->orWhere('biometric', $insert['employee_id'])->first();
+                        $bank_account_details = DB::table('bank_account_details')->where('user_name_id', $staff->user_name_id)->first();
+                        $basic_pay = $staff->basicPay;
+                        $m_per_day_basic_pay = (int) $staff->basicPay / (int) $working_days;
+                        $m_per_hour_basic_pay = ceil($m_per_day_basic_pay / 8);
+                        $lop_late_amt = 0;
+                        $leave = 0;
+                        $lop_leave_amt = 0;
+                        // $m_half_day_basic_pay = ceil($m_per_day_basic_pay / 2);
+                        // $lop_half_leave_amt = 0;
+
+                        if ($insert['lop_days'] != '' && $insert['lop_days'] != null && $insert['lop_days'] != 0) {
+                            $leave = $insert['lop_days'] ?? 0;
+                            $lop_leave_amt += ceil($m_per_day_basic_pay) * $leave;
+                        }
+
+                        if ($insert['one_hour_late'] != '' && $insert['one_hour_late'] != null && $insert['one_hour_late'] != 0) {
+                            $one_hour_late = $insert['one_hour_late'] ?? 0;
+                            $lop_late_amt += (int) $m_per_hour_basic_pay * $one_hour_late;
+                        }
+
+                        if ($insert['two_hour_late'] != '' && $insert['two_hour_late'] != null && $insert['two_hour_late'] != 0) {
+                            $two_hour_late = $insert['two_hour_late'] ?? 0;
+                            $lop_late_amt += ceil($m_per_hour_basic_pay) * ($two_hour_late * 2);
+                        }
+
+                        $total_deduction = ceil($advance + $lop_late_amt + $lop_leave_amt);
+                        $net_pay = ceil($basic_pay - $total_deduction + $allowance + $ot);
+                        $other_deduction = ceil($advance + $lop_late_amt);
+                        $gross = ceil($basic_pay + $allowance + $ot);
+                        // dd($insert['two_hour_late'], $insert['two_hour_late'] ?? 0);
+                        if ($net_pay) {
+                            $check = salarystatement::where(['month' => $month, 'year' => $year])->exists();
+                            if (!$check) {
+                                $statement = salarystatement::create([
+                                    'user_name_id' => $staff->user_name_id,
+                                    'month' => $month,
+                                    'name' => $staff->name,
+                                    'year' => $year,
+                                    'doj' => $staff->DOJ,
+                                    'total_working_days' => $working_days,
+                                    'total_payable_days' => $working_days - ($insert['lop_days'] ?? 0),
+                                    'total_lop_days' => $insert['lop_days'] ?? 0,
+                                    'bankname' => $bank_account_details ? $bank_account_details->bank_name : null,
+                                    'basicpay' => $basic_pay,
+                                    'lop' => $lop_leave_amt,
+                                    'late_amt' => $lop_late_amt,
+                                    'gross_salary' => $gross,
+                                    'netpay' => $net_pay,
+                                    'totaldeductions' => $total_deduction,
+                                    'updatedby' => auth()->user()->name,
+                                ]);
+
+                                $statement = SalaryStatementImport::create([
+                                    'user_name_id' => $staff->user_name_id,
+                                    'employee_id' => $insert['employee_id'],
+                                    'month' => $month,
+                                    'year' => $year,
+                                    'working_days' => $working_days,
+                                    'lop_days' => $insert['lop_days'] != '' ? $insert['lop_days'] : 0,
+                                    'one_hour_late' => $one_hour_late,
+                                    'two_hour_late' => $two_hour_late,
+                                    'importedBy' => auth()->user()->name,
+                                ]);
+                                $balance_row--;
+
+                            }
+                        }
+
+                    } else {
+                        $inserted_rows = $rows - $balance_row;
+                        session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => 'Grade Book ']));
+                        return redirect($request->input('redirect'))->with('error', 'Required Details Not Found.');
+                    }
+                }
+
+                $inserted_rows = $rows - $balance_row;
+                session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => 'Grade Book ']));
             } else {
 
                 $balance_row = $rows;
@@ -2374,14 +2472,14 @@ trait CsvImportTrait
         $modelName = $request->input('model', false);
 
         $fullModelName = "App\\Models\\" . $modelName;
-
+        // dd($fullModelName, $modelName);
         $model = new $fullModelName();
         $fillables = $model->getFillable();
 
         $redirect = url()->previous();
 
         $routeName = 'admin.' . strtolower(Str::plural(Str::kebab($modelName))) . '.processCsvImport';
-
+        // dd($routeName);
         return view('csvImport.parseInput', compact('headers', 'filename', 'fillables', 'hasHeader', 'modelName', 'lines', 'redirect', 'routeName'));
     }
 
