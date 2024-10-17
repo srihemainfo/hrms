@@ -327,6 +327,25 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('state/delete', 'StateController@destroy')->name('state.delete');
     Route::delete('state/destroy', 'StateController@massDestroy')->name('state.massDestroy');
 
+     //Projects
+     Route::get('projects', 'ProjectsController@index')->name('projects.index');
+     Route::post('projects/view', 'ProjectsController@view')->name('projects.view');
+     Route::post('projects/edit', 'ProjectsController@edit')->name('projects.edit');
+     Route::post('projects/store', 'ProjectsController@store')->name('projects.store');
+     Route::post('projects/delete', 'ProjectsController@destroy')->name('projects.delete');
+     Route::delete('projects/destroy', 'ProjectsController@massDestroy')->name('projects.massDestroy');
+
+    // Route::get('tdashboard', 'TdashboardController@index')->name('tdashboard.index');
+
+
+    //WorkType
+    Route::get('worktype', 'WorkTypeController@index')->name('worktype.index');
+    Route::post('worktype/view', 'WorkTypeController@view')->name('worktype.view');
+    Route::post('worktype/edit', 'WorkTypeController@edit')->name('worktype.edit');
+    Route::post('worktype/store', 'WorkTypeController@store')->name('worktype.store');
+    Route::post('worktype/delete', 'WorkTypeController@destroy')->name('worktype.delete');
+    Route::delete('worktype/destroy', 'WorkTypeController@massDestroy')->name('worktype.massDestroy');
+
     // Community
     Route::get('communities', 'CommunityController@index')->name('communities.index');
     Route::post('communities/view', 'CommunityController@view')->name('communities.view');

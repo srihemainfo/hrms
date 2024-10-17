@@ -69,7 +69,7 @@
                     </a>
                 </li>
 
-                {{-- @can('user_management_access') --}}
+                @can('authentication_access')
                     <li
                         class="nav-item has-treeview {{ request()->is('admin/permissions*') ? 'menu-open' : '' }} {{ request()->is('admin/roles*') ? 'menu-open' : '' }} {{ request()->is('admin/users*') ? 'menu-open' : '' }} {{ request()->is('admin/audit-logs*') ? 'menu-open' : '' }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/permissions*') ? 'active' : '' }} {{ request()->is('admin/roles*') ? 'active' : '' }} {{ request()->is('admin/users*') ? 'active' : '' }} {{ request()->is('admin/audit-logs*') ? 'active' : '' }}"
@@ -134,12 +134,12 @@
 
                         </ul>
                     </li>
-                {{-- @endcan --}}
+                @endcan
 
 
 
 
-                {{-- @can('staff_management_access') --}}
+                @can('staff_access')
                     <li
                         class="nav-item has-treeview {{ request()->is('admin/staff_details*') ? 'menu-open' : '' }} {{ request()->is('admin/Staff_status*') ? 'menu-open' : '' }} {{ request()->is('admin/inactive_staff*') ? 'menu-open' : '' }} {{ request()->is('admin/teaching-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/non-teaching-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/rd-staffs*') ? 'menu-open' : '' }} {{ request()->is('admin/staff-edge*') ? 'menu-open' : '' }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/staff_details*') ? 'active' : '' }} {{ request()->is('admin/Staff_status*') ? 'active' : '' }} {{ request()->is('admin/inactive_staff*') ? 'active' : '' }} {{ request()->is('admin/teaching-staffs*') ? 'active' : '' }} {{ request()->is('admin/non-teaching-staffs*') ? 'active' : '' }} {{ request()->is('admin/rd-staffs*') ? 'active' : '' }} {{ request()->is('admin/staff-edge*') ? 'active' : '' }}"
@@ -148,7 +148,7 @@
 
                             </i>
                             <p>
-                                Staff Management
+                                Staffs
                                 <i class="right fa fa-fw fa-angle-left nav-icon"></i>
                             </p>
                         </a>
@@ -160,7 +160,7 @@
                                     <i class="fas nav-icon fas fa-user-tie"></i>
                                     </i>
                                     <p>
-                                        Staffs
+                                        Staffs List
                                     </p>
                                 </a>
                             </li>
@@ -176,9 +176,9 @@
                             </li>
                         </ul>
                     </li>
-                {{-- @endcan --}}
+                @endcan
 
-                {{-- @can('hrm_access') --}}
+                @can('hrm_access')
                     <li
                         class="nav-item has-treeview {{ request()->is('admin/staff/*') ||request()->is('admin/staff') ||request()->is('admin/hrm-request-permissions*') ||request()->is('admin/staff_leave_report*') ||request()->is('admin/salary-statement*') ||request()->is('admin/permission-register*') ||request()->is('admin/PaySlip*') ||request()->is('admin/staff-attend-register*') ||request()->is('admin/employee-salary*') ||request()->is('admin/staff-biometrics*') ||request()->is('admin/hrm-request-leaves*') ||request()->is('admin/leave-staff-allocations*') ||request()->is('admin/od-masters*') ||request()->is('admin/take-attentance-students*') ||request()->is('admin/od-requests*') ||request()->is('admin/internship-requests*') ||request()->is('admin/hrm-request-permissions*') ||request()->is('admin/staff-transfer-infos*') ||request()->is('admin/hrm-request-leaves*') ||request()->is('admin/staff_leave_register*') ||request()->is('admin/Staff-Relieving-Report*') ||request()->is('admin/leave-implementation*') ||request()->is('admin/staff-daily-attendance*')? 'menu-open': '' }}">
                         <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/staff/*') || request()->is('admin/staff') || request()->is('admin/hrm-request-permissions*') || request()->is('admin/staff_leave_report*') || request()->is('admin/salary-statement*') || request()->is('admin/permission-register*') || request()->is('admin/staff-attend-register*') || request()->is('admin/PaySlip*') || request()->is('admin/employee-salary*') || request()->is('admin/staff-biometrics*') || request()->is('admin/hrm-request-leaves*') || request()->is('admin/leave-staff-allocations*') || request()->is('admin/od-masters*') || request()->is('admin/take-attentance-students*') || request()->is('admin/od-requests*') || request()->is('admin/internship-requests*') || request()->is('admin/hrm-request-permissions*') || request()->is('admin/staff-transfer-infos*') || request()->is('admin/staff_leave_register*') || request()->is('admin/Staff-Relieving-Report*') || request()->is('admin/leave-implementation*') || request()->is('admin/staff-daily-attendance*')? 'active': '' }}"
@@ -192,7 +192,7 @@
                         </a>
                         <ul class="nav nav-treeview " style="background-color: rgba(128, 128, 128, 0.473); color:#ffffff">
 
-                            {{-- @can('staff_biometric_access') --}}
+                            @can('staff_biometric_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.staff-biometrics.index') }}"
                                         class="nav-link {{ request()->is('admin/staff-biometrics') || request()->is('admin/staff-biometrics/*') ? 'active' : '' }}">
@@ -203,8 +203,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('staff_biometric_access') --}}
+                            @endcan
+                            @can('staff_biometric_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.staff.balance') }}"
                                         class="nav-link {{ request()->is('admin/staff') || request()->is('admin/staff/*') ? 'active' : '' }}">
@@ -216,8 +216,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('staff_daily_att_access') --}}
+                            @endcan
+                            @can('staff_daily_att_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.staff-daily-attendance.index') }}"
                                         class="nav-link {{ request()->is('admin/staff-daily-attendance') || request()->is('admin/staff-daily-attendance/*') ? 'active' : '' }}">
@@ -229,8 +229,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('hrm_request_leaf_access') --}}
+                            @endcan
+                            @can('hrm_request_leaf_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.hrm-request-leaves.index') }}"
                                         class="nav-link {{ request()->is('admin/hrm-request-leaves') || request()->is('admin/hrm-request-leaves/*') ? 'active' : '' }}">
@@ -242,8 +242,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('hrm_request_permission_access') --}}
+                            @endcan
+                            @can('hrm_request_permission_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.hrm-request-permissions.index') }}"
                                         class="nav-link {{ request()->is('admin/hrm-request-permissions') || request()->is('admin/hrm-request-permissions/*') ? 'active' : '' }}">
@@ -255,8 +255,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('staff_leave_report_access') --}}
+                            @endcan
+                            @can('staff_leave_report_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.staff_leave_report.index') }}"
                                         class="nav-link {{ request()->is('admin/staff_leave_report') || request()->is('admin/staff_leave_report/*') ? 'active' : '' }}">
@@ -268,8 +268,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('staff_leave_register_access') --}}
+                            @endcan
+                            @can('staff_leave_register_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.staff_leave_register.index') }}"
                                         class="nav-link {{ request()->is('admin/staff_leave_register') || request()->is('admin/staff_leave_register/*') ? 'active' : '' }}">
@@ -279,8 +279,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('permission_register_access') --}}
+                            @endcan
+                            @can('permission_register_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.permission-register.index') }}"
                                         class="nav-link {{ request()->is('admin/permission-register') || request()->is('admin/permission-register/*') ? 'active' : '' }}">
@@ -292,8 +292,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('staff_attendance_register_access') --}}
+                            @endcan
+                            @can('staff_attendance_register_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.staff-attend-register.index') }}"
                                         class="nav-link {{ request()->is('admin/staff-attend-register') || request()->is('admin/staff-attend-register/*') ? 'active' : '' }}">
@@ -305,8 +305,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('staff_relieving_report') --}}
+                            @endcan
+                            @can('staff_relieving_report_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.Staff-Relieving-Report.index') }}"
                                         class="nav-link {{ request()->is('admin/Staff-Relieving-Report*') ? 'active' : '' }}">
@@ -314,17 +314,8 @@
                                         <p>Staff Relieving Report</p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('leave_implement_access') --}}
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.leave-implementation.index') }}"
-                                        class="nav-link {{ request()->is('admin/leave-implementation*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-gavel"></i>
-                                        <p>Leave Implementation</p>
-                                    </a>
-                                </li>
-                            {{-- @endcan
-                            @can('employee_salary_access') --}}
+                            @endcan
+                            @can('employee_salary_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.employee-salary.index') }}"
                                         class="nav-link {{ request()->is('admin/employee-salary') || request()->is('admin/employee-salary/*') ? 'active' : '' }}">
@@ -336,8 +327,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('salary_statement') --}}
+                            @endcan
+                            @can('salary_statement_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.salary-statement.index') }}"
                                         class="nav-link {{ request()->is('admin/salary-statement') || request()->is('admin/salary-statement/*') ? 'active' : '' }}">
@@ -349,8 +340,8 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan
-                            @can('pay_slip_access') --}}
+                            @endcan
+                            @can('pay_slip_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.PaySlip.index') }}"
                                         class="nav-link {{ request()->is('admin/PaySlip') || request()->is('admin/PaySlip/*') ? 'active' : '' }}">
@@ -362,90 +353,10 @@
                                         </p>
                                     </a>
                                 </li>
-                            {{-- @endcan --}}
-                            {{-- @can('leave_staff_allocation_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.leave-staff-allocations.index') }}"
-                                        class="nav-link {{ request()->is('admin/leave-staff-allocations') || request()->is('admin/leave-staff-allocations/*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-file-invoice-dollar">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.leaveStaffAllocation.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan --}}
-                            {{-- @can('od_master_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.od-masters.index') }}"
-                                        class="nav-link {{ request()->is('admin/od-masters') || request()->is('admin/od-masters/*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-file-signature">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.odMaster.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan --}}
-                            {{-- @can('take_attentance_student_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.take-attentance-students.index') }}"
-                                        class="nav-link {{ request()->is('admin/take-attentance-students') || request()->is('admin/take-attentance-students/*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-drafting-compass">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.takeAttentanceStudent.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan --}}
-                            {{-- @can('od_request_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.od-requests.index') }}"
-                                        class="nav-link {{ request()->is('admin/od-requests') || request()->is('admin/od-requests/*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-id-badge">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.odRequest.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan --}}
-                            {{-- @can('internship_request_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.internship-requests.index') }}"
-                                        class="nav-link {{ request()->is('admin/internship-requests') || request()->is('admin/internship-requests/*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-book-reader">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.internshipRequest.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan --}}
-
-                            {{-- @can('staff_transfer_info_access')
-                                <li class="nav-item">
-                                    <a href="{{ route('admin.staff-transfer-infos.index') }}"
-                                        class="nav-link {{ request()->is('admin/staff-transfer-infos') || request()->is('admin/staff-transfer-infos/*') ? 'active' : '' }}">
-                                        <i class="fa-fw nav-icon fas fa-award">
-
-                                        </i>
-                                        <p>
-                                            {{ trans('cruds.staffTransferInfo.title') }}
-                                        </p>
-                                    </a>
-                                </li>
-                            @endcan --}}
-
+                            @endcan
                         </ul>
                     </li>
-                {{-- @endcan --}}
+                @endcan
 
                 @can('master_tool_access')
                     <li class="nav-item">

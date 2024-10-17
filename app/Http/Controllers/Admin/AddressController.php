@@ -2,21 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Gate;
-use App\Models\User;
-use App\Models\Address;
-use Illuminate\Http\Request;
-use App\Models\TeachingStaff;
-use App\Events\StaffInsertEvent;
-use App\Models\Staffs;
-use App\Models\NonTeachingStaff;
 use App\Http\Controllers\Controller;
-use Yajra\DataTables\Facades\DataTables;
-use App\Http\Requests\StoreAddressRequest;
-use App\Http\Requests\UpdateAddressRequest;
-use Symfony\Component\HttpFoundation\Response;
 use App\Http\Controllers\Traits\CsvImportTrait;
-use App\Http\Requests\MassDestroyAddressRequest;
+use App\Http\Requests\UpdateAddressRequest;
+use App\Models\Address;
+use App\Models\NonTeachingStaff;
+use App\Models\Staffs;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
+use Yajra\DataTables\Facades\DataTables;
 
 class AddressController extends Controller
 {
@@ -24,7 +20,7 @@ class AddressController extends Controller
 
     public function index(Request $request)
     {
-        // abort_if(Gate::denies('address_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('address_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
             $query = Address::with(['name'])->select(sprintf('%s.*', (new Address)->table));
@@ -184,7 +180,6 @@ class AddressController extends Controller
             $stu_address->name_id = $request->user_name_id;
             $stu_address->save();
 
-
             if ($stu_address) {
                 $student = ['user_name_id' => $request->user_name_id, 'name' => $request->name];
             } else {
@@ -197,6 +192,7 @@ class AddressController extends Controller
 
     public function staff_index(Request $request)
     {
+        abort_if(Gate::denies('address_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if (isset($request->accept)) {
 
             Address::where('id', $request->id)->update(['status' => 1]);
@@ -266,10 +262,8 @@ class AddressController extends Controller
             $staff_edit = $query_two[0];
 
         }
-        $query_two = Address::where(['name_id' => $request->user_name_id,'address_type' => $request->updater])->get();
-        $address=Address::get()->pluck('address_type');
-
-
+        $query_two = Address::where(['name_id' => $request->user_name_id, 'address_type' => $request->updater])->get();
+        $address = Address::get()->pluck('address_type');
 
         $check = "address_details";
         $check_staff_1 = Staffs::where(['user_name_id' => $request->user_name_id])->get();
@@ -286,6 +280,7 @@ class AddressController extends Controller
     }
     public function staff_update(Request $request, Address $address)
     {
+        abort_if(Gate::denies('address_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $addresses = $address->where(['name_id' => $request->user_name_id, 'address_type' => $request->address_type])->update(request()->except(['_token', 'submit', 'id', 'name', 'user_name_id']));
 
         if ($addresses) {
@@ -334,7 +329,7 @@ class AddressController extends Controller
 
     public function edit(Address $address)
     {
-        // abort_if(Gate::denies('address_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('address_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $names = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -352,7 +347,7 @@ class AddressController extends Controller
 
     public function show(Address $address)
     {
-        // abort_if(Gate::denies('address_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('address_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $address->load('name');
 
@@ -361,7 +356,7 @@ class AddressController extends Controller
 
     public function destroy(Address $address)
     {
-        // abort_if(Gate::denies('address_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('address_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $address->delete();
 

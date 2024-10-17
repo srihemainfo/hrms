@@ -7,7 +7,7 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Demo College Of Engineering & Technology</title>
+    <title>Human Resource Management</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('adminlogo/school_favicon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -424,10 +424,12 @@
                 @endif
 
 
+
                 @if (request()->is('admin/master-tools') ||
                 request()->is('admin/tools*') ||
                 request()->is('admin/batches*') ||
                 request()->is('admin/year*') ||
+                request()->is('admin/projects*') ||
                 request()->is('admin/designation*') ||
                 request()->is('admin/academic-years*') ||
                 request()->is('admin/semesters*') ||
@@ -436,6 +438,7 @@
                 request()->is('admin/lab_title*') ||
                 request()->is('admin/nationalities*') ||
                 request()->is('admin/religions*') ||
+                request()->is('admin/worktype*') ||
                 request()->is('admin/blood-groups*') ||
                 request()->is('admin/state*') ||
                 request()->is('admin/communities*') ||

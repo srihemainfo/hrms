@@ -13,11 +13,12 @@ use App\Models\Role;
 use App\Models\RoleType;
 use App\Models\Staffs;
 use App\Models\Student;
-use App\Models\TeachingStaff;
 use App\Models\User;
+use App\Models\WorkType;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
@@ -28,10 +29,9 @@ class UsersController extends Controller
 
     public function index(Request $request)
     {
-        // abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('user_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            // $query = User::with(['roles'])->where('id', '!=', 2973)->select(sprintf('%s.*', (new User)->table));
 
             $query = DB::table('users')
                 ->leftJoin('role_user', 'role_user.user_id', '=', 'users.id')
@@ -72,16 +72,6 @@ class UsersController extends Controller
                 return $row->email ? $row->email : '';
             });
 
-            // $table->editColumn('staff_code', function ($row) {
-            //     if ($row->employID != null) {
-            //         return $row->employID;
-            //     } else if ($row->register_no != null) {
-            //         return $row->register_no;
-            //     } else {
-            //         return '';
-            //     }
-            // });
-
             $table->editColumn('role_type', function ($row) {
 
                 return $row->teach_type ? $row->teach_type : '';
@@ -102,18 +92,20 @@ class UsersController extends Controller
 
     public function create()
     {
-        // abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $roles = Role::pluck('title', 'id');
         $working_as = Role::pluck('title', 'id');
         $designations = Designation::pluck('name', 'id');
+        $worktypes = WorkType::pluck('name', 'id');
         $RoleTypes = RoleType::pluck('name', 'id');
 
-        return view('admin.users.create', compact('roles', 'working_as', 'designations', 'RoleTypes'));
+        return view('admin.users.create', compact('roles', 'working_as', 'designations', 'RoleTypes', 'worktypes'));
     }
 
     public function store(Request $request)
     {
+
         // dd($request);
         if (isset($request->role)) {
             $user = new User();
@@ -137,10 +129,11 @@ class UsersController extends Controller
                     $staffs->gender = $request->gender;
                     $staffs->designation_id = $request->designation;
                     $staffs->role_id = $request->role;
+                    $staffs->worktype_id = $request->worktype;
+                    $staffs->hybrid_working_days = $request->daysJson;
                     $staffs->status = '';
                     $staffs->employee_id = '';
                     $staffs->biometric = '';
-
                     $staffs->save();
 
                     $personalDetails->user_name_id = $user->id;
@@ -149,12 +142,13 @@ class UsersController extends Controller
                     $personalDetails->phone_number = $request->phone_number;
                     $personalDetails->role_id = $request->role;
                     $personalDetails->designation_id = $request->designation;
+                    $personalDetails->worktype_id = $request->worktype;
                     $personalDetails->gender = $request->gender;
 
                     $personalDetails->save();
                 }
 
-                return response()->json(['status' => true, 'data' => 'User created successfully']);
+                return response()->json(['status' => true, 'data' => 'User created Successfully']);
             } else {
                 return response()->json(['status' => false, 'data' => 'User creation failed']);
             }
@@ -163,15 +157,18 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-        // abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $roles = Role::pluck('title', 'id');
         $user->load('roles');
-        // $role_type = TeachingType::pluck('name', 'id')->prepend('Select Type', '');
+        $role_type = RoleType::pluck('name', 'id')->prepend('Select Type', '');
         return view('admin.users.edit', compact('role_type', 'user', 'roles'));
     }
 
     public function update(UpdateUserRequest $request, User $user, )
     {
+
+        // dd($request->role_type);
 
         $roleId = $request->input('roles');
         $role = Role::find($roleId);
@@ -179,7 +176,7 @@ class UsersController extends Controller
         $designation = $role->title;
 
         if ($request->role_type == 1 || $request->role_type == 3) {
-            $teach = TeachingStaff::where('user_name_id', $user->id)->get();
+            $teach = Staffs::where('user_name_id', $user->id)->get();
             if (count($teach) <= 0) {
 
                 $nonTeach = NonTeachingStaff::where('user_name_id', $user->id)->get();
@@ -191,33 +188,41 @@ class UsersController extends Controller
                     unset($teachingData['created_at']);
                     unset($teachingData['updated_at']);
 
-                    $teaching = TeachingStaff::create($teachingData);
+                    $teaching = Staffs::create($teachingData);
 
                     // dd($teaching);
                     NonTeachingStaff::where('user_name_id', $user->id)->update([
                         'deleted_at' => Carbon::now(),
                     ]);
 
-                    TeachingStaff::where('user_name_id', $user->id)->update([
+                    Staffs::where('user_name_id', $user->id)->update([
                         'Designation' => $designation,
                         'EmailIDOffical' => $request->input('email'),
                         'role_type' => $request->role_type,
                     ]);
                 }
             } else {
-                TeachingStaff::where('user_name_id', $user->id)->update([
+                Staffs::where('user_name_id', $user->id)->update([
                     'Designation' => $designation,
                     'EmailIDOffical' => $request->input('email'),
                     'role_type' => $request->role_type,
                     // 'shift_id' => $request->shift,
                 ]);
             }
-        } elseif ($request->role_type == 2 || $request->role_type == 4 || $request->role_type == 5) {
+        } else if ($request->role_type == 2) {
+            dd($request->role_type);
+            $staffs = Staffs::where('user_name_id', $user->id)->get();
+            if (count($staffs) > 0) {
+
+
+            }
+
+        } elseif ($request->role_type == 22222 || $request->role_type == 4 || $request->role_type == 5) {
 
             $nonteach = NonTeachingStaff::where('user_name_id', $user->id)->get();
             if (count($nonteach) <= 0) {
 
-                $teach = TeachingStaff::where('user_name_id', $user->id)->get();
+                $teach = Staffs::where('user_name_id', $user->id)->get();
 
                 if (count($teach) > 0) {
                     $nonteachingData = $teach->toArray();
@@ -229,7 +234,7 @@ class UsersController extends Controller
                     $teaching = NonTeachingStaff::create($nonteachingData);
 
                     // dd($teaching);
-                    TeachingStaff::where('user_name_id', $user->id)->update([
+                    Staffs::where('user_name_id', $user->id)->update([
                         'deleted_at' => Carbon::now(),
                     ]);
 
@@ -315,7 +320,7 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
-        // abort_if(Gate::denies('user_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('user_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user->load('roles', 'userUserAlerts');
 
@@ -324,30 +329,18 @@ class UsersController extends Controller
 
     public function destroy(User $user)
     {
-        // abort_if(Gate::denies('user_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        // dd($user->id);
+        abort_if(Gate::denies('user_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $user->delete();
 
-        $teaching_staff = TeachingStaff::where('user_name_id', $user->id)->first();
-        if ($teaching_staff != null) {
+        $teaching_staff = Staffs::where('user_name_id', $user->id)->first();
+        if ($teaching_staff) {
             $teaching_staff->delete();
-        }
-        $non_teaching_staff = NonTeachingStaff::where('user_name_id', $user->id)->first();
-
-        if ($non_teaching_staff != null) {
-            $non_teaching_staff->delete();
         }
 
         $personal = PersonalDetail::where('user_name_id', $user->id)->first();
-        if ($personal != null) {
+        if ($personal) {
             $personal->delete();
         }
-
-        $student = Student::where('user_name_id', $user->id)->first();
-        if ($student != null) {
-            $student->delete();
-        }
-
         return back();
     }
 

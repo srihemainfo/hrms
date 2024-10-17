@@ -16,10 +16,10 @@ use App\Models\PersonalDetail;
 use App\Models\Religion;
 use App\Models\Staffs;
 use App\Models\State;
-use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +31,7 @@ class PersonalDetailsController extends Controller
 
     public function index(Request $request)
     {
+        // dd($request);
         // abort_if(Gate::denies('personal_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
@@ -125,232 +126,11 @@ class PersonalDetailsController extends Controller
             ]);
         return response()->json(['success' => true]);
     }
-
-    public function stu_index(Request $request)
-    {
-        // abort_if(Gate::denies('personal_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        if ($request) {
-
-            $query = PersonalDetail::with(['user_name', 'blood_group', 'mother_tongue', 'religion', 'community'])->where(['user_name_id' => $request->user_name_id])->get();
-            $document = Document::where(['nameofuser_id' => $request->user_name_id, 'fileName' => 'Profile'])->get();
-
-        }
-
-        $blood_groups = BloodGroup::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $mother_tongues = MotherTongue::pluck('mother_tongue', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $religions = Religion::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        $communities = Community::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-        if ($query->count() <= 0) {
-
-            $query->id = null;
-            $query->age = null;
-            $query->dob = null;
-            $query->email = null;
-            $query->mobile_number = null;
-            $query->aadhar_number = null;
-            $query->state = null;
-            $query->country = null;
-            $query->caste = null;
-            $query->blood_group_id = $blood_groups;
-            $query->blood_group = null;
-            $query->mother_tongue_id = $mother_tongues;
-            $query->mother_tongue = null;
-            $query->community_id = $communities;
-            $query->community = null;
-            $query->religion_id = $religions;
-            $query->religion = null;
-            $query->name = $request->name;
-            $query->student_id = null;
-            $query->later_entry = null;
-            $query->day_scholar_hosteler = null;
-            $query->gender = null;
-            $query->whatsapp_no = null;
-            $query->annual_income = null;
-            $query->first_graduate = null;
-            $query->different_abled_person = '0';
-            $query->user_name_id = $request->user_name_id;
-            $query->add = 'Add';
-
-            if ($document->count() <= 0) {
-                $query->filePath = null;
-            } else {
-                $query->filePath = $document[0]->filePath;
-            }
-
-            $student = $query;
-
-        } else {
-
-            $query[0]->id = $request->user_name_id;
-            $query[0]->name = $request->name;
-            $query[0]->blood_group = $blood_groups;
-            $query[0]->mother_tongue = $mother_tongues;
-            $query[0]->community = $communities;
-            $query[0]->religion = $religions;
-            $query[0]->add = "Update";
-
-            if ($document->count() <= 0) {
-                $query[0]->filePath = null;
-            } else {
-                $query[0]->filePath = $document[0]->filePath;
-            }
-
-            $student = $query[0];
-
-            $student->load('user_name', 'blood_group', 'mother_tongue', 'religion', 'community');
-
-        }
-        $check = 'personal_details';
-
-        return view('admin.StudentProfile.student', compact('student', 'check'));
-    }
-
-    public function stu_update(UpdatePersonalDetailRequest $request, PersonalDetail $personalDetail)
-    {
-        // dd($request);
-        if (isset($request->filePath)) {
-            $request->validate([
-                'filePath' => 'required|image|mimes:jpg,JPG,jpeg,png,PNG,JPEG|max:2048',
-            ]);
-
-            $file = $request->file('filePath');
-            $extension = $file->getClientOriginalExtension();
-            $fileName = time() . '.' . $extension;
-            $destinationPath = public_path('uploads'); // Set the destination path
-
-// Move the uploaded file to the destination manually
-            $file->move($destinationPath, $fileName);
-
-// Set the storage path for further use if needed
-            $path = 'uploads/' . $fileName;
-
-// Find the document with the same file name and user ID
-            $document = Document::where('fileName', $request->fileName)
-                ->where('nameofuser_id', $request->user_name_id)
-                ->first();
-
-// If the document exists, update it and delete the old file
-            if ($document) {
-                $filePath = public_path($document->filePath);
-
-                $document->filePath = $path;
-                $document->fileName = $request->fileName;
-                $document->status = '0';
-                $document->save();
-
-                // Delete the old file from the disk
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
-
-                $staff = ['user_name_id' => $request->user_name_id, 'name' => $request->name];
-            } else {
-                // If the document does not exist, create a new one
-                $document = new Document([
-                    'fileName' => $request->fileName,
-                    'filePath' => $path,
-                    'nameofuser_id' => $request->user_name_id,
-                    'status' => '0',
-                ]);
-                $document->save();
-
-            }
-
-        }
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($request->user_name_id),
-            ],
-            'mobile_number' => 'required|string|max:15',
-
-        ]);
-
-        if ($validator->fails()) {
-            // Validation failed
-            return back()->with(['errors' => $validator->errors()], 422);
-        }
-        $personal = $personalDetail->where('user_name_id', $request->user_name_id)->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'mobile_number' => $request->mobile_number,
-            'aadhar_number' => $request->aadhar_number,
-            'dob' => $request->dob,
-            'age' => $request->age,
-            'caste' => $request->caste,
-            'different_abled_person' => $request->different_abled_person,
-            'gender' => $request->gender,
-            'blood_group_id' => $request->blood_group_id,
-            'mother_tongue_id' => $request->mother_tongue_id,
-            'religion_id' => $request->religion_id,
-            'community_id' => $request->community_id,
-            'state' => $request->state,
-            'country' => $request->country,
-            'whatsapp_no' => $request->whatsapp_no,
-            'annual_income' => $request->annual_income,
-        ]);
-
-        $stu_update = Student::where('user_name_id', $request->user_name_id)->update([
-            'name' => $request->name,
-            'student_phone_no' => $request->mobile_number,
-            'student_email_id' => $request->email,
-        ]);
-        $user_update = User::where(['id' => $request->user_name_id])->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
-
-        if ($personal) {
-
-            $student = ['user_name_id' => $request->user_name_id, 'name' => $request->name];
-
-        } else {
-
-            $personalDetail = PersonalDetail::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'user_name_id' => $request->user_name_id,
-                'mobile_number' => $request->mobile_number,
-                'aadhar_number' => $request->aadhar_number,
-                'dob' => $request->dob,
-                'age' => $request->age,
-                'caste' => $request->caste,
-                'different_abled_person' => $request->different_abled_person,
-                'gender' => $request->gender,
-                'blood_group_id' => $request->blood_group_id,
-                'mother_tongue_id' => $request->mother_tongue_id,
-                'religion_id' => $request->religion_id,
-                'community_id' => $request->community_id,
-                'state' => $request->state,
-                'country' => $request->country,
-                'whatsapp_no' => $request->whatsapp_no,
-                'annual_income' => $request->annual_income,
-            ]);
-
-            if ($personalDetail) {
-                $student = ['user_name_id' => $request->user_name_id, 'name' => $request->name];
-            } else {
-                dd('Error');
-            }
-
-        }
-
-        return redirect()->route('admin.personal-details.stu_index', $student);
-    }
-
     public function staff_index(Request $request)
     {
-        // dd($request->user_name_id);
-        // abort_if(Gate::denies('personal_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-        // dd($request);
+
+        abort_if(Gate::denies('personal_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         if ($request) {
 
             $query = PersonalDetail::with(['user_name', 'blood_group', 'mother_tongue', 'religion', 'community'])->where(['user_name_id' => $request->user_name_id])->get();
@@ -576,8 +356,7 @@ class PersonalDetailsController extends Controller
 
         } else {
 
-
-            $roles_number = Staffs::where('user_name_id' , $request->user_name_id)->first();
+            $roles_number = Staffs::where('user_name_id', $request->user_name_id)->first();
 
             $personalDetail = PersonalDetail::create([
                 'name' => strtoupper($request->name),
@@ -602,7 +381,7 @@ class PersonalDetailsController extends Controller
                 'nationality_id' => $request->nationality_id,
                 'total_experience' => $request->total_experience,
                 'user_name_id' => $request->user_name_id,
-                'role_id' =>$roles_number->role_id,
+                'role_id' => $roles_number->role_id,
                 'designation_id' => $roles_number->designation_id,
 
             ]);
@@ -622,7 +401,6 @@ class PersonalDetailsController extends Controller
             'email' => $request->email,
             'gender' => $request->gender,
         ]);
-
 
         $user = User::where('id', $request->user_name_id)->update([
             'name' => strtoupper($request->name . ' ' . $request->last_name),

@@ -21,6 +21,10 @@
                     <span class="text-primary nav-link" style="cursor:pointer;" id="Break"
                         onclick="search('Break')">Break</span>
                 </li>
+                <li class="nav-item">
+                    <span class="text-primary nav-link" style="cursor:pointer;" id="Work_From_Home"
+                        onclick="search('Work_From_Home')">Work From Home</span>
+                </li>
             </ul>
 
             <div>
@@ -66,11 +70,22 @@
             if (element == 'Medical_Leave') {
                 current_status = 'Medical Leave';
 
-            } else if (element == 'Maternity_Leave') {
+            }
+
+
+            else if (element == 'Maternity_Leave') {
                 current_status = 'Maternity Leave';
-            } else if (element == 'Break') {
+            }
+            else if (element == 'Work_From_Home') {
+                current_status = 'Work From Home';
+            }
+
+
+            else if (element == 'Break') {
                 current_status = 'Break';
-            } else {
+            }
+
+            else {
                 current_status = element;
             }
             const buttons = document.querySelectorAll('span');

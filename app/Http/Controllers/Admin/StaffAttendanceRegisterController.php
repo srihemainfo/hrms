@@ -8,7 +8,7 @@ use App\Models\LeaveType;
 use App\Models\PermissionRequest;
 use App\Models\StaffBiometric;
 use App\Models\Staffs;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -16,7 +16,8 @@ class StaffAttendanceRegisterController extends Controller
 {
     public function index(Request $request)
     {
-        // abort_if(Gate::denies('staff_attendance_register_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('staff_attendance_register_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $staff = [];
         if ($request) {
             // dd($request);
@@ -35,7 +36,7 @@ class StaffAttendanceRegisterController extends Controller
 
     public function search(Request $request)
     {
-        // abort_if(Gate::denies('employee_salary_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_salary_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request) {
             $attend_rep = '';

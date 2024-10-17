@@ -12,7 +12,7 @@ use App\Models\StaffBiometric;
 use App\Models\Staffs;
 use App\Models\TeachingStaff;
 use Carbon\Carbon;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +24,8 @@ class StaffBiometricController extends Controller
 
     public function index(Request $request)
     {
-        // abort_if(Gate::denies('staff_biometric_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('staff_biometric_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $staff = StaffBiometric::distinct('staff_code')->pluck('employee_name', 'staff_code');
         // dd($staff);
         if (request()->has('staff_code') || request()->has('start_date') || request()->has('end_date')) {

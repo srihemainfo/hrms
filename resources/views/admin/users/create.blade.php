@@ -25,7 +25,7 @@
                             <option value="{{ $i }}">{{ $type }}</option>
                         @endforeach
                     </select>
-
+                    <span id="role_type_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
                 </div>
 
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
@@ -36,31 +36,6 @@
                         <option value="">Select Role</option>
                     </select>
                     <span id="role_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
-                </div>
-
-                {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
-
-                    <label for="role" class="required">Role</label>
-                    <select name="role" id="role" class="form-control select2">
-                        <option value="">Select Role</option>
-                        @foreach ($roles as $id => $role)
-                            <option value="{{ $id }}">{{ $role }}</option>
-                        @endforeach
-                    </select>
-                    <span id="role_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
-                </div> --}}
-
-
-                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="designation_div">
-                    <label for="designation" class="required">Designation</label>
-                    <select name="designation" id="designation" class="form-control select2">
-                        <option value="">Select Designation</option>
-                        @foreach ($designations as $id => $designation)
-                            <option value="{{ $id }}">{{ $designation }}</option>
-                        @endforeach
-                    </select>
-                    <span id="designation_span" class="text-danger text-center"
-                        style="display:none;font-size:0.9rem;"></span>
                 </div>
 
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group">
@@ -74,6 +49,31 @@
                     <input type="email" class="form-control" id="email" name="email">
                     <span id="email_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
                 </div>
+
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="worktype_div">
+                    <label for="worktype" class="required">Work Type</label>
+                    <select name="worktype" id="worktype" class="form-control select2">
+                        <option value="">Select Worktype</option>
+                        @foreach ($worktypes as $id => $worktype)
+                            <option value="{{ $id }}">{{ $worktype }}</option>
+                        @endforeach
+                    </select>
+                    <span id="worktype_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
+                </div>
+
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="designation_div">
+                    <label for="designation" class="required">Designation</label>
+                    <select name="designation" id="designation" class="form-control select2">
+                        <option value="">Select Designation</option>
+                        @foreach ($designations as $id => $designation)
+                            <option value="{{ $id }}">{{ $designation }}</option>
+                        @endforeach
+                    </select>
+                    <span id="designation_span" class="text-danger text-center"
+                        style="display:none;font-size:0.9rem;"></span>
+                </div>
+
+
 
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="phone_number_div">
                     <label for="phone_number" class="required">Phone Number</label>
@@ -89,9 +89,9 @@
                     @if ($errors->has('password'))
                         <span class="text-danger">{{ $errors->first('password') }}</span>
                     @endif
-                    <span class="help-block">{{ trans('cruds.user.fields.password_helper') }}</span>
+                    {{-- <span class="help-block">{{ trans('cruds.user.fields.password_helper') }}</span> --}}
+                    <span id="password_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
                 </div>
-
 
                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="gender_div">
                     <label for="gender" class="required">Gender</label>
@@ -102,6 +102,21 @@
                     </select>
                     <span id="gender_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
                 </div>
+
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 form-group" id="days_div" style="display: none;">
+                    <label for="days" class="required">Select Days</label>
+                    <select name="days" id="days" class="form-control select2" multiple>
+                        <option value="">Select Days</option>
+                        <option value="Monday">Monday</option>
+                        <option value="Tuesday">Tuesday</option>
+                        <option value="Wednesday">Wednesday</option>
+                        <option value="Thursday">Thursday</option>
+                        <option value="Friday">Friday</option>
+                        <option value="Saturday">Saturday</option>
+                    </select>
+                    <span id="days_span" class="text-danger text-center" style="display:none;font-size:0.9rem;"></span>
+                </div>
+
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" id="btnsave">
@@ -122,12 +137,17 @@
             let designation = $("#designation").val();
             let phone_number = $("#phone_number").val();
             let gender = $("#gender").val();
+            let days = $("#days").val();
+            let id = $("#user_id").val();
+            let worktype = $("#worktype").val();
+            let name = $("#name").val();
+            let role = $("#myDropdown").val();
+            let daysJson = JSON.stringify(days);
 
             if (phone_number == '') {
                 phone_number = password;
             }
 
-            let role = $("#myDropdown").val();
             if (role == '') {
                 $("#role_span").html('Please select role');
                 $("#role_span").show();
@@ -137,8 +157,6 @@
                 $("#role_span").hide();
             }
 
-
-            let name = $("#name").val();
             if (name == '') {
                 $("#name").focus();
                 $("#name_span").html('Please enter your name');
@@ -150,7 +168,6 @@
 
             let email = $("#email").val();
             let emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-
             if (email == '') {
                 $("#email_span").html('Please enter your email');
                 $("#email_span").show();
@@ -163,7 +180,79 @@
                 $("#email_span").hide();
             }
 
-            let id = $("#user_id").val();
+            if (role_type == '') {
+                $("#role_type_span").html("Please Choose Role Type");
+                $("#role_type_span").show();
+                $("#role_type").focus();
+                return false;
+            } else if (role_type == '2') {
+
+                if (worktype == '') {
+                    $("#worktype_span").html("Please choose work type");
+                    $("#worktype_span").show();
+                    $("#role_type_span").hide();
+                    $("#designation_span").hide();
+                    $("#gender_span").hide();
+                    $("#phone_number_span").hide();
+                    return false;
+                } else if (designation == '') {
+                    $("#designation_span").html("Please choose designation");
+                    $("#designation_span").show();
+                    $("#gender_span").hide();
+                    $("#worktype_span").hide();
+                    $("#role_type_span").hide();
+                    $("#phone_number_span").hide();
+                    return false;
+                } else if (phone_number == '') {
+                    $("#phone_number_span").html("Please enter your number");
+                    $("#phone_number_span").show();
+                    $("#worktype_span").hide();
+                    $("#gender_span").hide();
+                    $("#role_type_span").hide();
+                    $("#designation_span").hide();
+                    return false;
+                } else if (gender == '') {
+                    $("#gender_span").html('Please choose gender');
+                    $("#gender_span").show();
+                    $("#worktype_span").hide();
+                    $("#role_type_span").hide();
+                    $("#phone_number_span").hide();
+                    $("#designation_span").hide();
+                    return false;
+                } else {
+                    $("#worktype_span").hide();
+                    $("#role_type_span").hide();
+                    $("#designation_span").hide();
+                    $("#gender_span").hide();
+                    $("#phone_number_span").hide();
+                }
+            } else if (role_type == '1') {
+                if (password == '') {
+                    $("#password_span").html("Please Enter Your Password");
+                    $("#password_span").show();
+                    return false;
+                } else {
+                    $("#password_span").hide();
+                }
+            } else {
+                $("#worktype_span").hide();
+                $("#role_type_span").hide();
+                $("#designation_span").hide();
+                $("#phone_number_span").hide();
+                $("#gender_span").hide();
+
+            }
+
+            if (worktype == '2') {
+                if (days == '') {
+                    $("#days_span").html("Please Choose any one Day");
+                    $("#days_span").show();
+                    return false;
+                } else {
+                    $("#days_span").hide();
+                }
+            }
+
 
             $("#loading").show();
 
@@ -178,10 +267,12 @@
                     'role': role,
                     'role_type': role_type,
                     'name': name,
+                    'worktype': worktype,
                     'email': email,
                     'phone_number': phone_number,
                     'gender': gender,
-                    'designation': designation
+                    'designation': designation,
+                    'daysJson': daysJson
                 },
                 success: function(response) {
                     $("#loading").hide();
@@ -213,17 +304,20 @@
 
         $('#role_type').change(function() {
 
+
             let role_type = $("#role_type").val();
             if (role_type == 3 || role_type == 1) {
                 $("#password_div").show();
                 $("#phone_number_div").hide();
                 $("#designation_div").hide();
                 $("#gender_div").hide();
+                $("#worktype_div").hide();
             } else {
                 $("#password_div").hide();
                 $("#phone_number_div").show();
                 $("#gender_div").show();
                 $("#designation_div").show();
+                $("#worktype_div").show();
             }
 
             $('#namefull').hide();
@@ -278,5 +372,16 @@
             $('#rollNumber').val('')
             $('#phone').val('')
         }
+
+        $("#worktype").change(function() {
+
+            let worktype = $("#worktype").val();
+
+            if (worktype == '2') {
+                $("#days_div").show();
+            } else {
+                $("#days_div").hide();
+            }
+        })
     </script>
 @endsection

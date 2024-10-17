@@ -6,14 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\NonTeachingStaff;
 use App\Models\PersonalDetail;
 use App\Models\Staffs;
-use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 
 class EmploymentDetailsController extends Controller
 {
     public function staff_index(Request $request)
     {
-        // abort_if(Gate::denies('employment_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employment_detail_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request) {
 
@@ -82,7 +83,7 @@ class EmploymentDetailsController extends Controller
             $staff = ['user_name_id' => $request->user_name_id, 'name' => $request->name];
         } else {
 
-            $roles_number = Staffs::where('user_name_id' , $request->user_name_id)->first();
+            $roles_number = Staffs::where('user_name_id', $request->user_name_id)->first();
 
             $personalDetail = PersonalDetail::create([
                 'BiometricID' => $request->BiometricID,
@@ -91,7 +92,7 @@ class EmploymentDetailsController extends Controller
                 'employment_status' => $request->employment_status,
                 'user_name_id' => $request->user_name_id,
                 'role_id' => $roles_number->role_id,
-                'designation_id' =>$roles_number->roles_number,
+                'designation_id' => $roles_number->roles_number,
             ]);
 
             $teach_staff_update = Staffs::where('user_name_id', $request->user_name_id)->update([

@@ -8,9 +8,9 @@ use App\Models\CollegeCalender;
 use Carbon\Carbon;
 use App\Http\Requests\UpdateCollegeCalenderRequest;
 use Carbon\CarbonPeriod;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
-use Gate;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Validator;
@@ -21,6 +21,7 @@ class OfficeCalender extends Controller
     public function index(Request $request)
     {
         abort_if(Gate::denies('office_calender_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         if ($request->ajax()) {
             $getAys = AcademicYear::where(['status' => 1])->select('name')->get();
             $Ays = [];
@@ -80,6 +81,7 @@ class OfficeCalender extends Controller
     public function create()
     {
         abort_if(Gate::denies('office_calender_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $academics = AcademicYear::pluck('name', 'id');
         $currentYear = date('Y');
         $currentMonth = date('n');

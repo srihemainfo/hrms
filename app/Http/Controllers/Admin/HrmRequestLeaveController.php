@@ -23,7 +23,6 @@ use App\Models\ToolsCourse;
 use App\Models\User;
 use App\Models\UserAlert;
 use Carbon\Carbon;
-use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -1079,7 +1078,66 @@ class HrmRequestLeaveController extends Controller
                                     }
                                 }
                             }
+                        } else if ($get->leave_type == 4) {
+                            // dd($get->leave_type);
+                            if ($isHalfDay) {
+                                $currentDates = [];
+                                $first_date = $get->half_day_leave;
+                                $last_date = $get->half_day_leave;
+                                $halfDay = true;
+                                // $cl_deduct = 0.5;
+                                $dates = Carbon::parse($first_date)->daysUntil($last_date);
+                                foreach ($dates as $date) {
+                                    array_push($currentDates, $date->format('Y-m-d'));
+                                }
+                            } else {
+                                $currentDates = [];
+                                $date1 = Carbon::parse($get->from_date);
+                                $date2 = Carbon::parse($get->to_date);
+                                $halfDay = false;
+                                $diffInDays = $date1->diffInDays($date2) + 1;
+                                $dates = Carbon::parse($first_date)->daysUntil($last_date);
+                                // $cl_deduct = 1;
+                                foreach ($dates as $date) {
+                                    array_push($currentDates, $date->format('Y-m-d'));
+                                }
+                            }
+
+                            if ($halfDay == false) {
+                                foreach ($currentDates as $date) {
+                                    $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
+                                    $check_cl = Staffs::where(['user_name_id' => $get->user_id])->first();
+                                    // dd($cl_deduct, $halfDay, $check_cl->sick_leave - $cl_deduct);
+                                    if ($staff_biometric != '') {
+                                        $staff_biometric->details = '';
+                                        $staff_biometric->update_status = 1;
+                                        $staff_biometric->updated_at = Carbon::now();
+                                        $staff_biometric->work_from_home = 1;
+                                        $staff_biometric->status = 'Present';
+                                        $staff_biometric->save();
+                                    } else {
+                                        \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
+                                    }
+                                }
+                            } else {
+                                //Half Day Leave.
+                                foreach ($currentDates as $date) {
+                                    $staff_biometric = StaffBiometric::where(['date' => $date, 'user_name_id' => $get->user_id])->first();
+                                    $check_cl = Staffs::where(['user_name_id' => $get->user_id])->first();
+                                    if ($staff_biometric != '') {
+                                        $staff_biometric->details = '';
+                                        $staff_biometric->update_status = 1;
+                                        $staff_biometric->work_from_home = 1;
+                                        $staff_biometric->updated_at = Carbon::now();
+                                        $staff_biometric->status = $get->noon . ' Present';
+                                        $staff_biometric->save();
+                                    } else {
+                                        \Log::info('Staff Biometric Not Available for User id' . $get->user_id);
+                                    }
+                                }
+                            }
                         }
+
                     }
                 }
             }
@@ -1298,7 +1356,7 @@ class HrmRequestLeaveController extends Controller
                         }
                     }
                 }
-                if ($request->leave_type == 2 || $request->leave_type == 3) {
+                if ($request->leave_type == 2 || $request->leave_type == 3 || $request->leave_type == 4) {
 
                     $startDate = new DateTime($from_date);
                     $currentDate = Carbon::now();
@@ -1453,7 +1511,7 @@ class HrmRequestLeaveController extends Controller
                     }
 
                 } else {
-                    return response()->json(['status' => flase, 'data' => "Invalid Leave Type."]);
+                    return response()->json(['status' => false, 'data' => "Invalid Leave Type."]);
                 }
             }
         }

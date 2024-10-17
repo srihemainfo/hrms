@@ -12,11 +12,13 @@ use App\Models\Designation;
 use App\Models\Document;
 use App\Models\EducationalDetail;
 use App\Models\EducationType;
+use Illuminate\Support\Facades\Gate;
 use App\Models\ExperienceDetail;
 use App\Models\MediumofStudied;
 use App\Models\MotherTongue;
 use App\Models\Nationality;
 use App\Models\PersonalDetail;
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\Religion;
 use App\Models\Role;
 use App\Models\Staffs;
@@ -29,9 +31,11 @@ use Yajra\DataTables\Facades\DataTables;
 class StaffsController extends Controller
 {
     use CsvImportTrait;
-    
+
     public function index(Request $request)
     {
+        abort_if(Gate::denies('staff_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         if ($request->ajax()) {
             $query = DB::table('staffs')
                 ->whereNull('staffs.deleted_at')
@@ -45,7 +49,7 @@ class StaffsController extends Controller
                 ->orderBy('personal_details.user_name_id', 'asc')
                 ->select('staffs.id', 'staffs.email', 'staffs.phone_number', 'staffs.status', 'staffs.edit_access', 'staffs.name', 'staffs.user_name_id', 'staffs.employee_id', 'roles.title as roled', 'designation.name as des')
                 ->get();
-// dd($query);
+
             $table = DataTables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -54,9 +58,9 @@ class StaffsController extends Controller
             $table->editColumn('actions', function ($row) {
                 $row->id = $row->user_name_id;
 
-                $viewGate = 'staffs_show';
-                $editGate = 'staffs_edit';
-                $deleteGate = 'staffs_delete';
+                $viewGate = 'staff_show';
+                $editGate = 'staff_edit';
+                $deleteGate = 'staff_delete';
                 $crudRoutePart = 'staffs';
 
                 return view(
@@ -139,17 +143,19 @@ class StaffsController extends Controller
 
     public function destroy($request)
     {
-        // dd($request);
-        // abort_if(Gate::denies('student_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+
+        abort_if(Gate::denies('staff_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
         $teaching_staff = Staffs::where('user_name_id', $request)->delete();
-        // $personal = PersonalDetail::where('user_name_id', $request)->delete();
+        $personal = PersonalDetail::where('user_name_id', $request)->delete();
         $user = User::find($request)->delete();
         return back();
     }
 
     public function show($request)
     {
-        // abort_if(Gate::denies('teaching_staff_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('staff_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         //  dd($request);
         if (is_numeric($request)) {
             $staff = Staffs::where('user_name_id', $request)->first();
@@ -323,79 +329,6 @@ class StaffsController extends Controller
             //     $salary_list = $salary_details;
             // }
 
-            // $leave_types = LeaveType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-            // $leave_details = HrmRequestLeaf::where(['user_id' => $user_name_id, 'status' => 'Approved'])->get();
-
-            // if ($leave_details->count() <= 0) {
-
-            //     $leave_list = [];
-            // } else {
-            //     for ($i = 0; $i < count($leave_details); $i++) {
-
-            //         $leave_details[$i]->leave_types = $leave_types;
-            //     }
-
-            //     $leave_list = $leave_details;
-            // }
-
-            // // $conference_details = AddConference::where(['user_name_id' => $user_name_id])->get();
-
-            // // if ($conference_details->count() <= 0) {
-            // $conference_list = [];
-            // // } else {
-            // //     $conference_list = $conference_details;
-            // // }
-
-            // $exam_types = Examstaff::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
-            // $exam_details = EntranceExam::where(['name_id' => $user_name_id, 'status' => 1])->get();
-
-            // if ($exam_details->count() <= 0) {
-            //     $exam_details->exam_types = $exam_types;
-            //     $exam_list = [];
-            // } else {
-            //     // $exam_details[0]['exam_types'] = $exam_types;
-            //     for ($i = 0; $i < count($exam_details); $i++) {
-
-            //         $exam_details[$i]->exam_types = $exam_types;
-            //     }
-            //     $exam_list = $exam_details;
-            // }
-
-            // // $guest_lecture = GuestLecture::where(['user_name_id' => $user_name_id])->get();
-
-            // // if ($guest_lecture->count() <= 0) {
-            // $guest_lecture_list = [];
-            // // } else {
-            // //     $guest_lecture_list = $guest_lecture;
-            // // }
-
-            // $industrial_training = IndustrialTraining::where(['name_id' => $user_name_id, 'status' => 1])->get();
-
-            // if ($industrial_training->count() <= 0) {
-
-            //     $industrial_training_list = [];
-            // } else {
-            //     $industrial_training_list = $industrial_training;
-            // }
-
-            // $intern_details = Intern::where(['name_id' => $user_name_id, 'status' => 1])->get();
-            // if ($intern_details->count() <= 0) {
-
-            //     $intern_details_list = [];
-            // } else {
-            //     $intern_details_list = $intern_details;
-            // }
-
-            // $indus_exp_details = IndustrialExperience::where(['user_name_id' => $user_name_id, 'status' => 1])->get();
-            // if ($indus_exp_details->count() <= 0) {
-
-            //     $indus_exp_list = [];
-            // } else {
-            //     $indus_exp_list = $indus_exp_details;
-            // }
-
             // $iv_details = Iv::where(['name_id' => $user_name_id, 'status' => 1])->get();
             // if ($iv_details->count() <= 0) {
 
@@ -560,7 +493,7 @@ class StaffsController extends Controller
     public function edit($request)
     {
 
-        // abort_if(Gate::denies('teaching_staff_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('staff_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         if ($request) {
 
             // $decodedParam = base64_decode($one, true);

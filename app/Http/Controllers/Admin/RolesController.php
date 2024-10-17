@@ -7,6 +7,7 @@ use App\Http\Requests\MassDestroyRoleRequest;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\RoleType;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,7 +15,7 @@ class RolesController extends Controller
 {
     public function index()
     {
-        // abort_if(Gate::denies('role_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('role_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $roles = Role::with(['type', 'permissions'])->get();
 
@@ -23,7 +24,7 @@ class RolesController extends Controller
 
     public function create()
     {
-        // abort_if(Gate::denies('role_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('role_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $types = RoleType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -52,7 +53,7 @@ class RolesController extends Controller
 
     public function edit(Role $role)
     {
-        // abort_if(Gate::denies('role_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('role_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $types = RoleType::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -100,7 +101,7 @@ class RolesController extends Controller
 
     public function show(Role $role)
     {
-        // abort_if(Gate::denies('role_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('role_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $role->load('permissions');
 
@@ -109,7 +110,7 @@ class RolesController extends Controller
 
     public function destroy(Role $role)
     {
-        // abort_if(Gate::denies('role_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('role_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $role->delete();
 

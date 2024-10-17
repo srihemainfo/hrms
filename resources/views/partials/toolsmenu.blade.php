@@ -77,19 +77,14 @@
         <li class="nav-item">
             <a href="{{ route('admin.leave-types.index') }}"
                 class="nav-link {{ request()->is('admin/leave-types') || request()->is('admin/leave-types/*') ? 'active' : '' }}">
-                <i class="fa-fw nav-icon fas fa-monument">
-
-    @can('state_access')
-        <li class="nav-item">
-            <a href="{{ route('admin.state.index') }}"
-                class="nav-link {{ request()->is('admin/state') || request()->is('admin/state/*') ? 'active' : '' }}">
-                <i class="fa-fw nav-icon fas fa-map"></i>
+                <i class="fa-fw nav-icon fas fa-monument"></i>
                 <p>
-                    State
+                    {{ trans('cruds.leaveType.title') }}
                 </p>
             </a>
         </li>
     @endcan
+
 
     @can('nationality_access')
         <li class="nav-item">
@@ -119,6 +114,18 @@
         </li>
     @endcan
 
+    @can('project_access')
+        <li class="nav-item">
+            <a href="{{ route('admin.projects.index') }}"
+                class="nav-link {{ request()->is('admin/projects') || request()->is('admin/projects/*') ? 'active' : '' }}">
+                <i class="fa-fw nav-icon fas fa-cubes"></i>
+                <p>
+                    Projects
+                </p>
+            </a>
+        </li>
+    @endcan
+
 
     @can('state_access')
         <li class="nav-item">
@@ -132,8 +139,20 @@
         </li>
     @endcan
 
+    @can('work_acceess')
+        <li class="nav-item">
+            <a href="{{ route('admin.worktype.index') }}"
+                class="nav-link {{ request()->is('admin/worktype') || request()->is('admin/worktype/*') ? 'active' : '' }}">
+                <i class="fa-fw nav-icon fas fa-briefcase"></i>
+                <p>
+                    Work Type
+                </p>
+            </a>
+        </li>
+    @endcan
 
-    @can('email_setting_access')
+
+    {{-- @can('email_setting_access')
         <li class="nav-item">
             <a href="{{ route('admin.email-settings.index') }}"
                 class="nav-link {{ request()->is('admin/email-settings') || request()->is('admin/email-settings/*') ? 'active' : '' }}">
@@ -145,9 +164,9 @@
                 </p>
             </a>
         </li>
-    @endcan
+    @endcan --}}
 
-    @can('sms_setting_access')
+    {{-- @can('sms_setting_access')
         <li class="nav-item">
             <a href="{{ route('admin.sms-settings.index') }}"
                 class="nav-link {{ request()->is('admin/sms-settings') || request()->is('admin/sms-settings/*') ? 'active' : '' }}">
@@ -159,9 +178,9 @@
                 </p>
             </a>
         </li>
-    @endcan
+    @endcan --}}
 
-    @can('email_template_access')
+    {{-- @can('email_template_access')
         <li class="nav-item">
             <a href="{{ route('admin.email-templates.index') }}"
                 class="nav-link {{ request()->is('admin/email-templates') || request()->is('admin/email-templates/*') ? 'active' : '' }}">
@@ -173,8 +192,8 @@
                 </p>
             </a>
         </li>
-    @endcan
-    @can('sms_template_access')
+    @endcan --}}
+    {{-- @can('sms_template_access')
         <li class="nav-item">
             <a href="{{ route('admin.sms-templates.index') }}"
                 class="nav-link {{ request()->is('admin/sms-templates') || request()->is('admin/sms-templates/*') ? 'active' : '' }}">
@@ -186,7 +205,7 @@
                 </p>
             </a>
         </li>
-    @endcan
+    @endcan --}}
 </ul>
 
 @section('scripts')
