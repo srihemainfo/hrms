@@ -24,7 +24,7 @@ class ChangePasswordController extends Controller
         return view('admin.staffPassword.delete');
     }
 
-    public function update(Request $request)
+    public function update(UpdatePasswordRequest $request)
     {
         auth()->user()->update($request->validated());
 

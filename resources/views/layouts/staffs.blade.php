@@ -394,9 +394,13 @@
                                     </p>
                                 </a>
                             </li>
+
+
+
+
                         {{-- @endcan
                         @can('staff_leave_request') --}}
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.student-leave-requests.stu_index') }}"
                                     class="nav-link {{ request()->is('admin/student-leave-requests') || request()->is('admin/student-leave-requests/*') ? 'active' : '' }}">
                                     <i class="fa-fw nav-icon fas fa-mail-bulk">
@@ -406,8 +410,17 @@
                                         Leave Requests
                                     </p>
                                 </a>
-                            </li>
+                            </li> --}}
                         {{-- @endcan --}}
+
+                        <li class="nav-item">
+                            <a href="{{ route('admin.Staff-Payslip.index') }}"
+                                class="nav-link {{ request()->is('admin/Staff-Payslip') || request()->is('admin/Staff-Payslip/*') ? 'active' : '' }}">
+                                <i class="fa-fw nav-icon fas fa-file-invoice"></i>
+                                <p>PaySlip</p>
+                            </a>
+                        </li>
+
                         {{-- @can('staff_feedback_forms')
                             <li
                                 class="nav-item has-treeview {{ request()->is('admin/feedback-forms*') ? 'menu-open' : '' }}">

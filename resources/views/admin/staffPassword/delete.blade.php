@@ -1,9 +1,9 @@
 @php
-    $roleType = auth()->user()->roles[0]->type_id;
-    if ($roleType == '2') {
-        $key = 'layouts.non_techStaffHome';
+    $role_id = auth()->user()->roles[0]->id;
+    if ($role_id == 1 || $role_id == 28) {
+        $key = 'layouts.admin';
     } else {
-        $key = 'layouts.teachingStaffHome';
+        $key = 'layouts.staffs';
     }
 @endphp
 @extends($key)
@@ -21,7 +21,7 @@
                         <div class="form-group">
                             <label class="required" for="name">{{ trans('cruds.user.fields.name') }}</label>
                             <input class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" type="text"
-                                name="name" id="name" value="{{ old('name', auth()->user()->name) }}" required>
+                                name="name" id="name" value="{{ old('name', auth()->user()->name) }}" required readonly>
                             @if ($errors->has('name'))
                                 <div class="invalid-feedback">
                                     {{ $errors->first('name') }}
@@ -31,7 +31,7 @@
                         <div class="form-group">
                             <label class="required" for="title">{{ trans('cruds.user.fields.email') }}</label>
                             <input class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" type="text"
-                                name="email" id="email" value="{{ old('email', auth()->user()->email) }}" required>
+                                name="email" id="email" value="{{ old('email', auth()->user()->email) }}" required readonly>
                             @if ($errors->has('email'))
                                 <div class="invalid-feedback">
                                     {{ $errors->first('email') }}

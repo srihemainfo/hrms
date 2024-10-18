@@ -1,6 +1,6 @@
 @php
     $role_id = auth()->user()->roles[0]->id;
-    if ($role_id == 1 || $role_id == 3 || $role_id == 2) {
+    if ($role_id == 1) {
         $key = 'layouts.admin';
     } else {
         $key = 'layouts.staffs';

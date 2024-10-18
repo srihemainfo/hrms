@@ -15,13 +15,14 @@ class HomeController extends SystemCalendarController
     {
         $role_id = auth()->user()->id;
         // dd($role_id);
-        if ($role_id != 2) {
+        if ($role_id == 1 || $role_id == 28) {
 
             $staffsCount = Staffs::whereNull('deleted_at')->count();
             $projectCount = Projects::whereNull('deleted_at')->count();
             return view('home', compact('staffsCount', 'projectCount'));
         } else {
             // dd('hello');
+            // dd($role_id);
 
             $userId = auth()->user()->id;
             $canEdit = DB::table('staffs')

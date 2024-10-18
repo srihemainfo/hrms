@@ -643,7 +643,7 @@
                             </li>
                         @endcan
 
-                        @if ($data = App\Models\ExamCellCoordinator::where(['user_name_id' => auth()->user()->id])->first())
+                        {{-- @if ($data = App\Models\ExamCellCoordinator::where(['user_name_id' => auth()->user()->id])->first())
                             <li
                                 class="nav-item has-treeview {{ request()->is('admin/Exam-Cell-Coordinators*') ||request()->is('admin/Exam-time-table.*') ||request()->is('admin/Exam-Attendance/*') ||request()->is('admin/examTimetable.*') ||request()->is('admin/Exam-Mark-master/*') ||request()->is('admin/Exam-Attendance-summary-report*') ||request()->is('admin/Result_Analysis_Class_Wise*') ||request()->is('admin/Result_Analysis_Staff_Wise*') ||request()->is('admin/Result_Analysis_Abstract*') ||request()->is('admin/Result_Analysis_bar_chart*') ||request()->is('admin/lab-mark*') ||request()->is('admin/lab-mark*') ||request()->is('admin/lab_Exam_Attendance') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/Lab_Exam_Attendance') ||request()->is('admin/Lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam-Attendance/*') ||request()->is('admin/lab_Exam_Mark_master/*') ||request()->is('admin/lab_Exam-Mark') ||request()->is('admin/lab_Exam-Mark/*') ||request()->is('admin/lab_Exam-Attendance-summary-report*') ||request()->is('admin/lab_Result_Analysis_Abstract/*') ||request()->is('admin/lab_Result_Analysis_Class_Wise*') ||request()->is('admin/lab_Result_Analysis_Staff_Wise*') ||request()->is('admin/lab_Result_Analysis_bar_chart*')? 'menu-open': '' }}">
                                 <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/Exam-Cell-Coordinators*') ||request()->is('admin/Exam-time-table.*') ||request()->is('admin/Exam-Attendance/*') ||request()->is('admin/examTimetable.*') ||request()->is('admin/Exam-Mark-master/*') ||request()->is('admin/Exam-Attendance-summary-report*') ||request()->is('admin/Result_Analysis_Staff_Wise*') ||request()->is('admin/Result_Analysis_Abstract*') ||request()->is('admin/Result_Analysis_bar_chart*') ||request()->is('admin/lab-mark*') ||request()->is('admin/lab-mark*') ||request()->is('admin/Lab_Exam_Attendance') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam_Attendance/*') ||request()->is('admin/Lab_Exam_Attendance') ||request()->is('admin/Lab_Exam_Attendance/*') ||request()->is('admin/lab_Exam-Attendance/*') ||request()->is('admin/lab_Exam_Mark_master/*') ||request()->is('admin/lab_Exam-Mark') ||request()->is('admin/lab_Exam-Mark/*') ||request()->is('admin/lab_Exam-Attendance-summary-report*') ||request()->is('admin/lab_Result_Analysis_Abstract/*') ||request()->is('admin/lab_Result_Analysis_Class_Wise*') ||request()->is('admin/lab_Result_Analysis_Staff_Wise*') ||request()->is('admin/lab_Result_Analysis_bar_chart*')? 'active': '' }}"
@@ -776,7 +776,7 @@
                                                         LAB Marks Master
                                                     </p>
                                                 </a>
-                                            </li>
+                                            </li> --}}
                                             {{--
                                         <li class="nav-item has-treeview {{ request()->is('admin/lab_Exam-Attendance-summary-report*') || request()->is('admin/lab_Result_Analysis_Abstract/*') || request()->is('admin/lab_Result_Analysis_Class_Wise*') || request()->is('admin/lab_Result_Analysis_Staff_Wise*') || request()->is('admin/lab_Result_Analysis_bar_chart*')    ? 'menu-open' : '' }}">
                                             <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/lab_Exam-Attendance-summary-report*') || request()->is('admin/lab_Result_Analysis_Abstract/*')|| request()->is('admin/lab_Result_Analysis_Class_Wise*')|| request()->is('admin/lab_Result_Analysis_Staff_Wise*') || request()->is('admin/lab_Result_Analysis_bar_chart*')  ? 'active' : '' }}" href="#">
@@ -824,7 +824,7 @@
                                         </li>
                                         --}}
 
-                                        </ul>
+                                        {{-- </ul>
                                     </li>
                                 </ul>
 
@@ -859,7 +859,7 @@
 
 
                             </li>
-                        @endif
+                        @endif --}}
 
                         @can('certificate_provision')
                             <li class="nav-item">
