@@ -470,7 +470,6 @@ trait CsvImportTrait
                     session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => $table]));
                 }
             } elseif ($request->modelName == 'Staffs') {
-
                 $import_status = null;
                 $balance_row = $rows;
                 $inserted_rows = $rows - $balance_row;
@@ -573,7 +572,7 @@ trait CsvImportTrait
                                 $in_time = $insert['in_time'] != '' ? $insert['in_time'] : '00:00:00';
                             }
 
-                            
+
                             if (isset($insert['out_time'])) {
                                 $insert['out_time'] = str_replace(' ', '', $insert['out_time']);
                                 $out_time = $insert['out_time'] != '' ? $insert['out_time'] : '00:00:00';
