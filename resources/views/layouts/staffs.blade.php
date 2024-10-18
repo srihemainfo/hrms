@@ -400,7 +400,7 @@
 
                         {{-- @endcan
                         @can('staff_leave_request') --}}
-                            <li class="nav-item">
+                            {{-- <li class="nav-item">
                                 <a href="{{ route('admin.student-leave-requests.stu_index') }}"
                                     class="nav-link {{ request()->is('admin/student-leave-requests') || request()->is('admin/student-leave-requests/*') ? 'active' : '' }}">
                                     <i class="fa-fw nav-icon fas fa-mail-bulk">
@@ -410,7 +410,7 @@
                                         Leave Requests
                                     </p>
                                 </a>
-                            </li>
+                            </li> --}}
                         {{-- @endcan --}}
 
                         <li class="nav-item">

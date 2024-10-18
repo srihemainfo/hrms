@@ -354,6 +354,21 @@
                                     </a>
                                 </li>
                             @endcan
+
+                            @can('pay_slip_request_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.payslip-request.index') }}"
+                                        class="nav-link {{ request()->is('admin/payslip-request') || request()->is('admin/payslip-request/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-file-invoice">
+
+                                        </i>
+                                        <p>
+                                            PaySlip Request
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+
                         </ul>
                     </li>
                 @endcan

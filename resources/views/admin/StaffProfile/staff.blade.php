@@ -1,15 +1,12 @@
-@if (auth()->user()->id == $staff->user_name_id &&
-        (auth()->user()->roles[0]->id != 14 && auth()->user()->roles[0]->id != 15))
-    @php
-        $one = 'layouts.teachingStaffHome';
-    @endphp
-@elseif (auth()->user()->id != $staff->user_name_id ||
-        (auth()->user()->roles[0]->id == 14 || auth()->user()->roles[0]->id == 15))
-    @php
-        $one = 'layouts.admin';
-    @endphp
-@endif
-@extends($one)
+@php
+    $role_id = auth()->user()->roles[0]->id;
+    if ($role_id == 1) {
+        $key = 'layouts.admin';
+    } else {
+        $key = 'layouts.staffs';
+    }
+@endphp
+@extends($key)
 @section('content')
     {{-- {{ dd($check) }} --}}
     <div class="row">

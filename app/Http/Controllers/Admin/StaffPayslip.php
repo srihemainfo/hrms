@@ -28,10 +28,10 @@ class StaffPayslip extends Controller
                 $biometricId = $biometric->biometric;
             } else {
                 // Handle case where no biometric record is found
-                $biometricId = null;  // or set a default value if needed
+                $biometricId = null; // or set a default value if needed
             }
         }
-
+        // dd($userId);
 
         $previousMonth = Carbon::now()->subMonth()->format('F');
         $currentYear = Carbon::now()->year;
@@ -111,12 +111,50 @@ class StaffPayslip extends Controller
         }
     }
 
-    // public function prereq(Request $request)
-    // {
-    //     $user = auth()->user();
-    //     if ($request->ajax())
-    //     {
+    public function prereq(Request $request)
+    {
 
-    //     }
-    // }
+        $user = auth()->user();
+        if ($user) {
+            $userId = $user->id;
+
+        }
+        if ($request->ajax()) {
+
+            $query = DB::table('payslip_request')
+                ->leftjoin('users', 'payslip_request.user_name_id', '=', 'users.id')
+                ->where('user_name_id', $userId)
+                ->select('payslip_request.*', 'users.name as user_name');
+
+            $table = Datatables::of($query);
+
+            $table->addColumn('placeholder', '&nbsp;');
+
+
+            $table->editColumn('user_name', function ($row) {
+                return $row->user_name ? $row->user_name : '';
+            });
+
+            $table->editColumn('month', function ($row) {
+                return $row->month ? $row->month : '';
+            });
+
+            $table->editColumn('year', function ($row) {
+                return $row->year ? $row->year : '';
+            });
+
+            $table->editColumn('reason', function ($row) {
+                return $row->reason ? $row->reason : '';
+            });
+
+            $table->editColumn('status', function ($row) {
+                return $row->status ? $row->status : '';
+            });
+
+            $table->rawColumns(['placeholder']);
+
+            return $table->make(true);
+
+        }
+    }
 }

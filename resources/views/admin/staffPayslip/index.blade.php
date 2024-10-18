@@ -126,14 +126,11 @@
             <div class="row mt-5">
                 <div class="col-md-12">
                     <table id="my-table-request"
-                        class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Staff-Payslip-Request text-center">
+                        class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Staff-Payslip-PreReq text-center">
                         <thead>
                             <tr>
                                 <th width="10">
 
-                                </th>
-                                <th>
-                                    ID
                                 </th>
                                 <th>
                                     Staff Name
@@ -143,6 +140,9 @@
                                 </th>
                                 <th>
                                     Year
+                                </th>
+                                <th>
+                                    Reason
                                 </th>
                                 <th>
                                     Status
@@ -254,25 +254,35 @@
                         name: 'placeholder'
                     },
                     {
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
+                        data: 'user_name',
+                        name: 'user_name'
                     },
                     {
                         data: 'month',
                         name: 'month'
+
                     },
                     {
                         data: 'year',
                         name: 'year'
                     },
                     {
-                        data: 'status',
-                        name: 'status'
+                        data: 'reason',
+                        name: 'reason'
                     },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        render: function(data, type, row) {
+                            if (data === 'Pending') {
+                                return '<span style="color: #e9b523;">' + data +
+                                '</span>'; // Yellow for Pending
+                            } else if (data === 'Rejected') {
+                                return '<span style="color: red;">' + data + '</span>'; // Red for Rejected
+                            }
+                            return data; // Default return for other statuses
+                        }
+                    }
                 ],
                 orderCellsTop: true,
                 order: [

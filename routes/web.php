@@ -1547,6 +1547,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('payslip/index_rep', 'paySlipcontroller@index')->name('payslip.index_rep');
     Route::get('PaySlip/edit/{id}', 'paySlipcontroller@edit')->name('payslip.edit');
 
+    //PaySlip-Request
+    Route::get('payslip-request/', 'PayslipRequest@index')->name('payslip-request.index');
+
+
     // Staff Leave Reports
     Route::get('staff_leave_report/index', 'StaffLeaveReportController@index')->name('staff_leave_report.index');
     Route::post('staff_leave_report/index_rep', 'StaffLeaveReportController@index_rep')->name('staff_leave_report.index_rep');
