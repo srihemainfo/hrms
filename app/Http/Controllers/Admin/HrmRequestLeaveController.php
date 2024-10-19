@@ -234,6 +234,7 @@ class HrmRequestLeaveController extends Controller
                 $query->half_day_leave = null;
                 $query->noon = null;
                 $query->avail_cl = $staff->casual_leave;
+                $query->avail_sl = $staff->sick_leave;
                 $query->alter_date = '';
                 $query->add = 'Submit';
 
@@ -268,6 +269,7 @@ class HrmRequestLeaveController extends Controller
                 $staff_edit->half_day_leave = null;
                 $staff_edit->noon = '';
                 $staff_edit->avail_cl = $staff->casual_leave;
+                $staff_edit->avail_sl = $staff->sick_leave;
             }
             $get_AssignedStaff = [];
         } else {
@@ -286,6 +288,8 @@ class HrmRequestLeaveController extends Controller
                 $query_two[0]['leave_types'] = $leave_type;
 
                 $query_two[0]['avail_cl'] = $staff->casual_leave;
+
+                $query_two[0]['avail_sl'] = $staff->sick_leave;
 
                 $staff = $query_one[0];
 

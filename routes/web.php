@@ -1549,6 +1549,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     //PaySlip-Request
     Route::get('payslip-request/', 'PayslipRequest@index')->name('payslip-request.index');
+    Route::post('payslip-request/approve/{id}', 'PayslipRequest@approve')->name('payslip-request.approve');
+    Route::post('payslip-request/reject/{id}', 'PayslipRequest@reject')->name('payslip-request.reject');
+
+
 
 
     // Staff Leave Reports
