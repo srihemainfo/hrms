@@ -25,20 +25,25 @@
                     <div class="form-group">
                         <label class="" for="month">Month</label>
                         <select class="form-control select2" name="month" id="month">
+                            @php
+                                // Get the previous month (if current month is January, set it to December of the previous year)
+                                $previous_month = date('F', strtotime('first day of previous month'));
+                            @endphp
                             <option value="">All Months</option>
-                            <option value="January">January</option>
-                            <option value="February">February</option>
-                            <option value="March">March</option>
-                            <option value="April">April</option>
-                            <option value="May">May</option>
-                            <option value="June">June</option>
-                            <option value="July">July</option>
-                            <option value="August">August</option>
-                            <option value="September">September</option>
-                            <option value="October">October</option>
-                            <option value="November">November</option>
-                            <option value="December">December</option>
+                            <option value="January" {{ $previous_month == 'January' ? 'selected' : '' }}>January</option>
+                            <option value="February" {{ $previous_month == 'February' ? 'selected' : '' }}>February</option>
+                            <option value="March" {{ $previous_month == 'March' ? 'selected' : '' }}>March</option>
+                            <option value="April" {{ $previous_month == 'April' ? 'selected' : '' }}>April</option>
+                            <option value="May" {{ $previous_month == 'May' ? 'selected' : '' }}>May</option>
+                            <option value="June" {{ $previous_month == 'June' ? 'selected' : '' }}>June</option>
+                            <option value="July" {{ $previous_month == 'July' ? 'selected' : '' }}>July</option>
+                            <option value="August" {{ $previous_month == 'August' ? 'selected' : '' }}>August</option>
+                            <option value="September" {{ $previous_month == 'September' ? 'selected' : '' }}>September</option>
+                            <option value="October" {{ $previous_month == 'October' ? 'selected' : '' }}>October</option>
+                            <option value="November" {{ $previous_month == 'November' ? 'selected' : '' }}>November</option>
+                            <option value="December" {{ $previous_month == 'December' ? 'selected' : '' }}>December</option>
                         </select>
+
                     </div>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
@@ -48,10 +53,13 @@
                             @php
                                 $current_year = date('Y');
                             @endphp
-                            @for ($i = 2010; $i <= $current_year; $i++)
-                                <option value="{{ $i }}">{{ $i }}</option>
+                            @for ($i = $current_year; $i >= 2020; $i--)
+                                <option value="{{ $i }}" {{ $i == $current_year ? 'selected' : '' }}>
+                                    {{ $i }}
+                                </option>
                             @endfor
                         </select>
+
                     </div>
                 </div>
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
