@@ -21,7 +21,6 @@ class HomeController extends SystemCalendarController
         // dd($role_id);
         if ($role_id == 1 || $role_id == 28) {
             $todays_date =  Carbon::now()->format('Y-m-d');
-            // dd($todays_date);
             $staffsCount = Staffs::whereNull('deleted_at')->count();
             $projectCount = Projects::whereNull('deleted_at')->count();
             $staff_present = StaffBiometric::where('date' , $todays_date)
@@ -29,14 +28,15 @@ class HomeController extends SystemCalendarController
             $staff_absent = StaffBiometric::where('date' , $todays_date)
             ->where('status' , 'Absent')->count();
             $alerts = UserAlert::where('alert_text', 'like', '%Applied%')->get();
-            $alertTexts = $alerts->pluck('alert_text');
-
-
-            return view('home', compact('staffsCount', 'projectCount','staff_present','staff_absent','alertTexts'));
+            $alertData = $alerts->map(function ($alert) {
+                return [
+                    'text' => $alert->alert_text,
+                    'link' => $alert->alert_link,
+                ];
+            });
+            
+            return view('home', compact('staffsCount', 'projectCount', 'staff_present', 'staff_absent', 'alertData'));
         } else {
-            // dd('hello');
-            // dd($role_id);
-
             $userId = auth()->user()->id;
             $canEdit = DB::table('staffs')
                 ->where('user_name_id', $userId)

@@ -14,11 +14,9 @@
                 $roleTitle = 0;
             }
         }
-        // echo $roleTitle;
-        // dd('hii');
     @endphp
 
-    @if ($roleTitle == 1)
+    @if ($roleTitle == 1 || $roleTitle == 5)
         <div class="row">
             <div class="col-lg-12">
                 <p id="welcome">Welcome Admin!</p>
@@ -120,19 +118,32 @@
                 </div>
             </div>
             <div class="col-lg-4 col-md-6 mt-lg-0 mt-2">
-                <div class="card card-2">
+                <div class="card card-2 "style="overflow-y: auto; overflow-x: hidden; white-space: nowrap;">
                     <div class="row">
                         <div class="col-12">
                             <div class="box-1">
                                 <h4 class="text-center"><b>Request</b></h4>
                             </div>
                             <div class="card-body">
-                                @foreach ($alertTexts as $alert)
+                                @if ($alertData->isEmpty())
                                     <div class="card"
-                                        style="height: 35px; border-radius: 20px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
-                                        <p style="margin: 0;">{{ $alert }}</p>
+                                        style="height: 35px; border-radius: 20px; display: flex; align-items: center; justify-content: center;">
+                                        <p style="margin: 0;">No requests</p>
                                     </div>
-                                @endforeach
+                                @else
+                                    @foreach ($alertData as $alert)
+                                        <div class="card"
+                                            style="height: 35px; border-radius: 20px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
+                                            <p style="margin: 0;">
+                                                <a href="{{ $alert['link'] }}" target="_blank"
+                                                    style="text-decoration: none; color: inherit;">{{ $alert['text'] }}
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i
+                                                        class="fas fa-arrow-right"></i></a>
+
+                                            </p>
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -401,8 +412,8 @@
             }
 
             /* .calendar-day:hover {
-                                    background-color: lightgray;
-                                } */
+                                                                    background-color: lightgray;
+                                                                } */
 
             .staff-box {
                 margin-right: 15px;
