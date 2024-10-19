@@ -50,6 +50,14 @@
 
                                 </div>
 
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
+                                    style="display:flex;justify-content: flex-end;">
+
+                                    <button class="manual_bn d-block">Available SL's :
+                                        {{ $staff_edit->avail_sl == '' ? 0 : $staff_edit->avail_sl }}</button>
+
+                                </div>
+
                                 <div class="col-xl-9 col-lg-9 col-md-10 col-sm-8 col-8">
                                     <div class="form-group">
                                         <label for="leave_type" class="required">Leave Types</label>
@@ -181,7 +189,7 @@
                                     <div class="col-1" id="adder_div"></div>
                                     <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-11">
                                         <div class="text-right" id="submit_div" style="display:none;">
-                                            <button type="submit" id="submit" name="submit" 
+                                            <button type="submit" id="submit" name="submit"
                                                 class="btn btn-primary Edit">{{ $staff_edit->add }}</button>
                                         </div>
                                         <div class="text-right text-primary" id="loading_div" style="display:none;">
@@ -270,7 +278,7 @@
                                                 <td>{{ $list[$i]->total_days + ($list[$i]->total_days_nxt_mn != null ? $list[$i]->total_days_nxt_mn : 0) }}
                                                 </td>
                                                 <td>{{ $list[$i]->subject }}</td>
-                                                
+
                                                 <td>
                                                     @if ($list[$i]->certificate)
                                                         <img class="uploaded_img"

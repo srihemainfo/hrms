@@ -71,39 +71,7 @@ class AddMonth extends Command
                     ]);
                 }
             }
-            // $non_teach_staffs = DB::table('non_teaching_staffs')->whereNull('deleted_at')->select('user_name_id','name','BiometricID','StaffCode','Dept')->get();
 
-            // foreach ($non_teach_staffs as $value) {
-
-            //     for ($i = 01; $i <= $count; $i++) {
-
-            //         $get_day = \Carbon\Carbon::parse($year . '-' . $month . '-' . $i);
-
-            //         $dayOfWeek = $get_day->format('l');
-
-            //         if ($dayOfWeek == 'Sunday') {
-            //             $details = 'Sunday';
-            //         } else {
-            //             $details = null;
-            //         }
-            //         if($value->Dept != 'CIVIL' && $value->Dept != 'ADMIN'){
-            //             $shift = 1;
-            //         }else{
-            //             $shift = 2;
-            //         }
-
-            //         DB::table('staff_biometrics')->insert([
-            //             'date' => $year . '-' . $month . '-' . $i,
-            //             'day' => $dayOfWeek,
-            //             'user_name_id' => $value->user_name_id,
-            //             'employee_name' => $value->name,
-            //             'employee_code' => $value->BiometricID,
-            //             'staff_code' => $value->StaffCode,
-            //             'shift' => $shift,
-            //             'details' => $details,
-            //         ]);
-            //     }
-            // }
         }
 
         \Log::info("Month Added For Biometric");

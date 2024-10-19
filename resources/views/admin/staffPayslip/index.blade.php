@@ -293,14 +293,6 @@
 
             let table = $('.datatable-Staff-Payslip-PreReq').DataTable(dtOverrideGlobals);
 
-            table.on('draw', function() {
-                let rowCount = table.rows().count();
-                if (rowCount > 0) {
-                    $('#payslip-note').show();
-                } else {
-                    $('#payslip-note').hide();
-                }
-            });
 
             $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e) {
                 $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
