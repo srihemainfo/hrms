@@ -5,7 +5,7 @@
             PaySlip Request
         </div>
         <div class="card-body">
-            {{-- <input type="hidden" id="status" value="{{ $status }}">
+            <input type="hidden" id="status" value="{{ $status }}">
             <ul class="nav nav-tabs mb-3" style="font-size: 1.3rem;">
                 <li class="nav-item">
                     <a class="nav-link{{ $status === 'Pending' ? ' active' : '' }}"
@@ -19,7 +19,7 @@
                     <a class="nav-link{{ $status === 'Rejected' ? ' active' : '' }}"
                         href="{{ route('admin.payslip-request.index', ['status' => 'Rejected']) }}">Rejected</a>
                 </li>
-            </ul> --}}
+            </ul>
             <table id="my-table-request"
                 class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Staff-Payslip-Request text-center">
                 <thead>
@@ -61,7 +61,6 @@
 
         function callAjax() {
             let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons);
-
             dtButtons.splice(2, 2);
             dtButtons.splice(3, 3);
 
@@ -69,11 +68,18 @@
                 $('.datatable-Staff-Payslip-Request').DataTable().destroy();
             }
 
+            let status = $('#status').val(); // Get the status value
+
             let dtOverrideGlobals = {
                 buttons: dtButtons,
                 retrieve: true,
                 aaSorting: [],
-                ajax: "{{ route('admin.payslip-request.index') }}",
+                ajax: {
+                    url: "{{ route('admin.payslip-request.index') }}",
+                    data: {
+                        status: status // Pass the status to the server
+                    }
+                },
                 columns: [{
                         data: 'placeholder',
                         name: 'placeholder'
@@ -101,8 +107,7 @@
                     {
                         data: 'actions',
                         name: 'actions'
-
-                    },
+                    }
                 ],
                 orderCellsTop: true,
                 order: [
@@ -117,6 +122,12 @@
                 $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
             });
         }
+
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e) {
+            $('#status').val($(this).attr('href').split('=')[1]); // Get status from tab href
+            callAjax();
+        });
 
         function approveRequest(id) {
             Swal.fire({

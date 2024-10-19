@@ -78,7 +78,7 @@
     </div>
     <div class="card">
         <div class="card-header text-center">
-            <strong>Payslip Request</strong>
+            <strong>Apply Payslip</strong>
         </div>
         <div class="card-body">
             <input type="hidden" name="user_name_id" id="user_name_id" value="{{ $user_name_id }}" readonly>
@@ -279,6 +279,10 @@
                                 '</span>'; // Yellow for Pending
                             } else if (data === 'Rejected') {
                                 return '<span style="color: red;">' + data + '</span>'; // Red for Rejected
+                            }
+                            else if(data === 'Approved')
+                            {
+                                return '<span style="color: green;">' + data + '</span>'; // Red for Approved
                             }
                             return data; // Default return for other statuses
                         }
