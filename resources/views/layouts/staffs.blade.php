@@ -180,7 +180,7 @@
                     </li>
                 </ul>
             @endif
-            <ul class="navbar-nav ml-auto">
+            {{-- <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown notifications-menu">
                     <a href="#" class="nav-link" data-toggle="dropdown">
                         <i class="far fa-bell"></i>
@@ -217,9 +217,9 @@
                         @endif
                     </div>
                 </li>
-            </ul>
+            </ul> --}}
 
-            <ul class="navbar-nav">
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item dropdown notifications-menu">
                     <a href="#" class="nav-link nav_prof_label bg-primary" data-toggle="dropdown"
                         style="color:black;display:block;">

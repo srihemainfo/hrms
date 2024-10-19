@@ -62,7 +62,7 @@ class StaffBiometricController extends Controller
             $from_date = Carbon::now()->startOfMonth()->format('Y-m-d'); // Start of current month
             $to_date = Carbon::now()->endOfMonth()->format('Y-m-d');
 
-            $query = StaffBiometric::whereBetween('date', [$from_date, $to_date])->take(100)->get();
+            $query = StaffBiometric::whereBetween('date', [$from_date, $to_date])->get();
 
         }
 
