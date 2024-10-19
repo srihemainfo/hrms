@@ -22,6 +22,7 @@ use App\Models\TeachingStaff;
 use App\Models\ToolsCourse;
 use App\Models\User;
 use App\Models\UserAlert;
+use Illuminate\Support\Facades\Gate;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +37,7 @@ class HrmRequestLeaveController extends Controller
 
     public function index(Request $request)
     {
-        // abort_if(Gate::denies('hrm_request_leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('hrm_request_leaf_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $leave_types = LeaveType::pluck('name', 'id');
         $retrieveDateStart = [Carbon::now()->subMonths(2)->startOfMonth()];
@@ -200,7 +201,7 @@ class HrmRequestLeaveController extends Controller
 
     public function create()
     {
-        // abort_if(Gate::denies('hrm_request_leaf_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('hrm_request_leaf_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $users = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
@@ -1171,7 +1172,7 @@ class HrmRequestLeaveController extends Controller
 
     public function show($id)
     {
-        // abort_if(Gate::denies('hrm_request_leaf_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('hrm_request_leaf_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $hrmRequestLeaf = HrmRequestLeaf::find($id);
         $odAction = false;

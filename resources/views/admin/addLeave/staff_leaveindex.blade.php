@@ -37,21 +37,22 @@
                         <h5 class="mb-2 text-primary">Leave Form</h5>
                     </div>
                     <div class="card-body">
-                        <form method="POST" action="{{ route('admin.staff-request-leaves.staff_update', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name, 'id' => $staff_edit->id]) }}"
+                        <form method="POST"
+                            action="{{ route('admin.staff-request-leaves.staff_update', ['user_name_id' => $staff->user_name_id, 'name' => $staff->name, 'id' => $staff_edit->id]) }}"
                             enctype="multipart/form-data" id="leave_form">
                             @csrf
                             <div class="row gutters">
 
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
-    style="display: flex; justify-content: flex-end; gap: 15px;">
+                                    style="display: flex; justify-content: flex-end; gap: 15px;">
 
-    <button class="manual_bn d-block">Available CL's :
-        {{ $staff_edit->avail_cl == '' ? 0 : $staff_edit->avail_cl }}</button>
+                                    <button class="manual_bn d-block">Available CL's :
+                                        {{ $staff_edit->avail_cl == '' ? 0 : $staff_edit->avail_cl }}</button>
 
-    <button class="manual_bn d-block">Available SL's :
-        {{ $staff_edit->avail_sl == '' ? 0 : $staff_edit->avail_sl }}</button>
+                                    <button class="manual_bn d-block">Available SL's :
+                                        {{ $staff_edit->avail_sl == '' ? 0 : $staff_edit->avail_sl }}</button>
 
-</div>
+                                </div>
 
 
                                 <div class="col-xl-9 col-lg-9 col-md-10 col-sm-8 col-8">
@@ -954,24 +955,24 @@
         //                                 for (let a = 0; a < len; a++) {
 
         //                                     labels += `<form class="alter_forms"><div class="form-group">
-        //                         <input type="hidden" name="class" value="${data[a]['class_name']}">
-        //                         <input type="hidden" name="day" value="${data[a]['day']}">
-        //                         <input type="hidden" name="period" value="${data[a]['period']}">
-        //                         <div style="width:80%;display:flex;justify-content:space-around;font-weight:bold;margin-bottom:5px;">
-        //                             <div>${data[a]['shortform']}</div>
-        //                             <div>|</div>
-        //                             <div>${data[a]['day']} </div>
-        //                             <div>|</div>
-        //                             <div>PERIOD  ${data[a]['period_name']}</div>
-        //                         </div>
-        //                            <select class="form-control select2 alteration_selecter" name="selected_staff" id="selected_staff" style="width:100%;" onchange="check_availability(this)">
-        //                                <option value="">Select Staff For Alteration</option>
-        //                                @foreach ($users as $user)
-        //                                         <option value="{{ $user->user_name_id }}">{{ $user->name }}   ({{ $user->StaffCode }})</option>
-        //                                @endforeach
-        //                            </select>
-        //                         </div>
-        //                         </form>`;
+    //                         <input type="hidden" name="class" value="${data[a]['class_name']}">
+    //                         <input type="hidden" name="day" value="${data[a]['day']}">
+    //                         <input type="hidden" name="period" value="${data[a]['period']}">
+    //                         <div style="width:80%;display:flex;justify-content:space-around;font-weight:bold;margin-bottom:5px;">
+    //                             <div>${data[a]['shortform']}</div>
+    //                             <div>|</div>
+    //                             <div>${data[a]['day']} </div>
+    //                             <div>|</div>
+    //                             <div>PERIOD  ${data[a]['period_name']}</div>
+    //                         </div>
+    //                            <select class="form-control select2 alteration_selecter" name="selected_staff" id="selected_staff" style="width:100%;" onchange="check_availability(this)">
+    //                                <option value="">Select Staff For Alteration</option>
+    //                                @foreach ($users as $user)
+    //                                         <option value="{{ $user->user_name_id }}">{{ $user->name }}   ({{ $user->StaffCode }})</option>
+    //                                @endforeach
+    //                            </select>
+    //                         </div>
+    //                         </form>`;
         //                                 }
         //                                 labels +=
         //                                     `<p id="p" class="text-primary" style="font-size:0.90rem;"></p>`;
@@ -1056,24 +1057,24 @@
         //                                     for (let a = 0; a < len; a++) {
 
         //                                         labels += `<form class="alter_forms"><div class="form-group">
-        //                                                         <input type="hidden" name="class" value="${data[a]['class_name']}">
-        //                                                         <input type="hidden" name="day" value="${data[a]['day']}">
-        //                                                         <input type="hidden" name="period" value="${data[a]['period']}">
-        //                                                         <div style="width:80%;display:flex;justify-content:space-around;font-weight:bold;margin-bottom:5px;">
-        //                                                             <div>${data[a]['shortform']}</div>
-        //                                                             <div>|</div>
-        //                                                             <div>${data[a]['day']} </div>
-        //                                                             <div>|</div>
-        //                                                             <div>PERIOD  ${data[a]['period_name']}</div>
-        //                                                         </div>
-        //                                                            <select class="form-control select2 alteration_selecter" name="selected_staff" id="selected_staff" style="width:100%;" onchange="check_availability(this)">
-        //                                                                <option value="">Select Staff For Alteration</option>
-        //                                                                @foreach ($users as $user)
-        //                                                                         <option value="{{ $user->user_name_id }}">{{ $user->name }}   ({{ $user->StaffCode }})</option>
-        //                                                                @endforeach
-        //                                                            </select>
-        //                                                         </div>
-        //                                                     </form>`;
+    //                                                         <input type="hidden" name="class" value="${data[a]['class_name']}">
+    //                                                         <input type="hidden" name="day" value="${data[a]['day']}">
+    //                                                         <input type="hidden" name="period" value="${data[a]['period']}">
+    //                                                         <div style="width:80%;display:flex;justify-content:space-around;font-weight:bold;margin-bottom:5px;">
+    //                                                             <div>${data[a]['shortform']}</div>
+    //                                                             <div>|</div>
+    //                                                             <div>${data[a]['day']} </div>
+    //                                                             <div>|</div>
+    //                                                             <div>PERIOD  ${data[a]['period_name']}</div>
+    //                                                         </div>
+    //                                                            <select class="form-control select2 alteration_selecter" name="selected_staff" id="selected_staff" style="width:100%;" onchange="check_availability(this)">
+    //                                                                <option value="">Select Staff For Alteration</option>
+    //                                                                @foreach ($users as $user)
+    //                                                                         <option value="{{ $user->user_name_id }}">{{ $user->name }}   ({{ $user->StaffCode }})</option>
+    //                                                                @endforeach
+    //                                                            </select>
+    //                                                         </div>
+    //                                                     </form>`;
         //                                     }
         //                                     labels +=
         //                                         `<p id="p" class="text-primary" style="font-size:0.90rem;"></p>`;
@@ -1118,6 +1119,5 @@
         //         Swal.fire('', 'Please Choose The Alter Date', 'warning');
         //     }
         // }
-
     </script>
 @endsection

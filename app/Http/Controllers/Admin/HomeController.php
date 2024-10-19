@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\SystemCalendarController;
 use App\Models\Projects;
 use Carbon\Carbon;
 use App\Models\Staffs;
+use App\Models\UserAlert;
 use App\Models\StaffBiometric;
 use Illuminate\Support\Facades\DB;
 
@@ -27,7 +28,11 @@ class HomeController extends SystemCalendarController
             ->where('status' , 'Present')->count();
             $staff_absent = StaffBiometric::where('date' , $todays_date)
             ->where('status' , 'Absent')->count();
-            return view('home', compact('staffsCount', 'projectCount','staff_present','staff_absent'));
+            $alerts = UserAlert::where('alert_text', 'like', '%Applied%')->get();
+            $alertTexts = $alerts->pluck('alert_text');
+
+
+            return view('home', compact('staffsCount', 'projectCount','staff_present','staff_absent','alertTexts'));
         } else {
             // dd('hello');
             // dd($role_id);
