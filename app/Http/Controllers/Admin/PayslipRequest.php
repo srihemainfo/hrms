@@ -11,12 +11,13 @@ class PayslipRequest extends Controller
 {
     public function index(Request $request)
     {
+        $status = $request->get('status', 'Pending'); // Default to 'Pending' if no status is provided
 
         if ($request->ajax()) {
-
             $query = DB::table('payslip_request')
                 ->leftJoin('users', 'payslip_request.user_name_id', '=', 'users.id')
-                ->select('payslip_request.*', 'users.name as user_name');
+                ->select('payslip_request.*', 'users.name as user_name')
+                ->where('payslip_request.status', $status); // Filter by status
 
             $table = Datatables::of($query);
 
@@ -43,9 +44,15 @@ class PayslipRequest extends Controller
             });
 
             $table->addColumn('actions', function ($row) {
-                $approveBtn = '<a href="#" class="btn btn-sm btn-success" onclick="approveRequest(' . $row->id . ')">Approve</a>';
-                $rejectBtn = '<a href="#" class="btn btn-sm btn-danger" onclick="rejectRequest(' . $row->id . ')">Reject</a>';
-                return $approveBtn . ' ' . $rejectBtn;
+                if ($row->status === 'Approved') {
+                    return '<span class="text-success">Approved</span>';
+                } elseif ($row->status === 'Rejected') {
+                    return '<span class="text-danger">Rejected</span>';
+                } else {
+                    $approveBtn = '<a href="#" class="btn btn-sm btn-success" onclick="approveRequest(' . $row->id . ')">Approve</a>';
+                    $rejectBtn = '<a href="#" class="btn btn-sm btn-danger" onclick="rejectRequest(' . $row->id . ')">Reject</a>';
+                    return $approveBtn . ' ' . $rejectBtn;
+                }
             });
 
             $table->rawColumns(['actions', 'placeholder']);
@@ -53,7 +60,7 @@ class PayslipRequest extends Controller
             return $table->make(true);
         }
 
-        return view('admin.payslipRequest.index');
+        return view('admin.payslipRequest.index', compact('status'));
     }
 
     public function approve(Request $request)
