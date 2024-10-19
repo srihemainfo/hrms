@@ -43,20 +43,16 @@
                             <div class="row gutters">
 
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
-                                    style="display:flex;justify-content: flex-end;">
+    style="display: flex; justify-content: flex-end; gap: 15px;">
 
-                                    <button class="manual_bn d-block">Available CL's :
-                                        {{ $staff_edit->avail_cl == '' ? 0 : $staff_edit->avail_cl }}</button>
+    <button class="manual_bn d-block">Available CL's :
+        {{ $staff_edit->avail_cl == '' ? 0 : $staff_edit->avail_cl }}</button>
 
-                                </div>
+    <button class="manual_bn d-block">Available SL's :
+        {{ $staff_edit->avail_sl == '' ? 0 : $staff_edit->avail_sl }}</button>
 
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12"
-                                    style="display:flex;justify-content: flex-end;">
+</div>
 
-                                    <button class="manual_bn d-block">Available SL's :
-                                        {{ $staff_edit->avail_sl == '' ? 0 : $staff_edit->avail_sl }}</button>
-
-                                </div>
 
                                 <div class="col-xl-9 col-lg-9 col-md-10 col-sm-8 col-8">
                                     <div class="form-group">
