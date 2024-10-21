@@ -79,7 +79,6 @@
         {{-- {{ dd($results->employee_id) }} --}}
             <div class="container">
                 <h3 style="text-align: center; margin-bottom: 50px;">Pay Slip For The Month {{ $results->month }} {{ $results->year }}</h3>
-
                 <table>
                     <tr>
                         <td>Emp. ID</td>
@@ -101,13 +100,13 @@
                     </tr>
                     <tr>
                         <td>Date of Joining</td>
-                        <td>: </td>
+                        <td>: {{ $results->DOJ }}</td>
                         <td>UAN Number</td>
                         <td>: </td>
                     </tr>
                     <tr>
                         <td>HDFC Bank A/C no.</td>
-                        <td>: </td>
+                        <td>: {{ $results->account_no }}</td>
                         <td>ESIC Number</td>
                         <td>: </td>
                     </tr>
@@ -130,55 +129,33 @@
                         <th class="tbl_th">DEDUCTIONS</th>
                         <th class="tbl_th">INR</th>
                     </tr>
-                    {{-- <tr class="tbl_tr">
-                        <td class="tbl_td">Basic Pay</td>
-                        <td class="tbl_td">&#8377; {{ $results->basicpay }}</td>
-                        <td class="tbl_td">Employee Contribution PF</td>
-                        <td class="tbl_td"></td>
-                    </tr> --}}
-                    {{-- <tr class="tbl_tr">
-                        <td class="tbl_td">House Rent Alowances</td>
-                        <td class="tbl_td"></td>
-                        <td class="tbl_td">Employee Contribution ESI</td>
-                        <td class="tbl_td"></td>
-                    </tr> --}}
                     <tr class="tbl_tr">
                         <td class="tbl_td">Basic Pay</td>
                         <td class="tbl_td">&#8377; {{ $results->basicpay }}</td>
-                        <td class="tbl_td">Non-Payable Late / Permission</td>
-                        <td class="tbl_td">&#8377; {{ $results->late_amt }}</td>
+                        <td class="tbl_td">Non-Payable Leave</td>
+                        <td class="tbl_td">&#8377; {{ $results->lop }}</td>
+
                     </tr>
                     <tr class="tbl_tr">
                         <td class="tbl_td">Allowances</td>
                         <td class="tbl_td"></td>
-                        <td class="tbl_td">Advance</td>
-                        <td class="tbl_td"></td>
+                        <td class="tbl_td">Non-Payable Late / Permission</td>
+                        <td class="tbl_td">&#8377; {{ $results->late_amt }}</td>
+
                     </tr>
                     <tr class="tbl_tr">
                         <td class="tbl_td">Over Time</td>
                         <td class="tbl_td"></td>
-                        <td class="tbl_td"></td>
+                        <td class="tbl_td">Salary Advance</td>
                         <td class="tbl_td"></td>
                     </tr>
-                    {{-- <tr class="tbl_tr">
-                        <td class="tbl_td">Dearness Alowances</td>
-                        <td class="tbl_td"></td>
-                        <td class="tbl_td">Deductions / Advance</td>
-                        <td class="tbl_td"></td>
-                    </tr> --}}
-                    {{-- <tr class="tbl_tr">
-                        <td class="tbl_td">Travel Allowances</td>
-                        <td class="tbl_td"></td>
-                        <td class="tbl_td">Professional Tax / LWF</td>
-                        <td class="tbl_td"></td>
-                    </tr> --}}
                     <tr class="tbl_tr">
-                        {{-- <td class="tbl_td">Medical Allowances</td> --}}
                         <td class="tbl_td"></td>
                         <td class="tbl_td"></td>
-                        <td class="tbl_td">Total Deductions</td>
+                        <td class="tbl_td"><strong>Total Deductions</strong></td>
                         <td class="tbl_td">
-                            &#8377; {{ !isset($results->totaldeductions) ? 0 : $results->totaldeductions }}
+                            &#8377; {{ $results->lop + $results->late_amt }}
+                            {{-- &#8377; {{ !isset($results->totaldeductions) ? 0 : $results->totaldeductions }} --}}
                         </td>
                     </tr>
                     <tr class="tbl_tr">

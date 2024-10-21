@@ -315,6 +315,19 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('salary_management_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.salary-management.index') }}"
+                                        class="nav-link {{ request()->is('admin/salary-management') || request()->is('admin/salary-management/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-wallet"></i> <!-- Updated icon -->
+
+                                        </i>
+                                        <p>
+                                             Salary Management
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
                             @can('employee_salary_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.employee-salary.index') }}"
@@ -463,20 +476,6 @@
                     </a>
                 </li> --}}
 
-                @php($unread = \App\Models\QaTopic::unreadCount())
-                <li class="nav-item">
-                    <a href="{{ route('admin.messenger.index') }}"
-                        class="{{ request()->is('admin/messenger') || request()->is('admin/messenger/*') ? 'active' : '' }} nav-link">
-                        <i class="fa-fw fa fa-envelope nav-icon">
-
-                        </i>
-                        <p>{{ trans('global.messages') }}</p>
-                        @if ($unread > 0)
-                            <strong>( {{ $unread }} )</strong>
-                        @endif
-
-                    </a>
-                </li>
                 @if (file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))
                     @can('profile_password_edit')
                         <li class="nav-item">
@@ -491,6 +490,22 @@
                         </li>
                     @endcan
                 @endif
+
+                @php($unread = \App\Models\QaTopic::unreadCount())
+                <li class="nav-item">
+                    <a href="{{ route('admin.messenger.index') }}"
+                        class="{{ request()->is('admin/messenger') || request()->is('admin/messenger/*') ? 'active' : '' }} nav-link">
+                        <i class="fa-fw fa fa-envelope nav-icon">
+
+                        </i>
+                        <p>{{ trans('global.messages') }}</p>
+                        @if ($unread > 0)
+                            <strong>( {{ $unread }} )</strong>
+                        @endif
+
+                    </a>
+                </li>
+
                 {{-- <li class="nav-item">
                     <a href="{{ route('admin.settings.index') }}"
                         class="nav-link {{ request()->is('admin/settings') || request()->is('admin/settings/*') ? 'active' : '' }}">

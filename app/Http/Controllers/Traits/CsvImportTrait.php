@@ -601,6 +601,8 @@ trait CsvImportTrait
                                 } else {
                                     $total_hours = '00:00:00';
                                     $status = 'Absent';
+                                    $isLate = 0;
+                                    $early = 0;
                                 }
                             } elseif ($insert['shift'] == '2') {
                                 if ($in_time != '00:00:00' && $out_time != '00:00:00') {
@@ -624,6 +626,8 @@ trait CsvImportTrait
                                 } else {
                                     $total_hours = '00:00:00';
                                     $status = 'Absent';
+                                    $isLate = 0;
+                                    $early = 0;
                                 }
                             }
 
@@ -679,7 +683,7 @@ trait CsvImportTrait
                                     }
 
                                     $staff_biometric = StaffBiometric::where(['date' => $formattedDate, 'user_name_id' => $user])->first();
-                                    // dd($staff_biometric, $isLate);
+                                    // dd( $isLate);
                                     if ($staff_biometric != '') {
                                         if ($staff_biometric->import != 1) {
                                             if ($staff_biometric->status != 'Absent' && $staff_biometric->details != 'Sunday' && $staff_biometric->details != 'On Duty' && $staff_biometric->details != 'Holiday') {

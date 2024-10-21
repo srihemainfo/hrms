@@ -10,6 +10,8 @@ use App\Models\salarystatement;
 use App\Models\StaffBiometric;
 use App\Models\Staffs;
 use App\Models\ToolsDepartment;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
 use App\Models\Year;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,7 +21,7 @@ class EmployeeSalaryController extends Controller
 
     public function index(Request $request)
     {
-        // abort_if(Gate::denies('employee_salary_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+        abort_if(Gate::denies('employee_salary_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request) {
 

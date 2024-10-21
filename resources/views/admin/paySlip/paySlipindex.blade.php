@@ -38,7 +38,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div><span class="width font pl-4 font">Designation :</span> <small
-                                        class="ms-3">{{ !isset($results->designation) ? '' : $results->designation }}</small>
+                                        class="ms-3">{{ !isset($designation_name) ? '' : $designation_name }}</small>
                                 </div>
                             </div>
                             <div class="col-md-6">

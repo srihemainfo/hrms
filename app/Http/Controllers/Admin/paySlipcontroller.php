@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use App\Models\Designation;
 use Yajra\DataTables\Facades\DataTables;
 
 class paySlipcontroller extends Controller
@@ -204,10 +205,11 @@ class paySlipcontroller extends Controller
         $results = DB::table('payslip')->where(['id' => $id])->first();
         if (!empty($results)) {
             $staff = Staffs::where(['user_name_id' => $results->user_name_id])->first();
-            // dd($results);
+            $designation_name  = Designation::where('id', $staff->designation_id)->value('name');
+            // dd($designation_name);
             $results->employee_id = $staff->employee_id;
         }
-        return view('admin.paySlip.paySlipindex', compact('results'));
+        return view('admin.paySlip.paySlipindex', compact('results','designation_name'));
     }
     public function update(Request $request, $id)
     {
@@ -242,8 +244,9 @@ class paySlipcontroller extends Controller
                     ->where('salarystatements.year', '=', DB::raw('payslip.year'));
             })
             ->leftJoin('staffs', 'staffs.user_name_id', 'payslip.user_name_id')
+            ->leftjoin('bank_account_details', 'bank_account_details.user_name_id', 'payslip.user_name_id')
             ->leftJoin('designation', 'staffs.designation_id', 'designation.id')
-            ->select('payslip.*', 'salarystatements.total_lop_days', 'salarystatements.total_working_days', 'salarystatements.total_payable_days', 'staffs.DOJ', 'designation.name as designation')
+            ->select('payslip.*', 'salarystatements.total_lop_days', 'salarystatements.total_working_days', 'salarystatements.total_payable_days', 'staffs.DOJ', 'bank_account_details.account_no','designation.name as designation')
             ->get();
 
         // dd($results);

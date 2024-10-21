@@ -51,8 +51,10 @@
                                     @php
                                         $current_year = date('Y');
                                     @endphp
-                                    @for ($i = 2010; $i <= $current_year; $i++)
-                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @for ($i = $current_year; $i >= 2020; $i--)
+                                        <option value="{{ $i }}" {{ $i == $current_year ? 'selected' : '' }}>
+                                            {{ $i }}
+                                        </option>
                                     @endfor
                                 </select>
                             </div>
@@ -620,14 +622,14 @@
                                                 readonly>
                                         </div>
                                     </div> --}}
-                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Basic Pay : </label>
                                             <input type="number" class="pay_input" name="basicpay"
                                                 value="{{ $basic_pay }}" readonly>
                                         </div>
                                     </div> --}}
-                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>AGP : </label>
                                             <input type="number" class="pay_input" name="agp"
@@ -635,35 +637,35 @@
                                         </div>
                                     </div> --}}
 
-                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>DA : </label>
                                             <input type="number" class="pay_input" name="da"
                                                 value="{{ $m_da }}" readonly>
                                         </div>
                                     </div> --}}
-                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>HRA : </label>
                                             <input type="number" class="pay_input" name="hra"
                                                 value="{{ $m_hra }}" readonly>
                                         </div>
                                     </div> --}}
-                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Special Pay : </label>
                                             <input type="number" class="pay_input" name="specialpay"
                                                 value="{{ $m_specialFee }}" readonly>
                                         </div>
                                     </div> --}}
-                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>PHD Allowance : </label>
                                             <input type="number" class="pay_input" name="phdallowance"
                                                 value="{{ $m_phdAllowance }}" readonly>
                                         </div>
                                     </div> --}}
-                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Other Allowance : </label>
                                             <input type="number" class="pay_input" name="otherAllowence"
@@ -672,7 +674,7 @@
                                                 readonly>
                                         </div>
                                     </div> --}}
-                                    {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
+                        {{-- <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
                                             <label>Gross Salary : </label>
                                             <input type="number" class="pay_input" name="earnings"
