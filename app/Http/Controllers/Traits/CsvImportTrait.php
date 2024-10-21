@@ -637,6 +637,8 @@ trait CsvImportTrait
                                 'd-m-Y',
                                 'd/m/y',
                                 'd/m/Y',
+                                'Y-m-d',
+                                'Y/m/d',
                             ];
 
                             foreach ($formats as $i => $format) {
@@ -892,6 +894,7 @@ trait CsvImportTrait
                                                 $status = 'Absent';
                                                 $tempDetail = $staff_biometric->details;
                                             }
+
 
                                             $staff_biometric->in_time = $in_time;
                                             $staff_biometric->out_time = $out_time;
