@@ -1591,10 +1591,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('salary-management/edit', 'SalaryManagementController@edit')->name('salary-management.edit');
     Route::post('salary-management/store', 'SalaryManagementController@store')->name('salary-management.store');
 
-
-
-
-
     // Leave Staff Allocation
     Route::delete('leave-staff-allocations/destroy', 'LeaveStaffAllocationController@massDestroy')->name('leave-staff-allocations.massDestroy');
     Route::post('leave-staff-allocations/parse-csv-import', 'LeaveStaffAllocationController@parseCsvImport')->name('leave-staff-allocations.parseCsvImport');

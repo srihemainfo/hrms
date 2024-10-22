@@ -16,6 +16,7 @@ class SalaryStatementImport extends Model
         'employee_id',
         'month',
         'year',
+        'doj',
         'working_days',
         'lop_days',
         'one_hour_late',

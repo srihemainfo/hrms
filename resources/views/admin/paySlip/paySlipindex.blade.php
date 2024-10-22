@@ -1,4 +1,12 @@
-@extends('layouts.admin')
+@php
+    $role_id = auth()->user()->roles[0]->id;
+    if ($role_id == 1 || $role_id ==5) {
+        $key = 'layouts.admin';
+    } else {
+        $key = 'layouts.staffs';
+    }
+@endphp
+@extends($key)
 @section('content')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

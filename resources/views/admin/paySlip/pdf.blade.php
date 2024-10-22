@@ -105,13 +105,13 @@
                         <td>: </td>
                     </tr>
                     <tr>
-                        <td>HDFC Bank A/C no.</td>
+                        <td>Bank A/C no.</td>
                         <td>: {{ $results->account_no }}</td>
                         <td>ESIC Number</td>
                         <td>: </td>
                     </tr>
                     <tr>
-                        <td>No. of Working Days</td>
+                        <td>No. of Days</td>
                         <td>: {{ $results->total_working_days }}</td>
                         <td>No. of Days Worked</td>
                         <td>: {{ $results->total_payable_days }}</td>
@@ -125,53 +125,47 @@
                 <table class="tbl">
                     <tr class="tbl_tr">
                         <th class="tbl_th">EARNINGS</th>
-                        <th class="tbl_th">INR</th>
+                        <th class="tbl_th" style="text-align: right;">INR</th>
                         <th class="tbl_th">DEDUCTIONS</th>
-                        <th class="tbl_th">INR</th>
+                        <th class="tbl_th" style="text-align: right;">INR</th>
                     </tr>
                     <tr class="tbl_tr">
                         <td class="tbl_td">Basic Pay</td>
-                        <td class="tbl_td">&#8377; {{ $results->basicpay }}</td>
-                        <td class="tbl_td">Non-Payable Leave</td>
-                        <td class="tbl_td">&#8377; {{ $results->lop }}</td>
+                        <td class="tbl_td" style="text-align: right;">&#8377; {{ $results->basicpay }}</td>
+                        <td class="tbl_td">Leave</td>
+                        <td class="tbl_td" style="text-align: right;">&#8377; {{ $results->lop }}</td>
 
                     </tr>
                     <tr class="tbl_tr">
                         <td class="tbl_td">Allowances</td>
-                        <td class="tbl_td"></td>
-                        <td class="tbl_td">Non-Payable Late / Permission</td>
-                        <td class="tbl_td">&#8377; {{ $results->late_amt }}</td>
+                        <td class="tbl_td" style="text-align: right;"></td>
+                        <td class="tbl_td">Late / Permission</td>
+                        <td class="tbl_td" style="text-align: right;">&#8377; {{ $results->late_amt }}</td>
 
                     </tr>
                     <tr class="tbl_tr">
                         <td class="tbl_td">Over Time</td>
-                        <td class="tbl_td"></td>
+                        <td class="tbl_td" style="text-align: right;"></td>
                         <td class="tbl_td">Salary Advance</td>
-                        <td class="tbl_td"></td>
+                        <td class="tbl_td" style="text-align: right;"></td>
                     </tr>
                     <tr class="tbl_tr">
-                        <td class="tbl_td"></td>
-                        <td class="tbl_td"></td>
-                        <td class="tbl_td"><strong>Total Deductions</strong></td>
-                        <td class="tbl_td">
-                            &#8377; {{ $results->lop + $results->late_amt }}
-                            {{-- &#8377; {{ !isset($results->totaldeductions) ? 0 : $results->totaldeductions }} --}}
+                        <td class="tbl_td">Gross Salary</td>
+                        <td class="tbl_td" style="text-align: right;">&#8377; {{ $results->gross_salary }}</td>
+                        <td class="tbl_td">Total Deductions</td>
+                        <td class="tbl_td" style="text-align: right;">
+                            {{-- &#8377; {{ $results->lop + $results->late_amt }} --}}
+                            &#8377; {{ !isset($results->totaldeductions) ? 0 : $results->totaldeductions }}
                         </td>
                     </tr>
                     <tr class="tbl_tr">
                         <td colspan="4" class="tbl_td"></td>
                     </tr>
                     <tr class="tbl_tr">
-                        <td class="tbl_td">Gross Salary</td>
-                        <td class="tbl_td">&#8377; {{ $results->gross_salary }}</td>
-                        <td class="tbl_td"></td>
-                        <td class="tbl_td"></td>
-                    </tr>
-                    <tr class="tbl_tr">
-                        <td class="tbl_td">CTC</td>
-                        <td class="tbl_td"></td>
-                        <td class="tbl_td">Net Pay</td>
-                        <td class="tbl_td">&#8377; {{ $results->netpay }}</td>
+                        <td class="tbl_td"><strong>CTC</strong></td>
+                        <td class="tbl_td" style="text-align: right;"><strong>&#8377; {{ $results->gross_salary }}</strong></td>
+                        <td class="tbl_td"><strong>Net Pay</strong></td>
+                        <td class="tbl_td" style="text-align: right;"><strong>&#8377; {{ $results->netpay }}</strong></td>
                     </tr>
                 </table>
 

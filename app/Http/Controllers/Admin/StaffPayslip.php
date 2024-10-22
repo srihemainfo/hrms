@@ -34,6 +34,7 @@ class StaffPayslip extends Controller
         // dd($userId);
 
         $previousMonth = Carbon::now()->subMonth()->format('F');
+        $currentMonth = Carbon::now()->format('F');
         $currentYear = Carbon::now()->year;
         // $updated_at = DB::table('payslip')
         //     ->where('user_name_id', $userId)

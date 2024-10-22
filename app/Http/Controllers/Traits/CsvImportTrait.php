@@ -2334,13 +2334,15 @@ trait CsvImportTrait
 
                 $inserted_rows = $rows - $balance_row;
                 session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => 'Grade Book ']));
-            } elseif ($model == "App\Models\SalaryStatementImport") {
+            }
+
+
+
+            elseif ($model == "App\Models\SalaryStatementImport") {
                 $balance_row = $rows;
 
                 foreach ($for_insert[0] as $i => $insert) {
-                    // dd($insert);
                     if ($insert['employee_id'] != '' && $insert['month'] != '' && $insert['year'] != '' && $insert['working_days'] != '') {
-
                         $staff_id = $insert['employee_id'];
                         $month = $insert['month'];
                         $year = $insert['year'];
@@ -2352,7 +2354,9 @@ trait CsvImportTrait
                         $two_hour_late = $insert['two_hour_late'] != '' ? $insert['two_hour_late'] : 0;
                         // dd($two_hour_late, $one_hour_late);
                         $staff = Staffs::where('employee_id', $insert['employee_id'])->orWhere('biometric', $insert['employee_id'])->first();
+                        // dd($staff);
                         $bank_account_details = DB::table('bank_account_details')->where('user_name_id', $staff->user_name_id)->first();
+                        // dd($bank_account_details);
                         $basic_pay = $staff->basicPay;
                         $m_per_day_basic_pay = (int) $staff->basicPay / (int) $working_days;
                         $m_per_hour_basic_pay = ceil($m_per_day_basic_pay / 8);
@@ -2379,12 +2383,16 @@ trait CsvImportTrait
 
                         $total_deduction = ceil($advance + $lop_late_amt + $lop_leave_amt);
                         $net_pay = ceil($basic_pay - $total_deduction + $allowance + $ot);
+                        // dd($net_pay);
                         $other_deduction = ceil($advance + $lop_late_amt);
                         $gross = ceil($basic_pay + $allowance + $ot);
                         // dd($insert['two_hour_late'], $insert['two_hour_late'] ?? 0);
                         if ($net_pay) {
-                            $check = salarystatement::where(['month' => $month, 'year' => $year])->exists();
+                            // dd($net_pay);
+                            $check = salarystatement::where(['month' => $month, 'year' => $year,'user_name_id' => $staff->user_name_id])->exists();
+                            // dd($check);
                             if (!$check) {
+                            // dd($check);
                                 $statement = salarystatement::create([
                                     'user_name_id' => $staff->user_name_id,
                                     'month' => $month,
@@ -2408,6 +2416,7 @@ trait CsvImportTrait
                                     'user_name_id' => $staff->user_name_id,
                                     'employee_id' => $insert['employee_id'],
                                     'month' => $month,
+                                    'doj' => $staff->DOJ,
                                     'year' => $year,
                                     'working_days' => $working_days,
                                     'lop_days' => $insert['lop_days'] != '' ? $insert['lop_days'] : 0,
@@ -2422,14 +2431,18 @@ trait CsvImportTrait
 
                     } else {
                         $inserted_rows = $rows - $balance_row;
-                        session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => 'Grade Book ']));
+                        session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => 'Salary Statement']));
                         return redirect($request->input('redirect'))->with('error', 'Required Details Not Found.');
+
                     }
                 }
 
                 $inserted_rows = $rows - $balance_row;
-                session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => 'Grade Book ']));
-            } else {
+                session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => 'Salary Statement']));
+            }
+
+
+            else {
 
                 $balance_row = $rows;
 

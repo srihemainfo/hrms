@@ -246,7 +246,7 @@ class paySlipcontroller extends Controller
             ->leftJoin('staffs', 'staffs.user_name_id', 'payslip.user_name_id')
             ->leftjoin('bank_account_details', 'bank_account_details.user_name_id', 'payslip.user_name_id')
             ->leftJoin('designation', 'staffs.designation_id', 'designation.id')
-            ->select('payslip.*', 'salarystatements.total_lop_days', 'salarystatements.total_working_days', 'salarystatements.total_payable_days', 'staffs.DOJ', 'bank_account_details.account_no','designation.name as designation')
+            ->select('payslip.*', 'salarystatements.total_lop_days', 'salarystatements.total_working_days', 'salarystatements.total_payable_days',  DB::raw('DATE_FORMAT(staffs.DOJ, "%d-%m-%Y") as DOJ'), 'bank_account_details.account_no','designation.name as designation')
             ->get();
 
         // dd($results);

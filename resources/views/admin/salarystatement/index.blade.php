@@ -27,7 +27,8 @@
                         <select class="form-control select2" name="month" id="month">
                             @php
                                 // Get the previous month (if current month is January, set it to December of the previous year)
-                                $previous_month = date('F', strtotime('first day of previous month'));
+                                // $previous_month = date('F', strtotime('first day of previous month'));
+                                $previous_month = date('F');
                             @endphp
                             <option value="">All Months</option>
                             <option value="January" {{ $previous_month == 'January' ? 'selected' : '' }}>January</option>
@@ -100,7 +101,7 @@
                             {{ 'Staff Code' }}
                         </th>
                         <th>
-                            {{ 'Department ' }}
+                            {{ 'Designation ' }}
                         </th>
                         <th>
                             {{ 'DOJ ' }}
@@ -283,8 +284,8 @@
                                 name: 'staff_code'
                             },
                             {
-                                data: 'department',
-                                name: 'department'
+                                data: 'designation',
+                                name: 'designation'
                             },
                             {
                                 data: 'doj',

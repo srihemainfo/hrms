@@ -68,19 +68,13 @@ class SalaryManagementController extends Controller
     public function store(Request $request)
     {
         if (isset($request->basicPay)) {
-            if ($request->id != '') {
-                $count = Staffs::whereNotIn('id', [$request->id])->where(['basicPay' => $request->basicPay])->count();
-                if ($count > 0) {
-                    return response()->json(['status' => false, 'data' => 'Monthly Salary Already Exist.']);
-                } else {
 
-                    $update = Staffs::where(['id' => $request->id])->update([
-                        'basicPay' => $request->basicPay,
-                    ]);
-                }
-                return response()->json(['status' => true, 'data' => 'Monthly Salary Updated']);
+            $update = Staffs::where(['id' => $request->id])->update([
+                'basicPay' => $request->basicPay,
+            ]);
 
-            }
+            return response()->json(['status' => true, 'data' => 'Monthly Salary Updated']);
+
         } else {
             return response()->json(['status' => false, 'data' => 'Monthly Salary Not Created']);
         }

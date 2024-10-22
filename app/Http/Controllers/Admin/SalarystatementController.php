@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Traits\CsvImportTrait;
 use App\Models\BankAccountDetail;
+use App\Models\Designation;
 use App\Models\NonTeachingStaff;
 use App\Models\PersonalDetail;
 use App\Models\salarystatement;
@@ -41,19 +42,19 @@ class SalarystatementController extends Controller
         $month = $request->month;
         $year = $request->year;
 
-        if ( $month != '' && $year != '') {
-
-            $statements = salarystatement::where([ 'month' => $month, 'year' => $year])->get();
-
-        } elseif ( $month != '') {
+        if ($month != '' && $year != '') {
 
             $statements = salarystatement::where(['month' => $month, 'year' => $year])->get();
 
-        } elseif ( $month == '') {
+        } elseif ($month != '') {
 
-            $statements = salarystatement::where([ 'year' => $year])->get();
+            $statements = salarystatement::where(['month' => $month, 'year' => $year])->get();
 
-        } elseif ( $month == '') {
+        } elseif ($month == '') {
+
+            $statements = salarystatement::where(['year' => $year])->get();
+
+        } elseif ($month == '') {
 
             $statements = salarystatement::where(['year' => $year])->get();
 
@@ -106,9 +107,30 @@ class SalarystatementController extends Controller
             $table->editColumn('department', function ($row) {
                 return $row->department ? $row->department : '';
             });
+
             $table->editColumn('designation', function ($row) {
-                return $row->designation ? $row->designation : '';
+                if (isset($row->user_name_id)) {
+                    // Fetch the staff's designation_id
+                    $get_staff = Staffs::where('user_name_id', $row->user_name_id)
+                        ->select('designation_id')
+                        ->first();
+
+                    // Ensure $get_staff is not null and fetch the designation name
+                    if ($get_staff && $get_staff->designation_id) {
+                        // Get the designation name
+                        $des_name = Designation::where('id', $get_staff->designation_id)
+                            ->value('name');
+
+                        // Return the designation name if it's not empty
+                        if ($des_name) {
+                            return $des_name;
+                        }
+                    }
+                }
+
+                return '';
             });
+
             $table->editColumn('doj', function ($row) {
                 return $row->doj ? date('d-m-Y', strtotime($row->doj)) : 0;
             });
