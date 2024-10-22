@@ -104,10 +104,6 @@ class SalarystatementController extends Controller
                 return '';
             });
 
-            $table->editColumn('department', function ($row) {
-                return $row->department ? $row->department : '';
-            });
-
             $table->editColumn('designation', function ($row) {
                 if (isset($row->user_name_id)) {
                     // Fetch the staff's designation_id
@@ -140,6 +136,12 @@ class SalarystatementController extends Controller
             $table->editColumn('total_payable_days', function ($row) {
                 return $row->total_payable_days ? (float) $row->total_payable_days : 0;
             });
+
+            $table->editColumn('ot', function ($row) {
+                return $row->ot ? (float) $row->ot : 0;
+            });
+
+
             $table->editColumn('total_lop_days', function ($row) {
                 return $row->total_lop_days ? (float) $row->total_lop_days : 0;
             });
@@ -167,12 +169,12 @@ class SalarystatementController extends Controller
             $table->editColumn('otherall', function ($row) {
                 return $row->otherall ? (float) $row->otherall : 0;
             });
-            $table->editColumn('abi', function ($row) {
-                return $row->abi ? (float) $row->abi : 0;
-            });
-            $table->editColumn('phdallowance', function ($row) {
-                return $row->phdallowance ? (float) $row->phdallowance : 0;
-            });
+            // $table->editColumn('abi', function ($row) {
+            //     return $row->abi ? (float) $row->abi : 0;
+            // });
+            // $table->editColumn('phdallowance', function ($row) {
+            //     return $row->phdallowance ? (float) $row->phdallowance : 0;
+            // });
             $table->editColumn('earnings', function ($row) {
                 return $row->earnings ? (float) $row->earnings : 0;
             });

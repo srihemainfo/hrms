@@ -2348,8 +2348,9 @@ trait CsvImportTrait
                         $year = $insert['year'];
                         $working_days = $insert['working_days'];
                         $allowance = $insert['allowance'] ?? 0;
-                        $ot = $insert['over_time'] ?? 0;
-                        $advance = $insert['advance'] ?? 0;
+                        $ot = $insert['ot'] ?? 0;
+                        $advance = $insert['salaryadvance'] ?? 0;
+                        // dd($advance);
                         $one_hour_late = $insert['one_hour_late'] != '' ? $insert['one_hour_late'] : 0;
                         $two_hour_late = $insert['two_hour_late'] != '' ? $insert['two_hour_late'] : 0;
                         // dd($two_hour_late, $one_hour_late);
@@ -2361,6 +2362,7 @@ trait CsvImportTrait
                         $m_per_day_basic_pay = (int) $staff->basicPay / (int) $working_days;
                         $m_per_hour_basic_pay = ceil($m_per_day_basic_pay / 8);
                         $lop_late_amt = 0;
+                        $ot_amt = 0;
                         $leave = 0;
                         $lop_leave_amt = 0;
                         // $m_half_day_basic_pay = ceil($m_per_day_basic_pay / 2);
@@ -2376,16 +2378,24 @@ trait CsvImportTrait
                             $lop_late_amt += (int) $m_per_hour_basic_pay * $one_hour_late;
                         }
 
+                        if ($insert['ot'] != '' && $insert['ot'] != null && $insert['ot'] != 0) {
+                            $ot = $insert['ot'] ?? 0;
+                            $ot_amt += (int) $m_per_hour_basic_pay * $ot;
+                        }
+                        // dd($ot_amt);
+
+
                         if ($insert['two_hour_late'] != '' && $insert['two_hour_late'] != null && $insert['two_hour_late'] != 0) {
                             $two_hour_late = $insert['two_hour_late'] ?? 0;
                             $lop_late_amt += ceil($m_per_hour_basic_pay) * ($two_hour_late * 2);
                         }
 
                         $total_deduction = ceil($advance + $lop_late_amt + $lop_leave_amt);
-                        $net_pay = ceil($basic_pay - $total_deduction + $allowance + $ot);
+                        $net_pay = ceil($basic_pay - $total_deduction + $allowance + $ot_amt);
                         // dd($net_pay);
                         $other_deduction = ceil($advance + $lop_late_amt);
-                        $gross = ceil($basic_pay + $allowance + $ot);
+                        $gross = ceil($basic_pay + $allowance + $ot_amt);
+                        // dd($gross);
                         // dd($insert['two_hour_late'], $insert['two_hour_late'] ?? 0);
                         if ($net_pay) {
                             // dd($net_pay);
@@ -2405,6 +2415,8 @@ trait CsvImportTrait
                                     'bankname' => $bank_account_details ? $bank_account_details->bank_name : null,
                                     'basicpay' => $basic_pay,
                                     'lop' => $lop_leave_amt,
+                                    'salaryadvance' => $advance,
+                                    'ot' => $ot_amt,
                                     'late_amt' => $lop_late_amt,
                                     'gross_salary' => $gross,
                                     'netpay' => $net_pay,
@@ -2416,8 +2428,10 @@ trait CsvImportTrait
                                     'user_name_id' => $staff->user_name_id,
                                     'employee_id' => $insert['employee_id'],
                                     'month' => $month,
+                                    'ot' => $ot_amt,
                                     'doj' => $staff->DOJ,
                                     'year' => $year,
+                                    'salaryadvance' => $advance,
                                     'working_days' => $working_days,
                                     'lop_days' => $insert['lop_days'] != '' ? $insert['lop_days'] : 0,
                                     'one_hour_late' => $one_hour_late,

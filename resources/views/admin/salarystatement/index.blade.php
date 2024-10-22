@@ -117,6 +117,9 @@
                             {{ 'Basic pay' }}
                         </th>
                         <th>
+                            OT
+                        </th>
+                        {{-- <th>
                             {{ 'DA' }}
                         </th>
                         <th>
@@ -124,7 +127,7 @@
                         </th>
                         <th>
                             {{ 'AGP' }}
-                        </th>
+                        </th> --}}
                         <th>
                             {{ 'Special Pay' }}
                         </th>
@@ -134,21 +137,21 @@
                         <th>
                             {{ 'Other Allowances' }}
                         </th>
-                        <th>
+                        {{-- <th>
                             {{ 'ABI' }}
                         </th>
                         <th>
                             {{ 'Ph.D. Allowance' }}
-                        </th>
+                        </th> --}}
                         <th>
                             {{ 'Earnings' }}
                         </th>
-                        <th>
+                        {{-- <th>
                             {{ 'IT' }}
                         </th>
                         <th>
                             {{ 'PT' }}
-                        </th>
+                        </th> --}}
                         <th>
                             {{ 'Salary Advance' }}
                         </th>
@@ -315,19 +318,23 @@
                                 data: 'basicpay',
                                 name: 'basicpay'
                             },
+                            {
+                                data: 'ot',
+                                name: 'ot'
+                            },
 
-                            {
-                                data: 'da',
-                                name: 'da'
-                            },
-                            {
-                                data: 'hra',
-                                name: 'hra'
-                            },
-                            {
-                                data: 'agp',
-                                name: 'agp'
-                            },
+                            // {
+                            //     data: 'da',
+                            //     name: 'da'
+                            // },
+                            // {
+                            //     data: 'hra',
+                            //     name: 'hra'
+                            // },
+                            // {
+                            //     data: 'agp',
+                            //     name: 'agp'
+                            // },
                             {
                                 data: 'specialpay',
                                 name: 'specialpay'
@@ -340,26 +347,26 @@
                                 data: 'otherall',
                                 name: 'otherall'
                             },
-                            {
-                                data: 'abi',
-                                name: 'abi'
-                            },
-                            {
-                                data: 'phdallowance',
-                                name: 'phdallowance'
-                            },
+                            // {
+                            //     data: 'abi',
+                            //     name: 'abi'
+                            // },
+                            // {
+                            //     data: 'phdallowance',
+                            //     name: 'phdallowance'
+                            // },
                             {
                                 data: 'earnings',
                                 name: 'earnings'
                             },
-                            {
-                                data: 'it',
-                                name: 'it'
-                            },
-                            {
-                                data: 'pt',
-                                name: 'pt'
-                            },
+                            // {
+                            //     data: 'it',
+                            //     name: 'it'
+                            // },
+                            // {
+                            //     data: 'pt',
+                            //     name: 'pt'
+                            // },
                             {
                                 data: 'salaryadvance',
                                 name: 'salaryadvance'
@@ -403,147 +410,140 @@
                             [1, 'desc']
                         ],
                         pageLength: 10,
-                        footerCallback: function(row, data, start, end, display) {
-                            var api = this.api();
-                            // var total4 = api.column(4).data().reduce(function(a,
-                            //     b) {
-                            //  return a + b ;
-                            // }, 0);
-                            // var total5 = api.column(5).data().reduce(function(a,
-                            //     b) {
-                            //     return Math.round(a + b);
-                            // }, 0);
-                            var total6 = api.column(6).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total7 = api.column(7).data().reduce(function(a,
-                                b) {
-                                return '';
-                            }, 0);
-                            var total8 = api.column(8).data().reduce(function(a,
-                                b) {
-                                return '';
-                            }, 0);
-                            var total9 = api.column(9).data().reduce(function(a,
-                                b) {
-                                return '';
-                            }, 0);
-                            var total10 = api.column(10).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total11 = api.column(11).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total12 = api.column(12).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total13 = api.column(13).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total14 = api.column(14).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total15 = api.column(15).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total16 = api.column(16).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total17 = api.column(17).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total18 = api.column(18).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total19 = api.column(19).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total20 = api.column(20).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total21 = api.column(21).data().reduce(function(a,
-                                b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total22 = api.column(22).data().reduce(function(a, b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total23 = api.column(23).data().reduce(function(a, b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total24 = api.column(24).data().reduce(function(a, b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total25 = api.column(25).data().reduce(function(a, b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total26 = api.column(26).data().reduce(function(a, b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total27 = api.column(27).data().reduce(function(a, b) {
-                                return Math.round(a + b);
-                            }, 0);
-                            var total28 = api.column(28).data().reduce(function(a, b) {
-                                return Math.round(a + b);
-                            }, 0);
+                        // footerCallback: function(row, data, start, end, display) {
+                        //     var api = this.api();
+
+                        //     var total6 = api.column(6).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total7 = api.column(7).data().reduce(function(a,
+                        //         b) {
+                        //         return '';
+                        //     }, 0);
+                        //     var total8 = api.column(8).data().reduce(function(a,
+                        //         b) {
+                        //         return '';
+                        //     }, 0);
+                        //     var total9 = api.column(9).data().reduce(function(a,
+                        //         b) {
+                        //         return '';
+                        //     }, 0);
+                        //     var total10 = api.column(10).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total11 = api.column(11).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total12 = api.column(12).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total13 = api.column(13).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total14 = api.column(14).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total15 = api.column(15).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total16 = api.column(16).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total17 = api.column(17).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total18 = api.column(18).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total19 = api.column(19).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total20 = api.column(20).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total21 = api.column(21).data().reduce(function(a,
+                        //         b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total22 = api.column(22).data().reduce(function(a, b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total23 = api.column(23).data().reduce(function(a, b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total24 = api.column(24).data().reduce(function(a, b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total25 = api.column(25).data().reduce(function(a, b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total26 = api.column(26).data().reduce(function(a, b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total27 = api.column(27).data().reduce(function(a, b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
+                        //     var total28 = api.column(28).data().reduce(function(a, b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
 
 
 
-                            // Total over this page
-                            var pageTotal = api.column(3, {
-                                page: 'current'
-                            }).data().reduce(function(a, b) {
-                                return Math.round(a + b);
-                            }, 0);
+                        //     // Total over this page
+                        //     var pageTotal = api.column(3, {
+                        //         page: 'current'
+                        //     }).data().reduce(function(a, b) {
+                        //         return Math.round(a + b);
+                        //     }, 0);
 
 
-                            // Update footer
-                            // console.log( $(api.table().footer()))
-                            $(api.table().footer()).html(
-                                '<tr>' +
-                                '<td colspan="6"><strong>Total:</strong></td>' +
-                                // '<td> ' + total3 + '  </td>' +
-                                // '<td> ' + total4 + '  </td>' +
-                                // '<td>' + total5 + '  </td>' +
-                                '<td>' + total6 + '  </td>' +
-                                '<td>' + total7 + '  </td>' +
-                                '<td>' + total8 + '  </td>' +
-                                '<td>' + total9 + '  </td>' +
-                                '<td>' + total10 + ' </td>' +
-                                '<td>' + total11 + ' </td>' +
-                                '<td>' + total12 + '  </td>' +
-                                '<td>' + total13 + '  </td>' +
-                                '<td>' + total14 + '  </td>' +
-                                '<td>' + total15 + '  </td>' +
-                                '<td>' + total16 + '  </td>' +
-                                '<td>' + total17 + '  </td>' +
-                                '<td>' + total18 + '  </td>' +
-                                '<td>' + total19 + '  </td>' +
-                                '<td> ' + total20 + ' </td>' +
-                                '<td> ' + total21 + ' </td>' +
-                                '<td> ' + total22 + ' </td>' +
-                                '<td> ' + total23 + ' </td>' +
-                                '<td> ' + total24 + ' </td>' +
-                                '<td> ' + total25 + ' </td>' +
-                                '<td> ' + total26 + ' </td>' +
-                                '<td> ' + total27 + ' </td>' +
-                                '<td> ' + total28 + ' </td>' +
-                                '<td>  </td>' +
-                                '</tr>'
-                            );
-                        }
+                        //     // Update footer
+                        //     // console.log( $(api.table().footer()))
+                        //     $(api.table().footer()).html(
+                        //         '<tr>' +
+                        //         '<td colspan="6"><strong>Total:</strong></td>' +
+                        //         // '<td> ' + total3 + '  </td>' +
+                        //         // '<td> ' + total4 + '  </td>' +
+                        //         // '<td>' + total5 + '  </td>' +
+                        //         '<td>' + total6 + '  </td>' +
+                        //         '<td>' + total7 + '  </td>' +
+                        //         '<td>' + total8 + '  </td>' +
+                        //         '<td>' + total9 + '  </td>' +
+                        //         '<td>' + total10 + ' </td>' +
+                        //         '<td>' + total11 + ' </td>' +
+                        //         '<td>' + total12 + '  </td>' +
+                        //         '<td>' + total13 + '  </td>' +
+                        //         '<td>' + total14 + '  </td>' +
+                        //         '<td>' + total15 + '  </td>' +
+                        //         '<td>' + total16 + '  </td>' +
+                        //         '<td>' + total17 + '  </td>' +
+                        //         '<td>' + total18 + '  </td>' +
+                        //         '<td>' + total19 + '  </td>' +
+                        //         '<td> ' + total20 + ' </td>' +
+                        //         '<td> ' + total21 + ' </td>' +
+                        //         '<td> ' + total22 + ' </td>' +
+                        //         '<td> ' + total23 + ' </td>' +
+                        //         '<td> ' + total24 + ' </td>' +
+                        //         '<td> ' + total25 + ' </td>' +
+                        //         '<td> ' + total26 + ' </td>' +
+                        //         '<td> ' + total27 + ' </td>' +
+                        //         '<td> ' + total28 + ' </td>' +
+                        //         '<td>  </td>' +
+                        //         '</tr>'
+                        //     );
+                        // }
                     }
 
                     table = $('.datatable-salary_statement').DataTable(dtOverrideGlobals);

@@ -145,9 +145,9 @@
                     </tr>
                     <tr class="tbl_tr">
                         <td class="tbl_td">Over Time</td>
-                        <td class="tbl_td" style="text-align: right;"></td>
+                        <td class="tbl_td" style="text-align: right;">&#8377; {{ $results->ot }}</td>
                         <td class="tbl_td">Salary Advance</td>
-                        <td class="tbl_td" style="text-align: right;"></td>
+                        <td class="tbl_td" style="text-align: right;">&#8377; {{ $results->salaryadvance }}</td>
                     </tr>
                     <tr class="tbl_tr">
                         <td class="tbl_td">Gross Salary</td>

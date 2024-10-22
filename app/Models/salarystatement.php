@@ -45,6 +45,7 @@ class salarystatement extends Model
         'earnings',
         'gross_salary',
         'it',
+        'ot',
         'pt',
         'salaryadvance',
         'esi',
