@@ -66,7 +66,7 @@
                             <td>{{ $item['approved_by'] }}</td>
                             <td>
                                 <a class="btn btn-xs btn-success"
-                                    href="{{ url('admin/teaching-staff-edge/' . $item['user_name_id']) }}" target="_blank">
+                                    href="{{ url('admin/staffs/' . $item['user_name_id']) }}" target="_blank">
                                     Profile
                                 </a>
                                 <a class="btn btn-xs btn-primary"

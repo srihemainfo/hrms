@@ -183,6 +183,7 @@ class StaffAttendanceRegisterController extends Controller
             // }
             $the_department = '';
             if (count($getStaff) > 0) {
+                dd($)
                 foreach ($getStaff as $staff) {
                     $leaveType = null;
                     $permission = null;

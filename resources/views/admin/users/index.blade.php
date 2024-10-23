@@ -17,11 +17,11 @@
                 </button>
                 @include('csvImport.modal', ['model' => 'User', 'route' => 'admin.users.parseCsvImport']) --}}
             </div>
-            <div class="col-lg-2" style="text-align:right;">
+            {{-- <div class="col-lg-2" style="text-align:right;">
                 <a class="btn btn-danger" href="{{ route('admin.users.block_list') }}">
                     Blocked List
                 </a>
-            </div>
+            </div> --}}
         </div>
     @endcan
     <div class="card">

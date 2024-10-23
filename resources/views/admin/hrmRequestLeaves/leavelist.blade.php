@@ -16,9 +16,9 @@
                     <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12">
                         <span class="btn btn-secondary">Staff Name : {{ $name }}</span>
                     </div>
-                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12" style="margin-left: 4rem;">
+                    {{-- <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-12" style="margin-left: 4rem;">
                         <span class="btn btn-secondary">Department : {{ $dept }}</span>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>

@@ -1240,7 +1240,7 @@ class HrmRequestLeaveController extends Controller
 
         if (count($details) > 0) {
 
-            $staff = TeachingStaff::where(['user_name_id' => $details[0]->user_id])->first();
+            $staff = Staffs::where(['user_name_id' => $details[0]->user_id])->first();
             if ($staff != '') {
                 $name = $staff->name;
                 $dept = $staff->Dept;

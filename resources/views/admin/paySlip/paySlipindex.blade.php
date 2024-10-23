@@ -93,7 +93,7 @@
                                 <td class="font-weight-bold">EPF</td>
                                 <td>{{ !isset($results->epf) ? '' : $results->epf }}</td>
                             </tr>
-                            <tr>
+                            {{-- <tr>
                                 <th scope="row" class="font">AGP</th>
                                 <td>
                                     {{ !isset($results->agp) ? '' : $results->agp }}</td>
@@ -114,7 +114,7 @@
                                 <td class="font-weight-bold">PT</td>
                                 <td>{{ !isset($results->pt) ? '' : $results->pt }}</td>
 
-                            </tr>
+                            </tr> --}}
                             <tr>
                                 <th scope="row" class="font">Special Pay</th>
                                 <td>{{ !isset($results->specialpay) ? '' : $results->specialpay }}</td>
@@ -135,7 +135,7 @@
                                 <td>{{ !isset($results->totaldeductions) ? '' : $results->totaldeductions }}
                                 </td>
                             </tr>
-                            <tr>
+                            {{-- <tr>
                                 <th scope="row" class="font-weight-bold font">ABI</th>
                                 <td>{{ !isset($results->abi) ? '' : $results->abi }}</td>
 
@@ -146,7 +146,7 @@
                                 <td colspan="3">
 
                                 </td>
-                            </tr>
+                            </tr> --}}
 
                             <tr class="border-top">
                                 <th scope="row" class="font-weight-bold font">Total Earning</th>
@@ -187,7 +187,7 @@
         <div class="row">
             <div class="col-md-11 text-right pt-2" style="padding-right:0;">
 
-                <a href="{{ URL::to('admin/payslips-pdf/' . $results->id) }}"><button
+                <a href="{{ URL::to('admin/payslips-pdf/' . $results->id) }}" target="_blank"><button
                         class="btn btn-primary save-btn">Download PDF Payslip</button></a>
             </div>
             <div class="col-1"></div>

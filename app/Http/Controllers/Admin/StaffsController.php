@@ -479,7 +479,7 @@ class StaffsController extends Controller
                     return redirect()->route('admin.staffs.Profile-edit', ['id' => $userId]);
                 }
             if (is_numeric($request)) {
-                return view('admin.Staffs.staffshow', compact('staff', 'detail', 'experience_list', 'education_list', 'document_list', 'canEdit'));
+                return view('admin.staffs.staffshow', compact('staff', 'detail', 'experience_list', 'education_list', 'document_list', 'canEdit'));
             } else {
                 if ($who == 'tech') {
                     return view('admin.edges.staff', compact('first_entry', 'name', 'staff', 'detail', 'experience_list', 'education_list'));

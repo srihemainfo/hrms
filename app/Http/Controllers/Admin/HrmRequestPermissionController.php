@@ -355,7 +355,7 @@ class HrmRequestPermissionController extends Controller
 
     public function list(Request $request)
     {
-        dd($request);
+        // dd($request);
         if (isset($request->user_name_id) && $request->user_name_id != '') {
             $query = PermissionRequest::where(['user_name_id' => $request->user_name_id, 'status' => 1])->get();
 

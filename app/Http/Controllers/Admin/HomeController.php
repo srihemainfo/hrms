@@ -34,14 +34,14 @@ class HomeController extends SystemCalendarController
                     'link' => $alert->alert_link,
                 ];
             });
-            
+
             return view('home', compact('staffsCount', 'projectCount', 'staff_present', 'staff_absent', 'alertData'));
         } else {
             $userId = auth()->user()->id;
             $canEdit = DB::table('staffs')
                 ->where('user_name_id', $userId)
                 ->value('edit_access');
-            return view('layouts.staffs', compact('canEdit'));
+            return view('home', compact('canEdit'));
         }
     }
 
