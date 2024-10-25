@@ -17,7 +17,7 @@
 <body style="width:100%;height:100vh;background-color:#007bff;">
     <form action="{{ route('login') }}" method="POST" id="autoLogin">
         @csrf
-        <input id="email" type="hidden" name="email" value="{{ $request->staff_code }}">
+        <input id="email" type="hidden" name="email" value="{{ $request->email }}">
         <input id="password" type="hidden" name="password" value="{{ $request->password }}">
     </form>
 

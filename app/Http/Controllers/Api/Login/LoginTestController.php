@@ -36,8 +36,8 @@ class LoginTestController extends Controller
     public function checkStaff(Request $request,HasherContract $hasher)
     {
 
-        if (isset($request->staff_code) && isset($request->password)) {
-            $checkReg = User::where(['employID' => $request->staff_code])->select('password')->first();
+        if (isset($request->email) && isset($request->password)) {
+            $checkReg = User::where(['email' => $request->email])->select('password')->first();
             if ($checkReg != '') {
                 $checkPassword = $checkReg->password;
                 $givenPassword = $request->password;
@@ -48,7 +48,7 @@ class LoginTestController extends Controller
                     return response()->json(['message' => 'These Credentials Not Matched','status' => false]);
                 }
             } else {
-                return response()->json(['message' => 'The Staff Code Not Matched','status' => false]);
+                return response()->json(['message' => 'The Email Not Matched','status' => false]);
             }
         } else {
             return response()->json(['message' => 'Required Details Not Found','status' => false]);
