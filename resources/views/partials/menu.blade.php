@@ -323,7 +323,7 @@
 
                                         </i>
                                         <p>
-                                             Salary Management
+                                            Salary Management
                                         </p>
                                     </a>
                                 </li>
@@ -458,6 +458,18 @@
                             <i class="fa-fw nav-icon fas fa-calendar-alt"></i>
                             <p>
                                 Office Calendar
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+
+                @can('announcement_access')
+                    <li class="nav-item">
+                        <a href="{{ route('admin.announcement.index') }}"
+                            class="nav-link {{ request()->is('admin/announcement') || request()->is('admin/announcement/*') ? 'active' : '' }}">
+                            <i class="fa-fw nav-icon fas fa-bullhorn"></i>
+                            <p>
+                                Announcement
                             </p>
                         </a>
                     </li>

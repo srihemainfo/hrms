@@ -327,6 +327,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('state/delete', 'StateController@destroy')->name('state.delete');
     Route::delete('state/destroy', 'StateController@massDestroy')->name('state.massDestroy');
 
+    //Announcement Access
+    Route::get('announcement', 'AnnouncementController@index')->name('announcement.index');
+    Route::post('announcement/view', 'AnnouncementController@view')->name('announcement.view');
+    Route::post('announcement/edit', 'AnnouncementController@edit')->name('announcement.edit');
+    Route::post('announcement/store', 'AnnouncementController@store')->name('announcement.store');
+    Route::post('announcement/delete', 'AnnouncementController@destroy')->name('announcement.delete');
+    Route::delete('announcement/destroy', 'AnnouncementController@massDestroy')->name('announcement.massDestroy');
+
+
      //Projects
      Route::get('projects', 'ProjectsController@index')->name('projects.index');
      Route::post('projects/view', 'ProjectsController@view')->name('projects.view');

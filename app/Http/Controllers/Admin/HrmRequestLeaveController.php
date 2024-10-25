@@ -82,7 +82,7 @@ class HrmRequestLeaveController extends Controller
                     $query[$i]->name = $staff->name;
                     // $query[$i]->dept = $staff->Dept;
                     $query[$i]->staff_code = $staff->StaffCode;
-                    $query[$i]->url = 'teaching-staff-edge';
+                    $query[$i]->url = 'staffs';
                 }
                 // else {
                 //     $n_staff = NonTeachingStaff::where(['user_name_id' => $query1[$i]->user_id])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
@@ -103,12 +103,12 @@ class HrmRequestLeaveController extends Controller
         if ($list != '' && count($list) > 0) {
             if (auth()->user()->roles[0]->id == 15) { //Pricipal
                 for ($i = 0; $i < count($list); $i++) {
-                    $staff = TeachingStaff::where(['user_name_id' => $list[$i]->user_id])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
+                    $staff = Staffs::where(['user_name_id' => $list[$i]->user_id])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
                     if ($staff) {
                         $list[$i]->name = $staff->name;
                         $list[$i]->dept = $staff->Dept;
                         $list[$i]->staff_code = $staff->StaffCode;
-                        $list[$i]->url = 'teaching-staff-edge';
+                        $list[$i]->url = 'staffs';
                     }
                     // else {
                     //     $n_staff = NonTeachingStaff::where(['user_name_id' => $list[$i]->user_id])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
@@ -127,24 +127,24 @@ class HrmRequestLeaveController extends Controller
                 }
             } else if (auth()->user()->roles[0]->id == 42) { // R & D Head
                 for ($i = 0; $i < count($list); $i++) {
-                    $staff = TeachingStaff::where(['user_name_id' => $list[$i]->user_id, 'rd_staff' => '1'])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
+                    $staff = Staffs::where(['user_name_id' => $list[$i]->user_id, 'rd_staff' => '1'])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
                     if ($staff != '') {
                         $list[$i]->name = $staff->name;
                         $list[$i]->dept = $staff->Dept;
                         $list[$i]->staff_code = $staff->StaffCode;
-                        $list[$i]->url = 'teaching-staff-edge';
+                        $list[$i]->url = 'staffs';
                     } else {
                         array_push($unwanted, $i);
                     }
                 }
             } else if (auth()->user()->roles[0]->id == 14) { // HOD
                 for ($i = 0; $i < count($list); $i++) {
-                    $staff = TeachingStaff::where(['user_name_id' => $list[$i]->user_id, 'rd_staff' => '0', 'Dept' => auth()->user()->dept])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
+                    $staff = Staffs::where(['user_name_id' => $list[$i]->user_id, 'rd_staff' => '0', 'Dept' => auth()->user()->dept])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
                     if ($staff != '') {
                         $list[$i]->name = $staff->name;
                         $list[$i]->dept = $staff->Dept;
                         $list[$i]->staff_code = $staff->StaffCode;
-                        $list[$i]->url = 'teaching-staff-edge';
+                        $list[$i]->url = 'staffs';
                     } else {
                         $n_staff = NonTeachingStaff::where(['user_name_id' => $list[$i]->user_id, 'Dept' => auth()->user()->dept])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
                         if ($n_staff != '') {
@@ -165,7 +165,7 @@ class HrmRequestLeaveController extends Controller
                         $list[$i]->name = $staff->name;
                         // $list[$i]->dept = $staff->Dept;
                         $list[$i]->staff_code = $staff->employee_id;
-                        $list[$i]->url = 'teaching-staff-edge';
+                        $list[$i]->url = 'staffs';
                     }
                     // else {
                     //     $n_staff = NonTeachingStaff::where(['user_name_id' => $list[$i]->user_id])->select('name', 'user_name_id', 'Dept', 'StaffCode')->first();
