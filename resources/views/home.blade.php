@@ -357,7 +357,7 @@
             .calendar-day {
                 width: calc(100% / 7);
                 /* padding: 5px; */
-                line-height: 2.2rem;
+                line-height: 1.8rem !important;
                 text-align: center;
                 margin-bottom: 2px;
                 box-sizing: border-box;
@@ -434,8 +434,8 @@
             }
 
             /* .calendar-day:hover {
-                                                                                                                                                                                background-color: lightgray;
-                                                                                                                                                                            } */
+                                                                                                                                                                                                                background-color: lightgray;
+                                                                                                                                                                                                            } */
 
             .staff-box {
                 margin-right: 15px;
@@ -760,7 +760,7 @@
             .calendar-day {
                 width: calc(100% / 7);
                 /* padding: 5px; */
-                line-height: 2.2rem;
+                line-height: 2.0rem;
                 text-align: center;
                 margin-bottom: 2px;
                 box-sizing: border-box;
@@ -914,27 +914,39 @@
         </div>
 
         <div class="row card_row-2 mt-3">
-
             <div class="col-lg-4 col-md-6 mt-lg-0 mt-2">
-                <div class="card card-2">
-                    <div class="card shadow-sm">
-                        <div class="card-header">
+                <div class="card card-2" style="max-height: 400px; overflow-y: auto;">
+                    <div>
+                        <div class="card-header align-items-center justify-content-center  d-flex" style="gap:10px;">
+                            <i class="fas fa-bullhorn fa-2x text-warning mt-1"></i>
                             <h5 class="mb-0 text-center"><strong>Announcement</strong></h5>
                         </div>
+
                         <div class="card-body">
-                            <i class="fas fa-bullhorn fa-3x text-warning mt-1"></i>
-                            <p class="card-text mt-4"><strong>Dear Employees</strong></p>
-                            <p class="card-text">
-                                Please note that the new leave policy will be effective starting next month. Make sure to
-                                submit your leave requests on time. For any inquiries, contact HR.
-                            </p>
-                            <small class="text-muted">Posted on: October 23, 2024</small>
+                            <p class="mt-2"><strong>Dear Team</strong></p>
+                            @if ($announcements->isEmpty())
+                                <div class="card"
+                                    style="height: 35px; border-radius: 20px; display: flex; align-items: center; justify-content: center;">
+                                    <p style="margin: 0;">No Announcements</p>
+                                </div>
+                            @else
+                                @foreach ($announcements as $ancco)
+                                    <div class="card reset-card">
+                                        <div class="card-body">
+                                            <p class="card-text">{{ $ancco->announcement }}</p>
+                                            <p class="card-text"><small class="text-muted">Created on:
+                                                    {{ \Carbon\Carbon::parse($ancco->create_date)->format('d-m-Y') }}</small>
+                                            </p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endif
+
                         </div>
                     </div>
                 </div>
             </div>
 
-            
             <div class="col-lg-4 col-md-6 mt-lg-0 mt-2">
                 <div class="card card-2">
                     <div class="row">
@@ -996,6 +1008,13 @@
                 border-bottom: 1px solid #d3c4c4;
                 padding-top: 8px;
             }
+
+            .reset-card {
+                height: auto !important;
+                box-shadow: 0 4px 8px rgba(211, 216, 223, 0.5);
+            }
+
+
 
             .box-1-insidebox {
                 padding-top: 8px;
@@ -1121,8 +1140,8 @@
             .calendar-day {
                 width: calc(100% / 7);
                 /* padding: 5px; */
-                line-height: 2.2rem;
                 text-align: center;
+                line-height: 2.0rem !important;
                 margin-bottom: 2px;
                 box-sizing: border-box;
             }

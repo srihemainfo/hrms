@@ -335,14 +335,34 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('announcement/delete', 'AnnouncementController@destroy')->name('announcement.delete');
     Route::delete('announcement/destroy', 'AnnouncementController@massDestroy')->name('announcement.massDestroy');
 
+    //Forms
+    Route::get('forms', 'FormsController@index')->name('forms.index');
+
+
+
+    //Noleave Award
+    Route::get('noleave_award', 'NoleaveAwardController@index')->name('noleave_award.index');
+    Route::post('noleave_award/view', 'NoleaveAwardController@view')->name('noleave_award.view');
+    Route::post('noleave_award/edit', 'NoleaveAwardController@edit')->name('noleave_award.edit');
+    Route::post('noleave_award/store', 'NoleaveAwardController@store')->name('noleave_award.store');
+    Route::post('noleave_award/delete', 'NoleaveAwardController@destroy')->name('noleave_award.delete');
+    Route::delete('noleave_award/destroy', 'NoleaveAwardController@massDestroy')->name('noleave_award.massDestroy');
+
+    //Best Performance Award
+    Route::get('bestperformance_award', 'BestperformanceAwardController@index')->name('bestperformance_award.index');
+    Route::post('bestperformance_award/view', 'BestperformanceAwardController@view')->name('bestperformance_award.view');
+    Route::post('bestperformance_award/edit', 'BestperformanceAwardController@edit')->name('bestperformance_award.edit');
+    Route::post('bestperformance_award/store', 'BestperformanceAwardController@store')->name('bestperformance_award.store');
+    Route::post('bestperformance_award/delete', 'BestperformanceAwardController@destroy')->name('bestperformance_award.delete');
+    Route::delete('bestperformance_award/destroy', 'BestperformanceAwardController@massDestroy')->name('bestperformance_award.massDestroy');
 
      //Projects
-     Route::get('projects', 'ProjectsController@index')->name('projects.index');
-     Route::post('projects/view', 'ProjectsController@view')->name('projects.view');
-     Route::post('projects/edit', 'ProjectsController@edit')->name('projects.edit');
-     Route::post('projects/store', 'ProjectsController@store')->name('projects.store');
-     Route::post('projects/delete', 'ProjectsController@destroy')->name('projects.delete');
-     Route::delete('projects/destroy', 'ProjectsController@massDestroy')->name('projects.massDestroy');
+    Route::get('projects', 'ProjectsController@index')->name('projects.index');
+    Route::post('projects/view', 'ProjectsController@view')->name('projects.view');
+    Route::post('projects/edit', 'ProjectsController@edit')->name('projects.edit');
+    Route::post('projects/store', 'ProjectsController@store')->name('projects.store');
+    Route::post('projects/delete', 'ProjectsController@destroy')->name('projects.delete');
+    Route::delete('projects/destroy', 'ProjectsController@massDestroy')->name('projects.massDestroy');
 
     // Route::get('tdashboard', 'TdashboardController@index')->name('tdashboard.index');
 

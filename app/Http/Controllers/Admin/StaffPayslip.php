@@ -36,20 +36,9 @@ class StaffPayslip extends Controller
         $previousMonth = Carbon::now()->subMonth()->format('F');
         $currentMonth = Carbon::now()->format('F');
         $currentYear = Carbon::now()->year;
-        // $updated_at = DB::table('payslip')
-        //     ->where('user_name_id', $userId)
-        //     ->where('month', $previousMonth)
-        //     ->where('year', $currentYear)
-        //     ->value('updated_at');
-
-        // $updated_at_carbon = Carbon::parse($updated_at);
-        // $add_one_day = $updated_at_carbon->addHours(24);
 
         if ($request->ajax()) {
 
-            // if ($add_one_day === null || $add_one_day->lessThan(Carbon::now())) {
-            //     return Datatables::of(collect([]))->make(true);
-            // } else {
             $query = DB::table('payslip')
                 ->where('user_name_id', $userId)
                 ->where('month', $previousMonth)

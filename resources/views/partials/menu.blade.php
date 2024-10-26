@@ -178,6 +178,8 @@
                     </li>
                 @endcan
 
+
+
                 @can('hrm_access')
                     <li
                         class="nav-item has-treeview {{ request()->is('admin/staff/*') ||request()->is('admin/staff') ||request()->is('admin/hrm-request-permissions*') ||request()->is('admin/staff_leave_report*') ||request()->is('admin/salary-statement*') ||request()->is('admin/permission-register*') ||request()->is('admin/PaySlip*') ||request()->is('admin/staff-attend-register*') ||request()->is('admin/employee-salary*') ||request()->is('admin/staff-biometrics*') ||request()->is('admin/hrm-request-leaves*') ||request()->is('admin/leave-staff-allocations*') ||request()->is('admin/od-masters*') ||request()->is('admin/take-attentance-students*') ||request()->is('admin/od-requests*') ||request()->is('admin/internship-requests*') ||request()->is('admin/hrm-request-permissions*') ||request()->is('admin/staff-transfer-infos*') ||request()->is('admin/hrm-request-leaves*') ||request()->is('admin/staff_leave_register*') ||request()->is('admin/Staff-Relieving-Report*') ||request()->is('admin/leave-implementation*') ||request()->is('admin/staff-daily-attendance*')? 'menu-open': '' }}">
@@ -386,6 +388,21 @@
                     </li>
                 @endcan
 
+                @can('forms_access')
+                    <li class="nav-item">
+                        <a href="{{ route('admin.forms.index') }}"
+                            class="nav-link {{ request()->is('admin/forms') || request()->is('admin/forms/*') ? 'active' : '' }}">
+                            <i class="fa-fw nav-icon fas fa-file-alt"></i>
+                            <p>
+                                Forms
+                            </p>
+                        </a>
+                    </li>
+                @endcan
+
+
+
+
                 @can('master_tool_access')
                     <li class="nav-item">
                         <a href="{{ route('admin.designation.index') }}"
@@ -472,6 +489,47 @@
                                 Announcement
                             </p>
                         </a>
+                    </li>
+                @endcan
+
+                @can('award_access')
+                    <li
+                        class="nav-item has-treeview {{ request()->is('admin/award*') ? 'menu-open' : '' }}  {{ request()->is('admin/noleave_award*') ? 'menu-open' : '' }} {{ request()->is('admin/bestperformance_award*') ? 'menu-open' : '' }} ">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/award*') ? 'active' : '' }}  {{ request()->is('admin/noleave_award*') ? 'menu-open' : '' }} {{ request()->is('admin/bestperformance_award*') ? 'menu-open' : '' }} "
+                            href="#">
+                            <i class="fas nav-icon fa-award"></i>
+                            </i>
+                            <p>
+                                Awards
+                                <i class="right fa fa-fw fa-angle-left nav-icon"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview" style="background-color: rgba(128, 128, 128, 0.473); colour:#ffffff">
+
+                            <li class="nav-item">
+                                <a href="{{ route('admin.noleave_award.index') }}"
+                                    class="nav-link {{ request()->is('admin/noleave_award') || request()->is('admin/noleave_award*') ? 'active' : '' }}">
+                                    <i class="fas nav-icon fa-trophy"></i>
+                                    </i>
+                                    <p>
+                                        NoLeave Award
+                                    </p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{{ route('admin.bestperformance_award.index') }}"
+                                    class="nav-link {{ request()->is('admin/bestperformance_award') || request()->is('admin/bestperformance_award*') ? 'active' : '' }}">
+                                    <i class="fas nav-icon fa-medal"></i>
+
+                                    </i>
+                                    <p>
+                                        Best Performance Award
+                                    </p>
+                                </a>
+                            </li>
+
+                        </ul>
                     </li>
                 @endcan
 

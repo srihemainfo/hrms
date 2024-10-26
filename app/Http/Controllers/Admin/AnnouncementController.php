@@ -15,7 +15,8 @@ class AnnouncementController extends Controller
 
         if ($request->ajax()) {
 
-            $query = Announcement::select(sprintf('%s.*', (new Announcement)->table));
+            $query = Announcement::select(sprintf('%s.*', (new Announcement)->table))
+                ->where('status', 0);
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -116,7 +117,7 @@ class AnnouncementController extends Controller
     public function edit(Request $request)
     {
         if (isset($request->id)) {
-            $data = Announcement::where(['id' => $request->id])->select('id', 'announcement','end_date')->first();
+            $data = Announcement::where(['id' => $request->id])->select('id', 'announcement', 'end_date')->first();
             return response()->json(['status' => true, 'data' => $data]);
         } else {
             return response()->json(['status' => false, 'data' => 'Required Details Not Found']);
