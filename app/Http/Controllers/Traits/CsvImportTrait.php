@@ -2360,7 +2360,7 @@ trait CsvImportTrait
                         // dd($bank_account_details);
                         $basic_pay = $staff->basicPay;
                         $m_per_day_basic_pay = (int) $staff->basicPay / (int) $working_days;
-                        $m_per_hour_basic_pay = ceil($m_per_day_basic_pay / 8);
+                        $m_per_hour_basic_pay = $m_per_day_basic_pay / 8;
                         $lop_late_amt = 0;
                         $ot_amt = 0;
                         $leave = 0;
@@ -2375,8 +2375,9 @@ trait CsvImportTrait
 
                         if ($insert['one_hour_late'] != '' && $insert['one_hour_late'] != null && $insert['one_hour_late'] != 0) {
                             $one_hour_late = $insert['one_hour_late'] ?? 0;
-                            $lop_late_amt += (int) $m_per_hour_basic_pay * $one_hour_late;
+                            $lop_late_amt +=  $m_per_hour_basic_pay * $one_hour_late;
                         }
+
 
                         if ($insert['ot'] != '' && $insert['ot'] != null && $insert['ot'] != 0) {
                             $ot = $insert['ot'] ?? 0;
@@ -2387,12 +2388,11 @@ trait CsvImportTrait
 
                         if ($insert['two_hour_late'] != '' && $insert['two_hour_late'] != null && $insert['two_hour_late'] != 0) {
                             $two_hour_late = $insert['two_hour_late'] ?? 0;
-                            $lop_late_amt += ceil($m_per_hour_basic_pay) * ($two_hour_late * 2);
+                            $lop_late_amt += $m_per_hour_basic_pay * ($two_hour_late * 2);
                         }
 
-                        $total_deduction = ceil($advance + $lop_late_amt + $lop_leave_amt);
-                        $net_pay = ceil($basic_pay - $total_deduction + $allowance + $ot_amt);
-                        // dd($net_pay);
+                        $total_deduction_amt = $advance + $lop_late_amt + $lop_leave_amt;
+                        $net_pay = ceil($basic_pay - $total_deduction_amt + $allowance + $ot_amt);
                         $other_deduction = ceil($advance + $lop_late_amt);
                         $gross = ceil($basic_pay + $allowance + $ot_amt);
                         // dd($gross);

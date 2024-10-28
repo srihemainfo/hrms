@@ -264,7 +264,6 @@ class PersonalDetailsController extends Controller
     {
         // dd($request);
         if (isset($request->filePath)) {
-
             $request->validate([
                 'filePath' => 'required|image|mimes:jpg,JPG,jpeg,png,PNG,JPEG|max:2048',
             ]);

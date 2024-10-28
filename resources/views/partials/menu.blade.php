@@ -512,7 +512,7 @@
                                     <i class="fas nav-icon fa-trophy"></i>
                                     </i>
                                     <p>
-                                        NoLeave Award
+                                        No Leave Award
                                     </p>
                                 </a>
                             </li>

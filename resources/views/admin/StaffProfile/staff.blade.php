@@ -32,7 +32,7 @@
             <div class="bg-primary text-light student_label">
                 @if (auth()->user()->id != $staff->user_name_id)
                     @if ($check == 'entry')
-                        <div style="padding-left:2%;"><a href="{{ url('admin/teaching-staffs') }}"><i
+                        <div style="padding-left:2%;"><a href="{{ url('admin/staffs') }}"><i
                                     class="fa fa-chevron-left prev_page_bn"></i></a></div>
                     @elseif ($check == 'entry1')
                         <div style="padding-left:2%;"><a href="{{ url('admin/non-teaching-staffs') }}"><i
@@ -48,7 +48,7 @@
                         </div>
                     @else
                         <div style="padding-left:2%;">
-                            <a href="{{ url('admin/teaching-staff/' . auth()->user()->id . '/Profile-edit') }}">
+                            <a href="{{ url('admin/staff/' . auth()->user()->id . '/Profile-edit') }}">
                                 <i class="fa fa-chevron-left prev_page_bn"></i>
                             </a>
                         </div>

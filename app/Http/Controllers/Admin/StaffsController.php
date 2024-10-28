@@ -509,18 +509,18 @@ class StaffsController extends Controller
             $designations = Designation::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
             $query = Staffs::where(['user_name_id' => $request])->get();
-            // $document = Document::where(['nameofuser_id' => $request, 'fileName' => 'Profile'])->get();
+            $document = Document::where(['nameofuser_id' => $request, 'fileName' => 'Profile'])->get();
             $query_one = PersonalDetail::where(['user_name_id' => $request])->get();
         }
 
         if ($query->count() <= 0) {
             $query->user_name_id = $request;
 
-            // if ($document->count() <= 0) {
-            //     $query->filePath = '';
-            // } else {
-            //     $query->filePath = $document[0]->filePath;
-            // }
+            if ($document->count() <= 0) {
+                $query->filePath = '';
+            } else {
+                $query->filePath = $document[0]->filePath;
+            }
 
             if ($query_one->count() > 0) {
                 $query->Gender = $query_one[0]->gender;
@@ -529,11 +529,11 @@ class StaffsController extends Controller
             $staff = $query;
         } else {
 
-            // if ($document->count() <= 0) {
-            //     $query[0]->filePath = '';
-            // } else {
-            //     $query[0]->filePath = $document[0]->filePath;
-            // }
+            if ($document->count() <= 0) {
+                $query[0]->filePath = '';
+            } else {
+                $query[0]->filePath = $document[0]->filePath;
+            }
 
             if ($query_one->count() > 0) {
                 $query[0]->Gender = $query_one[0]->gender;
