@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('content')
     {{-- @can('staff_create') --}}
-        <div style="margin-bottom: 10px;" class="row">
+        {{-- <div style="margin-bottom: 10px;" class="row">
             <div class="col-lg-12">
                 <a class="btn btn-success" href="{{ route('admin.staffs.create') }}">
                     Add Staff
@@ -14,7 +14,7 @@
                     'route' => 'admin.staffs.parseCsvImport',
                 ])
             </div>
-        </div>
+        </div> --}}
     {{-- @endcan --}}
     <style>
         .select2 {

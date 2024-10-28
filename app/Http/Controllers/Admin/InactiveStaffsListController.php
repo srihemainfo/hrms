@@ -102,9 +102,9 @@ class InactiveStaffsListController extends Controller
             $table->editColumn('actions', function ($row) {
                 $row->id = $row->user_name_id;
 
-                $viewGate = 'staffs_show';
-                $editGate = 'staffs_edit';
-                $deleteGate = 'staffs_delete';
+                $viewGate = 'inactive_staff_show';
+                $editGate = 'inactive_staff_edit';
+                $deleteGate = 'inactive_staff_delete';
                 $crudRoutePart = 'inactive_staff';
 
                 return view(

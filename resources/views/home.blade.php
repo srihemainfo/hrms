@@ -979,27 +979,6 @@
                 </div>
             </div>
 
-
-
-
-            <div class="col-lg-4 col-md-6 mt-lg-0 mt-2">
-                <div class="card card-2">
-                    <div class="col-12">
-                        <div class="box-1">
-                            <h4 class="text-center"><b>Request</b></h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="card"
-                                style="height: 35px; border-radius: 20px; display: flex; align-items: center; justify-content: center;">
-                                <p style="margin: 0;">No requests</p>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
         </div>
 
 
