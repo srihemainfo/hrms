@@ -155,4 +155,21 @@ class BestperformanceAwardController extends Controller
 
         return response()->json(['status' => 'success', 'data' => 'Award Deleted Successfully']);
     }
+
+    public function bestperformanceData(Request $request)
+    {
+        if (isset($request->month_report) && isset($request->year_report)) {
+            $bestperformance_award = BestPerformanceAward::where('month', $request->month_report)
+                ->where('year', $request->year_report)
+                ->get();
+
+            if ($bestperformance_award->count() > 0) {
+                return response()->json(['status' => true, 'data' => $bestperformance_award]);
+            } else {
+                return response()->json(['status' => false, 'data' => 'No records found for the selected month and year.']);
+            }
+        } else {
+            return response()->json(['status' => false, 'data' => 'Couldn\'t Get The Mandatory Data']);
+        }
+    }
 }

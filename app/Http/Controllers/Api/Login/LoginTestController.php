@@ -38,12 +38,10 @@ class LoginTestController extends Controller
        public function checkStaff(Request $request, HasherContract $hasher)
 {
     if (isset($request->email) && isset($request->password)) {
-        $checkReg = User::where(['email' => $request->email])->first();
-        if ($checkReg) { // Check if user exists
+        $checkReg = User::where(['email' => $request->email])->select('password')->first();
+        if ($checkReg) {
             if ($hasher->check($request->password, $checkReg->password)) {
-                // Create a token for the found user
-                $token = $checkReg->createToken('API Token')->plainTextToken;
-                return response()->json(['message' => 'These Credentials Matched', 'status' => true, 'token' => $token]);
+                return response()->json(['message' => 'These Credentials Matched', 'status' => true]);
             } else {
                 return response()->json(['message' => 'These Credentials Not Matched', 'status' => false]);
             }

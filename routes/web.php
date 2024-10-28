@@ -347,6 +347,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('noleave_award/store', 'NoleaveAwardController@store')->name('noleave_award.store');
     Route::post('noleave_award/delete', 'NoleaveAwardController@destroy')->name('noleave_award.delete');
     Route::delete('noleave_award/destroy', 'NoleaveAwardController@massDestroy')->name('noleave_award.massDestroy');
+    Route::post('noleave_award/get-data', 'NoleaveAwardController@noleaveData')->name('noleave_award.get-data');
 
     //Best Performance Award
     Route::get('bestperformance_award', 'BestperformanceAwardController@index')->name('bestperformance_award.index');
@@ -355,6 +356,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('bestperformance_award/store', 'BestperformanceAwardController@store')->name('bestperformance_award.store');
     Route::post('bestperformance_award/delete', 'BestperformanceAwardController@destroy')->name('bestperformance_award.delete');
     Route::delete('bestperformance_award/destroy', 'BestperformanceAwardController@massDestroy')->name('bestperformance_award.massDestroy');
+    Route::post('bestperformance_award/get-data', 'BestperformanceAwardController@bestperformanceData')->name('bestperformance_award.get-data');
+
 
      //Projects
     Route::get('projects', 'ProjectsController@index')->name('projects.index');

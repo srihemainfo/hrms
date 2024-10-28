@@ -256,7 +256,7 @@
             }
 
             .card-2 {
-                height: 370px;
+                height: 320px;
             }
 
             .box-1 {
@@ -659,7 +659,7 @@
             }
 
             .card-2 {
-                height: 370px;
+                height: 320px;
             }
 
             .box-1 {

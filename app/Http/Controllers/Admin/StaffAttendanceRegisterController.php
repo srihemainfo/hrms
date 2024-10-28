@@ -165,7 +165,7 @@ class StaffAttendanceRegisterController extends Controller
             // $getDept = ToolsDepartment::where(['id' => $department])->select('name')->first();
             $getStaff = Staffs::join('personal_details', 'staffs.user_name_id', '=', 'personal_details.user_name_id')->where(function ($query) {
                 $query->where('personal_details.employment_status', '!=', 'Relieving')
-                    ->WhereNotIn('staffs.role_id', [1, 2, 3])
+                    ->WhereNotIn('staffs.role_id', [1, 5, 6])
                     ->orWhereNull('personal_details.employment_status');
             })->select('staffs.name', 'staffs.employee_id', 'staffs.user_name_id', 'personal_details.employment_status')->get();
             // dd($getStaff);

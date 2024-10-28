@@ -14,7 +14,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
-<body style="width:100%;height:100vh;background-color:#007bff;">
+<body style="width:100%;height:100vh;background-color:#fdfdfd;">
     <form action="{{ route('login') }}" method="POST" id="autoLogin">
         @csrf
         <input id="email" type="hidden" name="email" value="{{ $request->email }}">

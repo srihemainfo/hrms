@@ -138,7 +138,7 @@ class NoleaveAwardController extends Controller
     public function edit(Request $request)
     {
         if (isset($request->id)) {
-            $data = NoleaveAward::where(['id' => $request->id])->select('id', 'staff_name','amount','year','month')->first();
+            $data = NoleaveAward::where(['id' => $request->id])->select('id', 'staff_name', 'amount', 'year', 'month')->first();
             return response()->json(['status' => true, 'data' => $data]);
         } else {
             return response()->json(['status' => false, 'data' => 'Required Details Not Found']);
@@ -155,4 +155,22 @@ class NoleaveAwardController extends Controller
 
         return response()->json(['status' => 'success', 'data' => 'Award Deleted Successfully']);
     }
+
+    public function noleaveData(Request $request)
+    {
+        if (isset($request->month_report) && isset($request->year_report)) {
+            $noleave_award = NoleaveAward::where('month', $request->month_report)
+                ->where('year', $request->year_report)
+                ->get();
+
+            if ($noleave_award->count() > 0) {
+                return response()->json(['status' => true, 'data' => $noleave_award]);
+            } else {
+                return response()->json(['status' => false, 'data' => 'No records found for the selected month and year.']);
+            }
+        } else {
+            return response()->json(['status' => false, 'data' => 'Couldn\'t Get The Mandatory Data']);
+        }
+    }
+
 }
