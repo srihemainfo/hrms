@@ -55,20 +55,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div><span class="width font pl-4">P.F.No :</span> <small
-                                        class="ms-3">{{ !isset($results->PFno) ? '' : $results->PFno }}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div> <span class="width font pl-4">Cheque No :</span><small
-                                        class="ms-3">{{ !isset($results->chequeno) ? '' : $results->chequeno }}</small>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                     <table class="mt-4 table table-bordered">
                         <thead class=" font">
@@ -90,8 +77,8 @@
                                 <td>{{ !isset($results->basicpay) ? '' : $results->basicpay }}</td>
                                 {{-- <td class="font-weight-bold">LIC</td>
                             <td contenteditable="true"><input type="text" class="form-control" name="lic" value=" {{ !isset($results->lic) ? "" : $results->lic;   }}"></td> --}}
-                                <td class="font-weight-bold">EPF</td>
-                                <td>{{ !isset($results->epf) ? '' : $results->epf }}</td>
+                            <td class="font-weight-bold">Salary Adv</td>
+                            <td>{{ !isset($results->salaryadvance) ? '' : $results->salaryadvance }}</td>
                             </tr>
                             {{-- <tr>
                                 <th scope="row" class="font">AGP</th>
@@ -115,19 +102,11 @@
                                 <td>{{ !isset($results->pt) ? '' : $results->pt }}</td>
 
                             </tr> --}}
-                            <tr>
+                            {{-- <tr>
                                 <th scope="row" class="font">Special Pay</th>
                                 <td>{{ !isset($results->specialpay) ? '' : $results->specialpay }}</td>
-                                <td class="font-weight-bold">Salary Adv</td>
-                                <td>{{ !isset($results->salaryadvance) ? '' : $results->salaryadvance }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row" class="font">Arrears</th>
-                                <td>{{ !isset($results->arrears) ? '' : $results->arrears }}</td>
-                                <td class="font-weight-bold">Other Ded.</td>
-                                <td>{{ !isset($results->otherdeduction) ? '' : $results->otherdeduction }}</td>
 
-                            </tr>
+                            </tr> --}}
                             <tr>
                                 <th scope="row" class="font">Other All</th>
                                 <td>{{ !isset($results->otherall) ? '' : $results->otherall }}</td>

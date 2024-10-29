@@ -2376,6 +2376,7 @@ trait CsvImportTrait
                         if ($insert['one_hour_late'] != '' && $insert['one_hour_late'] != null && $insert['one_hour_late'] != 0) {
                             $one_hour_late = $insert['one_hour_late'] ?? 0;
                             $lop_late_amt +=  $m_per_hour_basic_pay * $one_hour_late;
+                            $lop_late_amts = ceil($lop_late_amt);
                         }
 
 
@@ -2389,9 +2390,10 @@ trait CsvImportTrait
                         if ($insert['two_hour_late'] != '' && $insert['two_hour_late'] != null && $insert['two_hour_late'] != 0) {
                             $two_hour_late = $insert['two_hour_late'] ?? 0;
                             $lop_late_amt += $m_per_hour_basic_pay * ($two_hour_late * 2);
+                            $lop_late_amts = ceil($lop_late_amt);
                         }
 
-                        $total_deduction_amt = $advance + $lop_late_amt + $lop_leave_amt;
+                        $total_deduction_amt = ceil($advance + $lop_late_amt + $lop_leave_amt);
                         $net_pay = ceil($basic_pay - $total_deduction_amt + $allowance + $ot_amt);
                         $other_deduction = ceil($advance + $lop_late_amt);
                         $gross = ceil($basic_pay + $allowance + $ot_amt);
@@ -2417,10 +2419,10 @@ trait CsvImportTrait
                                     'lop' => $lop_leave_amt,
                                     'salaryadvance' => $advance,
                                     'ot' => $ot_amt,
-                                    'late_amt' => $lop_late_amt,
+                                    'late_amt' => $lop_late_amts,
                                     'gross_salary' => $gross,
                                     'netpay' => $net_pay,
-                                    'totaldeductions' => $total_deduction,
+                                    'totaldeductions' => $total_deduction_amt,
                                     'updatedby' => auth()->user()->name,
                                 ]);
 

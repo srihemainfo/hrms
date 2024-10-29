@@ -89,32 +89,35 @@
                     <tr>
                         <td>Name</td>
                         <td>: {{ $results->name }}</td>
-                        <td>LOP Days</td>
-                        <td>: {{ $results->total_lop_days }}</td>
+
+                        <td>No. of Days</td>
+                        <td>: {{ $results->total_working_days }}</td>
+
+
                     </tr>
                     <tr>
                         <td>Designation</td>
                         <td>: {{ $results->designation }}</td>
-                        <td>LOP Amount</td>
-                        <td>: &#8377; {{ $results->lop }}</td>
+
+                        <td>No. of Days Worked</td>
+                        <td>: {{ $results->total_payable_days }}</td>
+
+
+
+
                     </tr>
                     <tr>
                         <td>Date of Joining</td>
                         <td>: {{ $results->DOJ }}</td>
-                        <td>UAN Number</td>
-                        <td>: </td>
+
+                        <td>LOP Days</td>
+                        <td>: {{ $results->total_lop_days }}</td>
                     </tr>
                     <tr>
                         <td>Bank A/C no.</td>
                         <td>: {{ $results->account_no }}</td>
-                        <td>ESIC Number</td>
-                        <td>: </td>
-                    </tr>
-                    <tr>
-                        <td>No. of Days</td>
-                        <td>: {{ $results->total_working_days }}</td>
-                        <td>No. of Days Worked</td>
-                        <td>: {{ $results->total_payable_days }}</td>
+                        <td>LOP Amount</td>
+                        <td>: &#8377; {{ $results->lop }}</td>
                     </tr>
                     <tr>
                         <td colspan="4"></td>
@@ -138,7 +141,7 @@
                     </tr>
                     <tr class="tbl_tr">
                         <td class="tbl_td">Allowances</td>
-                        <td class="tbl_td" style="text-align: right;"></td>
+                        <td class="tbl_td" style="text-align: right;">&#8377; 0</td>
                         <td class="tbl_td">Late / Permission</td>
                         <td class="tbl_td" style="text-align: right;">&#8377; {{ $results->late_amt }}</td>
 

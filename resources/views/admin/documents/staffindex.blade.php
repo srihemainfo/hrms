@@ -41,6 +41,8 @@
                                         <option value="PG">PG</option>
                                         <option value="Ph.D">Ph.D</option>
                                         <option value="Aadhar Card">Aadhar Card</option>
+                                        <option value="Pan Card">Pan Card</option>
+                                        <option value="Digital Photo">Digital Photo</option>
                                         {{-- <option value="Community">Community</option> --}}
                                         {{-- <option value="Income">Income</option> --}}
                                         {{-- <option value="TC">TC</option> --}}

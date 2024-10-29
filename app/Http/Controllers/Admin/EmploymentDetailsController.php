@@ -64,6 +64,9 @@ class EmploymentDetailsController extends Controller
     public function staff_update(Request $request, PersonalDetail $personalDetail)
     {
 
+        abort_if(Gate::denies('employment_detail_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+
         $personal = $personalDetail->where('user_name_id', $request->user_name_id)->update([
             'BiometricID' => $request->BiometricID,
             'DOJ' => $request->DOJ,

@@ -103,6 +103,10 @@
                                             {{ $staff->employment_status == 'Work From Home' ? 'selected' : '' }}>
                                             Work From Home
                                         </option>
+                                        <option value="Suspended"
+                                            {{ $staff->employment_status == 'Suspended' ? 'selected' : '' }}>
+                                            Suspended
+                                        </option>
                                     </select>
                                 </div>
                             </div>
