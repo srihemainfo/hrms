@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Designation;
 use App\Models\salarystatement;
 use App\Models\StaffBiometric;
 use App\Models\Staffs;
@@ -9,7 +10,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
-use App\Models\Designation;
 use Yajra\DataTables\Facades\DataTables;
 
 class paySlipcontroller extends Controller
@@ -205,11 +205,11 @@ class paySlipcontroller extends Controller
         $results = DB::table('payslip')->where(['id' => $id])->first();
         if (!empty($results)) {
             $staff = Staffs::where(['user_name_id' => $results->user_name_id])->first();
-            $designation_name  = Designation::where('id', $staff->designation_id)->value('name');
+            $designation_name = Designation::where('id', $staff->designation_id)->value('name');
             // dd($designation_name);
             $results->employee_id = $staff->employee_id;
         }
-        return view('admin.paySlip.paySlipindex', compact('results','designation_name'));
+        return view('admin.paySlip.paySlipindex', compact('results', 'designation_name'));
     }
     public function update(Request $request, $id)
     {
@@ -233,6 +233,52 @@ class paySlipcontroller extends Controller
 
         return redirect()->route('admin.PaySlip.index');
     }
+
+    public function numberToWords($number)
+    {
+        if ($number < 0) {
+            return 'minus ' . $this->numberToWords(-$number);
+        }
+
+        if ($number == 0) {
+            return 'zero';
+        }
+
+        $words = [];
+        $units = [
+            '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
+            'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen',
+        ];
+        $tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+        $thousands = ['', ' thousand', ' million', ' billion'];
+
+        // Handle thousands
+        if ($number >= 1000) {
+            $thousandPart = (int) ($number / 1000);
+            $words[] = $this->numberToWords($thousandPart) . ' thousand';
+            $number %= 1000; // Remainder
+        }
+
+        // Handle hundreds
+        if ($number >= 100) {
+            $hundredPart = (int) ($number / 100);
+            $words[] = $units[$hundredPart] . ' hundred';
+            $number %= 100; // Remainder
+        }
+
+        // Handle tens and units
+        if ($number < 20) {
+            $words[] = $units[$number];
+        } else {
+            $words[] = $tens[(int) ($number / 10)];
+            if ($number % 10) {
+                $words[] = $units[$number % 10];
+            }
+        }
+
+        return implode(' ', array_filter($words)); // Filter out empty values before imploding
+    }
+
     public function pdf($id)
     {
         // dd($id);
@@ -246,24 +292,26 @@ class paySlipcontroller extends Controller
             ->leftJoin('staffs', 'staffs.user_name_id', 'payslip.user_name_id')
             ->leftjoin('bank_account_details', 'bank_account_details.user_name_id', 'payslip.user_name_id')
             ->leftJoin('designation', 'staffs.designation_id', 'designation.id')
-            ->select('payslip.*', 'salarystatements.total_lop_days', 'salarystatements.total_working_days', 'salarystatements.total_payable_days',  DB::raw('DATE_FORMAT(staffs.DOJ, "%d-%m-%Y") as DOJ'), 'bank_account_details.account_no','designation.name as designation')
+            ->select('payslip.*', 'salarystatements.total_lop_days', 'salarystatements.total_working_days', 'salarystatements.total_payable_days', DB::raw('DATE_FORMAT(staffs.DOJ, "%d-%m-%Y") as DOJ'), 'bank_account_details.account_no', 'designation.name as designation')
             ->get();
 
         // dd($results);
         if (count($results) > 0) {
             $staff = Staffs::where(['user_name_id' => $results[0]->user_name_id])->select('employee_id')->first();
 
-            // exit;
-            $results[0]->employee_id = $staff->employee_id;
-            $final_data = ['data' => $results];
-            // dd($results);
-            $pdf = PDF::loadView('admin.paySlip.pdf', $final_data);
+            if ($staff) { // Check if the staff object is not null
+                if (isset($results[0]->netpay)) {
+                    $results[0]->netpay_in_words = ucfirst($this->numberToWords($results[0]->netpay));
 
-            // $pdf->setPaper('A4', 'landscape');
+                }
+                $results[0]->employee_id = $staff->employee_id;
+                $final_data = ['data' => $results];
+                $pdf = PDF::loadView('admin.paySlip.pdf', $final_data);
 
-            return $pdf->stream('payslip.pdf');
+                return $pdf->stream('payslip.pdf');
+            }
         } else {
-            return back();
+            return back()->with('error', 'No payslip found for the given ID.');
         }
     }
 

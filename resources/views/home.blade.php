@@ -840,7 +840,7 @@
                 margin-right: 15px;
             }
         </style>
-    @elseif($roleTitle == 2)
+    @elseif($roleTitle == 2 || $roleTitle == 3 || $roleTitle == 5)
         <div class="row">
             <div class="col-lg-12">
                 <p id="welcome">Welcome &nbsp;&nbsp;{{ $userName }}</p>

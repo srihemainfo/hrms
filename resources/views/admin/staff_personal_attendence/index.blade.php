@@ -84,7 +84,7 @@
             <div class="spinner-border text-primary"></div>
         </div>
     </div>
-    <div class="card" id="report" style="display:none;" style="max-width:100%;overflow-x:auto;">
+    <div class="card" id="report" style="display:none; max-width:100%; overflow-x:auto;">
         <div class="card-header" style="min-width:700px;">
             <div class="header_div">
                 <div style="text-align:center;font-size:1.5rem;color:#007bff;">SRI HEMA INFOTECH</div>

@@ -11,7 +11,7 @@
 <body style="width:100%;height:100vh;background-color:#007bff;">
     <script>
         window.onload = function() {
-            Android.logout();
+             Android.postMessage('logout');
         }
     </script>
 </body>

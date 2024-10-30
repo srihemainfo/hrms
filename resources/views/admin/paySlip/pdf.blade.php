@@ -77,7 +77,7 @@
     @if (count($data) > 0)
         @foreach ($data as $results)
         {{-- {{ dd($results->employee_id) }} --}}
-            <div class="container">
+            <div class="container" style="margin-top:50px;">
                 <h3 style="text-align: center; margin-bottom: 50px;">Pay Slip For The Month {{ $results->month }} {{ $results->year }}</h3>
                 <table>
                     <tr>
@@ -171,18 +171,18 @@
                         <td class="tbl_td" style="text-align: right;"><strong>&#8377; {{ $results->netpay }}</strong></td>
                     </tr>
                 </table>
-
+                <p style="margin-top:20px;"> Amount in words: <strong>{{ $data[0]->netpay_in_words ?? 'not available' }} only</strong></p>
                 <div class="footer">
                     <table style="width: 100%; border: none; margin-top: 20px;">
                         <tr>
-                            <td style="width: 50%; text-align: left; padding: 10px; border: none;">Prepared By</td>
+                            {{-- <td style="width: 50%; text-align: left; padding: 10px; border: none;">Prepared By</td> --}}
                             <td style="width: 50%; text-align: right; padding: 10px; border: none;">Authorised Signature
                             </td>
                         </tr>
                         <tr>
-                            <td style="width: 50%; text-align: left; padding: 10px; border: none;">
+                            {{-- <td style="width: 50%; text-align: left; padding: 10px; border: none;">
                                 <small style="font-size: 0.9rem;">HR Team</small>
-                            </td>
+                            </td> --}}
                             <td style="width: 50%; text-align: right; padding: 10px; border: none;"></td>
                         </tr>
                     </table>
