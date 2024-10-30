@@ -359,6 +359,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('bestperformance_award/get-data', 'BestperformanceAwardController@bestperformanceData')->name('bestperformance_award.get-data');
 
 
+    //Payroll
+    Route::get('payroll', 'PayrollController@index')->name('payroll.index');
+    Route::post('payroll/get-data', 'PayrollController@payrollData')->name('payroll.get-data');
+
      //Projects
     Route::get('projects', 'ProjectsController@index')->name('projects.index');
     Route::post('projects/view', 'ProjectsController@view')->name('projects.view');

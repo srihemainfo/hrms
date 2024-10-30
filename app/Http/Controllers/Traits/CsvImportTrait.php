@@ -2355,6 +2355,8 @@ trait CsvImportTrait
                         $two_hour_late = $insert['two_hour_late'] != '' ? $insert['two_hour_late'] : 0;
                         // dd($two_hour_late, $one_hour_late);
                         $staff = Staffs::where('employee_id', $insert['employee_id'])->orWhere('biometric', $insert['employee_id'])->first();
+
+                        $designation_id = Staffs::where('employee_id', $insert['employee_id'])->value('designation_id');
                         // dd($staff);
                         $bank_account_details = DB::table('bank_account_details')->where('user_name_id', $staff->user_name_id)->first();
                         // dd($bank_account_details);
@@ -2370,15 +2372,13 @@ trait CsvImportTrait
 
                         if ($insert['lop_days'] != '' && $insert['lop_days'] != null && $insert['lop_days'] != 0) {
                             $leave = $insert['lop_days'] ?? 0;
-                            $lop_leave_amt += ceil($m_per_day_basic_pay) * $leave;
+                            $lop_leave_amt += $m_per_day_basic_pay * $leave;
                         }
 
                         if ($insert['one_hour_late'] != '' && $insert['one_hour_late'] != null && $insert['one_hour_late'] != 0) {
                             $one_hour_late = $insert['one_hour_late'] ?? 0;
                             $lop_late_amt +=  $m_per_hour_basic_pay * $one_hour_late;
-                            $lop_late_amts = ceil($lop_late_amt);
                         }
-
 
                         if ($insert['ot'] != '' && $insert['ot'] != null && $insert['ot'] != 0) {
                             $ot = $insert['ot'] ?? 0;
@@ -2390,7 +2390,6 @@ trait CsvImportTrait
                         if ($insert['two_hour_late'] != '' && $insert['two_hour_late'] != null && $insert['two_hour_late'] != 0) {
                             $two_hour_late = $insert['two_hour_late'] ?? 0;
                             $lop_late_amt += $m_per_hour_basic_pay * ($two_hour_late * 2);
-                            $lop_late_amts = ceil($lop_late_amt);
                         }
 
                         $total_deduction_amt = ceil($advance + $lop_late_amt + $lop_leave_amt);
@@ -2419,7 +2418,8 @@ trait CsvImportTrait
                                     'lop' => $lop_leave_amt,
                                     'salaryadvance' => $advance,
                                     'ot' => $ot_amt,
-                                    'late_amt' => $lop_late_amts,
+                                    'designation' => $designation_id,
+                                    'late_amt' => $lop_late_amt,
                                     'gross_salary' => $gross,
                                     'netpay' => $net_pay,
                                     'totaldeductions' => $total_deduction_amt,
@@ -2456,6 +2456,7 @@ trait CsvImportTrait
                 $inserted_rows = $rows - $balance_row;
                 session()->flash('message', trans('global.app_imported_rows_to_table', ['rows' => $inserted_rows, 'table' => 'Salary Statement']));
             }
+
 
 
             else {

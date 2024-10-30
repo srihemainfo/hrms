@@ -182,8 +182,8 @@
 
                 @can('hrm_access')
                     <li
-                        class="nav-item has-treeview {{ request()->is('admin/staff/*') ||request()->is('admin/staff') ||request()->is('admin/hrm-request-permissions*') ||request()->is('admin/staff_leave_report*') ||request()->is('admin/salary-statement*') ||request()->is('admin/permission-register*') ||request()->is('admin/PaySlip*') ||request()->is('admin/staff-attend-register*') ||request()->is('admin/employee-salary*') ||request()->is('admin/staff-biometrics*') ||request()->is('admin/hrm-request-leaves*') ||request()->is('admin/leave-staff-allocations*') ||request()->is('admin/od-masters*') ||request()->is('admin/take-attentance-students*') ||request()->is('admin/od-requests*') ||request()->is('admin/internship-requests*') ||request()->is('admin/hrm-request-permissions*') ||request()->is('admin/staff-transfer-infos*') ||request()->is('admin/hrm-request-leaves*') ||request()->is('admin/staff_leave_register*') ||request()->is('admin/Staff-Relieving-Report*') ||request()->is('admin/leave-implementation*') ||request()->is('admin/staff-daily-attendance*')? 'menu-open': '' }}">
-                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/staff/*') || request()->is('admin/staff') || request()->is('admin/hrm-request-permissions*') || request()->is('admin/staff_leave_report*') || request()->is('admin/salary-statement*') || request()->is('admin/permission-register*') || request()->is('admin/staff-attend-register*') || request()->is('admin/PaySlip*') || request()->is('admin/employee-salary*') || request()->is('admin/staff-biometrics*') || request()->is('admin/hrm-request-leaves*') || request()->is('admin/leave-staff-allocations*') || request()->is('admin/od-masters*') || request()->is('admin/take-attentance-students*') || request()->is('admin/od-requests*') || request()->is('admin/internship-requests*') || request()->is('admin/hrm-request-permissions*') || request()->is('admin/staff-transfer-infos*') || request()->is('admin/staff_leave_register*') || request()->is('admin/Staff-Relieving-Report*') || request()->is('admin/leave-implementation*') || request()->is('admin/staff-daily-attendance*')? 'active': '' }}"
+                        class="nav-item has-treeview {{ request()->is('admin/staff/*') ||request()->is('admin/staff')  ||request()->is('admin/payroll') ||request()->is('admin/hrm-request-permissions*')  ||request()->is('admin/payslip-request*') ||request()->is('admin/staff_leave_report*') ||request()->is('admin/salary-statement*') ||request()->is('admin/permission-register*') ||request()->is('admin/PaySlip*') ||request()->is('admin/staff-attend-register*') ||request()->is('admin/employee-salary*') ||request()->is('admin/staff-biometrics*') ||request()->is('admin/hrm-request-leaves*') ||request()->is('admin/leave-staff-allocations*') ||request()->is('admin/od-masters*') ||request()->is('admin/take-attentance-students*') ||request()->is('admin/od-requests*') ||request()->is('admin/internship-requests*') ||request()->is('admin/hrm-request-permissions*') ||request()->is('admin/staff-transfer-infos*') || request()->is('admin/hrm-request-leaves*') || request()->is('admin/salary-management*')  ||request()->is('admin/staff_leave_register*') ||request()->is('admin/Staff-Relieving-Report*') ||request()->is('admin/leave-implementation*') ||request()->is('admin/staff-daily-attendance*')? 'menu-open': '' }}">
+                        <a class="nav-link nav-dropdown-toggle {{ request()->is('admin/staff/*') || request()->is('admin/staff') || request()->is('admin/hrm-request-permissions*') || request()->is('admin/payroll*') ||request()->is('admin/payslip-request*') || request()->is('admin/staff_leave_report*') || request()->is('admin/salary-statement*') || request()->is('admin/permission-register*') || request()->is('admin/staff-attend-register*') || request()->is('admin/PaySlip*') || request()->is('admin/employee-salary*') || request()->is('admin/staff-biometrics*') || request()->is('admin/hrm-request-leaves*') || request()->is('admin/leave-staff-allocations*') || request()->is('admin/od-masters*') || request()->is('admin/take-attentance-students*') || request()->is('admin/od-requests*') || request()->is('admin/internship-requests*') || request()->is('admin/hrm-request-permissions*') || request()->is('admin/staff-transfer-infos*') || request()->is('admin/salary-management*')  || request()->is('admin/staff_leave_register*') || request()->is('admin/Staff-Relieving-Report*') || request()->is('admin/leave-implementation*') || request()->is('admin/staff-daily-attendance*')? 'active': '' }}"
                             href="#">
                             <i class="fa nav-icon fas fa-dice-three">
                             </i>
@@ -379,6 +379,21 @@
                                         </i>
                                         <p>
                                             PaySlip Request
+                                        </p>
+                                    </a>
+                                </li>
+                            @endcan
+
+
+
+                            @can('payroll_access')
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.payroll.index') }}"
+                                        class="nav-link {{ request()->is('admin/payroll') || request()->is('admin/payroll/*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-money-bill"></i>
+                                        </i>
+                                        <p>
+                                            Payroll
                                         </p>
                                     </a>
                                 </li>
