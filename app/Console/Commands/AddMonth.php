@@ -29,38 +29,41 @@ class AddMonth extends Command
      */
     public function handle()
     {
+        // Get the previous month and year
+        $previousMonth = Carbon::now()->subMonth();
+        $year = $previousMonth->format('Y');
+        $month = $previousMonth->format('m');
 
-        $year = Carbon::now()->format('Y');
+        // Get the number of days in the previous month
+        $numDays = $previousMonth->daysInMonth;
 
-        $month = Carbon::now()->format('m');
-
-        $numDays = Carbon::createFromDate($year, $month, 1)->daysInMonth;
-
+        // Check if there are already records for the previous month in 'staff_biometrics'
         $check = DB::table('staff_biometrics')->where('date', 'like', $year . '-' . $month . '%')->get();
-        // dd($check);
-        if ($check->count() <= 0) {
 
+        if ($check->count() <= 0) {
             $teach_staffs = DB::table('staffs')->whereNull('deleted_at')->get();
 
-            $count = $numDays;
-
             foreach ($teach_staffs as $value) {
-
-                for ($i = 01; $i <= $count; $i++) {
-                    $get_day = \Carbon\Carbon::parse($year . '-' . $month . '-' . $i);
-                    $calender = DB::table('college_calenders_preview')->WhereNull('deleted_at')->where(['date' => $get_day, 'dayorder' => 4])->exists();
+                for ($i = 1; $i <= $numDays; $i++) {
+                    $get_day = Carbon::create($year, $month, $i);
+                    $calender = DB::table('college_calenders_preview')
+                        ->whereNull('deleted_at')
+                        ->where(['date' => $get_day, 'dayorder' => 4])
+                        ->exists();
                     $dayOfWeek = $get_day->format('l');
 
+                    // Determine if the day is Sunday or a holiday
                     if ($dayOfWeek == 'Sunday') {
                         $details = 'Sunday';
                     } elseif ($calender) {
                         $details = 'Holiday';
-                    }else{
+                    } else {
                         $details = null;
                     }
 
+                    // Insert the record into 'staff_biometrics'
                     DB::table('staff_biometrics')->insert([
-                        'date' => $year . '-' . $month . '-' . $i,
+                        'date' => $get_day->format('Y-m-d'),
                         'day' => $dayOfWeek,
                         'user_name_id' => $value->user_name_id,
                         'employee_name' => $value->name,
@@ -71,10 +74,9 @@ class AddMonth extends Command
                     ]);
                 }
             }
-
         }
 
-        \Log::info("Month Added For Biometric");
+        \Log::info("Previous Month Added For Biometric");
     }
 
 }

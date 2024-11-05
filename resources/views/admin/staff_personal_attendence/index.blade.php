@@ -236,7 +236,17 @@
                                 {
                                     data: 'status',
                                     name: 'status',
-
+                                    render: function(data, type, full, meta) {
+                                        if (data === 'Present') {
+                                            return '<span style="color: green;">' +
+                                                data + '</span>';
+                                        } else if (data === 'Absent') {
+                                            return '<span style="color: red;">' + data +
+                                                '</span>';
+                                        } else {
+                                            return data;
+                                        }
+                                    }
                                 },
                                 {
                                     data: 'permission',
