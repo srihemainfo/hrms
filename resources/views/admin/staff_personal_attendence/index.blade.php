@@ -63,7 +63,7 @@
                                 @php
                                     $current_year = date('Y');
                                 @endphp
-                                @for ($i = 2010; $i <= $current_year; $i++)
+                                @for ($i = 2024; $i <= $current_year; $i++)
                                     <option value="{{ $i }}">{{ $i }}</option>
                                 @endfor
                             </select>
@@ -103,7 +103,6 @@
                         <th>S.No</th>
                         <th>Date</th>
                         <th>Day</th>
-                        <th>Day Punches</th>
                         <th>In Time</th>
                         <th>Out Time</th>
                         <th>Total Hours</th>
@@ -218,11 +217,7 @@
                                     name: 'day',
 
                                 },
-                                {
-                                    data: 'day_punches',
-                                    name: 'day_punches',
 
-                                },
                                 {
                                     data: 'in_time',
                                     name: 'in_time',

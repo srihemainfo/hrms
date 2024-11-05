@@ -29,6 +29,7 @@ class StaffBiometric extends Model
         'total_hours',
         'details',
         'status',
+        'devicelog_id',
         'employee_code',
         'employee_name',
         'shift',

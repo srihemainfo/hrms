@@ -157,19 +157,7 @@
                                             placeholder="Enter Reason" value="{{ $staff_edit->subject }}">
                                     </div>
                                 </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label for="certificate">Document</label>
-                                        @php
-                                            $theEvent =
-                                                session('appUser') == true ? 'onclick=Android.openFilePicker()' : '';
-                                        @endphp
-                                        <input type="file" class="form-control" name="certificate" value=""
-                                            {{ $theEvent }}>
-                                        <span class="text-primary">file should be in 2MB. PNG, JPG ,JPEG Formats
-                                            Only</span>
-                                    </div>
-                                </div>
+                              
                                 <div class="row gutters">
                                     {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="view_staff"
                                         style="padding-left:1rem;">

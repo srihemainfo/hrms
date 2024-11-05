@@ -2374,11 +2374,13 @@ trait CsvImportTrait
                             $leave = $insert['lop_days'] ?? 0;
                             $lop_leave_amt += $m_per_day_basic_pay * $leave;
                         }
+                        // dd($lop_leave_amt);
 
                         if ($insert['one_hour_late'] != '' && $insert['one_hour_late'] != null && $insert['one_hour_late'] != 0) {
                             $one_hour_late = $insert['one_hour_late'] ?? 0;
-                            $lop_late_amt +=  $m_per_hour_basic_pay * $one_hour_late;
+                            $lop_late_amt +=  ceil($m_per_hour_basic_pay * $one_hour_late);
                         }
+
 
                         if ($insert['ot'] != '' && $insert['ot'] != null && $insert['ot'] != 0) {
                             $ot = $insert['ot'] ?? 0;
@@ -2389,7 +2391,7 @@ trait CsvImportTrait
 
                         if ($insert['two_hour_late'] != '' && $insert['two_hour_late'] != null && $insert['two_hour_late'] != 0) {
                             $two_hour_late = $insert['two_hour_late'] ?? 0;
-                            $lop_late_amt += $m_per_hour_basic_pay * ($two_hour_late * 2);
+                            $lop_late_amt += ceil($m_per_hour_basic_pay * ($two_hour_late * 2));
                         }
 
                         $total_deduction_amt = ceil($advance + $lop_late_amt + $lop_leave_amt);
