@@ -29,15 +29,15 @@ class AddMonth extends Command
      */
     public function handle()
     {
-        // Get the previous month and year
-        $previousMonth = Carbon::now()->subMonth();
-        $year = $previousMonth->format('Y');
-        $month = $previousMonth->format('m');
+        // Get the current month and year
+        $currentMonth = Carbon::now();
+        $year = $currentMonth->format('Y');
+        $month = $currentMonth->format('m');
 
-        // Get the number of days in the previous month
-        $numDays = $previousMonth->daysInMonth;
+        // Get the number of days in the current month
+        $numDays = $currentMonth->daysInMonth;
 
-        // Check if there are already records for the previous month in 'staff_biometrics'
+        // Check if there are already records for the current month in 'staff_biometrics'
         $check = DB::table('staff_biometrics')->where('date', 'like', $year . '-' . $month . '%')->get();
 
         if ($check->count() <= 0) {
@@ -46,17 +46,30 @@ class AddMonth extends Command
             foreach ($teach_staffs as $value) {
                 for ($i = 1; $i <= $numDays; $i++) {
                     $get_day = Carbon::create($year, $month, $i);
+
+                    // Check if the day is a holiday or special day in the calendar
                     $calender = DB::table('college_calenders_preview')
                         ->whereNull('deleted_at')
-                        ->where(['date' => $get_day, 'dayorder' => 4])
-                        ->exists();
+                        ->where('date', $get_day)
+                        ->whereIn('dayorder', [4, 50, 51])
+                        ->first();
+
                     $dayOfWeek = $get_day->format('l');
 
-                    // Determine if the day is Sunday or a holiday
+                    // Determine the type of day for 'details' column
                     if ($dayOfWeek == 'Sunday') {
                         $details = 'Sunday';
                     } elseif ($calender) {
-                        $details = 'Holiday';
+
+                        if ($calender->dayorder == 50) {
+                            $details = 'Special Holiday';
+                        } elseif ($calender->dayorder == 51) {
+                            $details = 'Pandemic Holiday';
+                        } else {
+                            $details = 'Holiday';
+
+                        }
+
                     } else {
                         $details = null;
                     }
@@ -76,7 +89,7 @@ class AddMonth extends Command
             }
         }
 
-        \Log::info("Previous Month Added For Biometric");
+        \Log::info("Current Month Added For Biometric");
     }
 
 }

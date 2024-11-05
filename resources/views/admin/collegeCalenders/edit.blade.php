@@ -90,7 +90,7 @@
         }
     </style>
     <?php
-    
+
     foreach ($startDates as $record) {
         // dd($record);
         // ;03,batch
@@ -104,7 +104,7 @@
         $academic_year = $record->academic_year;
     }
     // $batch = $startDates[0]->batch;
-    
+
     $startYear = date('Y', strtotime($startDates[0]->start_date));
     $endYear = date('Y', strtotime($startDates[0]->end_date));
     $startMonth = date('m', strtotime($startDates[0]->start_date));
@@ -149,7 +149,7 @@ for ($year = $startYear; $year <= $endYear; $year++) {
 
         <?php
         echo '<div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-4 year_label" data-year="' . $year . '" style="padding-bottom:2.5rem;"><div style="font-size:2rem;padding-bottom:10px;">' . $year . '</div><ul class="' . $formattedMonth . ' month" data-month="' . $monthName . '">';
-        
+
         ?>
 
         <?php
@@ -164,11 +164,11 @@ for ($year = $startYear; $year <= $endYear; $year++) {
             $dayName = date('l', strtotime($date));
             $dayNameShort = '(' . substr($dayName, 0, 3) . ')';
             $style = '';
-            
+
             if ($currentYear != $year || $currentMonth != $formattedMonth) {
                 continue;
             }
-            
+
             $dayorder = $object->dayorder;
 
 
@@ -179,10 +179,24 @@ for ($year = $startYear; $year <= $endYear; $year++) {
                     $style = 'background: #FFD5D6; box-shadow: inset 0 0 0 1px #E0E0E0;width: 150px; display: flex; justify-content: space-between; ';
                 } elseif ($dayorder == 0) {
                     $style = 'width: 150px; display: flex; justify-content: space-between; ';
-                } elseif ($dayorder == 4) {
+                }
+
+                elseif ($dayorder == 4) {
                     $style = 'background: #FFD5D6; box-shadow: inset 0 0 0 1px #E0E0E0;color:#010101;width: 150px; display: flex; justify-content: space-between; ';
                     $dayNameShort = 'Holiday';
-                } elseif ($dayorder == 5) {
+                }
+
+                elseif ($dayorder == 50) {
+                    $style = 'background: #FFD5D6; box-shadow: inset 0 0 0 1px #E0E0E0;color:#010101;width: 150px; display: flex; justify-content: space-between; ';
+                    $dayNameShort = 'Special_Holiday';
+                }
+
+                elseif ($dayorder == 51) {
+                    $style = 'background: #FFD5D6; box-shadow: inset 0 0 0 1px #E0E0E0;color:#010101;width: 150px; display: flex; justify-content: space-between; ';
+                    $dayNameShort = 'Pandemic_Holiday';
+                }
+
+                elseif ($dayorder == 5) {
                     $style = 'width: 150px; display: flex; justify-content: space-between;';
                     $dayNameShort = 'NoOrderDay';
                 } elseif ($dayorder == 6) {
@@ -217,6 +231,8 @@ for ($year = $startYear; $year <= $endYear; $year++) {
                 echo '<select id="edit-day" class="select3 " style="float:right; width: 65px;" name="">';
                 echo '<option value="00">Select</option>';
                 echo '<option value="Holiday" data-month="' . $formattedMonth . '" data-datee="' . $day . '" data-year="' . $currentYear . '"' . ($dayNameShort == "Holiday" ? ' selected' : '') . '>Holiday</option>';
+                echo '<option value="Special_Holiday" data-month="' . $formattedMonth . '" data-datee="' . $day . '" data-year="' . $currentYear . '"' . ($dayNameShort == "Special_Holiday" ? ' selected' : '') . '>Special Holiday</option>';
+                echo '<option value="Pandemic_Holiday" data-month="' . $formattedMonth . '" data-datee="' . $day . '" data-year="' . $currentYear . '"' . ($dayNameShort == "Pandemic_Holiday" ? ' selected' : '') . '>Pandemic Holiday</option>';
                 echo '<option value="No_order_day" data-month="' . $formattedMonth . '" data-datee="' . $day . '" data-year="' . $currentYear . '"' . ($dayNameShort == "NoOrderDay" ? ' selected' : '') . '>No order day</option>';
                 echo '<option value="Monday" data-month="' . $formattedMonth . '" data-datee="' . $day . '" data-year="' . $currentYear . '"' . ($dayNameShort == "(Mon)" ? ' selected' : '') . '>Monday</option>';
                 echo '<option value="Tuesday" data-month="' . $formattedMonth . '" data-datee="' . $day . '" data-year="' . $currentYear . '"' . ($dayNameShort == "(Tue)" ? ' selected' : '') . '>Tuesday</option>';

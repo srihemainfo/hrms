@@ -289,7 +289,17 @@ class OfficeCalender extends Controller
                     $dayOrder = 19;
                 } else if ($value == 'Reset') {
                     $dayOrder = 0;
-                } else {
+                }
+                else if ($value == 'Special_Holiday') {
+                    $dayOrder = 50;
+                }
+
+                else if ($value == 'Pandemic_Holiday') {
+                    $dayOrder = 51;
+                }
+
+
+                else {
                     $dayOrder = '';
                 }
 
