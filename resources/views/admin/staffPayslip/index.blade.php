@@ -76,7 +76,7 @@
         </div>
         <div class="secondLoader"></div>
     </div>
-    <div class="card">
+    {{-- <div class="card">
         <div class="card-header text-center">
             <strong>Apply Payslip</strong>
         </div>
@@ -155,7 +155,7 @@
             </div>
 
         </div>
-    </div>
+    </div> --}}
 @endsection
 @section('scripts')
     @parent

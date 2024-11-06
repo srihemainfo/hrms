@@ -34,4 +34,10 @@ class Staffs extends Model
         'edit_access',
     ];
     protected $guarded;
+
+    public function designation()
+    {
+        return $this->belongsTo(Designation::class, 'designation_id');
+    }
+
 }

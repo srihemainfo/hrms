@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\NonTeachingStaff;
-use App\Models\TeachingStaff;
+use App\Models\Staffs;
 use Illuminate\Console\Command;
 
 class AddCl extends Command
@@ -30,34 +30,18 @@ class AddCl extends Command
     public function handle()
     {
 
-        $check_staff = TeachingStaff::select('casual_leave', 'personal_permission', 'user_name_id')->get();
+        $check_staff = Staffs::select('casual_leave', 'personal_permission', 'user_name_id')->get();
 
         if ($check_staff->count() > 0) {
             foreach ($check_staff as $staff) {
                 $cl = $staff->casual_leave;
                 $past_personal_permission = $staff->personal_permission;
 
-                $store_staff = TeachingStaff::where(['user_name_id' => $staff->user_name_id])->update([
+                $store_staff = Staffs::where(['user_name_id' => $staff->user_name_id])->update([
                     'casual_leave' => $cl + 1,
                     'past_casual_leave' => $cl,
                     'personal_permission' => 2,
-                    'past_personal_permission' => $past_personal_permission,
-                ]);
-            }
-        }
-
-        $check_non_tech_staff = NonTeachingStaff::select('casual_leave', 'personal_permission','user_name_id')->get();
-
-        if ($check_non_tech_staff->count() > 0) {
-
-            foreach ($check_non_tech_staff as $staff) {
-                $cl = $staff->casual_leave;
-                $past_personal_permission = $staff->personal_permission;
-
-                $store_non_staff = NonTeachingStaff::where(['user_name_id' => $staff->user_name_id])->update([
-                    'casual_leave' => $cl + 1,
-                    'past_casual_leave' => $cl,
-                    'personal_permission' => 2,
+                    'sick_leave' => 1,
                     'past_personal_permission' => $past_personal_permission,
                 ]);
             }

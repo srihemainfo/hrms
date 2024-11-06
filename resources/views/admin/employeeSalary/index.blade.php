@@ -487,7 +487,7 @@
                                         <div class="form-group">
                                             <label>Designation : </label>
                                             <input type="text" class="pay_input" name="designation"
-                                                value="{{ isset($salary->Designation) ? ($salary->Designation != '' ? $salary->Designation : '') : '' }}"
+                                                value="{{ isset($salary->designation->name) ? ($salary->designation->name != '' ? $salary->designation->name : '') : '' }}"
                                                 readonly>
                                         </div>
                                     </div>

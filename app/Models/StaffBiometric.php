@@ -28,6 +28,7 @@ class StaffBiometric extends Model
         'day_punches',
         'total_hours',
         'details',
+        'worktype_id',
         'status',
         'devicelog_id',
         'employee_code',

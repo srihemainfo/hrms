@@ -64,7 +64,7 @@ class EmployeeSalaryController extends Controller
 
                 $attend_rep = $query;
 
-                $salary_query = Staffs::where('user_name_id', $query[0]->user_name_id)->first();
+                $salary_query = Staffs::where('user_name_id', $query[0]->user_name_id)->with('designation')->first();
 
                 if ($salary_query != '') {
 

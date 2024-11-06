@@ -317,6 +317,17 @@
                                     </a>
                                 </li>
                             @endcan
+
+                            {{-- @can('leave_implement_access') --}}
+                                <li class="nav-item">
+                                    <a href="{{ route('admin.leave-implementation.index') }}"
+                                        class="nav-link {{ request()->is('admin/leave-implementation*') ? 'active' : '' }}">
+                                        <i class="fa-fw nav-icon fas fa-gavel"></i>
+                                        <p>Leave Implementation</p>
+                                    </a>
+                                </li>
+                            {{-- @endcan --}}
+
                             @can('salary_management_access')
                                 <li class="nav-item">
                                     <a href="{{ route('admin.salary-management.index') }}"
