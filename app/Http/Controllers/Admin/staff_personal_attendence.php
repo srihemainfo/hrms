@@ -123,7 +123,18 @@ class staff_personal_attendence extends Controller
                 }
                 if ($attend_rep[$i]['details'] == 'Sunday' || $attend_rep[$i]['details'] == 'Holiday') {
                     $one->details .= '<span style="color:green;">' . $attend_rep[$i]['details'] . '</span>';
-                } else {
+                }
+
+                elseif ($attend_rep[$i]['details'] == 'Week Off') {
+                    $one->details .= '<span style="color:blue;">' . $attend_rep[$i]['details'] . '</span>';
+                }
+
+                elseif ($attend_rep[$i]['details'] == 'Special Holiday') {
+                    $one->details .= '<span style="color:green;">' . $attend_rep[$i]['details'] . '</span>';
+                }
+
+
+                else {
                     $one->details .= $attend_rep[$i]['details'];
                 }
                 array_push($final_array, $one);

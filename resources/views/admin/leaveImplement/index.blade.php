@@ -24,20 +24,22 @@
                     <div class="form-group">
                         <label for="" class="required">Leave Type</label>
                         <select name="leave_type" id="leave_type" class="form-control select2">
-                            <option value="Holiday">HoliDay</option>
+                            <option value="">Select Type</option>
+                            <option value="Full Day">Full Day</option>
+                            <option value="Timing">Timing</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+                {{-- <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
                     <div class="form-group">
                         <label for="" class="required">Half Day</label><br>
                         <input id="half_day" name="half_day" type="checkbox" style="width:18px;height:18px;">
                     </div>
-                </div>
+                </div> --}}
             </div>
             <div class="row">
-                <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12" id="day_type_div" style="display: none;">
+                {{-- <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12" id="day_type_div" style="display: none;">
                     <div class="form-group">
                         <label for="" class="required">Day type</label>
                         <select name="day_type" id="day_type" class="form-control select2">
@@ -46,7 +48,7 @@
                             <option value="After Noon">After Noon</option>
                         </select>
                     </div>
-                </div>
+                </div> --}}
 
 
                 <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
@@ -85,7 +87,7 @@
                         <th width="10"> </th>
                         <th>S.No</th>
                         <th>Date</th>
-                        <th style="width: 100px">Staff Type</th>
+                        {{-- <th style="width: 100px">Staff Type</th> --}}
                         <th>Leave Type</th>
                         <th>Half Day (FN / AN)</th>
                         <th>Remarks</th>
@@ -117,10 +119,10 @@
                         data: 'date',
                         name: 'date'
                     },
-                    {
-                        data: 'staff_type',
-                        name: 'staff_type'
-                    },
+                    // {
+                    //     data: 'staff_type',
+                    //     name: 'staff_type'
+                    // },
                     {
                         data: 'leave_type',
                         name: 'leave_type'
@@ -219,10 +221,12 @@
             if ($("#date").val() == '') {
                 Swal.fire('', 'Please Choose The Date!', 'warning');
                 return false;
-            } else if ($("#staff_type").val() == '') {
-                Swal.fire('', 'Please Choose The Staff Type!', 'warning');
-                return false;
-            } else if ($("#leave_type").val() == '') {
+            }
+            // else if ($("#staff_type").val() == '') {
+            //     Swal.fire('', 'Please Choose The Staff Type!', 'warning');
+            //     return false;
+            // }
+            else if ($("#leave_type").val() == '') {
                 Swal.fire('', 'Please Choose The Leave Type!', 'warning');
                 return false;
 
@@ -249,7 +253,7 @@
                 }).then(function(result) {
                     if (result.value) {
                         let date = $("#date").val();
-                        let staff_type = $("#staff_type").val();
+                        // let staff_type = $("#staff_type").val();
                         let leave_type = $("#leave_type").val();
                         let day_type = $("#day_type").val();
                         let reason = $("#reason").val();
@@ -260,7 +264,7 @@
                             type: 'POST',
                             data: {
                                 'date': date,
-                                'staff_type': staff_type,
+                                // 'staff_type': staff_type,
                                 'leave_type': leave_type,
                                 'day_type': day_type,
                                 'reason': reason,

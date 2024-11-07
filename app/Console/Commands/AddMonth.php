@@ -108,18 +108,21 @@ class AddMonth extends Command
                     $calendar = DB::table('college_calenders_preview')
                         ->whereNull('deleted_at')
                         ->where('date', $get_day)
-                        ->whereIn('dayorder', [4, 50, 51])
+                        ->whereIn('dayorder', [4,5,50, 51])
                         ->first();
 
                     $dayOfWeek = $get_day->format('l');
 
                     // Determine the type of day for 'details' column
-                    if ($dayOfWeek == 'Sunday') {
-                        $details = 'Sunday';
-                    } elseif ($calendar) {
+                    if ($calendar) {
                         if ($calendar->dayorder == 50) {
                             $details = 'Special Holiday';
-                        } elseif ($calendar->dayorder == 51) {
+                        }
+                        elseif ($calendar->dayorder == 5) {
+                            $details = 'Week Off'; // Set Week_off if dayorder is 5
+                        }
+
+                        elseif ($calendar->dayorder == 51) {
                             $details = 'Pandemic Holiday';
                         } else {
                             $details = 'Holiday';

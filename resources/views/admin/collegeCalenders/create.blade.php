@@ -84,12 +84,8 @@
                         alert('Please Choose the Date in Between the Academic Year')
                             $("#from_date").val('');
                     }
-                    // else{
-                    //     if(from_year[1] < '06'){
-                    //         alert('The Academic Should Be Start From June')
-                    //         $("#from_date").val('');
-                    //     }
-                    // }
+                    
+
                     console.log(from_date,ay_year)
                 }
             });

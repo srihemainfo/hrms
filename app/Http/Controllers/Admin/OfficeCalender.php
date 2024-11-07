@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateCollegeCalenderRequest;
 use App\Models\AcademicYear;
 use App\Models\CollegeCalender;
 use Carbon\Carbon;
-use App\Http\Requests\UpdateCollegeCalenderRequest;
 use Carbon\CarbonPeriod;
-use Illuminate\Support\Facades\DB;
 use Exception;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Validator;
 use Yajra\DataTables\DataTables;
@@ -128,41 +128,96 @@ class OfficeCalender extends Controller
             return back()->withErrors($validator)->withInput();
         } else {
 
-            // dd('hii');
             $record = DB::table('college_calenders_preview')
                 ->whereNull('college_calenders_preview.deleted_at')
                 ->where('academic_year', $academic_year)
                 ->first();
             if (!$record) {
 
+                // foreach ($dateRange as $date) {
+                //     $day = $date->format('l');
+                //     $isHoliday = 0;
+
+                //     if ($request->input('sunday') == 1 && $day == 'Sunday') {
+                //         $isHoliday = 1;
+                //     }
+
+                //     if ($day == 'Monday') {
+                //         $isHoliday = 20;
+                //     }
+                //     if ($day == 'Tuesday') {
+                //         $isHoliday = 7;
+                //     }
+                //     if ($day == 'Wednesday') {
+                //         $isHoliday = 8;
+                //     }
+                //     if ($day == 'Thursday') {
+                //         $isHoliday = 9;
+                //     }
+                //     if ($day == 'Friday') {
+                //         $isHoliday = 10;
+                //     }
+                //     if ($request->input('saturday') == 1 && $day == 'Saturday') {
+                //         $isHoliday = 2;
+                //     }
+                //     if ($request->input('saturday') != 1 && $day == 'Saturday') {
+                //         $isHoliday = 11;
+                //     }
+
+                //     DB::table('college_calenders_preview')->insert([
+                //         'start_date' => $date->toDateString(),
+                //         'end_date' => $endDate,
+                //         'date' => $date,
+                //         'dayorder' => $isHoliday,
+                //         'academic_year' => $academic_year,
+                //         'created_at' => now(),
+                //     ]);
+                // }
+
+                $month = null;
+                $saturdayCount = 0;
+
                 foreach ($dateRange as $date) {
                     $day = $date->format('l');
+                    $dayOfMonth = $date->format('j'); // Get the day of the month
+                    $currentMonth = $date->format('m'); // Get the month
                     $isHoliday = 0;
 
-                    if ($request->input('sunday') == 1 && $day == 'Sunday') {
-                        $isHoliday = 1;
+                    // Reset Saturday count when month changes
+                    if ($currentMonth !== $month) {
+                        $month = $currentMonth;
+                        $saturdayCount = 0;
                     }
 
-                    if ($day == 'Monday') {
-                        $isHoliday = 20;
+                    // Set week_off for all Sundays
+                    if ($day == 'Sunday') {
+                        $isHoliday = 5; // Sunday is a week off with dayorder 5
                     }
-                    if ($day == 'Tuesday') {
-                        $isHoliday = 7;
-                    }
-                    if ($day == 'Wednesday') {
-                        $isHoliday = 8;
-                    }
-                    if ($day == 'Thursday') {
-                        $isHoliday = 9;
-                    }
-                    if ($day == 'Friday') {
-                        $isHoliday = 10;
-                    }
-                    if ($request->input('saturday') == 1 && $day == 'Saturday') {
-                        $isHoliday = 2;
-                    }
-                    if ($request->input('saturday') != 1 && $day == 'Saturday') {
-                        $isHoliday = 11;
+
+                    // Check for Saturdays
+                    elseif ($day == 'Saturday') {
+                        $saturdayCount++; // Increment Saturday count for the month
+
+                        if ($request->input('saturday') == 1) {
+                            // If all Saturdays are marked as holidays
+                            $isHoliday = 5; // Week off for Saturday
+                        } elseif ($saturdayCount == 2 || $saturdayCount == 4) {
+                            // Mark 2nd and 4th Saturdays as holidays
+                            $isHoliday = 5; // Week off for Saturday
+                        } else {
+                            // Other Saturdays
+                            $isHoliday = 11;
+                        }
+                    } else {
+                        // Define default day orders for other days
+                        $isHoliday = match ($day) {
+                            'Monday' => 20,
+                            'Tuesday' => 7,
+                            'Wednesday' => 8,
+                            'Thursday' => 9,
+                            'Friday' => 10,
+                            default => 0,
+                        };
                     }
 
                     DB::table('college_calenders_preview')->insert([
@@ -233,9 +288,9 @@ class OfficeCalender extends Controller
         $startDate = $dateFrom->toDateString();
         $endDate = $dateTo->toDateString();
         $ToDelete =
-            DB::table('college_calenders_preview')->whereBetween('start_date', [$from_date, $to_date])
-                ->where('academic_year', $academic_year)
-                ->delete();
+        DB::table('college_calenders_preview')->whereBetween('start_date', [$from_date, $to_date])
+            ->where('academic_year', $academic_year)
+            ->delete();
 
         $collegeCalender->delete();
 
@@ -255,7 +310,7 @@ class OfficeCalender extends Controller
 
                 if ($value == 'Holiday') {
                     $dayOrder = 4;
-                } else if ($value == 'No_order_day') {
+                } else if ($value == 'Week_Off') {
                     $dayOrder = 5;
                 } else if ($value == 'Unit_Test') {
                     $dayOrder = 6;
@@ -289,17 +344,11 @@ class OfficeCalender extends Controller
                     $dayOrder = 19;
                 } else if ($value == 'Reset') {
                     $dayOrder = 0;
-                }
-                else if ($value == 'Special_Holiday') {
+                } else if ($value == 'Special_Holiday') {
                     $dayOrder = 50;
-                }
-
-                else if ($value == 'Pandemic_Holiday') {
+                } else if ($value == 'Pandemic_Holiday') {
                     $dayOrder = 51;
-                }
-
-
-                else {
+                } else {
                     $dayOrder = '';
                 }
 
@@ -309,6 +358,25 @@ class OfficeCalender extends Controller
                         ->where('date', 'like', '%' . $formattedDate . '%')
                         ->where('academic_year', $accYear)
                         ->update(['dayorder' => $dayOrder, 'updated_at' => now()]);
+
+                    if ($value == 'Holiday') {
+                        DB::table('staff_biometrics')
+                            ->where('date', $formattedDate)
+                            ->update(['details' => 'Holiday']);
+                    } elseif ($value == 'Week_Off') {
+                        DB::table('staff_biometrics')
+                            ->where('date', $formattedDate)
+                            ->update(['details' => 'Week Off']);
+                    } elseif ($value == 'Special_Holiday') {
+                        DB::table('staff_biometrics')
+                            ->where('date', $formattedDate)
+                            ->update(['details' => 'Special Holiday']);
+                    } elseif ($value == 'Pandemic_Holiday') {
+                        DB::table('staff_biometrics')
+                            ->where('date', $formattedDate)
+                            ->update(['details' => 'Pandemic Holiday']);
+                    }
+
                 } catch (Exception $e) {
                     $hasError = true;
                 }
