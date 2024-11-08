@@ -21,9 +21,8 @@ class LeaveImplement extends Model
 
     protected $fillable = [
         'date',
-        'noon',
-        'staff_type',
-        'leave_type',
+        'start_time',
+        'end_time',
         'reason',
         'created_at',
         'updated_at',

@@ -12,46 +12,35 @@
             Leave Implementation (HoliDay)
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+            <div class="row gutters">
+
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                     <div class="form-group">
                         <label for="" class="required">Date</label>
                         <input type="text" name="date" id="date" class="form-control date"
                             placeholder="Select Date">
                     </div>
                 </div>
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                     <div class="form-group">
-                        <label for="" class="required">Leave Type</label>
-                        <select name="leave_type" id="leave_type" class="form-control select2">
-                            <option value="">Select Type</option>
-                            <option value="Full Day">Full Day</option>
-                            <option value="Timing">Timing</option>
-                        </select>
+                        <label for="start_time" style="display:block;" class="required">Start Time</label>
+                        <input type="time" class="form-control" name="start_time" id="start_time">
                     </div>
                 </div>
 
-                {{-- <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                     <div class="form-group">
-                        <label for="" class="required">Half Day</label><br>
-                        <input id="half_day" name="half_day" type="checkbox" style="width:18px;height:18px;">
+                        <label for="end_time" style="display:block;" class="required">End Time</label>
+                        <input type="time" class="form-control" name="end_time" id="end_time">
                     </div>
-                </div> --}}
+                </div>
+
             </div>
-            <div class="row">
-                {{-- <div class="col-xl-2 col-lg-3 col-md-6 col-sm-6 col-12" id="day_type_div" style="display: none;">
-                    <div class="form-group">
-                        <label for="" class="required">Day type</label>
-                        <select name="day_type" id="day_type" class="form-control select2">
-                            <option value="">Select Day type</option>
-                            <option value="Fore Noon">Fore Noon</option>
-                            <option value="After Noon">After Noon</option>
-                        </select>
-                    </div>
-                </div> --}}
+            <div class="row gutters">
 
+                <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
 
-                <div class="col-xl-3 col-lg-3 col-md-6 col-sm-6 col-12">
                     <div class="form-group">
                         <label for="" class="required">Remark</label>
                         <input type="input" name="reason" id="reason" class="form-control "
@@ -87,9 +76,8 @@
                         <th width="10"> </th>
                         <th>S.No</th>
                         <th>Date</th>
-                        {{-- <th style="width: 100px">Staff Type</th> --}}
-                        <th>Leave Type</th>
-                        <th>Half Day (FN / AN)</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
                         <th>Remarks</th>
                         <th>Action</th>
                     </tr>
@@ -119,17 +107,13 @@
                         data: 'date',
                         name: 'date'
                     },
-                    // {
-                    //     data: 'staff_type',
-                    //     name: 'staff_type'
-                    // },
                     {
-                        data: 'leave_type',
-                        name: 'leave_type'
+                        data: 'start_time',
+                        name: 'start_time'
                     },
                     {
-                        data: 'half_day',
-                        name: 'half_day'
+                        data: 'end_time',
+                        name: 'end_time'
                     },
                     {
                         data: 'remark',
@@ -151,14 +135,12 @@
                         }
                     }
                 ],
-                columnDefs: [
-                {
-                    render: function (data, type, full, meta) {
+                columnDefs: [{
+                    render: function(data, type, full, meta) {
                         return `<div style="word-wrap: break-word; width: 100%"; >${data}</div>`;
                     },
                     targets: 3
-                }
-             ],
+                }],
                 orderCellsTop: true,
                 order: [
                     [1, 'desc']
@@ -197,8 +179,7 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function(response) {
-                            // $('#process').hide()
-                            // $('#btn-save').show()
+
                             let status = response.status;
                             if (status == true) {
                                 Swal.fire('', 'Leave Implemented Deleted Successfully', 'success');
@@ -222,24 +203,25 @@
                 Swal.fire('', 'Please Choose The Date!', 'warning');
                 return false;
             }
-            // else if ($("#staff_type").val() == '') {
-            //     Swal.fire('', 'Please Choose The Staff Type!', 'warning');
-            //     return false;
-            // }
-            else if ($("#leave_type").val() == '') {
-                Swal.fire('', 'Please Choose The Leave Type!', 'warning');
+
+            else if ($("#start_time").val() == '') {
+                Swal.fire('', 'Please Fill The Start Time', 'warning');
                 return false;
+            }
 
-            } else if ($('#half_day').is(':checked') == true && $('#day_type').val() == '') {
-
-                Swal.fire('', 'Please Fill The Day type', 'warning');
+            else if ($("#end_time").val() == '') {
+                Swal.fire('', 'Please Fill The End Time', 'warning');
                 return false;
+            }
 
-            } else if ($("#reason").val() == '') {
+            else if ($("#reason").val() == '') {
                 Swal.fire('', 'Please Fill The Remark', 'warning');
                 return false;
 
-            } else {
+            }
+
+
+            else {
                 $('#process').hide()
                 $('#loader').hide()
                 Swal.fire({
@@ -253,9 +235,8 @@
                 }).then(function(result) {
                     if (result.value) {
                         let date = $("#date").val();
-                        // let staff_type = $("#staff_type").val();
-                        let leave_type = $("#leave_type").val();
-                        let day_type = $("#day_type").val();
+                        let start_time = $("#start_time").val();
+                        let end_time = $("#end_time").val();
                         let reason = $("#reason").val();
                         $('#process').show()
                         $('#btn-save').hide()
@@ -264,9 +245,8 @@
                             type: 'POST',
                             data: {
                                 'date': date,
-                                // 'staff_type': staff_type,
-                                'leave_type': leave_type,
-                                'day_type': day_type,
+                                'start_time': start_time,
+                                'end_time': end_time,
                                 'reason': reason,
                             },
                             headers: {

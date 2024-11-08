@@ -38,11 +38,11 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <button class="btn btn-danger" type="submit">
                                 {{ trans('global.save') }}
                             </button>
-                        </div>
+                        </div> --}}
                     </form>
                 </div>
             </div>

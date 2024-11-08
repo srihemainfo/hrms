@@ -30,7 +30,7 @@
         <div class="col-9" style="border-right: 1px solid #cecdcd;">
 
             <div class="bg-primary text-light student_label">
-                @if (auth()->user()->id != $staff->user_name_id)
+                {{-- @if (auth()->user()->id != $staff->user_name_id)
                     @if ($check == 'entry')
                         <div style="padding-left:2%;"><a href="{{ url('admin/staffs') }}"><i
                                     class="fa fa-chevron-left prev_page_bn"></i></a></div>
@@ -53,12 +53,12 @@
                             </a>
                         </div>
                     @endif
-                @endif
+                @endif --}}
 
                 <div style="padding-right:2%;">STAFF NAME : {{ $staff->name }}</div>
             </div>
             @if ($check == 'entry')
-                {{-- {{ dd($staff) }} --}}
+
                 <div class="container" style="padding:0;">
                     <div class="row gutters">
                         <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
@@ -85,7 +85,7 @@
                                                 @endif
                                             </div>
                                             <h5 class="user-name">{{ $staff->name }}</h5>
-                                            <h6 class="user-email">{{ $staff->Designation }}</h6>
+                                            {{-- <h6 class="user-email">{{ $staff->Designation }}</h6> --}}
                                         </div>
 
                                     </div>

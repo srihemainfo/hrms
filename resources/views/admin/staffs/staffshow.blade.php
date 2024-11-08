@@ -42,7 +42,7 @@
                                     @endif
                                 </div>
                                 <h5 class="user-name">{{ $staff->name }}</h5>
-                                <h6 class="user-email">{{ $staff->Designation }}</h6>
+                                {{-- <h6 class="user-email">{{ $staff->Designation }}</h6> --}}
                             </div>
 
                         </div>

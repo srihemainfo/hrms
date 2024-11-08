@@ -47,15 +47,26 @@
                                             <option value="On Duty">On Duty</option>
                                         @endif
                                     </select>
+                                    <p class="text-danger">Note : Personal permission can be applied for a maximum of 2 hours
+                                        only.</p>
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="off_date_div">
+                            {{-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="off_date_div">
                                 <div class="form-group">
                                     <label for="off_date"> Date</label>
                                     <input type="text" class="form-control date" name="date" id="date"
                                         placeholder="Enter  Date" value="{{ $staff_edit->date }}" required>
                                 </div>
+                            </div> --}}
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12" id="off_date_div">
+                                <div class="form-group">
+                                    <label for="off_date">Date</label>
+                                    <input type="date" class="form-control" name="date" id="date"
+                                        placeholder="Enter Date" value="{{ $staff_edit->date }}" min="{{ date('Y-m-d') }}"
+                                        required>
+                                </div>
                             </div>
+
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="from_date" style="display:block;">From Time</label>
@@ -200,6 +211,8 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
+
+
             $('#from_time').on('change', function() {
                 if ($(this).val() == '08:00:00') {
                     $('#to_time').html(`<option value="09:00:00" selected>09:00:00 AM </option>`);
